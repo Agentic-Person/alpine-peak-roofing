@@ -3,21 +3,24 @@ import { ChatWidget } from '@/components/chatbot'
 export default function ChatbotDemoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Alpine Peak Roofing - AI Chatbot Demo
-              </h1>
-            </div>
-            <div className="text-sm text-gray-500">
-              Demonstration Environment
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+              AI Chatbot Demo
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
+              Experience our intelligent chatbot that helps customers with roofing questions, provides estimates, and qualifies leads automatically
+            </p>
+            <div className="mt-4">
+              <span className="inline-block px-3 py-1 text-sm font-medium bg-blue-500 text-white rounded-full">
+                Demonstration Environment
+              </span>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

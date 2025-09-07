@@ -1,258 +1,329 @@
 import React from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { 
-  Bot, 
-  FileText, 
-  Calculator, 
-  Users, 
   Shield, 
   ArrowRight,
-  Check
+  Check,
+  Phone,
+  Star,
+  Wrench,
+  Home,
+  Building,
+  Zap,
+  Award,
+  Clock,
+  Users,
+  MapPin
 } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">Alpine Peak Roofing</span>
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
-              <a href="#automation" className="text-gray-600 hover:text-blue-600 transition-colors">Automation</a>
-              <a href="#demo" className="text-gray-600 hover:text-blue-600 transition-colors">Live Demo</a>
-              <a href="#contact" className="text-gray-600 hover:text-blue-600 transition-colors">Contact</a>
-            </nav>
-            <Button>Get Started</Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">
 
       {/* Hero Section */}
-      <section className="relative py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              <span className="text-blue-600">Pinnacle of Protection</span>
-              <br />
-              Peak of Performance
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Experience the future of roofing with our AI-powered automation platform. 
-              From intelligent chatbots to instant estimates, we showcase cutting-edge 
-              technology that transforms how roofing companies operate.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" className="px-8">
-                See Live Demo
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="lg">
-                Learn More
-              </Button>
+      <section className="relative py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-blue-800 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                <span className="text-yellow-400">Pinnacle of Protection</span>
+                <br />
+                Peak of Performance
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-blue-100">
+                Professional roofing solutions for homes and businesses across the Denver metro area. 
+                Licensed, insured, and trusted by thousands of satisfied customers.
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <Button size="lg" variant="secondary" className="px-8 bg-yellow-400 text-blue-900 hover:bg-yellow-300">
+                  <Phone className="mr-2 h-5 w-5" />
+                  Call (303) 555-ROOF
+                </Button>
+                <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white hover:text-blue-600" asChild>
+                  <Link href="/estimator">
+                    Get Free Instant Estimate
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <div className="relative">
+              {/* Placeholder for hero image */}
+              <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-2xl flex items-center justify-center">
+                <div className="text-center text-white/80">
+                  <Home className="h-16 w-16 mx-auto mb-4" />
+                  <p className="text-lg">Professional Roofing Project</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        
+        {/* Background pattern */}
+        <div className="absolute inset-0 bg-white/5 opacity-20"></div>
+      </section>
 
-        {/* Floating elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
-            <div className="h-96 w-96 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 blur-3xl opacity-30"></div>
+      {/* Services Section */}
+      <section className="py-16 sm:py-24 bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Our Roofing Services
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+              Comprehensive roofing solutions for every need, backed by decades of experience
+            </p>
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Residential Roofing */}
+            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
+              <CardHeader className="pb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                  <Home className="h-6 w-6 text-blue-600" />
+                </div>
+                <CardTitle className="text-xl">Residential Roofing</CardTitle>
+                <CardDescription>
+                  Complete home roofing solutions including repair, replacement, and new construction
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Roof replacement & repair
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Shingle & metal roofing
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Gutters & downspouts
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Insurance claims help
+                  </li>
+                </ul>
+                <Button variant="outline" className="mt-4 w-full group-hover:bg-blue-600 group-hover:text-white transition-colors" asChild>
+                  <Link href="/services/residential">Learn More</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Commercial Roofing */}
+            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
+              <CardHeader className="pb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
+                  <Building className="h-6 w-6 text-green-600" />
+                </div>
+                <CardTitle className="text-xl">Commercial Roofing</CardTitle>
+                <CardDescription>
+                  Professional commercial roofing services for businesses and property managers
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    TPO & EPDM systems
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Built-up roofing
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Maintenance programs
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Emergency repairs
+                  </li>
+                </ul>
+                <Button variant="outline" className="mt-4 w-full group-hover:bg-green-600 group-hover:text-white transition-colors" asChild>
+                  <Link href="/services/commercial">Learn More</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Repairs */}
+            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
+              <CardHeader className="pb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
+                  <Zap className="h-6 w-6 text-red-600" />
+                </div>
+                <CardTitle className="text-xl">Emergency Repairs</CardTitle>
+                <CardDescription>
+                  24/7 emergency roofing services for storm damage and urgent repairs
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    24/7 availability
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Storm damage repair
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Leak detection & repair
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    Insurance coordination
+                  </li>
+                </ul>
+                <Button variant="outline" className="mt-4 w-full bg-red-600 text-white hover:bg-red-700 transition-colors">
+                  <Phone className="mr-2 h-4 w-4" />
+                  Call Now
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-24 sm:py-32">
+      {/* Why Choose Alpine Peak Section */}
+      <section className="py-16 sm:py-24 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Four Revolutionary Automation Features
+              Why Choose Alpine Peak Roofing?
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Discover how AI and automation can transform your roofing business operations
+              Trusted by thousands of homeowners and businesses across the Denver metro area
             </p>
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {/* AI Chatbot */}
-            <Card className="relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                  <Bot className="h-6 w-6 text-blue-600" />
-                </div>
-                <CardTitle className="text-xl">AI-Powered Chatbot</CardTitle>
-                <CardDescription>
-                  Intelligent customer engagement with 24/7 lead qualification and appointment scheduling
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Natural conversation flow
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Lead scoring & qualification
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    CRM integration
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Emergency routing
-                  </li>
-                </ul>
-                <Button variant="outline" className="mt-4 w-full">
-                  Try Chatbot
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 mx-auto">
+                <Clock className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">24/7 Support</h3>
+              <p className="mt-2 text-gray-600">Round-the-clock emergency services and customer support</p>
+            </div>
 
-            {/* Automated Blogging */}
-            <Card className="relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                  <FileText className="h-6 w-6 text-green-600" />
-                </div>
-                <CardTitle className="text-xl">Automated Blogging</CardTitle>
-                <CardDescription>
-                  SEO-optimized content generation with industry trends and local optimization
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Biweekly content creation
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    SEO optimization
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Social media distribution
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Industry trend analysis
-                  </li>
-                </ul>
-                <Button variant="outline" className="mt-4 w-full">
-                  View Blog System
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mx-auto">
+                <Zap className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">Instant Estimates</h3>
+              <p className="mt-2 text-gray-600">Get accurate roof estimates in 30 seconds using satellite technology</p>
+            </div>
 
-            {/* Roof Estimator */}
-            <Card className="relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100">
-                  <Calculator className="h-6 w-6 text-orange-600" />
-                </div>
-                <CardTitle className="text-xl">Instant Roof Estimator</CardTitle>
-                <CardDescription>
-                  Google Maps integration for accurate measurements and instant pricing
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Satellite measurements
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Material selection
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Instant pricing
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    PDF generation
-                  </li>
-                </ul>
-                <Button variant="outline" className="mt-4 w-full">
-                  Try Estimator
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100 mx-auto">
+                <Award className="h-8 w-8 text-yellow-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">Licensed & Insured</h3>
+              <p className="mt-2 text-gray-600">Fully licensed, bonded, and insured professionals</p>
+            </div>
 
-            {/* CRM & Lead Generation */}
-            <Card className="relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
-                  <Users className="h-6 w-6 text-purple-600" />
-                </div>
-                <CardTitle className="text-xl">Lead Generation & CRM</CardTitle>
-                <CardDescription>
-                  Complete lead management with automated follow-ups and pipeline tracking
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Multi-channel capture
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Automated follow-ups
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Pipeline management
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Analytics dashboard
-                  </li>
-                </ul>
-                <Button variant="outline" className="mt-4 w-full">
-                  View CRM
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 mx-auto">
+                <Shield className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-gray-900">10-Year Warranty</h3>
+              <p className="mt-2 text-gray-600">Comprehensive workmanship warranty on all installations</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Technology Stack Section */}
-      <section className="bg-gray-50 py-24 sm:py-32">
+      {/* Recent Projects Section */}
+      <section className="py-16 sm:py-24 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Powered by Modern Technology
+              Recent Projects
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Built with cutting-edge tools and frameworks for maximum performance and scalability
+              See our quality craftsmanship in action across the Denver metro area
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Project placeholders - will be replaced with real portfolio data */}
             {[
-              { name: 'Next.js 14', icon: '⚡' },
-              { name: 'n8n Automation', icon: '🔄' },
-              { name: 'OpenAI GPT-4', icon: '🤖' },
-              { name: 'Google Maps API', icon: '🗺️' },
-              { name: 'Supabase', icon: '💾' },
-              { name: 'TypeScript', icon: '📝' },
-              { name: 'Tailwind CSS', icon: '🎨' },
-              { name: 'Vercel Hosting', icon: '🚀' }
-            ].map((tech, index) => (
-              <div key={index} className="flex flex-col items-center p-6 bg-white rounded-lg shadow-sm">
-                <div className="text-3xl mb-2">{tech.icon}</div>
-                <div className="text-sm font-medium text-gray-900">{tech.name}</div>
+              { title: 'Residential Shingle Roof', location: 'Denver, CO', type: 'Residential' },
+              { title: 'Commercial TPO Installation', location: 'Lakewood, CO', type: 'Commercial' },
+              { title: 'Storm Damage Repair', location: 'Aurora, CO', type: 'Emergency' },
+            ].map((project, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl transition-shadow">
+                <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                  <Home className="h-12 w-12 text-gray-400" />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900">{project.title}</h3>
+                  <p className="text-gray-600 flex items-center mt-2">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    {project.location}
+                  </p>
+                  <span className="inline-block mt-3 px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                    {project.type}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Button asChild variant="outline" size="lg">
+              <Link href="/portfolio">View All Projects</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Testimonials Section */}
+      <section className="py-16 sm:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              What Our Customers Say
+            </h2>
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {[
+              {
+                text: "Alpine Peak did an amazing job on our roof replacement. Professional, on time, and the quality is outstanding. Highly recommended!",
+                author: "Sarah Johnson",
+                location: "Denver, CO",
+                rating: 5
+              },
+              {
+                text: "Fast response for our emergency leak repair. They had our roof fixed within hours and prevented major water damage.",
+                author: "Mike Rodriguez",
+                location: "Lakewood, CO", 
+                rating: 5
+              },
+              {
+                text: "Great communication throughout the entire process. The instant estimate tool was incredibly accurate and convenient.",
+                author: "Jennifer Chen",
+                location: "Aurora, CO",
+                rating: 5
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-gray-50 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-4">"{testimonial.text}"</p>
+                <div className="font-semibold text-gray-900">{testimonial.author}</div>
+                <div className="text-gray-600 text-sm">{testimonial.location}</div>
               </div>
             ))}
           </div>
@@ -264,38 +335,25 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to Transform Your Roofing Business?
+              Ready to Protect Your Property?
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-              See how our automation platform can increase your leads by 150+ monthly 
-              while reducing operational costs by 60%.
+              Get your free instant estimate today and join thousands of satisfied customers 
+              across the Denver metro area.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                Schedule Demo
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6">
+              <Button size="lg" className="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8">
+                <Phone className="mr-2 h-5 w-5" />
+                Call (303) 555-ROOF
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
-                View Case Studies
+              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 px-8" asChild>
+                <Link href="/estimator">Get Free Estimate</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Shield className="h-6 w-6 text-blue-400" />
-              <span className="text-lg font-bold text-white">Alpine Peak Roofing</span>
-            </div>
-            <p className="text-sm text-gray-400">
-              © 2025 Alpine Peak Roofing. Demonstration website showcasing automation capabilities.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

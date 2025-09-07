@@ -6,9 +6,9 @@ export { default as ChatInput } from './ChatInput'
 export { default as TypingIndicator } from './TypingIndicator'
 export { default as QuickActions } from './QuickActions'
 
-// Re-export types for convenience
+// Re-export types for convenience (avoiding naming conflicts with components)
 export type {
-  ChatMessage,
+  ChatMessage as ChatMessageType,
   QuickAction,
   ChatSession,
   ChatResponse,
