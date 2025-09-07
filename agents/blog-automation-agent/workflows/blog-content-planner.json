@@ -1,0 +1,190 @@
+{
+  "name": "blog-content-planner",
+  "description": "Biweekly blog topic selection and content planning workflow",
+  "version": 1,
+  "trigger": {
+    "type": "cron",
+    "schedule": "0 6 * * 2/14",
+    "timezone": "America/Denver",
+    "description": "Every other Tuesday at 6:00 AM MST"
+  },
+  "estimated_cost_per_run": "$1.00",
+  "nodes": [
+    {
+      "id": "trigger",
+      "name": "Biweekly Content Planning Trigger",
+      "type": "cron",
+      "position": [100, 100],
+      "parameters": {
+        "rule": {
+          "interval": "weeks",
+          "intervalSize": 2,
+          "dayOfWeek": 2,
+          "hour": 6,
+          "minute": 0
+        }
+      }
+    },
+    {
+      "id": "season_detector",
+      "name": "Detect Current Season",
+      "type": "code",
+      "position": [300, 100],
+      "parameters": {
+        "jsCode": "const month = new Date().getMonth() + 1;\nlet season;\nlet seasonalFocus;\n\nif (month >= 3 && month <= 5) {\n  season = 'spring';\n  seasonalFocus = 'roof inspections, storm preparation, maintenance';\n} else if (month >= 6 && month <= 8) {\n  season = 'summer';\n  seasonalFocus = 'ventilation, energy efficiency, heat damage';\n} else if (month >= 9 && month <= 11) {\n  season = 'fall';\n  seasonalFocus = 'gutter cleaning, winter preparation, leaf damage';\n} else {\n  season = 'winter';\n  seasonalFocus = 'ice dams, emergency repairs, insulation';\n}\n\nreturn [{\n  season,\n  seasonalFocus,\n  month\n}];"
+      }
+    },
+    {
+      "id": "weather_check",
+      "name": "Check Denver Weather Trends",
+      "type": "http_request",
+      "position": [300, 200],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.openweathermap.org/data/2.5/forecast",
+        "qs": {
+          "q": "Denver,CO,US",
+          "appid": "{{$env.OPENWEATHER_API_KEY}}",
+          "units": "imperial"
+        },
+        "options": {
+          "timeout": 10000
+        }
+      }
+    },
+    {
+      "id": "rss_industry_news",
+      "name": "Fetch Industry RSS Feeds",
+      "type": "rss_feed_read",
+      "position": [300, 300],
+      "parameters": {
+        "url": "https://www.roofingcontractor.com/rss.xml",
+        "limit": 5
+      }
+    },
+    {
+      "id": "google_trends",
+      "name": "Check Roofing Keyword Trends",
+      "type": "http_request", 
+      "position": [300, 400],
+      "parameters": {
+        "method": "GET",
+        "url": "https://trends.google.com/trends/api/explore",
+        "qs": {
+          "hl": "en-US",
+          "tz": 420,
+          "req": "{\"comparisonItem\":[{\"keyword\":\"roof repair\",\"geo\":\"US-CO\",\"time\":\"today 1-m\"},{\"keyword\":\"roof replacement\",\"geo\":\"US-CO\",\"time\":\"today 1-m\"}]}"
+        }
+      }
+    },
+    {
+      "id": "topic_selection_ai",
+      "name": "AI Topic Selection (GPT-3.5)",
+      "type": "openai",
+      "position": [500, 250],
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 200,
+        "temperature": 0.7,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a roofing content strategist. Select ONE blog topic for a Denver roofing company targeting homeowners."
+          },
+          {
+            "role": "user", 
+            "content": "Current season: {{$node.season_detector.json.season}}\nSeasonal focus: {{$node.season_detector.json.seasonalFocus}}\nWeather patterns: {{$node.weather_check.json.list[0].weather[0].description}}\nIndustry news: {{$node.rss_industry_news.json[0].title}}\n\nSelect ONE blog topic that:\n1. Addresses current homeowner needs\n2. Has seasonal relevance for {{$node.season_detector.json.season}}\n3. Helps with the weather pattern: {{$node.weather_check.json.list[0].weather[0].description}}\n\nFormat your response as:\nTopic: [Title]\nKeywords: [3 target keywords]\nUser Intent: [what homeowner problem this solves]\nUrgency: [why now/this season]"
+          }
+        ]
+      },
+      "cost_estimate": "$0.01"
+    },
+    {
+      "id": "content_calendar_update",
+      "name": "Update Content Calendar",
+      "type": "supabase",
+      "position": [700, 250],
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_content_calendar", 
+        "data": {
+          "topic": "{{$node.topic_selection_ai.json.choices[0].message.content}}",
+          "planned_date": "{{new Date(Date.now() + 7*24*60*60*1000).toISOString().split('T')[0]}}",
+          "season": "{{$node.season_detector.json.season}}",
+          "status": "planned",
+          "estimated_cost": 14.50
+        }
+      }
+    },
+    {
+      "id": "trigger_content_generator",
+      "name": "Trigger Content Generator",
+      "type": "webhook",
+      "position": [900, 250],
+      "parameters": {
+        "url": "{{$env.N8N_BASE_URL}}/webhook/blog-content-generator",
+        "method": "POST",
+        "body": {
+          "topic_data": "{{$node.topic_selection_ai.json.choices[0].message.content}}",
+          "season": "{{$node.season_detector.json.season}}",
+          "calendar_id": "{{$node.content_calendar_update.json.id}}"
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "source": "trigger", 
+      "target": "season_detector"
+    },
+    {
+      "source": "trigger",
+      "target": "weather_check"  
+    },
+    {
+      "source": "trigger",
+      "target": "rss_industry_news"
+    },
+    {
+      "source": "trigger", 
+      "target": "google_trends"
+    },
+    {
+      "source": "season_detector",
+      "target": "topic_selection_ai"
+    },
+    {
+      "source": "weather_check",
+      "target": "topic_selection_ai"
+    },
+    {
+      "source": "rss_industry_news", 
+      "target": "topic_selection_ai"
+    },
+    {
+      "source": "google_trends",
+      "target": "topic_selection_ai"  
+    },
+    {
+      "source": "topic_selection_ai",
+      "target": "content_calendar_update"
+    },
+    {
+      "source": "content_calendar_update",
+      "target": "trigger_content_generator"
+    }
+  ],
+  "settings": {
+    "errorWorkflow": "error-handler",
+    "timezone": "America/Denver",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  },
+  "implementation_notes": [
+    "Requires OpenWeather API key in environment variables",
+    "Requires Google Trends API access or alternative trending data",
+    "Supabase table 'blog_content_calendar' must exist",
+    "Webhook URL for content generator must be configured",
+    "Cost monitoring: Track OpenAI API usage per execution"
+  ]
+}

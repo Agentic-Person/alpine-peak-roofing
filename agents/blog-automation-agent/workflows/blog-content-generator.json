@@ -1,0 +1,300 @@
+{
+  "name": "blog-content-generator",
+  "description": "Multi-stage content generation using GPT-3.5 + GPT-4 for cost optimization",
+  "version": 1,
+  "trigger": {
+    "type": "webhook",
+    "path": "/webhook/blog-content-generator",
+    "method": "POST"
+  },
+  "estimated_cost_per_run": "$6.50",
+  "nodes": [
+    {
+      "id": "webhook_trigger",
+      "name": "Content Generation Trigger",
+      "type": "webhook",
+      "position": [100, 300],
+      "parameters": {
+        "path": "/webhook/blog-content-generator",
+        "method": "POST",
+        "responseCode": 200,
+        "responseData": "Content generation started"
+      }
+    },
+    {
+      "id": "parse_topic_data",
+      "name": "Parse Topic Information",
+      "type": "code",
+      "position": [300, 300],
+      "parameters": {
+        "jsCode": "const topicData = $input.item.json.topic_data;\nconst lines = topicData.split('\\n');\n\nconst result = {\n  season: $input.item.json.season,\n  calendar_id: $input.item.json.calendar_id\n};\n\nlines.forEach(line => {\n  if (line.startsWith('Topic:')) {\n    result.title = line.replace('Topic:', '').trim();\n  } else if (line.startsWith('Keywords:')) {\n    result.keywords = line.replace('Keywords:', '').trim().split(',').map(k => k.trim());\n  } else if (line.startsWith('User Intent:')) {\n    result.userIntent = line.replace('User Intent:', '').trim();\n  } else if (line.startsWith('Urgency:')) {\n    result.urgency = line.replace('Urgency:', '').trim();\n  }\n});\n\nresult.slug = result.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');\n\nreturn [result];"
+      }
+    },
+    {
+      "id": "content_outline_generation",
+      "name": "Generate Content Outline (GPT-3.5)",
+      "type": "openai",
+      "position": [500, 200],
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 800,
+        "temperature": 0.7,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a roofing content expert creating detailed outlines for Denver homeowners. Focus on practical, actionable information."
+          },
+          {
+            "role": "user",
+            "content": "Create a detailed blog post outline for: {{$node.parse_topic_data.json.title}}\n\nTarget audience: Denver homeowners\nSeason: {{$node.parse_topic_data.json.season}}\nTarget keywords: {{$node.parse_topic_data.json.keywords.join(', ')}}\nUser intent: {{$node.parse_topic_data.json.userIntent}}\nSeasonal urgency: {{$node.parse_topic_data.json.urgency}}\n\nCreate an outline with:\n- 6-8 main sections (H2 headers)\n- 2-3 subsections each (H3 headers)\n- Target length: 1200-1500 words\n- Include FAQ section\n- Include safety warnings where relevant\n- Add compelling introduction hook\n- Strong call-to-action conclusion\n\nFormat as:\n# Blog Post Outline\n## Section 1: [Title]\n### Subsection A\n### Subsection B\n[word count estimate]\n\n[Continue for all sections]"
+          }
+        ]
+      },
+      "cost_estimate": "$0.15"
+    },
+    {
+      "id": "content_draft_generation", 
+      "name": "Generate Content Draft (GPT-3.5)",
+      "type": "openai",
+      "position": [500, 400],
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 2000,
+        "temperature": 0.8,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a friendly roofing expert writing helpful blog content for Denver homeowners. Write conversationally at an 8th grade reading level. Include specific examples, cost estimates, and safety tips."
+          },
+          {
+            "role": "user",
+            "content": "Write a complete blog post using this outline:\n\n{{$node.content_outline_generation.json.choices[0].message.content}}\n\nGuidelines:\n- Conversational, friendly tone\n- Include specific cost ranges for Denver market\n- Add safety warnings where appropriate\n- Use short paragraphs (2-3 sentences)\n- Include bullet points and numbered lists\n- Add personal touches (\"As a Denver homeowner...\")\n- End with strong CTA for free inspection\n\nTarget length: 1200-1500 words\nPrimary keywords to include: {{$node.parse_topic_data.json.keywords.join(', ')}}"
+          }
+        ]
+      },
+      "cost_estimate": "$0.35"
+    },
+    {
+      "id": "content_polish_optimization",
+      "name": "Polish & Optimize Content (GPT-4)",
+      "type": "openai", 
+      "position": [700, 300],
+      "parameters": {
+        "model": "gpt-4",
+        "max_tokens": 1500,
+        "temperature": 0.3,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an expert content editor optimizing blog posts for SEO, readability, and conversion. Enhance the content while maintaining the helpful, friendly tone."
+          },
+          {
+            "role": "user",
+            "content": "Optimize this blog post for better SEO, readability, and conversion:\n\n{{$node.content_draft_generation.json.choices[0].message.content}}\n\nEnhance for:\n1. Better flow and readability\n2. SEO optimization (keywords: {{$node.parse_topic_data.json.keywords.join(', ')}})\n3. More engaging headlines and subheadings\n4. Stronger call-to-action\n5. Grammar and style improvements\n6. Local Denver references where relevant\n\nMaintain the helpful, conversational tone and practical focus.\nKeep length around 1300-1500 words."
+          }
+        ]
+      },
+      "cost_estimate": "$4.00"
+    },
+    {
+      "id": "seo_elements_generation",
+      "name": "Generate SEO Elements (GPT-3.5)",
+      "type": "openai",
+      "position": [900, 200],
+      "parameters": {
+        "model": "gpt-3.5-turbo", 
+        "max_tokens": 400,
+        "temperature": 0.5,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an SEO specialist creating optimized meta elements for blog posts."
+          },
+          {
+            "role": "user",
+            "content": "Create SEO elements for this blog post:\n\nTitle: {{$node.parse_topic_data.json.title}}\nContent: {{$node.content_polish_optimization.json.choices[0].message.content}}\n\nGenerate:\n1. SEO Title (50-60 characters, include primary keyword)\n2. Meta Description (150-160 characters, compelling with CTA)\n3. Focus Keyword: {{$node.parse_topic_data.json.keywords[0]}}\n4. Alt text for featured image (describe roofing scene)\n5. 3 internal link suggestions with anchor text\n6. URL slug (SEO-friendly)\n\nFormat as JSON:\n{\n  \"seoTitle\": \"\",\n  \"metaDescription\": \"\",\n  \"focusKeyword\": \"\",\n  \"altText\": \"\",\n  \"internalLinks\": [\n    {\"anchor\": \"\", \"url\": \"/suggested-page\"}\n  ],\n  \"slug\": \"\"\n}"
+          }
+        ]
+      },
+      "cost_estimate": "$0.08"
+    },
+    {
+      "id": "featured_image_generation",
+      "name": "Generate Featured Image (DALL-E 3)",
+      "type": "openai_image",
+      "position": [900, 400],
+      "parameters": {
+        "model": "dall-e-3",
+        "prompt": "Professional photograph of {{$node.parse_topic_data.json.season}} roofing maintenance on a modern Denver home, bright natural lighting, high quality, realistic, suitable for blog header, no text overlays",
+        "size": "1792x1024",
+        "quality": "standard",
+        "style": "natural"
+      },
+      "cost_estimate": "$0.08"
+    },
+    {
+      "id": "social_media_content",
+      "name": "Generate Social Media Posts (GPT-3.5)",
+      "type": "openai",
+      "position": [900, 600],
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "temperature": 0.8,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a social media content creator for a Denver roofing company. Create engaging posts for different platforms."
+          },
+          {
+            "role": "user",
+            "content": "Create social media posts for this blog: {{$node.parse_topic_data.json.title}}\n\nGenerate posts for:\n1. Facebook (casual, 2-3 sentences, engaging question)\n2. LinkedIn (professional, industry insights, relevant hashtags)\n3. Instagram (visual focus, emojis, local Denver hashtags)\n\nFor each post include:\n- Engaging hook\n- Key benefit from the blog\n- Call-to-action to read full article\n- Link to blog post\n\nFormat as JSON:\n{\n  \"facebook\": \"\",\n  \"linkedin\": \"\",\n  \"instagram\": \"\"\n}"
+          }
+        ]
+      },
+      "cost_estimate": "$0.06"
+    },
+    {
+      "id": "save_to_database",
+      "name": "Save Blog Post to Database",
+      "type": "supabase",
+      "position": [1100, 300],
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_posts",
+        "data": {
+          "title": "{{$node.parse_topic_data.json.title}}",
+          "slug": "{{JSON.parse($node.seo_elements_generation.json.choices[0].message.content).slug}}",
+          "content": "{{$node.content_polish_optimization.json.choices[0].message.content}}",
+          "seo_title": "{{JSON.parse($node.seo_elements_generation.json.choices[0].message.content).seoTitle}}",
+          "meta_description": "{{JSON.parse($node.seo_elements_generation.json.choices[0].message.content).metaDescription}}",
+          "focus_keyword": "{{JSON.parse($node.seo_elements_generation.json.choices[0].message.content).focusKeyword}}",
+          "featured_image_url": "{{$node.featured_image_generation.json.data[0].url}}",
+          "alt_text": "{{JSON.parse($node.seo_elements_generation.json.choices[0].message.content).altText}}",
+          "status": "draft",
+          "season": "{{$node.parse_topic_data.json.season}}",
+          "keywords": "{{$node.parse_topic_data.json.keywords}}",
+          "social_media": "{{$node.social_media_content.json.choices[0].message.content}}",
+          "estimated_cost": 6.50,
+          "created_at": "{{new Date().toISOString()}}",
+          "publish_date": "{{new Date(Date.now() + 24*60*60*1000).toISOString().split('T')[0]}}"
+        }
+      }
+    },
+    {
+      "id": "update_content_calendar",
+      "name": "Update Content Calendar Status",
+      "type": "supabase",
+      "position": [1100, 500],
+      "parameters": {
+        "operation": "update",
+        "table": "blog_content_calendar",
+        "filters": {
+          "id": "{{$node.parse_topic_data.json.calendar_id}}"
+        },
+        "data": {
+          "status": "content_generated",
+          "blog_post_id": "{{$node.save_to_database.json.id}}",
+          "actual_cost": 6.50,
+          "completed_at": "{{new Date().toISOString()}}"
+        }
+      }
+    },
+    {
+      "id": "trigger_publisher",
+      "name": "Trigger Blog Publisher",
+      "type": "webhook",
+      "position": [1300, 400],
+      "parameters": {
+        "url": "{{$env.N8N_BASE_URL}}/webhook/blog-publisher",
+        "method": "POST",
+        "body": {
+          "blog_post_id": "{{$node.save_to_database.json.id}}",
+          "calendar_id": "{{$node.parse_topic_data.json.calendar_id}}",
+          "social_content": "{{$node.social_media_content.json.choices[0].message.content}}"
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "source": "webhook_trigger",
+      "target": "parse_topic_data"
+    },
+    {
+      "source": "parse_topic_data",
+      "target": "content_outline_generation"
+    },
+    {
+      "source": "content_outline_generation", 
+      "target": "content_draft_generation"
+    },
+    {
+      "source": "content_draft_generation",
+      "target": "content_polish_optimization"
+    },
+    {
+      "source": "content_polish_optimization",
+      "target": "seo_elements_generation"
+    },
+    {
+      "source": "parse_topic_data",
+      "target": "featured_image_generation"
+    },
+    {
+      "source": "parse_topic_data",
+      "target": "social_media_content"
+    },
+    {
+      "source": "seo_elements_generation",
+      "target": "save_to_database"
+    },
+    {
+      "source": "content_polish_optimization",
+      "target": "save_to_database"
+    },
+    {
+      "source": "featured_image_generation",
+      "target": "save_to_database"
+    },
+    {
+      "source": "social_media_content",
+      "target": "save_to_database"
+    },
+    {
+      "source": "save_to_database",
+      "target": "update_content_calendar"
+    },
+    {
+      "source": "save_to_database",
+      "target": "trigger_publisher"
+    },
+    {
+      "source": "update_content_calendar",
+      "target": "trigger_publisher"
+    }
+  ],
+  "settings": {
+    "errorWorkflow": "error-handler",
+    "timezone": "America/Denver",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  },
+  "cost_breakdown": {
+    "content_outline": "$0.15",
+    "content_draft": "$0.35", 
+    "content_polish": "$4.00",
+    "seo_elements": "$0.08",
+    "featured_image": "$0.08",
+    "social_media": "$0.06",
+    "total_estimated": "$6.72"
+  },
+  "implementation_notes": [
+    "Requires OpenAI API key with GPT-3.5 and GPT-4 access",
+    "Requires DALL-E 3 access for image generation",
+    "Supabase tables 'blog_posts' and 'blog_content_calendar' must exist",
+    "Monitor token usage to stay within budget",
+    "Content should be reviewed before publishing",
+    "Featured images should be saved to CDN/storage"
+  ]
+}

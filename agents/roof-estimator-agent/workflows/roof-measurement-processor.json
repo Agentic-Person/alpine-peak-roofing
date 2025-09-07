@@ -1,0 +1,294 @@
+{
+  "name": "roof-measurement-processor",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "roof-analysis",
+        "options": {}
+      },
+      "name": "Roof Analysis Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "roof-analysis-webhook",
+      "id": "webhook-roof-analysis"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate incoming address data\nconst addressData = items[0].json;\n\nif (!addressData.address) {\n  throw new Error('Address is required');\n}\n\n// Basic address validation\nconst address = addressData.address.trim();\nif (address.length < 10) {\n  throw new Error('Please provide a complete address');\n}\n\n// Colorado service area validation\nif (!address.toLowerCase().includes('co') && !address.toLowerCase().includes('colorado')) {\n  console.warn('Address may be outside Colorado service area');\n}\n\nreturn [{\n  json: {\n    ...addressData,\n    address: address,\n    validatedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "name": "Validate Address Input",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "id": "validate-address"
+    },
+    {
+      "parameters": {
+        "url": "https://maps.googleapis.com/maps/api/geocode/json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleMapsApi",
+        "options": {
+          "qs": {
+            "address": "={{$json.address}}",
+            "components": "country:US|administrative_area:CO",
+            "region": "us",
+            "key": "={{$credentials.googleMaps.apiKey}}"
+          }
+        }
+      },
+      "name": "Geocode Address",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300],
+      "id": "geocode-address"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process geocoding response\nconst geocodeData = items[0].json;\n\nif (geocodeData.status !== 'OK' || !geocodeData.results || geocodeData.results.length === 0) {\n  throw new Error(`Geocoding failed: ${geocodeData.status}`);\n}\n\nconst result = geocodeData.results[0];\nconst location = result.geometry.location;\n\n// Extract address components for validation\nconst addressComponents = result.address_components;\nconst state = addressComponents.find(c => c.types.includes('administrative_area_level_1'));\n\nif (!state || state.short_name !== 'CO') {\n  throw new Error('Address is outside our Colorado service area');\n}\n\nreturn [{\n  json: {\n    address: result.formatted_address,\n    coordinates: {\n      lat: location.lat,\n      lng: location.lng\n    },\n    placeId: result.place_id,\n    addressComponents: addressComponents,\n    bounds: result.geometry.bounds,\n    locationType: result.geometry.location_type\n  }\n}];"
+      },
+      "name": "Process Geocoding Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "id": "process-geocoding"
+    },
+    {
+      "parameters": {
+        "url": "https://solar.googleapis.com/v1/buildingInsights:findClosest",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleMapsApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"location\": {\n    \"latitude\": {{$json.coordinates.lat}},\n    \"longitude\": {{$json.coordinates.lng}}\n  },\n  \"requiredQuality\": \"HIGH\"\n}",
+        "options": {
+          "qs": {
+            "key": "={{$credentials.googleMaps.apiKey}}"
+          }
+        }
+      },
+      "name": "Building Insights API Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300],
+      "id": "building-insights"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process Building Insights response and calculate roof measurements\nconst buildingData = items[0].json;\n\nif (!buildingData.solarPotential || !buildingData.solarPotential.roofSegmentStats) {\n  throw new Error('Unable to analyze roof structure from satellite imagery');\n}\n\nconst roofStats = buildingData.solarPotential.roofSegmentStats;\nconst wholeRoofStats = buildingData.solarPotential.wholeRoofStats;\n\n// Calculate total roof area from segments\nlet totalRoofAreaSqMeters = 0;\nlet ridgeLength = 0;\nlet valleyLength = 0;\nlet avgPitchDegrees = 0;\nlet avgAzimuthDegrees = 0;\nlet segmentCount = 0;\n\nroofStats.forEach(segment => {\n  totalRoofAreaSqMeters += segment.areaMeters2;\n  avgPitchDegrees += segment.pitchDegrees;\n  avgAzimuthDegrees += segment.azimuthDegrees;\n  segmentCount++;\n});\n\n// Calculate averages\nif (segmentCount > 0) {\n  avgPitchDegrees /= segmentCount;\n  avgAzimuthDegrees /= segmentCount;\n}\n\n// Convert to square feet (1 sq meter = 10.764 sq feet)\nconst totalRoofAreaSqFt = Math.round(totalRoofAreaSqMeters * 10.764);\n\n// Estimate ridge and valley lengths based on roof segments\n// Complex roofs have more segments, indicating more ridges/valleys\nif (segmentCount > 4) {\n  ridgeLength = Math.sqrt(totalRoofAreaSqFt) * (segmentCount / 2); // Rough estimation\n  valleyLength = ridgeLength * 0.3; // Valleys typically 30% of ridge length\n} else {\n  ridgeLength = Math.sqrt(totalRoofAreaSqFt) * 1.2; // Simple roof estimate\n  valleyLength = 0;\n}\n\n// Calculate complexity multiplier\nlet complexityMultiplier = 1.0;\nif (segmentCount > 6) complexityMultiplier = 1.3;\nelse if (segmentCount > 4) complexityMultiplier = 1.15;\nelse if (segmentCount > 2) complexityMultiplier = 1.05;\n\n// Determine roof slope category\nlet slopeCategory = 'standard';\nif (avgPitchDegrees < 14) slopeCategory = 'low'; // Less than 3/12 pitch\nelse if (avgPitchDegrees > 36.87) slopeCategory = 'steep'; // Greater than 9/12 pitch\n\n// Calculate confidence score based on imagery quality\nlet confidenceScore = 0.9; // Default high confidence\nif (buildingData.imageryQuality === 'MEDIUM') confidenceScore = 0.8;\nelse if (buildingData.imageryQuality === 'LOW') confidenceScore = 0.6;\n\n// Create measurements object\nconst measurements = {\n  address: buildingData.name,\n  coordinates: {\n    lat: buildingData.center.latitude,\n    lng: buildingData.center.longitude\n  },\n  boundingBox: buildingData.boundingBox,\n  \n  // Roof measurements\n  roofAreaSqFt: totalRoofAreaSqFt,\n  roofAreaSqMeters: totalRoofAreaSqMeters,\n  \n  // Slope data\n  slope: {\n    averagePitchDegrees: Math.round(avgPitchDegrees * 100) / 100,\n    averageAzimuthDegrees: Math.round(avgAzimuthDegrees * 100) / 100,\n    category: slopeCategory,\n    pitchRatio: `${Math.round((Math.tan(avgPitchDegrees * Math.PI / 180)) * 12)}/12`\n  },\n  \n  // Roof features\n  features: {\n    segmentCount: segmentCount,\n    ridgeLengthFt: Math.round(ridgeLength),\n    valleyLengthFt: Math.round(valleyLength),\n    eaveLength: Math.round(Math.sqrt(totalRoofAreaSqFt) * 3), // Estimate perimeter\n    rakeLength: Math.round(Math.sqrt(totalRoofAreaSqFt) * 1.5),\n    complexityMultiplier: complexityMultiplier\n  },\n  \n  // Quality metrics\n  imageryQuality: buildingData.imageryQuality,\n  confidenceScore: confidenceScore,\n  sunshineQuantiles: wholeRoofStats ? wholeRoofStats.sunshineQuantiles : [],\n  \n  // Raw segment data for advanced calculations\n  roofSegments: roofStats.map(segment => ({\n    areaMeters2: segment.areaMeters2,\n    pitchDegrees: segment.pitchDegrees,\n    azimuthDegrees: segment.azimuthDegrees,\n    planeHeightAtCenterMeters: segment.planeHeightAtCenterMeters,\n    center: segment.center,\n    boundingBox: segment.boundingBox\n  })),\n  \n  processedAt: new Date().toISOString()\n};\n\nreturn [{ json: measurements }];"
+      },
+      "name": "Calculate Roof Measurements",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "id": "calculate-measurements"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate measurements and add warnings if needed\nconst measurements = items[0].json;\nconst validationResult = {\n  ...measurements,\n  validation: {\n    isValid: true,\n    warnings: [],\n    errors: []\n  }\n};\n\n// Validate roof area\nif (measurements.roofAreaSqFt < 500) {\n  validationResult.validation.warnings.push('Roof area seems small - please verify address');\n  validationResult.confidenceScore *= 0.9;\n}\n\nif (measurements.roofAreaSqFt > 8000) {\n  validationResult.validation.warnings.push('Large roof detected - estimate may need manual review');\n}\n\n// Validate pitch calculations\nif (measurements.slope.averagePitchDegrees === 0) {\n  validationResult.validation.errors.push('Unable to determine roof slope - manual review required');\n  validationResult.validation.isValid = false;\n}\n\n// Check for complex roof structures\nif (measurements.features.complexityMultiplier > 1.2) {\n  validationResult.validation.warnings.push('Complex roof structure detected - consider professional site visit');\n  validationResult.confidenceScore *= 0.85;\n}\n\n// Check imagery quality\nif (measurements.imageryQuality !== 'HIGH') {\n  validationResult.validation.warnings.push(`Imagery quality is ${measurements.imageryQuality} - measurements may be less accurate`);\n}\n\n// Final confidence adjustment\nvalidationResult.confidenceScore = Math.round(validationResult.confidenceScore * 100) / 100;\n\nreturn [{ json: validationResult }];"
+      },
+      "name": "Validate Measurements",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1560, 300],
+      "id": "validate-measurements"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "roof_measurements",
+        "columns": {
+          "columnToMatchOn": "id",
+          "columnsUi": {
+            "column": [
+              {
+                "column": "address",
+                "value": "={{$json.address}}"
+              },
+              {
+                "column": "coordinates",
+                "value": "={{JSON.stringify($json.coordinates)}}"
+              },
+              {
+                "column": "roof_area_sqft",
+                "value": "={{$json.roofAreaSqFt}}"
+              },
+              {
+                "column": "roof_segments",
+                "value": "={{JSON.stringify($json.roofSegments)}}"
+              },
+              {
+                "column": "slope_data",
+                "value": "={{JSON.stringify($json.slope)}}"
+              },
+              {
+                "column": "features_data",
+                "value": "={{JSON.stringify($json.features)}}"
+              },
+              {
+                "column": "confidence_score",
+                "value": "={{$json.confidenceScore}}"
+              },
+              {
+                "column": "imagery_quality",
+                "value": "={{$json.imageryQuality}}"
+              },
+              {
+                "column": "validation_result",
+                "value": "={{JSON.stringify($json.validation)}}"
+              },
+              {
+                "column": "raw_building_data",
+                "value": "={{JSON.stringify(items[0].json)}}"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Store Measurements",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1780, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Alpine Peak Supabase"
+        }
+      },
+      "id": "store-measurements"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"measurements\": {\n    \"roofAreaSqFt\": {{$json.roofAreaSqFt}},\n    \"slope\": {{JSON.stringify($json.slope)}},\n    \"features\": {{JSON.stringify($json.features)}},\n    \"confidenceScore\": {{$json.confidenceScore}},\n    \"validation\": {{JSON.stringify($json.validation)}}\n  },\n  \"measurementId\": \"{{$json.id}}\",\n  \"processedAt\": \"{{$json.processedAt}}\"\n}"
+      },
+      "name": "Return Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [2000, 300],
+      "id": "return-response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"{{$json.error.message}}\",\n  \"code\": \"MEASUREMENT_FAILED\"\n}",
+        "responseCode": 400
+      },
+      "name": "Error Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [1340, 500],
+      "id": "error-response"
+    }
+  ],
+  "connections": {
+    "Roof Analysis Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Address Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Address Input": {
+      "main": [
+        [
+          {
+            "node": "Geocode Address",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Geocode Address": {
+      "main": [
+        [
+          {
+            "node": "Process Geocoding Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Geocoding Results": {
+      "main": [
+        [
+          {
+            "node": "Building Insights API Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Building Insights API Call": {
+      "main": [
+        [
+          {
+            "node": "Calculate Roof Measurements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Roof Measurements": {
+      "main": [
+        [
+          {
+            "node": "Validate Measurements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Measurements": {
+      "main": [
+        [
+          {
+            "node": "Store Measurements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Measurements": {
+      "main": [
+        [
+          {
+            "node": "Return Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-07T00:00:00.000Z",
+  "updatedAt": "2025-09-07T00:00:00.000Z",
+  "settings": {},
+  "staticData": null,
+  "pinData": {},
+  "versionId": "roof-measurement-v1.0",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "name": "Alpine Peak Roofing n8n MCP Server",
+  "version": "1.0.0",
+  "description": "MCP Server configuration for Alpine Peak Roofing automation workflows",
+  "server": {
+    "command": "node",
+    "args": ["./n8n/mcp-server.js"],
+    "env": {
+      "N8N_HOST": "localhost",
+      "N8N_PORT": "5678",
+      "N8N_PROTOCOL": "http",
+      "N8N_API_KEY": "${N8N_API_KEY}",
+      "N8N_MCP_BEARER_TOKEN": "${N8N_MCP_BEARER_TOKEN}"
+    }
+  },
+  "tools": [
+    {
+      "name": "trigger_chatbot_workflow",
+      "description": "Triggers the AI chatbot processing workflow in n8n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "User message to process"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Chat session identifier"
+          },
+          "page_context": {
+            "type": "string",
+            "description": "Current page context"
+          }
+        },
+        "required": ["message"]
+      }
+    },
+    {
+      "name": "trigger_lead_capture",
+      "description": "Triggers the lead capture and CRM workflow in n8n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "lead_data": {
+            "type": "object",
+            "description": "Lead information collected from forms"
+          },
+          "source": {
+            "type": "string",
+            "description": "Source of the lead (website, chat, etc.)"
+          }
+        },
+        "required": ["lead_data"]
+      }
+    },
+    {
+      "name": "trigger_blog_generation",
+      "description": "Triggers the automated blog generation workflow in n8n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Blog post topic or keyword"
+          },
+          "target_audience": {
+            "type": "string",
+            "description": "Target audience for the blog post"
+          },
+          "publish_immediately": {
+            "type": "boolean",
+            "description": "Whether to publish immediately or save as draft",
+            "default": false
+          }
+        },
+        "required": ["topic"]
+      }
+    },
+    {
+      "name": "trigger_roof_estimation",
+      "description": "Triggers the roof estimation workflow in n8n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "property_data": {
+            "type": "object",
+            "description": "Property information for estimation"
+          },
+          "estimation_type": {
+            "type": "string",
+            "enum": ["basic", "detailed", "full_inspection"],
+            "description": "Type of estimation to perform"
+          }
+        },
+        "required": ["property_data", "estimation_type"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "workflows://active",
+      "name": "Active Workflows",
+      "description": "List of currently active n8n workflows"
+    },
+    {
+      "uri": "executions://recent",
+      "name": "Recent Executions",
+      "description": "Recent workflow execution logs"
+    }
+  ],
+  "webhooks": {
+    "chatbot_process": {
+      "url": "${N8N_WEBHOOK_CHATBOT}",
+      "method": "POST",
+      "auth": {
+        "type": "bearer",
+        "token": "${N8N_MCP_BEARER_TOKEN}"
+      }
+    },
+    "lead_capture": {
+      "url": "${N8N_WEBHOOK_LEAD_CAPTURE}",
+      "method": "POST",
+      "auth": {
+        "type": "bearer",
+        "token": "${N8N_MCP_BEARER_TOKEN}"
+      }
+    },
+    "blog_generation": {
+      "url": "${N8N_WEBHOOK_BLOG_GENERATION}",
+      "method": "POST",
+      "auth": {
+        "type": "bearer",
+        "token": "${N8N_MCP_BEARER_TOKEN}"
+      }
+    },
+    "roof_estimation": {
+      "url": "${N8N_WEBHOOK_ROOF_ESTIMATION}",
+      "method": "POST",
+      "auth": {
+        "type": "bearer",
+        "token": "${N8N_MCP_BEARER_TOKEN}"
+      }
+    }
+  }
+}

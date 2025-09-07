@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "instanceId": "apr-website-lead-crm"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crm-sync",
+        "options": {
+          "noResponseBody": false
+        }
+      },
+      "id": "a1b2c3d4-5e6f-7890-abcd-crm-sync-01",
+      "name": "CRM Sync Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        400
+      ],
+      "webhookId": "crm-sync-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// CRM Synchronization System - Alpine Peak Roofing\n// Parse and validate lead data for CRM synchronization\n\nconst inputData = $input.all();\nconst leadData = inputData[0].json;\n\n// Validate required fields for CRM sync\nif (!leadData.leadId || !leadData.email) {\n  throw new Error('Missing required fields for CRM synchronization');\n}\n\n// Prepare standardized lead data for CRM systems\nconst crmData = {\n  // Core Lead Information\n  leadId: leadData.leadId,\n  externalId: leadData.externalId || null,\n  \n  // Contact Information\n  firstName: leadData.firstName || '',\n  lastName: leadData.lastName || '',\n  email: leadData.email,\n  phone: leadData.phone || '',\n  \n  // Address Information\n  address: {\n    street: leadData.address?.street || '',\n    street2: leadData.address?.street2 || '',\n    city: leadData.address?.city || '',\n    state: leadData.address?.state || '',\n    zipCode: leadData.address?.zipCode || '',\n    country: leadData.address?.country || 'US'\n  },\n  \n  // Project Information\n  projectType: leadData.projectType || 'unknown',\n  propertyType: leadData.propertyType || 'residential',\n  urgency: leadData.urgency || 'medium',\n  budgetRange: leadData.budgetRange || 'need-estimate',\n  estimatedValue: leadData.estimatedValue || 0,\n  \n  // Lead Scoring & Priority\n  leadScore: leadData.leadScore || 0,\n  priorityLevel: leadData.priorityLevel || 'unqualified',\n  scoringBreakdown: leadData.scoringBreakdown || null,\n  \n  // Source Attribution\n  leadSource: leadData.source?.channel || 'unknown',\n  leadSourceDetail: leadData.source?.campaign || '',\n  referrer: leadData.source?.referrer || '',\n  utmSource: leadData.source?.utm_source || '',\n  utmMedium: leadData.source?.utm_medium || '',\n  utmCampaign: leadData.source?.utm_campaign || '',\n  \n  // Assignment Information\n  assignedTo: leadData.assignedTo || null,\n  assignedToName: leadData.assignedToName || '',\n  assignedAt: leadData.assignedAt || null,\n  \n  // Timeline & Status\n  status: leadData.status || 'new',\n  lifecycle: leadData.lifecycle || 'lead',\n  createdAt: leadData.createdAt || new Date().toISOString(),\n  updatedAt: new Date().toISOString(),\n  \n  // Custom Roofing Fields\n  roofingSpecific: {\n    currentRoofAge: leadData.currentRoofAge || null,\n    roofMaterial: leadData.roofMaterial || '',\n    roofSize: leadData.roofSize || '',\n    issues: leadData.issues || [],\n    stormDamage: leadData.stormDamage || false,\n    insuranceClaim: leadData.insuranceClaim || false,\n    previousWork: leadData.previousWork || '',\n    timeframe: leadData.timeframe || 'flexible'\n  },\n  \n  // Sync Metadata\n  syncMetadata: {\n    syncTimestamp: new Date().toISOString(),\n    syncVersion: '1.0',\n    sourceSystem: 'alpine-peak-website',\n    syncTrigger: leadData.syncTrigger || 'lead_update'\n  }\n};\n\n// Determine CRM system preference\nconst crmSystem = leadData.crmSystem || process.env.DEFAULT_CRM || 'hubspot';\ncrmData.targetCRM = crmSystem.toLowerCase();\n\nconsole.log(`Preparing CRM sync for lead ${crmData.leadId} to ${crmData.targetCRM}`);\n\nreturn [{ json: crmData }];"
+      },
+      "id": "b2c3d4e5-6f78-9012-bcde-crm-sync-02",
+      "name": "Parse CRM Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $node[\"Parse CRM Data\"].json[\"targetCRM\"] }}",
+              "rightValue": "hubspot",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "c3d4e5f6-7890-1234-cdef-crm-sync-03",
+      "name": "CRM System Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        780,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// HubSpot Contact Data Preparation\n// Transform lead data to HubSpot contact properties format\n\nconst leadData = $input.all()[0].json;\n\n// Map lead data to HubSpot contact properties\nconst hubspotContact = {\n  properties: {\n    // Standard HubSpot properties\n    email: leadData.email,\n    firstname: leadData.firstName,\n    lastname: leadData.lastName,\n    phone: leadData.phone,\n    \n    // Address properties\n    address: leadData.address.street,\n    city: leadData.address.city,\n    state: leadData.address.state,\n    zip: leadData.address.zipCode,\n    country: leadData.address.country,\n    \n    // Lead source properties\n    hs_lead_status: leadData.status === 'new' ? 'NEW' : leadData.status.toUpperCase(),\n    hs_analytics_source: leadData.leadSource,\n    hs_analytics_source_data_1: leadData.leadSourceDetail,\n    hs_analytics_source_data_2: leadData.referrer,\n    \n    // Custom Alpine Peak properties (need to be created in HubSpot first)\n    alpine_lead_score: leadData.leadScore.toString(),\n    alpine_priority_level: leadData.priorityLevel,\n    alpine_project_type: leadData.projectType,\n    alpine_property_type: leadData.propertyType,\n    alpine_urgency: leadData.urgency,\n    alpine_budget_range: leadData.budgetRange,\n    alpine_estimated_value: leadData.estimatedValue.toString(),\n    alpine_roof_age: leadData.roofingSpecific.currentRoofAge?.toString() || '',\n    alpine_roof_material: leadData.roofingSpecific.roofMaterial,\n    alpine_roof_size: leadData.roofingSpecific.roofSize,\n    alpine_has_storm_damage: leadData.roofingSpecific.stormDamage ? 'Yes' : 'No',\n    alpine_insurance_claim: leadData.roofingSpecific.insuranceClaim ? 'Yes' : 'No',\n    alpine_timeframe: leadData.roofingSpecific.timeframe,\n    alpine_assigned_to: leadData.assignedToName,\n    alpine_lead_id: leadData.leadId,\n    \n    // UTM tracking\n    hs_analytics_first_touch_converting_campaign: leadData.utmCampaign,\n    hs_analytics_last_touch_converting_campaign: leadData.utmCampaign,\n    utm_source: leadData.utmSource,\n    utm_medium: leadData.utmMedium,\n    utm_campaign: leadData.utmCampaign\n  }\n};\n\n// Add lifecycle stage based on lead score and status\nif (leadData.leadScore >= 80) {\n  hubspotContact.properties.lifecyclestage = 'marketingqualifiedlead';\n} else if (leadData.leadScore >= 60) {\n  hubspotContact.properties.lifecyclestage = 'lead';\n} else {\n  hubspotContact.properties.lifecyclestage = 'subscriber';\n}\n\nconst result = {\n  ...leadData,\n  hubspotContact,\n  crmAction: 'upsert_contact'\n};\n\nconsole.log(`HubSpot contact prepared for lead ${leadData.leadId}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "d4e5f6g7-8901-2345-defg-crm-sync-04",
+      "name": "Prepare HubSpot Contact",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "contact",
+        "operation": "upsert",
+        "email": "={{ $node[\"Prepare HubSpot Contact\"].json[\"email\"] }}",
+        "additionalFields": {
+          "customPropertiesUi": {
+            "customPropertiesValues": "={{ Object.entries($node[\"Prepare HubSpot Contact\"].json[\"hubspotContact\"][\"properties\"]).map(([key, value]) => ({ name: key, value: value?.toString() || '' })) }}"
+          }
+        }
+      },
+      "id": "e5f6g7h8-9012-3456-fghi-crm-sync-05",
+      "name": "Upsert HubSpot Contact",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// HubSpot Deal Creation\n// Create deal/opportunity record for qualified leads\n\nconst leadData = $input.all()[0].json;\nconst hubspotContactResponse = $input.all()[1].json;\n\n// Only create deals for qualified leads (score >= 60)\nif (leadData.leadScore < 60) {\n  console.log(`Skipping deal creation for low-scoring lead ${leadData.leadId}`);\n  return [{ json: { ...leadData, hubspotContactId: hubspotContactResponse.id, dealCreated: false } }];\n}\n\n// Determine deal stage based on lead priority and status\nlet dealStage = 'appointmentscheduled'; // Default HubSpot stage\nlet dealProbability = 0.2; // Default 20%\n\nswitch (leadData.priorityLevel) {\n  case 'hot':\n    dealStage = 'appointmentscheduled';\n    dealProbability = 0.8;\n    break;\n  case 'warm':\n    dealStage = 'appointmentscheduled';\n    dealProbability = 0.6;\n    break;\n  case 'cold':\n    dealStage = 'appointmentscheduled';\n    dealProbability = 0.3;\n    break;\n  default:\n    dealStage = 'appointmentscheduled';\n    dealProbability = 0.2;\n}\n\n// Calculate deal amount based on project type and estimated value\nlet dealAmount = leadData.estimatedValue;\nif (dealAmount === 0) {\n  // Default estimates based on project type\n  switch (leadData.projectType.toLowerCase()) {\n    case 'roof-replacement':\n    case 'roof_replacement':\n      dealAmount = leadData.propertyType === 'commercial' ? 75000 : 25000;\n      break;\n    case 'roof-repair':\n    case 'roof_repair':\n      dealAmount = leadData.propertyType === 'commercial' ? 15000 : 5000;\n      break;\n    case 'storm-damage':\n    case 'storm_damage':\n      dealAmount = leadData.propertyType === 'commercial' ? 50000 : 18000;\n      break;\n    case 'inspection':\n      dealAmount = 500;\n      break;\n    default:\n      dealAmount = leadData.propertyType === 'commercial' ? 40000 : 15000;\n  }\n}\n\nconst hubspotDeal = {\n  properties: {\n    dealname: `${leadData.firstName} ${leadData.lastName} - ${leadData.projectType}`.trim(),\n    dealstage: dealStage,\n    pipeline: 'default', // Use default sales pipeline\n    amount: dealAmount.toString(),\n    probability: (dealProbability * 100).toString(),\n    closedate: new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)).toISOString(), // 90 days from now\n    dealtype: 'newbusiness',\n    \n    // Custom properties\n    alpine_lead_id: leadData.leadId,\n    alpine_lead_score: leadData.leadScore.toString(),\n    alpine_priority_level: leadData.priorityLevel,\n    alpine_project_type: leadData.projectType,\n    alpine_property_type: leadData.propertyType,\n    alpine_urgency: leadData.urgency,\n    alpine_lead_source: leadData.leadSource,\n    alpine_assigned_to: leadData.assignedToName,\n    \n    // Deal source tracking\n    hs_analytics_source: leadData.leadSource,\n    hs_analytics_source_data_1: leadData.leadSourceDetail\n  },\n  associations: {\n    contacts: [hubspotContactResponse.id]\n  }\n};\n\nconst result = {\n  ...leadData,\n  hubspotContactId: hubspotContactResponse.id,\n  hubspotDeal,\n  dealAmount,\n  dealStage,\n  dealProbability,\n  dealCreated: true\n};\n\nconsole.log(`HubSpot deal prepared for lead ${leadData.leadId} - Amount: $${dealAmount}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "f6g7h8i9-0123-4567-ghij-crm-sync-06",
+      "name": "Prepare HubSpot Deal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "deal",
+        "operation": "create",
+        "dealName": "={{ $node[\"Prepare HubSpot Deal\"].json[\"hubspotDeal\"][\"properties\"][\"dealname\"] }}",
+        "stage": "={{ $node[\"Prepare HubSpot Deal\"].json[\"hubspotDeal\"][\"properties\"][\"dealstage\"] }}",
+        "additionalFields": {
+          "amount": "={{ $node[\"Prepare HubSpot Deal\"].json[\"hubspotDeal\"][\"properties\"][\"amount\"] }}",
+          "associateWith": {
+            "values": [
+              {
+                "type": "contact",
+                "id": "={{ $node[\"Prepare HubSpot Deal\"].json[\"hubspotContactId\"] }}"
+              }
+            ]
+          },
+          "customPropertiesUi": {
+            "customPropertiesValues": "={{ Object.entries($node[\"Prepare HubSpot Deal\"].json[\"hubspotDeal\"][\"properties\"]).filter(([key]) => !['dealname', 'dealstage', 'amount'].includes(key)).map(([key, value]) => ({ name: key, value: value?.toString() || '' })) }}"
+          }
+        }
+      },
+      "id": "g7h8i9j0-1234-5678-hijk-crm-sync-07",
+      "name": "Create HubSpot Deal",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Salesforce Lead Data Preparation\n// Transform lead data to Salesforce Lead object format\n\nconst leadData = $input.all()[0].json;\n\n// Map lead data to Salesforce Lead object\nconst salesforceLead = {\n  // Standard Salesforce Lead fields\n  FirstName: leadData.firstName,\n  LastName: leadData.lastName || 'Unknown',\n  Email: leadData.email,\n  Phone: leadData.phone,\n  Company: leadData.company || `${leadData.firstName} ${leadData.lastName} Roofing Project`,\n  \n  // Address fields\n  Street: leadData.address.street,\n  City: leadData.address.city,\n  State: leadData.address.state,\n  PostalCode: leadData.address.zipCode,\n  Country: leadData.address.country,\n  \n  // Lead qualification and source\n  LeadSource: leadData.leadSource,\n  Status: leadData.priorityLevel === 'hot' ? 'Working - Contacted' : \n           leadData.priorityLevel === 'warm' ? 'Open - Not Contacted' : 'Unqualified',\n  Rating: leadData.priorityLevel === 'hot' ? 'Hot' : \n          leadData.priorityLevel === 'warm' ? 'Warm' : 'Cold',\n  \n  // Custom fields (need to be created in Salesforce first)\n  Alpine_Lead_Score__c: leadData.leadScore,\n  Alpine_Priority_Level__c: leadData.priorityLevel,\n  Alpine_Project_Type__c: leadData.projectType,\n  Alpine_Property_Type__c: leadData.propertyType,\n  Alpine_Urgency__c: leadData.urgency,\n  Alpine_Budget_Range__c: leadData.budgetRange,\n  Alpine_Estimated_Value__c: leadData.estimatedValue,\n  Alpine_Roof_Age__c: leadData.roofingSpecific.currentRoofAge,\n  Alpine_Roof_Material__c: leadData.roofingSpecific.roofMaterial,\n  Alpine_Has_Storm_Damage__c: leadData.roofingSpecific.stormDamage,\n  Alpine_Insurance_Claim__c: leadData.roofingSpecific.insuranceClaim,\n  Alpine_Timeframe__c: leadData.roofingSpecific.timeframe,\n  Alpine_Lead_ID__c: leadData.leadId,\n  Alpine_Assigned_To__c: leadData.assignedToName,\n  \n  // Campaign and UTM tracking\n  Campaign_Source__c: leadData.utmSource,\n  Campaign_Medium__c: leadData.utmMedium,\n  Campaign_Name__c: leadData.utmCampaign,\n  Referrer__c: leadData.referrer,\n  \n  // Description with lead details\n  Description: `Lead Score: ${leadData.leadScore}\\nProject: ${leadData.projectType}\\nUrgency: ${leadData.urgency}\\nSource: ${leadData.leadSource}\\nRoof Issues: ${leadData.roofingSpecific.issues.join(', ')}`\n};\n\nconst result = {\n  ...leadData,\n  salesforceLead,\n  crmAction: 'upsert_lead'\n};\n\nconsole.log(`Salesforce lead prepared for lead ${leadData.leadId}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "h8i9j0k1-2345-6789-ijkl-crm-sync-08",
+      "name": "Prepare Salesforce Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "lead",
+        "operation": "upsert",
+        "externalId": "Alpine_Lead_ID__c",
+        "externalIdValue": "={{ $node[\"Prepare Salesforce Lead\"].json[\"leadId\"] }}",
+        "matchingColumns": {
+          "matchingColumnsUi": {
+            "matchingColumnsValues": [
+              {
+                "column": "Email",
+                "value": "={{ $node[\"Prepare Salesforce Lead\"].json[\"email\"] }}"
+              }
+            ]
+          }
+        },
+        "fieldsUi": {
+          "fieldValues": "={{ Object.entries($node[\"Prepare Salesforce Lead\"].json[\"salesforceLead\"]).map(([key, value]) => ({ fieldName: key, fieldValue: value?.toString() || '' })) }}"
+        }
+      },
+      "id": "i9j0k1l2-3456-789a-jklm-crm-sync-09",
+      "name": "Upsert Salesforce Lead",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Salesforce Opportunity Creation\n// Create opportunity record for qualified leads in Salesforce\n\nconst leadData = $input.all()[0].json;\nconst salesforceLeadResponse = $input.all()[1].json;\n\n// Only create opportunities for qualified leads (score >= 60)\nif (leadData.leadScore < 60) {\n  console.log(`Skipping opportunity creation for low-scoring lead ${leadData.leadId}`);\n  return [{ json: { ...leadData, salesforceLeadId: salesforceLeadResponse.id, opportunityCreated: false } }];\n}\n\n// Determine opportunity stage based on lead priority\nlet opportunityStage = 'Prospecting'; // Default Salesforce stage\nlet probability = 20; // Default 20%\n\nswitch (leadData.priorityLevel) {\n  case 'hot':\n    opportunityStage = 'Qualification';\n    probability = 80;\n    break;\n  case 'warm':\n    opportunityStage = 'Prospecting';\n    probability = 60;\n    break;\n  case 'cold':\n    opportunityStage = 'Prospecting';\n    probability = 30;\n    break;\n  default:\n    opportunityStage = 'Prospecting';\n    probability = 20;\n}\n\n// Calculate opportunity amount\nlet opportunityAmount = leadData.estimatedValue;\nif (opportunityAmount === 0) {\n  switch (leadData.projectType.toLowerCase()) {\n    case 'roof-replacement':\n    case 'roof_replacement':\n      opportunityAmount = leadData.propertyType === 'commercial' ? 75000 : 25000;\n      break;\n    case 'roof-repair':\n    case 'roof_repair':\n      opportunityAmount = leadData.propertyType === 'commercial' ? 15000 : 5000;\n      break;\n    case 'storm-damage':\n    case 'storm_damage':\n      opportunityAmount = leadData.propertyType === 'commercial' ? 50000 : 18000;\n      break;\n    case 'inspection':\n      opportunityAmount = 500;\n      break;\n    default:\n      opportunityAmount = leadData.propertyType === 'commercial' ? 40000 : 15000;\n  }\n}\n\nconst salesforceOpportunity = {\n  Name: `${leadData.firstName} ${leadData.lastName} - ${leadData.projectType}`.trim(),\n  StageName: opportunityStage,\n  Amount: opportunityAmount,\n  Probability: probability,\n  CloseDate: new Date(Date.now() + (90 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0], // 90 days from now, date only\n  Type: 'New Customer',\n  LeadSource: leadData.leadSource,\n  \n  // Custom fields\n  Alpine_Lead_ID__c: leadData.leadId,\n  Alpine_Lead_Score__c: leadData.leadScore,\n  Alpine_Priority_Level__c: leadData.priorityLevel,\n  Alpine_Project_Type__c: leadData.projectType,\n  Alpine_Property_Type__c: leadData.propertyType,\n  Alpine_Urgency__c: leadData.urgency,\n  \n  Description: `Generated from lead ${leadData.leadId}. Project: ${leadData.projectType}, Priority: ${leadData.priorityLevel}, Score: ${leadData.leadScore}`\n};\n\nconst result = {\n  ...leadData,\n  salesforceLeadId: salesforceLeadResponse.id,\n  salesforceOpportunity,\n  opportunityAmount,\n  opportunityStage,\n  probability,\n  opportunityCreated: true\n};\n\nconsole.log(`Salesforce opportunity prepared for lead ${leadData.leadId} - Amount: $${opportunityAmount}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "j0k1l2m3-4567-89ab-klmn-crm-sync-10",
+      "name": "Prepare Salesforce Opportunity",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "opportunity",
+        "operation": "create",
+        "fieldsUi": {
+          "fieldValues": "={{ Object.entries($node[\"Prepare Salesforce Opportunity\"].json[\"salesforceOpportunity\"]).map(([key, value]) => ({ fieldName: key, fieldValue: value?.toString() || '' })) }}"
+        }
+      },
+      "id": "k1l2m3n4-5678-9abc-lmno-crm-sync-11",
+      "name": "Create Salesforce Opportunity",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "PUT",
+        "url": "={{ $node[\"Parse CRM Data\"].json[\"api_base_url\"] || 'http://localhost:3000' }}/api/leads/{{ $node[\"Parse CRM Data\"].json[\"leadId\"] }}/crm-sync",
+        "options": {
+          "bodyContentType": "json",
+          "timeout": 10000
+        },
+        "body": {
+          "leadId": "={{ $json[\"leadId\"] }}",
+          "crmSystem": "={{ $json[\"targetCRM\"] }}",
+          "syncStatus": "success",
+          "syncTimestamp": "{{ new Date().toISOString() }}",
+          "crmContactId": "={{ $json[\"hubspotContactId\"] || $json[\"salesforceLeadId\"] }}",
+          "crmDealId": "={{ $json[\"id\"] || null }}",
+          "dealAmount": "={{ $json[\"dealAmount\"] || $json[\"opportunityAmount\"] || 0 }}",
+          "dealStage": "={{ $json[\"dealStage\"] || $json[\"opportunityStage\"] || '' }}",
+          "dealProbability": "={{ $json[\"dealProbability\"] || $json[\"probability\"] || 0 }}",
+          "lastSyncError": null,
+          "syncDetails": {\n            \"contactCreated\": true,\n            \"dealCreated\": \"={{ $json[\"dealCreated\"] || $json[\"opportunityCreated\"] || false }}\",\n            \"crmVersion\": \"{{ $json.targetCRM }}\",\n            \"syncMethod\": \"automated\"\n          }\n        }\n      },\n      \"id\": \"l2m3n4o5-6789-abcd-mnop-crm-sync-12\",\n      \"name\": \"Update Local CRM Sync Status\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        1880,\n        400\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"{{ $node[\"Parse CRM Data\"].json[\"webhook_base_url\"] || 'http://localhost:3000' }}/webhook/crm-synced\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"event\": \"crm_sync_completed\",\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"crmSystem\": \"={{ $json[\"targetCRM\"] }}\",\n          \"syncResult\": {\n            \"contactId\": \"={{ $json[\"hubspotContactId\"] || $json[\"salesforceLeadId\"] }}\",\n            \"dealId\": \"={{ $json[\"id\"] || null }}\",\n            \"dealAmount\": \"={{ $json[\"dealAmount\"] || $json[\"opportunityAmount\"] || 0 }}\",\n            \"syncTimestamp\": \"{{ new Date().toISOString() }}\"\n          },\n          \"nextActions\": [\n            \"trigger_nurturing_sequence\",\n            \"schedule_follow_up\",\n            \"notify_assigned_team_member\"\n          ]\n        }\n      },\n      \"id\": \"m3n4o5p6-789a-bcde-nopq-crm-sync-13\",\n      \"name\": \"Trigger Post-Sync Actions\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        2100,\n        400\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"={{ $node[\"Parse CRM Data\"].json[\"analytics_base_url\"] || 'http://localhost:3000' }}/api/analytics/crm-sync\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"event\": \"crm_sync_completed\",\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"crmSystem\": \"={{ $json[\"targetCRM\"] }}\",\n          \"leadScore\": \"={{ $json[\"leadScore\"] }}\",\n          \"priorityLevel\": \"={{ $json[\"priorityLevel\"] }}\",\n          \"dealAmount\": \"={{ $json[\"dealAmount\"] || $json[\"opportunityAmount\"] || 0 }}\",\n          \"dealCreated\": \"={{ $json[\"dealCreated\"] || $json[\"opportunityCreated\"] || false }}\",\n          \"syncDuration\": \"{{ (new Date().getTime() - new Date($json.syncMetadata.syncTimestamp).getTime()) / 1000 }}\",\n          \"timestamp\": \"{{ new Date().toISOString() }}\"\n        }\n      },\n      \"id\": \"n4o5p6q7-89ab-cdef-opqr-crm-sync-14\",\n      \"name\": \"Log CRM Sync Analytics\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        2320,\n        400\n      ]\n    }\n  ],\n  \"connections\": {\n    \"CRM Sync Webhook\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Parse CRM Data\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Parse CRM Data\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"CRM System Router\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"CRM System Router\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Prepare HubSpot Contact\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ],\n        [\n          {\n            \"node\": \"Prepare Salesforce Lead\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Prepare HubSpot Contact\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Upsert HubSpot Contact\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Upsert HubSpot Contact\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Prepare HubSpot Deal\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Prepare HubSpot Deal\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Create HubSpot Deal\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Create HubSpot Deal\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Update Local CRM Sync Status\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Prepare Salesforce Lead\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Upsert Salesforce Lead\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Upsert Salesforce Lead\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Prepare Salesforce Opportunity\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Prepare Salesforce Opportunity\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Create Salesforce Opportunity\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Create Salesforce Opportunity\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Update Local CRM Sync Status\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Update Local CRM Sync Status\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Trigger Post-Sync Actions\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Trigger Post-Sync Actions\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Log CRM Sync Analytics\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    }\n  },\n  \"pinData\": {},\n  \"settings\": {\n    \"executionOrder\": \"v1\"\n  },\n  \"staticData\": null,\n  \"tags\": [\n    {\n      \"createdAt\": \"2025-09-07T22:00:00.000Z\",\n      \"updatedAt\": \"2025-09-07T22:00:00.000Z\",\n      \"id\": \"crm-integration\",\n      \"name\": \"CRM Integration\"\n    },\n    {\n      \"createdAt\": \"2025-09-07T22:00:00.000Z\",\n      \"updatedAt\": \"2025-09-07T22:00:00.000Z\",\n      \"id\": \"data-synchronization\",\n      \"name\": \"Data Synchronization\"\n    }\n  ],\n  \"triggerCount\": 1,\n  \"updatedAt\": \"2025-09-07T22:00:00.000Z\",\n  \"versionId\": \"alpine-peak-crm-sync-v1.0\"\n}
