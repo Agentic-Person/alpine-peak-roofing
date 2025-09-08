@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
+  asChild?: boolean
 }
 
 export function Button({
@@ -12,17 +13,18 @@ export function Button({
   variant = 'primary',
   size = 'md',
   loading = false,
+  asChild = false,
   children,
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-500',
-    outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
-    ghost: 'text-blue-600 hover:bg-blue-50 focus:ring-blue-500'
+    primary: 'bg-interactive-primary hover:bg-interactive-primary-hover text-white hover:scale-105 shadow-sm hover:shadow',
+    secondary: 'bg-interactive-secondary hover:bg-interactive-secondary-hover text-text-primary border border-border-primary hover:scale-105',
+    outline: 'border-2 border-interactive-primary text-interactive-primary hover:bg-background-secondary hover:scale-105',
+    ghost: 'text-interactive-primary hover:bg-background-secondary hover:scale-105'
   }
 
   const sizes = {
@@ -31,14 +33,23 @@ export function Button({
     lg: 'px-6 py-3 text-lg'
   }
 
+  const combinedClassName = cn(baseStyles, variants[variant], sizes[size], className)
+
+  if (asChild) {
+    return React.cloneElement(children as React.ReactElement, {
+      className: combinedClassName,
+      ...props
+    })
+  }
+
   return (
     <button
-      className={cn(baseStyles, variants[variant], sizes[size], className)}
+      className={combinedClassName}
       disabled={disabled || loading}
       {...props}
     >
       {loading && (
-        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       )}
       {children}
     </button>

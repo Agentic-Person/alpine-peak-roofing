@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navigation from '@/components/layout/Navigation';
-import Footer from '@/components/layout/Footer';
+import { ClientLayout } from '@/components/layout/ClientLayout';
+import { 
+  PrimaryBusinessSchema, 
+  ServiceAreaSchema, 
+  PremiumServiceSchema,
+  SustainabilitySchema,
+  EmergencyServiceSchema,
+  ReviewSchema,
+  FAQSchema,
+  PortfolioSchema 
+} from '@/components/seo/schemas/index';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,18 +24,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alpine Peak Roofing - Professional Roofing Contractors Denver CO",
-  description: "Professional roofing services in Denver metro area. Residential & commercial roofing, emergency repairs, instant estimates. Licensed, insured, 24/7 service. Pinnacle of Protection, Peak of Performance.",
-  keywords: "roofing contractors Denver, roof repair Colorado, residential roofing, commercial roofing, emergency roof repair, roofing estimates Denver",
+  title: "Alpine Peak Roofing - Colorado's Premier Luxury Mountain Roofing Specialists",
+  description: "Colorado's premier luxury roofing contractor specializing in high-altitude, sustainable roofing solutions for mountain communities including Aspen, Vail, and Telluride. Premium materials, lifetime warranties, 24/7 emergency service. Pinnacle of Protection, Peak of Performance.",
+  keywords: "luxury roofing Colorado mountains, Aspen roofing contractor, Vail roofing specialist, high altitude roofing, mountain roofing expert, sustainable roofing Colorado, premium roofing Denver, emergency roofing mountain communities, copper roofing specialist, slate roofing Colorado",
   authors: [{ name: "Alpine Peak Roofing" }],
-  viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
   openGraph: {
-    title: "Alpine Peak Roofing - Professional Roofing Contractors Denver CO",
-    description: "Professional roofing services in Denver metro area. Licensed, insured, 24/7 emergency service.",
+    title: "Alpine Peak Roofing - Colorado's Premier Luxury Mountain Roofing Specialists",
+    description: "Premium mountain roofing contractor specializing in high-altitude installations for Colorado's most exclusive communities. Serving Aspen, Vail, Telluride, and Denver premium areas.",
     type: "website",
     locale: "en_US",
+    siteName: "Alpine Peak Roofing",
   },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -36,14 +50,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Alpine Peak Roofing - JSON-LD Structured Data Schemas */}
+        <PrimaryBusinessSchema />
+        <ServiceAreaSchema />
+        <PremiumServiceSchema />
+        <SustainabilitySchema />
+        <EmergencyServiceSchema />
+        <ReviewSchema />
+        <FAQSchema />
+        <PortfolioSchema />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navigation />
-        <main>
+        <ClientLayout>
           {children}
-        </main>
-        <Footer />
+        </ClientLayout>
       </body>
     </html>
   );
