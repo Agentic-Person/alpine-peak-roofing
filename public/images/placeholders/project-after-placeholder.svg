@@ -1,0 +1,68 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="newShingles" patternUnits="userSpaceOnUse" width="30" height="20">
+      <rect width="30" height="20" fill="#1E40AF" opacity="0.2"/>
+      <rect x="2" y="2" width="26" height="16" fill="#3B82F6" opacity="0.3"/>
+      <line x1="0" y1="10" x2="30" y2="10" stroke="#1D4ED8" opacity="0.5"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#F8FAFC"/>
+  
+  <!-- Blue sky -->
+  <rect width="1200" height="300" fill="#3B82F6"/>
+  <circle cx="1050" cy="150" r="40" fill="#FCD34D" opacity="0.8"/>
+  
+  <!-- House structure -->
+  <polygon points="200,300 600,150 1000,300 1000,650 200,650" fill="#F1F5F9"/>
+  
+  <!-- Beautiful new roof -->
+  <polygon points="200,300 600,150 1000,300 950,350 650,200 250,350" fill="url(#newShingles)"/>
+  
+  <!-- Perfect shingle lines -->
+  <line x1="250" y1="350" x2="600" y2="200" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  <line x1="280" y1="360" x2="630" y2="210" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  <line x1="310" y1="370" x2="660" y2="220" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  <line x1="600" y1="200" x2="950" y2="350" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  <line x1="630" y1="210" x2="920" y2="340" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  <line x1="660" y1="220" x2="890" y2="330" stroke="#1E40AF" stroke-width="2" opacity="0.6"/>
+  
+  <!-- New gutters -->
+  <rect x="200" y="345" width="800" height="8" fill="#6B7280"/>
+  
+  <!-- Clean windows and door -->
+  <rect x="250" y="400" width="60" height="80" fill="#0EA5E9"/>
+  <rect x="350" y="400" width="60" height="80" fill="#0EA5E9"/>
+  <rect x="580" y="450" width="40" height="100" fill="#DC2626"/>
+  
+  <!-- Manicured landscaping -->
+  <ellipse cx="150" cy="650" rx="50" ry="20" fill="#10B981"/>
+  <ellipse cx="1050" cy="650" rx="60" ry="25" fill="#10B981"/>
+  
+  <!-- Quality indicators -->
+  <g transform="translate(500,320)">
+    <circle r="20" fill="#10B981"/>
+    <path d="M-8,0 L-3,5 L8,-6" stroke="white" stroke-width="3" fill="none"/>
+  </g>
+  
+  <!-- Clean driveway -->
+  <rect x="500" y="650" width="200" height="150" fill="#D1D5DB"/>
+  
+  <!-- Title -->
+  <text x="600" y="100" font-family="Arial, sans-serif" font-size="36" font-weight="bold" 
+        text-anchor="middle" fill="white">
+    AFTER: Beautiful New Roof
+  </text>
+  <text x="600" y="130" font-family="Arial, sans-serif" font-size="18" 
+        text-anchor="middle" fill="white" opacity="0.9">
+    Professional installation with premium materials
+  </text>
+  
+  <!-- Placeholder indicator -->
+  <rect x="20" y="750" width="200" height="30" fill="rgba(16,185,129,0.8)" rx="15"/>
+  <text x="120" y="770" font-family="Arial, sans-serif" font-size="14" 
+        text-anchor="middle" fill="white">
+    Replace with real photo
+  </text>
+</svg>
