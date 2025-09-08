@@ -1,0 +1,96 @@
+{
+  "company": {
+    "name": "Alpine Peak Roofing",
+    "legalName": "Alpine Peak Roofing LLC",
+    "tagline": "Pinnacle of Protection, Peak of Performance",
+    "foundingYear": "2015",
+    "website": "https://alpinepeakroofing.com"
+  },
+  "positioning": {
+    "marketTier": "premium_luxury",
+    "primaryFocus": "mountain_specialization",
+    "secondaryFocus": "sustainability_leadership",
+    "priceRange": "$15000-$150000+",
+    "serviceLevel": "Premium Investment Grade"
+  },
+  "brandValues": [
+    {
+      "value": "Premium Quality Over Speed",
+      "description": "Investment-grade craftsmanship, lifetime warranties"
+    },
+    {
+      "value": "Sustainability Leadership", 
+      "description": "Environmental responsibility, green certifications"
+    },
+    {
+      "value": "Mountain Expertise",
+      "description": "High-altitude specialization, extreme weather mastery"
+    },
+    {
+      "value": "Luxury Market Focus",
+      "description": "Custom solutions for premium properties"
+    },
+    {
+      "value": "Technical Authority",
+      "description": "Engineering expertise, performance data"
+    }
+  ],
+  "voiceTone": {
+    "style": "Professional Authority",
+    "characteristics": [
+      "Understated elegance",
+      "Technical expertise without jargon", 
+      "Investment-focused messaging",
+      "Environmental consciousness",
+      "Local Colorado relevance"
+    ],
+    "avoid": [
+      "Cheap, budget, discount language",
+      "Quick fix, patch job terminology", 
+      "Generic contractor descriptions",
+      "Cookie-cutter solutions"
+    ]
+  },
+  "visualIdentity": {
+    "primaryColors": {
+      "mountainBlue": "#1e40af",
+      "premiumGray": "#64748b",
+      "sustainableGreen": "#059669",
+      "luxuryNavy": "#1e293b"
+    },
+    "typography": {
+      "headlines": "Playfair Display",
+      "body": "Inter",
+      "style": "Clean, sophisticated, readable"
+    },
+    "imagery": {
+      "style": "Professional, mountain-focused, before/after showcases",
+      "avoid": "Stock generic images, cheap/discount imagery"
+    }
+  },
+  "contactInformation": {
+    "phone": "+1-303-555-7663",
+    "phoneDisplay": "(303) 555-ROOF",
+    "email": "info@alpinepeakroofing.com",
+    "emergencyLine": "+1-303-555-911",
+    "address": {
+      "street": "1234 Mountain View Drive",
+      "city": "Denver",
+      "state": "CO", 
+      "zipCode": "80202",
+      "country": "US"
+    }
+  },
+  "serviceHours": {
+    "regular": {
+      "monday": "07:00-18:00",
+      "tuesday": "07:00-18:00", 
+      "wednesday": "07:00-18:00",
+      "thursday": "07:00-18:00",
+      "friday": "07:00-18:00",
+      "saturday": "08:00-16:00"
+    },
+    "emergency": "24/7 Emergency Service Available",
+    "seasonal": "Year-round service with weather considerations"
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "serviceAreas": {
+    "tier1_premium": {
+      "description": "Ultra-luxury mountain communities",
+      "communities": [
+        {
+          "name": "Aspen",
+          "fullName": "Aspen & Snowmass Village",
+          "county": "Pitkin County",
+          "elevation": 7908,
+          "population": 7400,
+          "demographics": "ultra_luxury",
+          "averageHomeValue": 5200000,
+          "primaryChallenges": ["extreme_wind", "historic_preservation", "short_season"],
+          "weatherPatterns": {
+            "avgWindSpeed": 15,
+            "maxRecordedWind": 120,
+            "avgSnowfall": 180,
+            "maxSnowLoad": 350,
+            "constructionDays": 120
+          },
+          "responseTime": "1 hour emergency",
+          "specialConsiderations": [
+            "Historic preservation requirements",
+            "Aspen/Pitkin County design review", 
+            "Resort traffic considerations",
+            "Celebrity privacy requirements"
+          ]
+        },
+        {
+          "name": "Vail", 
+          "fullName": "Vail & Beaver Creek",
+          "county": "Eagle County",
+          "elevation": 8150,
+          "population": 5400,
+          "demographics": "ultra_luxury",
+          "averageHomeValue": 3800000,
+          "primaryChallenges": ["chinook_winds", "resort_operations", "variable_conditions"],
+          "weatherPatterns": {
+            "avgWindSpeed": 18,
+            "maxRecordedWind": 110, 
+            "avgSnowfall": 200,
+            "maxSnowLoad": 300,
+            "constructionDays": 130
+          },
+          "responseTime": "1 hour emergency",
+          "specialConsiderations": [
+            "Eagle County regulations",
+            "Resort association requirements",
+            "Ski industry scheduling",
+            "High-traffic commercial properties"
+          ]
+        },
+        {
+          "name": "Telluride",
+          "fullName": "Telluride & Mountain Village", 
+          "county": "San Miguel County",
+          "elevation": 8750,
+          "population": 2600,
+          "demographics": "ultra_luxury",
+          "averageHomeValue": 4100000,
+          "primaryChallenges": ["extreme_weather", "remote_location", "severe_winds"],
+          "weatherPatterns": {
+            "avgWindSpeed": 22,
+            "maxRecordedWind": 140,
+            "avgSnowfall": 220,
+            "maxSnowLoad": 400,
+            "constructionDays": 100
+          },
+          "responseTime": "2 hours emergency",
+          "specialConsiderations": [
+            "Remote location logistics",
+            "Extreme weather patterns",
+            "Historic mining town preservation",
+            "Limited construction season"
+          ]
+        },
+        {
+          "name": "Crested Butte",
+          "fullName": "Crested Butte & Mt. Crested Butte",
+          "county": "Gunnison County", 
+          "elevation": 8885,
+          "population": 1700,
+          "demographics": "luxury",
+          "averageHomeValue": 2800000,
+          "primaryChallenges": ["record_snowfall", "extreme_elevation", "victorian_architecture"],
+          "weatherPatterns": {
+            "avgWindSpeed": 16,
+            "maxRecordedWind": 100,
+            "avgSnowfall": 300,
+            "maxSnowLoad": 450,
+            "constructionDays": 90
+          },
+          "responseTime": "2 hours emergency",
+          "specialConsiderations": [
+            "Record snowfall management",
+            "Victorian architecture preservation",
+            "Extreme elevation challenges",
+            "Shortest construction season"
+          ]
+        }
+      ]
+    },
+    "tier2_highEnd": {
+      "description": "Premium mountain communities", 
+      "communities": [
+        {
+          "name": "Steamboat Springs",
+          "county": "Routt County",
+          "elevation": 6728,
+          "population": 13200,
+          "demographics": "premium",
+          "averageHomeValue": 1800000,
+          "primaryChallenges": ["champagne_powder", "ranching_heritage", "wind_exposure"],
+          "responseTime": "1.5 hours emergency"
+        },
+        {
+          "name": "Breckenridge",
+          "county": "Summit County", 
+          "elevation": 9600,
+          "population": 5000,
+          "demographics": "premium",
+          "averageHomeValue": 1500000,
+          "primaryChallenges": ["high_elevation", "tourist_traffic", "hoa_requirements"],
+          "responseTime": "1.5 hours emergency"
+        },
+        {
+          "name": "Winter Park",
+          "county": "Grand County",
+          "elevation": 9052,
+          "population": 700,
+          "demographics": "premium", 
+          "averageHomeValue": 1200000,
+          "primaryChallenges": ["continental_divide", "heavy_snow", "weekend_homes"],
+          "responseTime": "2 hours emergency"
+        }
+      ]
+    },
+    "tier3_denverPremium": {
+      "description": "Denver metro premium neighborhoods",
+      "communities": [
+        {
+          "name": "Cherry Hills Village",
+          "county": "Arapahoe County",
+          "elevation": 5400,
+          "population": 6700,
+          "demographics": "ultra_luxury",
+          "averageHomeValue": 2800000,
+          "primaryChallenges": ["estate_properties", "architectural_standards", "hoa_requirements"],
+          "responseTime": "45 minutes emergency"
+        },
+        {
+          "name": "Highlands Ranch", 
+          "county": "Douglas County",
+          "elevation": 5800,
+          "population": 105000,
+          "demographics": "luxury",
+          "averageHomeValue": 850000,
+          "primaryChallenges": ["hoa_requirements", "suburban_luxury", "family_focus"],
+          "responseTime": "45 minutes emergency"
+        },
+        {
+          "name": "Castle Pines",
+          "county": "Douglas County",
+          "elevation": 6200,
+          "population": 12000, 
+          "demographics": "luxury",
+          "averageHomeValue": 1100000,
+          "primaryChallenges": ["golf_community", "architectural_review", "premium_standards"],
+          "responseTime": "45 minutes emergency"
+        }
+      ]
+    }
+  },
+  "coverageMap": {
+    "primaryRadius": "150 miles from Denver",
+    "emergencyResponse": {
+      "tier1": "1-2 hours",
+      "tier2": "1.5-2 hours", 
+      "tier3": "45 minutes",
+      "conditions": "Weather and road conditions permitting"
+    },
+    "seasonalAccess": {
+      "yearRound": ["Denver metro", "Steamboat Springs"],
+      "seasonalRestrictions": ["High mountain passes", "Remote locations"],
+      "winterConsiderations": "Chain laws, road closures, weather delays"
+    }
+  },
+  "marketIntelligence": {
+    "competitorAnalysis": {
+      "tier1Markets": "Limited competition, premium positioning opportunity",
+      "tier2Markets": "Moderate competition, quality differentiation key",
+      "tier3Markets": "High competition, luxury positioning essential"
+    },
+    "marketOpportunity": {
+      "growthAreas": ["Sustainability focus", "Emergency response", "Premium materials"],
+      "challengeAreas": ["Seasonal construction", "Weather dependencies", "Labor availability"]
+    }
+  }
+}
