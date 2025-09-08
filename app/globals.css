@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode variables */
+  --background-primary: #ffffff;
+  --background-secondary: #fafafa;
+  --background-tertiary: #f5f5f5;
+  --background-inverse: #171717;
+  
+  --text-primary: #171717;
+  --text-secondary: #404040;
+  --text-tertiary: #737373;
+  --text-inverse: #ffffff;
+  --text-muted: #a3a3a3;
+  
+  --border-primary: #e5e5e5;
+  --border-secondary: #d4d4d4;
+  --border-focus: #3399ff;
+  
+  --interactive-primary: #3399ff;
+  --interactive-primary-hover: #2891b3;
+  --interactive-secondary: #f5f5f5;
+  --interactive-secondary-hover: #e5e5e5;
+  
+  /* Alpine Brand Gradients */
+  --alpine-gradient: linear-gradient(135deg, #3399ff, #36b0d9);
+  --hero-gradient: linear-gradient(135deg, #66c7ff, #3399ff);
+  --teal-gradient: linear-gradient(135deg, #36b0d9, #5cc4e5);
+  --purple-gradient: linear-gradient(135deg, #5d4aa1, #2D1B69);
+}
+
+.dark {
+  /* Dark mode variables - using bluey palette */
+  --background-primary: #001d39;
+  --background-secondary: #002246;
+  --background-tertiary: #1a3a5c;
+  --background-inverse: #ffffff;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #dddddd;
+  --text-tertiary: #9ab6e0;
+  --text-inverse: #171717;
+  --text-muted: #86a4d2;
+  
+  --border-primary: #2d4f73;
+  --border-secondary: #44658a;
+  --border-focus: #36b0d9;
+  
+  --interactive-primary: #36b0d9;
+  --interactive-primary-hover: #5cc4e5;
+  --interactive-secondary: #2d4f73;
+  --interactive-secondary-hover: #44658a;
+  
+  /* Dark mode gradients */
+  --alpine-gradient: linear-gradient(135deg, #2D1B69, #001d39);
+  --hero-gradient: linear-gradient(135deg, #36b0d9, #1a3a5c);
+  --teal-gradient: linear-gradient(135deg, #36b0d9, #2891b3);
+  --purple-gradient: linear-gradient(135deg, #2D1B69, #1e1247);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--background-primary);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.light) {
+    --background-primary: #001d39;
+    --background-secondary: #002246;
+    --background-tertiary: #1a3a5c;
+    --background-inverse: #ffffff;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #dddddd;
+    --text-tertiary: #9ab6e0;
+    --text-inverse: #171717;
+    --text-muted: #86a4d2;
+    
+    --border-primary: #2d4f73;
+    --border-secondary: #44658a;
+    --border-focus: #36b0d9;
+    
+    --interactive-primary: #36b0d9;
+    --interactive-primary-hover: #5cc4e5;
+    --interactive-secondary: #2d4f73;
+    --interactive-secondary-hover: #44658a;
+    
+    --alpine-gradient: linear-gradient(135deg, #2D1B69, #001d39);
+    --hero-gradient: linear-gradient(135deg, #36b0d9, #1a3a5c);
+    --teal-gradient: linear-gradient(135deg, #36b0d9, #2891b3);
+    --purple-gradient: linear-gradient(135deg, #2D1B69, #1e1247);
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--interactive-primary);
+  color: var(--text-inverse);
+}
+
+/* Scrollbar styles for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--background-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-secondary);
 }
