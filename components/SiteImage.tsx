@@ -156,7 +156,7 @@ export function HeroImage({
   children?: React.ReactNode 
 }) {
   return (
-    <div className={`relative w-full ${className} ${!className.includes('h-') && !className.includes('min-h-') ? 'h-96 min-h-[400px]' : ''}`}>
+    <div className={`relative w-full ${className || 'h-96'}`} style={{ minHeight: className ? undefined : '400px' }}>
       <SiteImage
         id={id}
         fill
