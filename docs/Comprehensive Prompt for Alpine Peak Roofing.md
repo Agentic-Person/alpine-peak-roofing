@@ -1,4 +1,10 @@
 # Comprehensive Prompt for Alpine Peak Roofing - Full Website with AI Automations Showcase
+Do some research on some of the top roofing contractor websites in the United States of America for comparisons. 
+Many of these websites have extensive imagery and photo-realistic representations of their roofing services and details of 
+their roofing projects. We want to mimic this imagery and create a foundational website for Alpine Peak Roofing Company 
+that provides beautiful imagery as far as final products, but also imagery in problematic roofing areas, diagrammatic 
+escriptions to help out homeowners understand parts of their roofs where roofs go bad in the valleys, gables, whatever 
+it is, ice dams. So we want to focus heavily on creating rich graphical imagery and descriptive representations. 
 
 ## Project Overview
 Create a complete, professional mock roofing company website for "Alpine Peak Roofing" that functions as both a 
@@ -167,10 +173,12 @@ that potential clients can experience firsthand.
 **Purpose**: SEO traffic and demonstration of automated content
 
 **Categories**:
-- Roofing Tips & Maintenance
-- Industry News & Trends
+- Roofing Tips & Maintenance (including visual imagery and diagrams)
+- Homeowner's guide for understanding problematic sections of a roof, such as the soffit valleys, 
+describing ice dam situations and similar things that do-it-yourself homeowners can do to 
+save time and money. (including visual imagery and diagrams)
 - Seasonal Advice
-- Technology in Roofing
+- Technology in Roofing (including visual imagery and diagrams)
 - Cost Guides & Budgeting
 - Insurance & Claims
 - Sustainability & Green Roofing
@@ -187,7 +195,7 @@ that potential clients can experience firsthand.
 
 **Content Strategy**:
 - Long-form guides (2000+ words)
-- How-to articles with visuals
+- How-to articles with visuals (including visual imagery and diagrams)
 - Industry trend analyses
 - Local market insights
 - Seasonal content calendar
@@ -197,7 +205,7 @@ that potential clients can experience firsthand.
 **Purpose**: Social proof and trust building
 
 **Features**:
-- Video testimonials (embedded)
+
 - Written reviews with ratings
 - Project-specific testimonials
 - Review aggregation from multiple platforms
@@ -206,7 +214,7 @@ that potential clients can experience firsthand.
 - Verification badges
 
 **Content Requirements**:
-- 30+ diverse testimonials
+- diverse testimonials
 - Mix of residential and commercial
 - Specific project details
 - Before/after photos where applicable
