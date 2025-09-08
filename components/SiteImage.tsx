@@ -26,7 +26,7 @@ export default function SiteImage({
   fill = false,
   sizes,
   quality = 85,
-  placeholder = 'blur',
+  placeholder = 'empty',
   onLoad,
   onError,
   style,
@@ -100,7 +100,7 @@ export default function SiteImage({
           alt={imageAlt}
           fill
           priority={priority}
-          loading={loading}
+          {...(!priority && { loading })}
           sizes={sizes}
           quality={quality}
           placeholder={placeholder}
@@ -115,7 +115,7 @@ export default function SiteImage({
           width={imageData.dimensions.width}
           height={imageData.dimensions.height}
           priority={priority}
-          loading={loading}
+          {...(!priority && { loading })}
           sizes={sizes}
           quality={quality}
           placeholder={placeholder}
@@ -156,7 +156,7 @@ export function HeroImage({
   children?: React.ReactNode 
 }) {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative w-full ${className} ${!className.includes('h-') && !className.includes('min-h-') ? 'h-96 min-h-[400px]' : ''}`}>
       <SiteImage
         id={id}
         fill
