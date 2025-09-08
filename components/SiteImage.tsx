@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, memo } from 'react'
 import Image from 'next/image'
 import { useSafeImage } from '@/lib/imageProvider'
 
@@ -16,9 +16,11 @@ interface SiteImageProps {
   onLoad?: () => void
   onError?: () => void
   style?: React.CSSProperties
+  preload?: boolean
+  blurDataURL?: string
 }
 
-export default function SiteImage({
+const SiteImage = memo(function SiteImage({
   id,
   className = '',
   priority = false,
@@ -30,39 +32,74 @@ export default function SiteImage({
   onLoad,
   onError,
   style,
+  preload = false,
+  blurDataURL,
   ...props
 }: SiteImageProps) {
-  const { getImage, isImageAvailable } = useSafeImage()
+  const { getImage, isImageAvailable, preloadImage } = useSafeImage()
   const [imageExists, setImageExists] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [retryCount, setRetryCount] = useState(0)
 
   const imageData = getImage(id)
+  
+  // Generate optimized sizes based on viewport
+  const defaultSizes = fill 
+    ? '100vw'
+    : '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
 
   useEffect(() => {
     if (!imageData) return
 
-    // Check if real image is available
-    isImageAvailable(id).then(exists => {
-      setImageExists(exists)
-      if (!exists) {
+    // Preload critical images
+    if (preload || priority) {
+      preloadImage(id).then(() => {
+        setImageExists(true)
         setIsLoading(false)
-      }
-    }).catch(() => {
-      setImageExists(false)
-      setIsLoading(false)
-    })
-  }, [id, imageData, isImageAvailable])
+      }).catch(() => {
+        // Fallback to checking availability
+        isImageAvailable(id).then(exists => {
+          setImageExists(exists)
+          if (!exists) {
+            setIsLoading(false)
+          }
+        }).catch(() => {
+          setImageExists(false)
+          setIsLoading(false)
+        })
+      })
+    } else {
+      // Check if real image is available
+      isImageAvailable(id).then(exists => {
+        setImageExists(exists)
+        if (!exists) {
+          setIsLoading(false)
+        }
+      }).catch(() => {
+        setImageExists(false)
+        setIsLoading(false)
+      })
+    }
+  }, [id, imageData, isImageAvailable, preloadImage, preload, priority, retryCount])
 
-  const handleLoad = () => {
+  const handleLoad = useCallback(() => {
     setIsLoading(false)
     onLoad?.()
-  }
+  }, [onLoad])
 
-  const handleError = () => {
-    setImageExists(false)
-    setIsLoading(false)
-    onError?.()
-  }
+  const handleError = useCallback(() => {
+    if (retryCount < 2) {
+      // Retry loading the image up to 2 times
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1)
+        setIsLoading(true)
+      }, 1000 * (retryCount + 1))
+    } else {
+      setImageExists(false)
+      setIsLoading(false)
+      onError?.()
+    }
+  }, [retryCount, onError])
 
   if (!imageData) {
     return (
@@ -75,6 +112,10 @@ export default function SiteImage({
   // Determine which image to show
   const imageSrc = imageExists === true ? imageData.path : imageData.placeholder
   const imageAlt = imageData.alt
+  
+  // Use blur data URL if available
+  const finalPlaceholder = blurDataURL || (imageData.blurDataURL && placeholder === 'blur') ? 'blur' : placeholder
+  const finalBlurDataURL = blurDataURL || imageData.blurDataURL
 
   // Loading state
   if (imageExists === null) {
@@ -101,9 +142,10 @@ export default function SiteImage({
           fill
           priority={priority}
           {...(!priority && { loading })}
-          sizes={sizes}
+          sizes={sizes || defaultSizes}
           quality={quality}
-          placeholder={placeholder}
+          placeholder={finalPlaceholder}
+          {...(finalBlurDataURL && { blurDataURL: finalBlurDataURL })}
           onLoad={handleLoad}
           onError={handleError}
           {...props}
@@ -116,9 +158,10 @@ export default function SiteImage({
           height={imageData.dimensions.height}
           priority={priority}
           {...(!priority && { loading })}
-          sizes={sizes}
+          sizes={sizes || defaultSizes}
           quality={quality}
-          placeholder={placeholder}
+          placeholder={finalPlaceholder}
+          {...(finalBlurDataURL && { blurDataURL: finalBlurDataURL })}
           onLoad={handleLoad}
           onError={handleError}
           {...props}
@@ -140,7 +183,9 @@ export default function SiteImage({
       )}
     </div>
   )
-}
+})
+
+export default SiteImage
 
 // Hero Image component for consistent hero sections
 export function HeroImage({ 

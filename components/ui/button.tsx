@@ -18,6 +18,8 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
+  // Remove asChild from props to prevent it from being passed to DOM
+  const { asChild: _, ...domProps } = props as any;
   const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-border-focus disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variants = {
@@ -38,7 +40,7 @@ export function Button({
   if (asChild) {
     return React.cloneElement(children as React.ReactElement, {
       className: combinedClassName,
-      ...props
+      ...domProps
     })
   }
 
@@ -46,7 +48,7 @@ export function Button({
     <button
       className={combinedClassName}
       disabled={disabled || loading}
-      {...props}
+      {...domProps}
     >
       {loading && (
         <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

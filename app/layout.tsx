@@ -12,6 +12,8 @@ import {
   FAQSchema,
   PortfolioSchema 
 } from '@/components/seo/schemas/index';
+import SchemaRelationshipMapper from '@/components/seo/schemas/SchemaRelationshipMapper';
+import { PerformanceDashboard } from '@/lib/performance/webVitals';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,6 +62,7 @@ export default function RootLayout({
         <ReviewSchema />
         <FAQSchema />
         <PortfolioSchema />
+        <SchemaRelationshipMapper includeVisualDebug={process.env.NODE_ENV === 'development'} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -68,6 +71,7 @@ export default function RootLayout({
         <ClientLayout>
           {children}
         </ClientLayout>
+        <PerformanceDashboard />
       </body>
     </html>
   );
