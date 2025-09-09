@@ -3,6 +3,7 @@
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { ImageProvider } from '@/lib/imageProvider'
 import { FloatingThemeToggle } from '@/components/theme/FloatingThemeToggle'
+import ChatWidget from '@/components/chat/ChatWidget'
 import Navigation from './Navigation'
 import Footer from './Footer'
 
@@ -21,6 +22,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
           </main>
           <Footer />
           <FloatingThemeToggle />
+          <ChatWidget />
         </div>
       </ImageProvider>
     </ThemeProvider>

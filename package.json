@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "process-images": "node scripts/processImages.js",
-    "setup-staging": "mkdir -p staging/images"
+    "setup-staging": "mkdir -p staging/images",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:reset": "supabase db reset",
+    "migrate-content": "node scripts/migrateContent.js",
+    "generate-types": "supabase gen types typescript --local --schema public > lib/supabase/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

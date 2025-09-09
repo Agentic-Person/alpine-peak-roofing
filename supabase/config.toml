@@ -1,0 +1,59 @@
+# Alpine Peak Roofing - Supabase Configuration
+# LLM-RAG Integration Setup
+
+project_id = "alpine-peak-roofing-llm-rag"
+
+[api]
+# Configure the API server
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+# Configure the database
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+# The default inbucket port
+smtp_port = 54325
+pop3_port = 54326
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3001"
+additional_redirect_urls = ["https://alpinepeakroofing.com"]
+jwt_expiry = 3600
+refresh_token_rotation_enabled = true
+security_update_password_require_reauthentication = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+# Use pre-defined roles
+[auth.external.azure]
+enabled = false
+client_id = ""
+secret = ""
+url = ""
+
+[edge_runtime]
+enabled = true
+ip_version = "ipv4"
+
+[analytics]
+enabled = false

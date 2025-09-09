@@ -1,12 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
-import { Shield, Phone } from 'lucide-react'
+import { Shield, Phone, BookOpen, HelpCircle, Brain, Bot } from 'lucide-react'
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="col-span-1">
             <div className="flex items-center space-x-2 mb-4">
@@ -52,6 +52,37 @@ export default function Footer() {
               <li>Colorado</li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Get in Touch</Link></li>
               <li className="text-yellow-400">24/7 Emergency</li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h3 className="text-white font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2 text-gray-400 text-sm">
+              <li>
+                <Link href="/faq" className="hover:text-white transition-colors flex items-center">
+                  <HelpCircle className="h-3 w-3 mr-2 text-blue-400" />
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/glossary" className="hover:text-white transition-colors flex items-center">
+                  <BookOpen className="h-3 w-3 mr-2 text-green-400" />
+                  Glossary
+                </Link>
+              </li>
+              <li>
+                <Link href="/knowledge" className="hover:text-white transition-colors flex items-center">
+                  <Brain className="h-3 w-3 mr-2 text-purple-400" />
+                  Knowledge Hub
+                </Link>
+              </li>
+              <li>
+                <Link href="/chat" className="hover:text-white transition-colors flex items-center">
+                  <Bot className="h-3 w-3 mr-2 text-yellow-400" />
+                  AI Assistant
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

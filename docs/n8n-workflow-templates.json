@@ -1,0 +1,726 @@
+{
+  "name": "Alpine Peak Roofing LLM-RAG Workflows",
+  "description": "Complete n8n workflow templates for semantic search, embedding generation, and RAG chat system",
+  "version": "1.0.0",
+  "workflows": [
+    {
+      "id": "embedding-generation-workflow",
+      "name": "Alpine Peak - Embedding Generation",
+      "description": "Generates OpenAI embeddings for knowledge base content and stores in Supabase",
+      "nodes": [
+        {
+          "parameters": {
+            "httpMethod": "GET",
+            "path": "generate-embeddings",
+            "responseMode": "responseNode",
+            "options": {}
+          },
+          "id": "webhook-trigger",
+          "name": "Webhook Trigger",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [200, 300],
+          "webhookId": "alpine-peak-generate-embeddings"
+        },
+        {
+          "parameters": {
+            "resource": "rows",
+            "operation": "getAll",
+            "tableId": "knowledge_content",
+            "options": {
+              "queryName": "embedding IS NULL OR embedding_created_at IS NULL",
+              "limit": 50
+            }
+          },
+          "id": "supabase-get-content",
+          "name": "Get Content Without Embeddings",
+          "type": "n8n-nodes-base.supabase",
+          "typeVersion": 1,
+          "position": [400, 300]
+        },
+        {
+          "parameters": {
+            "batchSize": 5,
+            "options": {}
+          },
+          "id": "split-in-batches",
+          "name": "Process in Batches",
+          "type": "n8n-nodes-base.splitInBatches",
+          "typeVersion": 3,
+          "position": [600, 300]
+        },
+        {
+          "parameters": {
+            "jsCode": "// Prepare text for embedding generation\nconst items = [];\n\nfor (const item of $input.all()) {\n  const content = item.json;\n  \n  // Combine title and content for better embeddings\n  const textForEmbedding = `${content.title}\\n\\n${content.content}`;\n  \n  // Clean and truncate if necessary (OpenAI limit ~8000 tokens)\n  const cleanText = textForEmbedding\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .substring(0, 8000);\n  \n  items.push({\n    id: content.id,\n    title: content.title,\n    text_for_embedding: cleanText,\n    word_count: content.word_count,\n    category_id: content.category_id\n  });\n}\n\nreturn items;"
+          },
+          "id": "prepare-text",
+          "name": "Prepare Text for Embedding",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [800, 300]
+        },
+        {
+          "parameters": {
+            "authentication": "headerAuth",
+            "requestMethod": "POST",
+            "url": "https://api.openai.com/v1/embeddings",
+            "options": {
+              "headers": {
+                "entries": [
+                  {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              },
+              "timeout": 30000
+            },
+            "bodyParametersUi": {
+              "parameter": [
+                {
+                  "name": "model",
+                  "value": "text-embedding-ada-002"
+                },
+                {
+                  "name": "input",
+                  "value": "={{ $json.text_for_embedding }}"
+                }
+              ]
+            }
+          },
+          "id": "generate-embedding",
+          "name": "Generate OpenAI Embedding",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.1,
+          "position": [1000, 300],
+          "credentials": {
+            "httpHeaderAuth": {
+              "id": "openai-api-key",
+              "name": "OpenAI API Key"
+            }
+          }
+        },
+        {
+          "parameters": {
+            "jsCode": "// Extract embedding from OpenAI response and prepare for Supabase\nconst items = [];\n\nfor (const item of $input.all()) {\n  const openaiResponse = item.json;\n  const originalData = $('Prepare Text for Embedding').item(item.index).json;\n  \n  if (openaiResponse.data && openaiResponse.data[0] && openaiResponse.data[0].embedding) {\n    const embedding = openaiResponse.data[0].embedding;\n    \n    items.push({\n      id: originalData.id,\n      embedding: JSON.stringify(embedding), // Convert array to JSON string for Supabase\n      embedding_model: 'text-embedding-ada-002',\n      embedding_created_at: new Date().toISOString(),\n      token_usage: openaiResponse.usage?.total_tokens || null\n    });\n  } else {\n    console.error('Invalid OpenAI response for item:', originalData.id);\n  }\n}\n\nreturn items;"
+          },
+          "id": "process-embedding",
+          "name": "Process Embedding Response",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [1200, 300]
+        },
+        {
+          "parameters": {
+            "resource": "rows",
+            "operation": "update",
+            "tableId": "knowledge_content",
+            "updateKey": "id",
+            "columnsUi": {
+              "columnToMatchOn": "id",
+              "columnsToUpdate": {
+                "embedding": "={{ $json.embedding }}",
+                "embedding_model": "={{ $json.embedding_model }}",
+                "embedding_created_at": "={{ $json.embedding_created_at }}"
+              }
+            }
+          },
+          "id": "update-supabase",
+          "name": "Update Content with Embedding",
+          "type": "n8n-nodes-base.supabase",
+          "typeVersion": 1,
+          "position": [1400, 300]
+        },
+        {
+          "parameters": {
+            "conditions": {
+              "options": {
+                "caseSensitive": true,
+                "leftValue": "",
+                "typeValidation": "strict"
+              },
+              "conditions": [
+                {
+                  "id": "batch-complete",
+                  "leftValue": "={{ $node['Process in Batches'].context['noItemsLeft'] }}",
+                  "rightValue": true,
+                  "operator": {
+                    "type": "boolean",
+                    "operation": "equal"
+                  }
+                }
+              ],
+              "combinator": "and"
+            },
+            "options": {}
+          },
+          "id": "check-batch-complete",
+          "name": "Check if Batch Complete",
+          "type": "n8n-nodes-base.if",
+          "typeVersion": 2,
+          "position": [1600, 300]
+        },
+        {
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": "={{ {\n  \"success\": true,\n  \"message\": \"Embeddings generated successfully\",\n  \"processed_items\": $json.processed_count || 0,\n  \"total_tokens_used\": $json.total_tokens || 0,\n  \"timestamp\": new Date().toISOString()\n} }}"
+          },
+          "id": "success-response",
+          "name": "Success Response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1,
+          "position": [1800, 200]
+        },
+        {
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": "={{ {\n  \"success\": false,\n  \"message\": \"Batch processing in progress\",\n  \"processed_in_batch\": $json.batch_size || 0,\n  \"timestamp\": new Date().toISOString()\n} }}"
+          },
+          "id": "batch-response",
+          "name": "Batch In Progress Response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1,
+          "position": [1800, 400]
+        }
+      ],
+      "connections": {
+        "webhook-trigger": {
+          "main": [
+            [
+              {
+                "node": "supabase-get-content",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "supabase-get-content": {
+          "main": [
+            [
+              {
+                "node": "split-in-batches",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "split-in-batches": {
+          "main": [
+            [
+              {
+                "node": "prepare-text",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "prepare-text": {
+          "main": [
+            [
+              {
+                "node": "generate-embedding",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "generate-embedding": {
+          "main": [
+            [
+              {
+                "node": "process-embedding",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "process-embedding": {
+          "main": [
+            [
+              {
+                "node": "update-supabase",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "update-supabase": {
+          "main": [
+            [
+              {
+                "node": "check-batch-complete",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "check-batch-complete": {
+          "main": [
+            [
+              {
+                "node": "success-response",
+                "type": "main",
+                "index": 0
+              }
+            ],
+            [
+              {
+                "node": "batch-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "rag-chat-workflow",
+      "name": "Alpine Peak - RAG Chat System",
+      "description": "Complete RAG chat workflow with semantic search, context retrieval, and response generation",
+      "nodes": [
+        {
+          "parameters": {
+            "httpMethod": "POST",
+            "path": "chat",
+            "responseMode": "responseNode",
+            "options": {}
+          },
+          "id": "chat-webhook",
+          "name": "Chat Webhook",
+          "type": "n8n-nodes-base.webhook",
+          "typeVersion": 1,
+          "position": [200, 400],
+          "webhookId": "alpine-peak-chat"
+        },
+        {
+          "parameters": {
+            "jsCode": "// Validate and extract chat request data\nconst items = [];\n\nfor (const item of $input.all()) {\n  const body = item.json.body || item.json;\n  \n  // Validate required fields\n  if (!body.message || !body.session_id) {\n    throw new Error('Missing required fields: message and session_id');\n  }\n  \n  // Prepare chat context\n  const chatData = {\n    message: body.message.trim(),\n    session_id: body.session_id,\n    conversation_id: body.conversation_id || null,\n    user_id: body.user_id || null,\n    message_type: body.message_type || 'text',\n    max_results: body.max_results || 5,\n    similarity_threshold: body.similarity_threshold || 0.78,\n    category_filter: body.category_filter || null,\n    include_context: body.include_context !== false,\n    timestamp: new Date().toISOString()\n  };\n  \n  items.push(chatData);\n}\n\nreturn items;"
+          },
+          "id": "validate-request",
+          "name": "Validate Chat Request",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [400, 400]
+        },
+        {
+          "parameters": {
+            "authentication": "headerAuth",
+            "requestMethod": "POST",
+            "url": "https://api.openai.com/v1/embeddings",
+            "options": {
+              "headers": {
+                "entries": [
+                  {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              },
+              "timeout": 15000
+            },
+            "bodyParametersUi": {
+              "parameter": [
+                {
+                  "name": "model",
+                  "value": "text-embedding-ada-002"
+                },
+                {
+                  "name": "input",
+                  "value": "={{ $json.message }}"
+                }
+              ]
+            }
+          },
+          "id": "generate-query-embedding",
+          "name": "Generate Query Embedding",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.1,
+          "position": [600, 400],
+          "credentials": {
+            "httpHeaderAuth": {
+              "id": "openai-api-key",
+              "name": "OpenAI API Key"
+            }
+          }
+        },
+        {
+          "parameters": {
+            "jsCode": "// Prepare semantic search query\nconst items = [];\n\nfor (const item of $input.all()) {\n  const embeddingResponse = item.json;\n  const originalData = $('Validate Chat Request').item(item.index).json;\n  \n  if (embeddingResponse.data && embeddingResponse.data[0] && embeddingResponse.data[0].embedding) {\n    const queryEmbedding = embeddingResponse.data[0].embedding;\n    \n    items.push({\n      query_embedding: JSON.stringify(queryEmbedding),\n      match_threshold: originalData.similarity_threshold,\n      match_count: originalData.max_results,\n      category_filter: originalData.category_filter,\n      original_message: originalData.message,\n      session_id: originalData.session_id,\n      conversation_id: originalData.conversation_id,\n      user_id: originalData.user_id\n    });\n  } else {\n    throw new Error('Failed to generate query embedding');\n  }\n}\n\nreturn items;"
+          },
+          "id": "prepare-search",
+          "name": "Prepare Semantic Search",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [800, 400]
+        },
+        {
+          "parameters": {
+            "operation": "executeQuery",
+            "query": "SELECT * FROM search_knowledge_content(\n  $1::vector,\n  $2::float,\n  $3::int,\n  $4::text\n);",
+            "options": {
+              "queryParams": {
+                "parameters": [
+                  {
+                    "name": "$1",
+                    "value": "={{ $json.query_embedding }}"
+                  },
+                  {
+                    "name": "$2", 
+                    "value": "={{ $json.match_threshold }}"
+                  },
+                  {
+                    "name": "$3",
+                    "value": "={{ $json.match_count }}"
+                  },
+                  {
+                    "name": "$4",
+                    "value": "={{ $json.category_filter }}"
+                  }
+                ]
+              }
+            }
+          },
+          "id": "semantic-search",
+          "name": "Perform Semantic Search",
+          "type": "n8n-nodes-base.supabase",
+          "typeVersion": 1,
+          "position": [1000, 400]
+        },
+        {
+          "parameters": {
+            "jsCode": "// Process search results and prepare RAG context\nconst items = [];\n\nfor (const item of $input.all()) {\n  const searchResults = item.json.search_knowledge_content || [];\n  const queryData = $('Prepare Semantic Search').item(item.index).json;\n  \n  // Format context from search results\n  let ragContext = '';\n  const retrievedContentIds = [];\n  let totalWords = 0;\n  const maxContextWords = 3000; // Limit context size\n  \n  for (const result of searchResults) {\n    if (totalWords >= maxContextWords) break;\n    \n    const contentSnippet = `## ${result.title}\\n\\n${result.content}\\n\\n`;\n    const wordCount = contentSnippet.split(' ').length;\n    \n    if (totalWords + wordCount <= maxContextWords) {\n      ragContext += contentSnippet;\n      retrievedContentIds.push(result.id);\n      totalWords += wordCount;\n    }\n  }\n  \n  // Prepare system prompt with context\n  const systemPrompt = `You are Alpine Peak Roofing's expert assistant. You specialize in premium roofing services for Colorado mountain communities including Aspen, Vail, Telluride, and Denver metro areas.\n\nIMPORTANT INSTRUCTIONS:\n- Use ONLY the provided context to answer questions\n- If information is not in the context, say \"I don't have that specific information, but I'd be happy to connect you with our team\"\n- Focus on Alpine Peak's high-end, sustainable roofing solutions\n- Emphasize expertise in extreme weather conditions and high-altitude installations\n- Maintain a professional, knowledgeable tone\n- Always offer to schedule consultations for complex questions\n\nCONTEXT INFORMATION:\n${ragContext}\n\nUser Question: ${queryData.original_message}`;\n  \n  items.push({\n    system_prompt: systemPrompt,\n    user_message: queryData.original_message,\n    rag_context: ragContext,\n    retrieved_content_ids: retrievedContentIds,\n    search_results_count: searchResults.length,\n    context_word_count: totalWords,\n    session_id: queryData.session_id,\n    conversation_id: queryData.conversation_id,\n    user_id: queryData.user_id,\n    confidence_score: searchResults[0]?.similarity || 0\n  });\n}\n\nreturn items;"
+          },
+          "id": "prepare-rag-context",
+          "name": "Prepare RAG Context",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [1200, 400]
+        },
+        {
+          "parameters": {
+            "authentication": "headerAuth",
+            "requestMethod": "POST",
+            "url": "https://api.openai.com/v1/chat/completions",
+            "options": {
+              "headers": {
+                "entries": [
+                  {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                  }
+                ]
+              },
+              "timeout": 60000
+            },
+            "bodyParametersUi": {
+              "parameter": [
+                {
+                  "name": "model",
+                  "value": "gpt-4"
+                },
+                {
+                  "name": "messages",
+                  "value": "={{ [\n  {\n    \"role\": \"system\",\n    \"content\": $json.system_prompt\n  },\n  {\n    \"role\": \"user\", \n    \"content\": $json.user_message\n  }\n] }}"
+                },
+                {
+                  "name": "temperature",
+                  "value": 0.3
+                },
+                {
+                  "name": "max_tokens",
+                  "value": 1000
+                },
+                {
+                  "name": "presence_penalty",
+                  "value": 0.1
+                },
+                {
+                  "name": "frequency_penalty",
+                  "value": 0.1
+                }
+              ]
+            }
+          },
+          "id": "generate-response",
+          "name": "Generate AI Response",
+          "type": "n8n-nodes-base.httpRequest",
+          "typeVersion": 4.1,
+          "position": [1400, 400],
+          "credentials": {
+            "httpHeaderAuth": {
+              "id": "openai-api-key",
+              "name": "OpenAI API Key"
+            }
+          }
+        },
+        {
+          "parameters": {
+            "jsCode": "// Process AI response and save to database\nconst items = [];\n\nfor (const item of $input.all()) {\n  const aiResponse = item.json;\n  const contextData = $('Prepare RAG Context').item(item.index).json;\n  \n  if (aiResponse.choices && aiResponse.choices[0] && aiResponse.choices[0].message) {\n    const assistantMessage = aiResponse.choices[0].message.content;\n    const tokenUsage = aiResponse.usage || {};\n    \n    // Prepare response data\n    const responseData = {\n      success: true,\n      response: assistantMessage,\n      session_id: contextData.session_id,\n      conversation_id: contextData.conversation_id,\n      user_id: contextData.user_id,\n      \n      // RAG metadata\n      retrieved_content_ids: contextData.retrieved_content_ids,\n      confidence_score: contextData.confidence_score,\n      search_results_count: contextData.search_results_count,\n      context_word_count: contextData.context_word_count,\n      \n      // Token usage\n      prompt_tokens: tokenUsage.prompt_tokens,\n      completion_tokens: tokenUsage.completion_tokens,\n      total_tokens: tokenUsage.total_tokens,\n      \n      // Timestamps\n      timestamp: new Date().toISOString(),\n      processing_time_ms: Date.now() - new Date(contextData.timestamp || Date.now()).getTime()\n    };\n    \n    items.push(responseData);\n  } else {\n    throw new Error('Invalid AI response received');\n  }\n}\n\nreturn items;"
+          },
+          "id": "process-response",
+          "name": "Process AI Response",
+          "type": "n8n-nodes-base.code",
+          "typeVersion": 2,
+          "position": [1600, 400]
+        },
+        {
+          "parameters": {
+            "resource": "rows",
+            "operation": "insert",
+            "tableId": "chat_messages",
+            "columnsUi": {
+              "columns": [
+                {
+                  "column": "conversation_id",
+                  "value": "={{ $json.conversation_id }}"
+                },
+                {
+                  "column": "role", 
+                  "value": "user"
+                },
+                {
+                  "column": "content",
+                  "value": "={{ $('Prepare RAG Context').item($itemIndex).json.user_message }}"
+                },
+                {
+                  "column": "message_type",
+                  "value": "text"
+                }
+              ]
+            }
+          },
+          "id": "save-user-message",
+          "name": "Save User Message",
+          "type": "n8n-nodes-base.supabase",
+          "typeVersion": 1,
+          "position": [1800, 300]
+        },
+        {
+          "parameters": {
+            "resource": "rows",
+            "operation": "insert", 
+            "tableId": "chat_messages",
+            "columnsUi": {
+              "columns": [
+                {
+                  "column": "conversation_id",
+                  "value": "={{ $json.conversation_id }}"
+                },
+                {
+                  "column": "role",
+                  "value": "assistant"
+                },
+                {
+                  "column": "content", 
+                  "value": "={{ $json.response }}"
+                },
+                {
+                  "column": "message_type",
+                  "value": "text"
+                },
+                {
+                  "column": "retrieved_content_ids",
+                  "value": "={{ $json.retrieved_content_ids }}"
+                },
+                {
+                  "column": "confidence_score",
+                  "value": "={{ $json.confidence_score }}"
+                },
+                {
+                  "column": "prompt_tokens",
+                  "value": "={{ $json.prompt_tokens }}"
+                },
+                {
+                  "column": "completion_tokens", 
+                  "value": "={{ $json.completion_tokens }}"
+                },
+                {
+                  "column": "total_tokens",
+                  "value": "={{ $json.total_tokens }}"
+                }
+              ]
+            }
+          },
+          "id": "save-assistant-message",
+          "name": "Save Assistant Message",
+          "type": "n8n-nodes-base.supabase",
+          "typeVersion": 1,
+          "position": [1800, 500]
+        },
+        {
+          "parameters": {
+            "respondWith": "json",
+            "responseBody": "={{ {\n  \"success\": $json.success,\n  \"response\": $json.response,\n  \"session_id\": $json.session_id,\n  \"conversation_id\": $json.conversation_id,\n  \"metadata\": {\n    \"retrieved_sources\": $json.search_results_count,\n    \"confidence_score\": Math.round($json.confidence_score * 100) / 100,\n    \"tokens_used\": $json.total_tokens,\n    \"processing_time_ms\": $json.processing_time_ms\n  },\n  \"timestamp\": $json.timestamp\n} }}"
+          },
+          "id": "chat-response",
+          "name": "Send Chat Response",
+          "type": "n8n-nodes-base.respondToWebhook",
+          "typeVersion": 1,
+          "position": [2000, 400]
+        }
+      ],
+      "connections": {
+        "chat-webhook": {
+          "main": [
+            [
+              {
+                "node": "validate-request",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "validate-request": {
+          "main": [
+            [
+              {
+                "node": "generate-query-embedding",
+                "type": "main", 
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "generate-query-embedding": {
+          "main": [
+            [
+              {
+                "node": "prepare-search",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "prepare-search": {
+          "main": [
+            [
+              {
+                "node": "semantic-search",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "semantic-search": {
+          "main": [
+            [
+              {
+                "node": "prepare-rag-context",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "prepare-rag-context": {
+          "main": [
+            [
+              {
+                "node": "generate-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "generate-response": {
+          "main": [
+            [
+              {
+                "node": "process-response",
+                "type": "main", 
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "process-response": {
+          "main": [
+            [
+              {
+                "node": "save-user-message",
+                "type": "main",
+                "index": 0
+              },
+              {
+                "node": "save-assistant-message",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "save-user-message": {
+          "main": [
+            [
+              {
+                "node": "chat-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        },
+        "save-assistant-message": {
+          "main": [
+            [
+              {
+                "node": "chat-response",
+                "type": "main",
+                "index": 0
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "credentials": [
+    {
+      "id": "openai-api-key",
+      "name": "OpenAI API Key",
+      "type": "httpHeaderAuth",
+      "data": {
+        "name": "Authorization",
+        "value": "Bearer YOUR_OPENAI_API_KEY_HERE"
+      }
+    },
+    {
+      "id": "supabase-connection",
+      "name": "Supabase Connection", 
+      "type": "supabase",
+      "data": {
+        "host": "YOUR_SUPABASE_URL",
+        "serviceRole": "YOUR_SUPABASE_SERVICE_ROLE_KEY"
+      }
+    }
+  ],
+  "setup_instructions": {
+    "step_1": "Import both workflows into your n8n instance",
+    "step_2": "Configure credentials for OpenAI API and Supabase connection",
+    "step_3": "Update webhook URLs in your application to match n8n endpoints",
+    "step_4": "Test embedding generation workflow first with /webhook/generate-embeddings",
+    "step_5": "Test chat workflow with POST to /webhook/chat with sample message",
+    "step_6": "Monitor execution logs and adjust rate limits as needed"
+  },
+  "webhook_endpoints": {
+    "embedding_generation": "/webhook/alpine-peak-generate-embeddings",
+    "chat_system": "/webhook/alpine-peak-chat"
+  },
+  "environment_variables_needed": [
+    "OPENAI_API_KEY",
+    "SUPABASE_URL", 
+    "SUPABASE_SERVICE_ROLE_KEY"
+  ]
+}

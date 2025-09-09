@@ -13,7 +13,6 @@ import {
   PortfolioSchema 
 } from '@/components/seo/schemas/index';
 import SchemaRelationshipMapper from '@/components/seo/schemas/SchemaRelationshipMapper';
-import { PerformanceDashboard } from '@/lib/performance/webVitals';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,7 +70,6 @@ export default function RootLayout({
         <ClientLayout>
           {children}
         </ClientLayout>
-        <PerformanceDashboard />
       </body>
     </html>
   );
