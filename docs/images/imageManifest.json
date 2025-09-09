@@ -9,7 +9,7 @@
     "hero_home": {
       "id": "hero_home",
       "name": "Homepage Hero Background",
-      "path": "/images/heroes/hero-home.jpg",
+      "path": "/images/heroes/hero-home.png",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing professional team installing shingles on residential home with Denver mountains in background",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -20,7 +20,7 @@
     "hero_about": {
       "id": "hero_about",
       "name": "About Page Hero Background",
-      "path": "/images/heroes/hero-about.jpg",
+      "path": "/images/heroes/hero-about.png",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing team standing proudly in front of company trucks with Denver mountains",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -31,7 +31,7 @@
     "hero_services": {
       "id": "hero_services",
       "name": "Services Page Hero Background",
-      "path": "/images/heroes/hero-services.jpg",
+      "path": "/images/heroes/hero-services.png",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Split view of residential and commercial roofing projects in progress",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -42,7 +42,7 @@
     "hero_portfolio": {
       "id": "hero_portfolio",
       "name": "Portfolio Page Hero Background",
-      "path": "/images/heroes/hero-portfolio.jpg",
+      "path": "/images/heroes/hero-portfolio.png",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Before and after roof transformation showing quality craftsmanship",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -53,7 +53,7 @@
     "hero_contact": {
       "id": "hero_contact",
       "name": "Contact Page Hero Background",
-      "path": "/images/heroes/hero-contact.jpg",
+      "path": "/images/heroes/hero-contact.png",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing office building exterior with professional signage",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -75,7 +75,7 @@
     "residential_victorian_before": {
       "id": "residential_victorian_before",
       "name": "Victorian Home - Before",
-      "path": "/images/portfolio/residential/victorian-before.jpg",
+      "path": "/images/portfolio/residential/victorian-before.png",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Victorian home with damaged roof before Alpine Peak Roofing restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -88,7 +88,7 @@
     "residential_victorian_after": {
       "id": "residential_victorian_after",
       "name": "Victorian Home - After",
-      "path": "/images/portfolio/residential/victorian-after.jpg",
+      "path": "/images/portfolio/residential/victorian-after.png",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Victorian home with beautiful new roof after Alpine Peak Roofing restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -179,7 +179,7 @@
     "commercial_office_before": {
       "id": "commercial_office_before",
       "name": "Office Building - Before",
-      "path": "/images/portfolio/commercial/office-before.jpg",
+      "path": "/images/portfolio/commercial/office-before.png",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Office building with damaged flat roof before TPO installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -192,7 +192,7 @@
     "commercial_office_after": {
       "id": "commercial_office_after",
       "name": "Office Building - After",
-      "path": "/images/portfolio/commercial/office-after.jpg",
+      "path": "/images/portfolio/commercial/office-after.png",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Office building with new white TPO membrane roofing installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -257,7 +257,7 @@
     "team_founder": {
       "id": "team_founder",
       "name": "Company Founder",
-      "path": "/images/team/founder.jpg",
+      "path": "/images/team/founder.png",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing founder and owner professional headshot",
       "dimensions": { "width": 600, "height": 600 },
@@ -281,7 +281,7 @@
     "team_foreman": {
       "id": "team_foreman",
       "name": "Lead Foreman",
-      "path": "/images/team/foreman.jpg",
+      "path": "/images/team/foreman.png",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing lead foreman professional headshot",
       "dimensions": { "width": 600, "height": 600 },
@@ -305,7 +305,7 @@
     "team_roofer_2": {
       "id": "team_roofer_2",
       "name": "Senior Roofer",
-      "path": "/images/team/roofer-2.jpg",
+      "path": "/images/team/roofer-2.png",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing senior roofer professional headshot",
       "dimensions": { "width": 600, "height": 600 },
@@ -317,7 +317,7 @@
     "team_safety": {
       "id": "team_safety",
       "name": "Safety Coordinator",
-      "path": "/images/team/safety.jpg",
+      "path": "/images/team/safety.png",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing safety coordinator professional headshot",
       "dimensions": { "width": 600, "height": 600 },
@@ -329,7 +329,7 @@
     "team_customer_service": {
       "id": "team_customer_service",
       "name": "Customer Service Representative",
-      "path": "/images/team/customer-service.jpg",
+      "path": "/images/team/customer-service.png",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing customer service representative professional headshot",
       "dimensions": { "width": 600, "height": 600 },
@@ -341,7 +341,7 @@
     "service_residential": {
       "id": "service_residential",
       "name": "Residential Roofing Service",
-      "path": "/images/services/residential.jpg",
+      "path": "/images/services/residential.png",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Professional crew installing asphalt shingles on residential home",
       "dimensions": { "width": 800, "height": 600 },
@@ -353,7 +353,7 @@
     "service_commercial": {
       "id": "service_commercial",
       "name": "Commercial Roofing Service",
-      "path": "/images/services/commercial.jpg",
+      "path": "/images/services/commercial.png",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Commercial roofing specialists installing TPO membrane",
       "dimensions": { "width": 800, "height": 600 },
@@ -365,7 +365,7 @@
     "service_emergency": {
       "id": "service_emergency",
       "name": "Emergency Roofing Service",
-      "path": "/images/services/emergency.jpg",
+      "path": "/images/services/emergency.png",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Emergency roofing repair crew working in stormy conditions",
       "dimensions": { "width": 800, "height": 600 },
@@ -401,7 +401,7 @@
     "process_inspection": {
       "id": "process_inspection",
       "name": "Inspection Process",
-      "path": "/images/process/inspection.jpg",
+      "path": "/images/process/inspection.png",
       "placeholder": "/images/placeholders/process-placeholder.svg",
       "alt": "Professional roof inspection using drone technology",
       "dimensions": { "width": 800, "height": 600 },
@@ -483,7 +483,7 @@
     "equipment_display": {
       "id": "equipment_display",
       "name": "Professional Equipment",
-      "path": "/images/company/equipment.jpg",
+      "path": "/images/company/equipment.png",
       "placeholder": "/images/placeholders/company-placeholder.svg",
       "alt": "Professional roofing tools and equipment display",
       "dimensions": { "width": 800, "height": 600 },
@@ -494,7 +494,7 @@
     "crew_action": {
       "id": "crew_action",
       "name": "Work Crew in Action",
-      "path": "/images/company/crew-action.jpg",
+      "path": "/images/company/crew-action.png",
       "placeholder": "/images/placeholders/company-placeholder.svg",
       "alt": "Alpine Peak Roofing crew working together on residential roof",
       "dimensions": { "width": 1200, "height": 800 },

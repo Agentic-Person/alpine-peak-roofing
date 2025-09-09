@@ -1,0 +1,53 @@
+{
+  "mcpServers": {
+    "desktop-commander": {
+      "command": "npx",
+      "args": [
+        "@wonderwhy-er/desktop-commander@latest"
+      ]
+    },
+    "n8n-mcp": {
+      "command": "node",
+      "args": [
+        "C:\\\\Users\\\\jimmy\\\\n8n-mcp\\\\dist\\\\mcp\\\\index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production",
+        "LOG_LEVEL": "error",
+        "MCP_MODE": "stdio",
+        "DISABLE_CONSOLE_OUTPUT": "true"
+      }
+    },
+    "GitHub": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@github/mcp-server@latest"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PAT}"
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+
+/mcp__<server-name>__<prompt-name> [arguments]
+
+# Without arguments
+> /mcp__github__list_prs
+
+# With arguments
+> /mcp__github__pr_review 456
+> /mcp__jira__create_issue "Bug title" high
+
