@@ -19,7 +19,9 @@ import {
   Star,
   Award,
   Calendar,
-  Users
+  Users,
+  Bot,
+  MessageSquare
 } from 'lucide-react'
 
 export default function ContactPage() {
@@ -149,6 +151,61 @@ export default function ContactPage() {
                 <Button className="w-full bg-green-600 hover:bg-green-700">
                   <Mail className="mr-2 h-4 w-4" />
                   Send Email
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* AI Chat Assistant Section */}
+          <div className="mb-16">
+            <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 hover:shadow-xl transition-shadow">
+              <CardHeader className="text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-600 mx-auto mb-4">
+                  <Bot className="h-10 w-10 text-white" />
+                </div>
+                <CardTitle className="text-2xl text-purple-800">AI Chat Assistant</CardTitle>
+                <CardDescription className="text-purple-700 text-lg">
+                  Get instant answers about roofing, pricing, and scheduling
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-purple-700 mb-6 text-lg">
+                  Our AI assistant can help you with instant estimates, answer common roofing questions, 
+                  schedule appointments, and provide 24/7 support. Try asking about materials, 
+                  costs, timelines, or emergency services!
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="font-semibold text-purple-600">Instant Quotes</div>
+                    <div className="text-gray-600">Quick price estimates</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="font-semibold text-purple-600">Material Info</div>
+                    <div className="text-gray-600">Shingle types & options</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="font-semibold text-purple-600">Scheduling</div>
+                    <div className="text-gray-600">Book inspections</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="font-semibold text-purple-600">24/7 Support</div>
+                    <div className="text-gray-600">Always available</div>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg p-4 mb-6 border border-purple-200">
+                  <div className="text-left text-gray-700">
+                    <div className="font-semibold mb-2 text-purple-600">Try asking:</div>
+                    <div className="space-y-1 text-sm">
+                      <div>• "How much does a roof replacement cost?"</div>
+                      <div>• "What roofing materials do you recommend for Denver?"</div>
+                      <div>• "Can you schedule an inspection this week?"</div>
+                      <div>• "Do you handle insurance claims?"</div>
+                    </div>
+                  </div>
+                </div>
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8">
+                  <MessageSquare className="mr-2 h-5 w-5" />
+                  Start Chat Now
                 </Button>
               </CardContent>
             </Card>

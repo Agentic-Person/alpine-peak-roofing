@@ -214,6 +214,16 @@ export default function BlogPage({ searchParams }: BlogPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Admin Login Link - Subtle placement */}
+      <div className="text-center py-4">
+        <Link 
+          href="/blog/admin" 
+          className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          Admin
+        </Link>
+      </div>
     </div>
   );
 }

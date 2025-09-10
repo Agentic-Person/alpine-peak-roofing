@@ -1,24 +1,7 @@
 -- Blog Automation System Database Schema
 -- Cost-optimized blog automation for Alpine Peak Roofing
 
--- 1. Blog Content Calendar (Planning Phase)
-CREATE TABLE blog_content_calendar (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    topic TEXT NOT NULL,
-    planned_date DATE NOT NULL,
-    season TEXT NOT NULL CHECK (season IN ('spring', 'summer', 'fall', 'winter')),
-    status TEXT NOT NULL DEFAULT 'planned' CHECK (status IN ('planned', 'content_generated', 'published', 'cancelled')),
-    estimated_cost DECIMAL(5,2) NOT NULL DEFAULT 14.50,
-    actual_cost DECIMAL(5,2),
-    blog_post_id UUID REFERENCES blog_posts(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    completed_at TIMESTAMP WITH TIME ZONE,
-    published_at TIMESTAMP WITH TIME ZONE,
-    performance_tracking_enabled BOOLEAN DEFAULT false,
-    final_cost DECIMAL(5,2)
-);
-
--- 2. Blog Posts (Generated Content)
+-- 1. Blog Posts (Generated Content)
 CREATE TABLE blog_posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
@@ -40,6 +23,23 @@ CREATE TABLE blog_posts (
     publish_date DATE,
     published_at TIMESTAMP WITH TIME ZONE,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. Blog Content Calendar (Planning Phase)
+CREATE TABLE blog_content_calendar (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    topic TEXT NOT NULL,
+    planned_date DATE NOT NULL,
+    season TEXT NOT NULL CHECK (season IN ('spring', 'summer', 'fall', 'winter')),
+    status TEXT NOT NULL DEFAULT 'planned' CHECK (status IN ('planned', 'content_generated', 'published', 'cancelled')),
+    estimated_cost DECIMAL(5,2) NOT NULL DEFAULT 14.50,
+    actual_cost DECIMAL(5,2),
+    blog_post_id UUID REFERENCES blog_posts(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    completed_at TIMESTAMP WITH TIME ZONE,
+    published_at TIMESTAMP WITH TIME ZONE,
+    performance_tracking_enabled BOOLEAN DEFAULT false,
+    final_cost DECIMAL(5,2)
 );
 
 -- 3. Blog Performance Tracking

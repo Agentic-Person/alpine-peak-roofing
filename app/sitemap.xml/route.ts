@@ -43,11 +43,9 @@ export async function GET() {
       priority: 0.9,
       category: 'core',
       semanticType: 'ContactPage',
-      relatedPages: ['/', '/about', '/estimator'],
+      relatedPages: ['/', '/about'],
       keywords: ['contact roofing contractor', 'free estimate', 'emergency service']
     },
-
-    // Service Pages - Main
     {
       url: `${baseUrl}/services`,
       lastModified: new Date().toISOString(),
@@ -55,82 +53,50 @@ export async function GET() {
       priority: 0.9,
       category: 'services',
       semanticType: 'ServicePage',
-      relatedPages: ['/services/residential', '/services/commercial', '/services/emergency'],
+      relatedPages: ['/about', '/process'],
       keywords: ['roofing services', 'roof repair', 'roof replacement', 'mountain roofing']
     },
     {
-      url: `${baseUrl}/services/residential`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.8,
-      category: 'services',
-      semanticType: 'ServicePage',
-      relatedPages: ['/services', '/services/premium', '/portfolio'],
-      keywords: ['residential roofing', 'home roofing', 'roof replacement']
-    },
-    {
-      url: `${baseUrl}/services/commercial`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.8,
-      category: 'services',
-      semanticType: 'ServicePage',
-      relatedPages: ['/services', '/portfolio', '/sustainability'],
-      keywords: ['commercial roofing', 'business roofing', 'flat roof', 'TPO']
-    },
-    {
-      url: `${baseUrl}/services/emergency`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'daily',
-      priority: 0.9,
-      category: 'services',
-      semanticType: 'EmergencyServicePage',
-      relatedPages: ['/services', '/contact', '/weather-impacts'],
-      keywords: ['emergency roof repair', '24/7 service', 'storm damage', 'hail damage']
-    },
-
-    // Premium Services
-    {
-      url: `${baseUrl}/services/premium`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.8,
-      category: 'premium',
-      semanticType: 'ServicePage',
-      relatedPages: ['/services/premium/copper-roofing', '/sustainability', '/portfolio'],
-      keywords: ['premium roofing', 'luxury roofing', 'high-end materials']
-    },
-    {
-      url: `${baseUrl}/services/premium/copper-roofing`,
+      url: `${baseUrl}/process`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
       priority: 0.7,
-      category: 'premium',
-      semanticType: 'ServicePage',
-      relatedPages: ['/services/premium', '/glossary', '/sustainability'],
-      keywords: ['copper roofing', 'standing seam copper', 'patina', 'luxury materials']
+      category: 'core',
+      semanticType: 'WebPage',
+      relatedPages: ['/about', '/contact', '/services'],
+      keywords: ['roofing process', 'project timeline', 'installation steps']
     },
 
-    // Sustainability
+    // Authority Content Pages
+    {
+      url: `${baseUrl}/guides/mountain-roofing-colorado`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'guides',
+      semanticType: 'TechnicalGuide',
+      relatedPages: ['/sustainability', '/investment-analysis', '/glossary', '/faq'],
+      keywords: ['mountain roofing guide', 'colorado climate', 'high altitude challenges', 'snow loads', 'wind resistance']
+    },
     {
       url: `${baseUrl}/sustainability`,
       lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
+      changeFreq: 'monthly',
       priority: 0.8,
       category: 'sustainability',
-      semanticType: 'WebPage',
-      relatedPages: ['/sustainability/solar-integration', '/services/premium', '/glossary'],
-      keywords: ['sustainable roofing', 'eco-friendly', 'energy efficiency', 'green building']
+      semanticType: 'EnvironmentalLeadership',
+      relatedPages: ['/guides/mountain-roofing-colorado', '/investment-analysis', '/services'],
+      keywords: ['sustainable roofing', 'eco-friendly', 'energy efficiency', 'green building', 'LEED certification']
     },
     {
-      url: `${baseUrl}/sustainability/solar-integration`,
+      url: `${baseUrl}/investment-analysis`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.7,
-      category: 'sustainability',
-      semanticType: 'WebPage',
-      relatedPages: ['/sustainability', '/investment-analysis', '/glossary'],
-      keywords: ['solar roofing', 'solar integration', 'renewable energy', 'energy savings']
+      priority: 0.8,
+      category: 'financial',
+      semanticType: 'FinancialAnalysis',
+      relatedPages: ['/sustainability', '/guides/mountain-roofing-colorado', '/services'],
+      keywords: ['roofing investment', 'ROI analysis', 'premium materials cost', 'financing options']
     },
 
     // Knowledge Base
@@ -141,7 +107,7 @@ export async function GET() {
       priority: 0.8,
       category: 'knowledge',
       semanticType: 'FAQPage',
-      relatedPages: ['/glossary', '/guides/mountain-roofing-colorado', '/resources/technical'],
+      relatedPages: ['/glossary', '/guides/mountain-roofing-colorado', '/knowledge'],
       keywords: ['roofing questions', 'mountain roofing FAQ', 'colorado roofing answers']
     },
     {
@@ -150,71 +116,81 @@ export async function GET() {
       changeFreq: 'monthly',
       priority: 0.7,
       category: 'knowledge',
-      semanticType: 'WebPage',
-      relatedPages: ['/faq', '/resources/technical', '/guides/mountain-roofing-colorado'],
+      semanticType: 'TechnicalReference',
+      relatedPages: ['/faq', '/guides/mountain-roofing-colorado', '/knowledge'],
       keywords: ['roofing terminology', 'technical definitions', 'mountain roofing terms']
     },
+    {
+      url: `${baseUrl}/knowledge`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'weekly',
+      priority: 0.8,
+      category: 'knowledge',
+      semanticType: 'ResourceHub',
+      relatedPages: ['/faq', '/glossary', '/guides/mountain-roofing-colorado'],
+      keywords: ['roofing resources', 'knowledge base', 'technical information']
+    },
 
-    // Location Pages
+    // Location Pages - Premium Communities
     {
       url: `${baseUrl}/locations/aspen`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.7,
+      priority: 0.9,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
       relatedPages: ['/locations/vail', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['aspen roofing', 'aspen contractors', 'luxury mountain roofing']
+      keywords: ['aspen roofing', 'aspen contractors', 'luxury mountain roofing', '7908 feet elevation']
     },
     {
       url: `${baseUrl}/locations/vail`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.7,
+      priority: 0.9,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
       relatedPages: ['/locations/aspen', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['vail roofing', 'vail contractors', 'ski resort roofing']
+      keywords: ['vail roofing', 'vail contractors', 'ski resort roofing', '8150 feet elevation']
     },
     {
       url: `${baseUrl}/locations/telluride`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.7,
+      priority: 0.8,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
       relatedPages: ['/locations/aspen', '/locations/vail', '/guides/mountain-roofing-colorado'],
-      keywords: ['telluride roofing', 'telluride contractors', 'historic preservation']
+      keywords: ['telluride roofing', 'telluride contractors', 'historic preservation', '8750 feet elevation']
     },
     {
       url: `${baseUrl}/locations/crested-butte`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.6,
+      priority: 0.8,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/aspen', '/guides/mountain-roofing-colorado'],
-      keywords: ['crested butte roofing', 'high altitude roofing']
+      relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
+      keywords: ['crested butte roofing', 'extreme weather roofing', '8885 feet elevation', '500 inches snow']
     },
     {
       url: `${baseUrl}/locations/steamboat-springs`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.6,
+      priority: 0.8,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/winter-park', '/guides/mountain-roofing-colorado'],
-      keywords: ['steamboat springs roofing', 'ski town roofing']
+      relatedPages: ['/locations/winter-park', '/locations/crested-butte', '/guides/mountain-roofing-colorado'],
+      keywords: ['steamboat springs roofing', 'resort ranch roofing', '6732 feet elevation']
     },
     {
       url: `${baseUrl}/locations/winter-park`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.6,
+      priority: 0.8,
       category: 'locations',
       semanticType: 'LocalBusinessPage',
       relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
-      keywords: ['winter park roofing', 'mountain resort roofing']
+      keywords: ['winter park roofing', 'continental divide roofing', '9052 feet elevation']
     },
 
     // Service Areas
@@ -222,118 +198,22 @@ export async function GET() {
       url: `${baseUrl}/service-areas/central-mountains`,
       lastModified: new Date().toISOString(),
       changeFreq: 'monthly',
-      priority: 0.6,
+      priority: 0.8,
       category: 'service-areas',
       semanticType: 'ServiceAreaPage',
       relatedPages: ['/locations/aspen', '/locations/vail', '/guides/mountain-roofing-colorado'],
-      keywords: ['central mountains roofing', 'colorado mountains', 'high altitude service']
-    },
-
-    // Educational Content
-    {
-      url: `${baseUrl}/guides/mountain-roofing-colorado`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.7,
-      category: 'guides',
-      semanticType: 'Article',
-      relatedPages: ['/weather-impacts', '/glossary', '/faq'],
-      keywords: ['mountain roofing guide', 'colorado climate', 'high altitude challenges']
-    },
-    {
-      url: `${baseUrl}/weather-impacts`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.7,
-      category: 'guides',
-      semanticType: 'Article',
-      relatedPages: ['/guides/mountain-roofing-colorado', '/services/emergency', '/glossary'],
-      keywords: ['weather impacts', 'hail damage', 'snow load', 'wind resistance']
-    },
-    {
-      url: `${baseUrl}/investment-analysis`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.6,
-      category: 'guides',
-      semanticType: 'Article',
-      relatedPages: ['/sustainability', '/services/premium', '/estimator'],
-      keywords: ['roofing investment', 'ROI analysis', 'premium materials cost']
-    },
-    {
-      url: `${baseUrl}/resources/technical`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.6,
-      category: 'resources',
-      semanticType: 'TechnicalArticle',
-      relatedPages: ['/glossary', '/faq', '/guides/mountain-roofing-colorado'],
-      keywords: ['technical resources', 'installation guides', 'specifications']
-    },
-
-    // Tools and Interactive
-    {
-      url: `${baseUrl}/estimator`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.8,
-      category: 'tools',
-      semanticType: 'WebApplication',
-      relatedPages: ['/contact', '/investment-analysis', '/services'],
-      keywords: ['roof cost estimator', 'pricing calculator', 'free estimate']
-    },
-    {
-      url: `${baseUrl}/ai-tools/intelligent-roofing-automations`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.6,
-      category: 'technology',
-      semanticType: 'WebPage',
-      relatedPages: ['/chatbot-demo', '/resources/technical'],
-      keywords: ['AI roofing tools', 'automation', 'smart roofing']
-    },
-    {
-      url: `${baseUrl}/chatbot-demo`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.5,
-      category: 'technology',
-      semanticType: 'WebApplication',
-      relatedPages: ['/ai-tools/intelligent-roofing-automations', '/contact'],
-      keywords: ['roofing chatbot', 'AI assistant', 'instant quotes']
-    },
-
-    // Portfolio and Process
-    {
-      url: `${baseUrl}/portfolio`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.8,
-      category: 'showcase',
-      semanticType: 'CollectionPage',
-      relatedPages: ['/services', '/services/premium', '/locations/aspen'],
-      keywords: ['roofing portfolio', 'completed projects', 'before after', 'case studies']
-    },
-    {
-      url: `${baseUrl}/process`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.7,
-      category: 'core',
-      semanticType: 'WebPage',
-      relatedPages: ['/about', '/contact', '/estimator'],
-      keywords: ['roofing process', 'project timeline', 'installation steps']
+      keywords: ['central mountains roofing', 'colorado mountains', 'high altitude service', 'summit county', 'eagle county', 'pitkin county']
     },
 
     // Blog
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date().toISOString(),
-      changeFreq: 'daily',
+      changeFreq: 'weekly',
       priority: 0.7,
       category: 'content',
       semanticType: 'Blog',
-      relatedPages: ['/guides/mountain-roofing-colorado', '/weather-impacts', '/faq'],
+      relatedPages: ['/guides/mountain-roofing-colorado', '/faq'],
       keywords: ['roofing blog', 'industry news', 'maintenance tips', 'seasonal advice']
     }
   ]

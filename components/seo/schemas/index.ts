@@ -6,3 +6,4 @@ export { default as EmergencyServiceSchema } from './EmergencyServiceSchema';
 export { default as ReviewSchema } from './ReviewSchema';
 export { default as FAQSchema } from './FAQSchema';
 export { default as PortfolioSchema } from './PortfolioSchema';
+export { getSchemaRelationships, generateInterconnectedSchema, findRelatedSchemas, getEntityContext } from './SchemaRelationshipMapper';
