@@ -18,7 +18,7 @@ import type {
 } from '@/lib/chatbot/types'
 
 interface ChatWidgetProps {
-  position?: 'bottom-right' | 'bottom-left'
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'responsive-top-right'
   theme?: 'light' | 'dark' | 'alpine'
   autoOpen?: boolean
   className?: string
@@ -238,7 +238,9 @@ export function ChatWidget({
   // Position classes
   const positionClasses = {
     'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4'
+    'bottom-left': 'bottom-4 left-4',
+    'top-right': 'top-20 right-6',
+    'responsive-top-right': 'bottom-4 right-4 md:top-20 md:right-6'
   }
 
   // Theme classes
@@ -299,8 +301,9 @@ export function ChatWidget({
   return (
     <div className={cn('fixed z-50', positionClasses[position])}>
       <div className={cn(
-        'flex flex-col h-[500px] w-[380px] rounded-lg border shadow-2xl',
-        'md:h-[600px] md:w-[400px]',
+        'flex flex-col h-[400px] w-[320px] rounded-lg border shadow-2xl',
+        'sm:h-[500px] sm:w-[380px] md:h-[600px] md:w-[400px]',
+        position === 'responsive-top-right' && 'max-sm:fixed max-sm:inset-4 max-sm:w-auto max-sm:h-auto',
         themeClasses[theme],
         className
       )}>
