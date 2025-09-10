@@ -71,7 +71,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <ChatWidget position="responsive-top-right" />
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>

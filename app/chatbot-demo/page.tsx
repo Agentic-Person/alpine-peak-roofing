@@ -206,7 +206,7 @@ export default function ChatbotDemoPage() {
 
       {/* Chat Widget */}
       <ChatWidget 
-        position="responsive-top-right"
+        position="bottom-right"
         theme="alpine"
         autoOpen={false}
       />
