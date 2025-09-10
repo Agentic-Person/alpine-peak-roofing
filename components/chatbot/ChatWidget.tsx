@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ChatHeader } from './ChatHeader'
@@ -250,30 +251,47 @@ export function ChatWidget({
   if (!isOpen) {
     return (
       <div className={cn('fixed z-50', positionClasses[position])}>
-        <Button
-          onClick={toggleWidget}
-          className="h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
-          aria-label="Open chat"
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {/* Animated gradient border container */}
+        <div className="relative">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-yellow-400 opacity-75 blur-sm animate-pulse" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 via-blue-400 to-yellow-400 animate-spin-slow opacity-60" style={{ animation: 'spin 8s linear infinite' }} />
+          
+          <Button
+            onClick={toggleWidget}
+            className="relative h-42 w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-4 border-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 group overflow-hidden"
+            aria-label="Open AI Assistant Chat"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-        </Button>
-        {leadScore > 0 && (
-          <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 flex items-center justify-center text-xs text-white font-bold">
-            !
+            {/* AI Agent Avatar */}
+            <div className="relative w-full h-full flex items-center justify-center">
+              <div className="relative w-36 h-36 rounded-full overflow-hidden border-3 border-white/30 shadow-inner">
+                <Image
+                  src="/images/team/ai-agent-avatar-02.png"
+                  alt="AI Assistant"
+                  fill
+                  className="object-cover object-center"
+                  priority
+                />
+              </div>
+              {/* Pulse overlay */}
+              <div className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping" />
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/0 via-blue-400/10 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
+          </Button>
+
+          {/* Enhanced notification badge */}
+          {leadScore > 0 && (
+            <div className="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
+              !
+            </div>
+          )}
+
+          {/* Floating text hint */}
+          <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            Chat with AI Assistant
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
           </div>
-        )}
+        </div>
       </div>
     )
   }

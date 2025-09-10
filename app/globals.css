@@ -30,3 +30,38 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+/* Custom animations for enhanced chat bubble */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Custom heights and widths for 3x larger chat bubble */
+.h-42 {
+  height: 10.5rem; /* 168px */
+}
+
+.w-42 {
+  width: 10.5rem; /* 168px */
+}
+
+.w-36 {
+  width: 9rem; /* 144px */
+}
+
+.h-36 {
+  height: 9rem; /* 144px */
+}
+
+.border-3 {
+  border-width: 3px;
+}
