@@ -21,29 +21,29 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-[#003399]">
 
       {/* Hero Section */}
-      <section className="relative py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-blue-800 text-white overflow-hidden">
+      <section className="relative py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-[#003399] dark:to-[#0066CC] text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                <span className="text-yellow-400">Pinnacle of Protection</span>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-white dark:text-[#C7E1FC]">
+                <span className="text-yellow-400 dark:text-[#FFCC00]">Pinnacle of Protection</span>
                 <br />
                 Peak of Performance
               </h1>
-              <p className="mt-6 text-lg leading-8 text-blue-100">
+              <p className="mt-6 text-lg leading-8 text-blue-100 dark:text-[#DDDDDD]">
                 Professional roofing solutions for homes and businesses across the Denver metro area. 
                 Licensed, insured, and trusted by thousands of satisfied customers.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button size="lg" variant="secondary" className="px-8 bg-yellow-400 text-blue-900 hover:bg-yellow-300">
+                <Button size="lg" variant="secondary" className="px-8 bg-yellow-400 dark:bg-brand-gold text-blue-900 dark:text-brand-navy hover:bg-yellow-300 dark:hover:bg-accent-gold-light">
                   <Phone className="mr-2 h-5 w-5" />
                   Call (303) 555-ROOF
                 </Button>
-                <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white hover:text-blue-600" asChild>
+                <Button size="lg" variant="outline" className="px-8 border-white dark:border-brand-sky text-white dark:text-brand-sky hover:bg-white hover:text-blue-600 dark:hover:bg-brand-sky dark:hover:text-brand-navy" asChild>
                   <Link href="/estimator">
                     Get Free Instant Estimate
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -68,49 +68,49 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 sm:py-24 bg-gray-50">
+      <section className="py-16 sm:py-24 bg-gray-50 dark:bg-[#003399]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-[#C7E1FC] sm:text-4xl">
               Our Roofing Services
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-[#DDDDDD]">
               Comprehensive roofing solutions for every need, backed by decades of experience
             </p>
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Residential Roofing */}
-            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
+            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 dark:hover:border-[#33CCFF] dark:bg-[#0066CC] dark:border-[#33CCFF]/30 transition-all duration-300 hover:shadow-xl">
               <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                  <Home className="h-6 w-6 text-blue-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-[#33CCFF]/20">
+                  <Home className="h-6 w-6 text-blue-600 dark:text-[#33CCFF]" />
                 </div>
-                <CardTitle className="text-xl">Residential Roofing</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-xl dark:text-[#C7E1FC]">Residential Roofing</CardTitle>
+                <CardDescription className="dark:text-[#DDDDDD]">
                   Complete home roofing solutions including repair, replacement, and new construction
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-[#DDDDDD]">
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
                     Roof replacement & repair
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
                     Shingle & metal roofing
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
                     Gutters & downspouts
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
+                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
                     Insurance claims help
                   </li>
                 </ul>
-                <Button variant="outline" className="mt-4 w-full group-hover:bg-blue-600 group-hover:text-white transition-colors" asChild>
+                <Button variant="outline" className="mt-4 w-full group-hover:bg-blue-600 group-hover:text-white dark:border-[#33CCFF] dark:text-[#33CCFF] dark:hover:bg-[#33CCFF] dark:hover:text-[#003399] transition-colors" asChild>
                   <Link href="/services/residential">Learn More</Link>
                 </Button>
               </CardContent>

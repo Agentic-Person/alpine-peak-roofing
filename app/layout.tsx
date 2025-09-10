@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import ChatWidget from '@/components/chatbot/ChatWidget';
 import { 
   PrimaryBusinessSchema,
   ServiceAreaSchema,
@@ -63,11 +65,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navigation />
-        <main>
-          {children}
-        </main>
-        <Footer />
+        <ThemeProvider>
+          <Navigation />
+          <main>
+            {children}
+          </main>
+          <Footer />
+          <ChatWidget />
+        </ThemeProvider>
       </body>
     </html>
   );

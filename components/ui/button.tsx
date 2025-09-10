@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
+  asChild?: boolean
 }
 
 export function Button({
@@ -14,6 +15,7 @@ export function Button({
   loading = false,
   children,
   disabled,
+  asChild = false,
   ...props
 }: ButtonProps) {
   const baseStyles = 'inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
@@ -31,9 +33,29 @@ export function Button({
     lg: 'px-6 py-3 text-lg'
   }
 
+  const combinedClassName = cn(baseStyles, variants[variant], sizes[size], className)
+  
+  if (asChild) {
+    // When asChild is true, clone the child element and apply button styles
+    if (React.isValidElement(children)) {
+      return React.cloneElement(children, {
+        ...children.props,
+        className: cn(combinedClassName, children.props.className),
+        ...(disabled && { 'aria-disabled': true }),
+        ...props
+      })
+    }
+    // Fallback to span if children is not a valid React element
+    return (
+      <span className={combinedClassName} {...props}>
+        {children}
+      </span>
+    )
+  }
+
   return (
     <button
-      className={cn(baseStyles, variants[variant], sizes[size], className)}
+      className={combinedClassName}
       disabled={disabled || loading}
       {...props}
     >

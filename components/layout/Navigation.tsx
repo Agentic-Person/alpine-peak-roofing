@@ -4,27 +4,24 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { 
   Shield, 
   ArrowRight,
   Phone,
   Menu,
-  X,
-  ChevronDown
+  X
 } from 'lucide-react'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const pathname = usePathname()
 
   const navigationItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About Us' },
     { href: '/services', label: 'Services' },
     { href: '/portfolio', label: 'Portfolio' },
     { href: '/process', label: 'Our Process' },
-    { href: '/blog', label: 'Blog' },
+    { href: '/about', label: 'About Us' },
     { href: '/contact', label: 'Contact' }
   ]
 
@@ -36,13 +33,13 @@ export default function Navigation() {
   }
 
   return (
-    <header className="border-b bg-white shadow-sm sticky top-0 z-50">
+    <header className="border-b bg-white dark:bg-[#003399] shadow-sm sticky top-0 z-50 dark:border-[#0066CC]/20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">Alpine Peak Roofing</span>
+            <Shield className="h-8 w-8 text-blue-600 dark:text-[#33CCFF]" />
+            <span className="text-xl font-bold text-gray-900 dark:text-[#C7E1FC]">Alpine Peak Roofing</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -51,46 +48,32 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+                className={`text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-[#33CCFF] ${
                   isActive(item.href)
-                    ? 'text-blue-600'
-                    : 'text-gray-700'
+                    ? 'text-blue-600 dark:text-[#33CCFF]'
+                    : 'text-gray-700 dark:text-[#DDDDDD]'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
             
-            {/* AI Tools Dropdown */}
-            <div className="relative group">
-              <button
-                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors flex items-center"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                AI Tools
-                <ChevronDown className="ml-1 h-3 w-3" />
-              </button>
-              
-              <div
-                className={`absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border transition-all duration-200 ${
-                  isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-                }`}
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                <Link
-                  href="/ai-tools/intelligent-roofing-automations"
-                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Intelligent Roofing Automations
-                </Link>
-              </div>
-            </div>
+            {/* AI Tools Link */}
+            <Link
+              href="/ai-tools/intelligent-roofing-automations"
+              className={`text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-[#33CCFF] ${
+                pathname.startsWith('/ai-tools')
+                  ? 'text-blue-600 dark:text-[#33CCFF]'
+                  : 'text-gray-700 dark:text-[#DDDDDD]'
+              }`}
+            >
+              AI Tools
+            </Link>
           </nav>
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center space-x-4">
+            <ThemeToggle />
             <div className="hidden xl:flex items-center text-sm">
               <Phone className="h-4 w-4 text-blue-600 mr-2" />
               <a href="tel:3035557663" className="font-semibold text-blue-600 hover:text-blue-700">
@@ -121,15 +104,15 @@ export default function Navigation() {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-brand-navy border-t dark:border-brand-blue/20">
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
                   isActive(item.href)
-                    ? 'text-blue-600 bg-blue-50'
-                    : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                    ? 'text-blue-600 dark:text-brand-sky bg-blue-50 dark:bg-brand-blue/30'
+                    : 'text-gray-700 dark:text-text-body hover:text-gray-900 dark:hover:text-text-off-white hover:bg-gray-50 dark:hover:bg-brand-blue/20'
                 }`}
                 onClick={() => setIsOpen(false)}
               >
@@ -139,7 +122,11 @@ export default function Navigation() {
             
             <Link
               href="/ai-tools/intelligent-roofing-automations"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname.startsWith('/ai-tools')
+                  ? 'text-blue-600 dark:text-brand-sky bg-blue-50 dark:bg-brand-blue/30'
+                  : 'text-gray-700 dark:text-text-body hover:text-gray-900 dark:hover:text-text-off-white hover:bg-gray-50 dark:hover:bg-brand-blue/20'
+              }`}
               onClick={() => setIsOpen(false)}
             >
               AI Tools
@@ -147,13 +134,16 @@ export default function Navigation() {
             
             {/* Mobile CTA */}
             <div className="px-3 py-2 space-y-3">
-              <a
-                href="tel:3035557663"
-                className="flex items-center text-blue-600 hover:text-blue-700 font-semibold"
-              >
-                <Phone className="h-4 w-4 mr-2" />
-                (303) 555-ROOF
-              </a>
+              <div className="flex items-center justify-between">
+                <a
+                  href="tel:3035557663"
+                  className="flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  (303) 555-ROOF
+                </a>
+                <ThemeToggle />
+              </div>
               <Button className="w-full" asChild>
                 <Link href="/estimator">
                   Get Free Estimate
