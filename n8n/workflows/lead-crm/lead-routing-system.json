@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "instanceId": "apr-website-lead-crm"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-scored",
+        "options": {
+          "noResponseBody": false
+        }
+      },
+      "id": "a1b2c3d4-5e6f-7890-abcd-lead-routing-01",
+      "name": "Lead Scored Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        340,
+        400
+      ],
+      "webhookId": "lead-routing-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lead Routing System - Alpine Peak Roofing\n// Extract and validate scored lead data for routing\n\nconst inputData = $input.all();\nconst leadData = inputData[0].json;\n\n// Validate required fields for routing\nif (!leadData.leadId || !leadData.priorityLevel || !leadData.leadScore) {\n  throw new Error('Missing required lead scoring data');\n}\n\n// Extract lead information for routing decisions\nconst routingData = {\n  leadId: leadData.leadId,\n  leadScore: leadData.leadScore,\n  priorityLevel: leadData.priorityLevel,\n  firstName: leadData.firstName || 'Unknown',\n  lastName: leadData.lastName || '',\n  email: leadData.email,\n  phone: leadData.phone || '',\n  projectType: leadData.projectType || 'unknown',\n  urgency: leadData.urgency || 'medium',\n  source: leadData.source || {},\n  recommendedActions: leadData.recommendedActions || [],\n  \n  // Location data for geographic routing\n  location: {\n    address: leadData.address || {},\n    zipCode: leadData.zipCode || '',\n    city: leadData.city || '',\n    state: leadData.state || '',\n    coordinates: leadData.coordinates || null\n  },\n  \n  // Project specifics for specialization matching\n  projectDetails: {\n    propertyType: leadData.propertyType || 'residential',\n    estimatedValue: leadData.estimatedValue || 0,\n    complexity: leadData.complexity || 'standard',\n    timeline: leadData.timeline || 'flexible'\n  },\n  \n  // Routing metadata\n  routingTimestamp: new Date().toISOString(),\n  routingVersion: '1.0'\n};\n\nconsole.log(`Routing Lead ${routingData.leadId}: Score ${routingData.leadScore}, Priority ${routingData.priorityLevel}`);\n\nreturn [{ json: routingData }];"
+      },
+      "id": "b2c3d4e5-6f78-9012-bcde-lead-routing-02",
+      "name": "Parse Routing Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "={{ $node[\"Parse Routing Data\"].json[\"api_base_url\"] || 'http://localhost:3000' }}/api/team/availability",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "c3d4e5f6-7890-1234-cdef-lead-routing-03",
+      "name": "Get Team Availability",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Team Member Specialization and Skill Matching\n// Determine which team members are best suited for this lead\n\nconst leadData = $input.all()[0].json;\nconst teamData = $input.all()[1].json;\n\nconst availableTeam = teamData.availableMembers || [];\nif (availableTeam.length === 0) {\n  throw new Error('No team members currently available for lead assignment');\n}\n\n// Define team member specializations and skills\nconst teamSpecializations = {\n  'senior_estimator': {\n    minScore: 70,\n    maxLeads: 5,\n    specialties: ['commercial', 'high-value', 'complex', 'emergency'],\n    projectTypes: ['roof-replacement', 'commercial', 'emergency'],\n    maxProjectValue: null, // No limit\n    experience: 10,\n    languages: ['english']\n  },\n  'commercial_specialist': {\n    minScore: 60,\n    maxLeads: 4,\n    specialties: ['commercial', 'multi-family', 'large-scale'],\n    projectTypes: ['commercial', 'multi-family', 'roof-replacement'],\n    maxProjectValue: null,\n    experience: 8,\n    languages: ['english']\n  },\n  'residential_expert': {\n    minScore: 50,\n    maxLeads: 8,\n    specialties: ['residential', 'repairs', 'replacements'],\n    projectTypes: ['roof-replacement', 'roof-repair', 'inspection'],\n    maxProjectValue: 100000,\n    experience: 6,\n    languages: ['english', 'spanish']\n  },\n  'storm_specialist': {\n    minScore: 55,\n    maxLeads: 6,\n    specialties: ['storm-damage', 'insurance', 'emergency'],\n    projectTypes: ['storm-damage', 'emergency', 'inspection'],\n    maxProjectValue: null,\n    experience: 7,\n    languages: ['english']\n  },\n  'junior_estimator': {\n    minScore: 0,\n    maxLeads: 10,\n    specialties: ['basic-repairs', 'inspections', 'consultations'],\n    projectTypes: ['inspection', 'consultation', 'small-repair'],\n    maxProjectValue: 25000,\n    experience: 2,\n    languages: ['english', 'spanish']\n  }\n};\n\n// Score each team member for this lead\nconst teamScores = [];\n\nfor (const member of availableTeam) {\n  let matchScore = 0;\n  const memberRole = member.role || 'junior_estimator';\n  const roleSpecs = teamSpecializations[memberRole] || teamSpecializations['junior_estimator'];\n  \n  // Check if team member meets minimum score requirement\n  if (leadData.leadScore < roleSpecs.minScore) {\n    continue; // Skip this member\n  }\n  \n  // Check current workload\n  const currentLeads = member.currentLeadCount || 0;\n  if (currentLeads >= roleSpecs.maxLeads) {\n    continue; // Skip overloaded member\n  }\n  \n  // Score based on specialization match\n  const projectType = leadData.projectType.toLowerCase();\n  const propertyType = leadData.projectDetails.propertyType.toLowerCase();\n  \n  if (roleSpecs.projectTypes.includes(projectType)) {\n    matchScore += 30;\n  }\n  \n  if (roleSpecs.specialties.includes(propertyType)) {\n    matchScore += 25;\n  }\n  \n  // Score based on project complexity\n  if (leadData.projectDetails.complexity === 'complex' && roleSpecs.specialties.includes('complex')) {\n    matchScore += 20;\n  }\n  \n  // Score based on urgency handling\n  if (leadData.urgency === 'immediate' && roleSpecs.specialties.includes('emergency')) {\n    matchScore += 25;\n  }\n  \n  // Score based on project value appropriateness\n  const estimatedValue = leadData.projectDetails.estimatedValue || 0;\n  if (roleSpecs.maxProjectValue === null || estimatedValue <= roleSpecs.maxProjectValue) {\n    matchScore += 15;\n  } else if (estimatedValue > roleSpecs.maxProjectValue) {\n    matchScore -= 10; // Penalty for value mismatch\n  }\n  \n  // Score based on language requirements\n  const preferredLanguage = leadData.preferredLanguage || 'english';\n  if (roleSpecs.languages.includes(preferredLanguage.toLowerCase())) {\n    matchScore += 10;\n  }\n  \n  // Score based on geographic proximity\n  const leadZipCode = leadData.location.zipCode;\n  if (leadZipCode && member.serviceAreas && member.serviceAreas.includes(leadZipCode)) {\n    matchScore += 15;\n  }\n  \n  // Score based on availability and workload balance\n  const workloadScore = Math.max(0, 15 - (currentLeads * 3)); // Prefer less loaded members\n  matchScore += workloadScore;\n  \n  // Score based on recent performance\n  const performanceScore = (member.recentPerformanceScore || 80) / 10; // Scale 0-10\n  matchScore += performanceScore;\n  \n  teamScores.push({\n    memberId: member.id,\n    memberName: member.name,\n    memberEmail: member.email,\n    memberPhone: member.phone,\n    role: memberRole,\n    matchScore: Math.round(matchScore),\n    currentLeads: currentLeads,\n    specialties: roleSpecs.specialties,\n    experience: roleSpecs.experience,\n    reasonForMatch: [\n      roleSpecs.projectTypes.includes(projectType) ? `Handles ${projectType} projects` : null,\n      roleSpecs.specialties.includes(propertyType) ? `Specializes in ${propertyType}` : null,\n      leadData.urgency === 'immediate' && roleSpecs.specialties.includes('emergency') ? 'Emergency specialist' : null,\n      workloadScore > 10 ? 'Low current workload' : null,\n      member.serviceAreas && member.serviceAreas.includes(leadZipCode) ? 'Local service area' : null\n    ].filter(Boolean)\n  });\n}\n\n// Sort by match score (highest first)\nteamScores.sort((a, b) => b.matchScore - a.matchScore);\n\nif (teamScores.length === 0) {\n  throw new Error('No suitable team members available for this lead type');\n}\n\n// Select the best match\nconst selectedMember = teamScores[0];\nconst alternativeMembers = teamScores.slice(1, 3); // Top 2 alternatives\n\nconst result = {\n  ...leadData,\n  routing: {\n    selectedMember,\n    alternativeMembers,\n    routingReason: 'Best skill and workload match',\n    totalCandidates: teamScores.length,\n    routingTimestamp: new Date().toISOString()\n  }\n};\n\nconsole.log(`Selected ${selectedMember.memberName} (${selectedMember.role}) for lead ${leadData.leadId} - Match score: ${selectedMember.matchScore}`);\n\nreturn [{ json: result }];"
+      },
+      "id": "d4e5f6g7-8901-2345-defg-lead-routing-04",
+      "name": "Calculate Member Matching",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $node[\"Calculate Member Matching\"].json[\"priorityLevel\"] }}",
+              "rightValue": "hot",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "e5f6g7h8-9012-3456-fghi-lead-routing-05",
+      "name": "Priority Routing Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Hot Lead Priority Routing\n// Handle high-priority leads with special routing logic\n\nconst leadData = $input.all()[0].json;\n\n// For hot leads, we may need to escalate or use different routing rules\nconst hotLeadRouting = {\n  ...leadData,\n  routing: {\n    ...leadData.routing,\n    priorityOverride: true,\n    escalationRequired: true,\n    immediateContact: true,\n    maxResponseTime: 15, // 15 minutes for hot leads\n    notificationChannels: ['email', 'sms', 'phone'],\n    routingType: 'hot_lead_priority'\n  }\n};\n\n// Check if selected member can handle hot leads\nconst selectedMember = leadData.routing.selectedMember;\nif (selectedMember.role === 'junior_estimator') {\n  // Escalate to more senior team member\n  const alternatives = leadData.routing.alternativeMembers || [];\n  const seniorAlternative = alternatives.find(alt => \n    alt.role === 'senior_estimator' || \n    alt.role === 'commercial_specialist' ||\n    alt.role === 'storm_specialist'\n  );\n  \n  if (seniorAlternative) {\n    hotLeadRouting.routing.selectedMember = seniorAlternative;\n    hotLeadRouting.routing.routingReason = 'Escalated to senior member for hot lead';\n    hotLeadRouting.routing.escalated = true;\n    hotLeadRouting.routing.originalAssignment = selectedMember;\n  }\n}\n\nconsole.log(`Hot lead routing applied for lead ${leadData.leadId}`);\n\nreturn [{ json: hotLeadRouting }];"
+      },
+      "id": "f6g7h8i9-0123-4567-ghij-lead-routing-06",
+      "name": "Hot Lead Priority Routing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Standard Lead Routing\n// Apply standard routing logic for warm, cold, and unqualified leads\n\nconst leadData = $input.all()[0].json;\n\n// Set routing parameters based on priority level\nconst standardRouting = {\n  ...leadData,\n  routing: {\n    ...leadData.routing,\n    priorityOverride: false,\n    escalationRequired: false,\n    immediateContact: false\n  }\n};\n\n// Set response time expectations based on priority\nswitch (leadData.priorityLevel) {\n  case 'warm':\n    standardRouting.routing.maxResponseTime = 120; // 2 hours\n    standardRouting.routing.notificationChannels = ['email', 'sms'];\n    standardRouting.routing.routingType = 'warm_lead_standard';\n    break;\n  \n  case 'cold':\n    standardRouting.routing.maxResponseTime = 1440; // 24 hours\n    standardRouting.routing.notificationChannels = ['email'];\n    standardRouting.routing.routingType = 'cold_lead_standard';\n    break;\n  \n  case 'unqualified':\n    standardRouting.routing.maxResponseTime = 4320; // 72 hours\n    standardRouting.routing.notificationChannels = ['email'];\n    standardRouting.routing.routingType = 'unqualified_lead_nurture';\n    standardRouting.routing.requiresNurturing = true;\n    break;\n  \n  default:\n    standardRouting.routing.maxResponseTime = 1440; // 24 hours default\n    standardRouting.routing.notificationChannels = ['email'];\n    standardRouting.routing.routingType = 'default_routing';\n}\n\nconsole.log(`Standard routing applied for ${leadData.priorityLevel} lead ${leadData.leadId}`);\n\nreturn [{ json: standardRouting }];"
+      },
+      "id": "g7h8i9j0-1234-5678-hijk-lead-routing-07",
+      "name": "Standard Lead Routing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $node[\"Parse Routing Data\"].json[\"api_base_url\"] || 'http://localhost:3000' }}/api/leads/assign",
+        "options": {
+          "bodyContentType": "json",
+          "timeout": 10000
+        },
+        "body": {
+          "leadId": "={{ $json[\"leadId\"] }}",
+          "assignedTo": "={{ $json[\"routing\"][\"selectedMember\"][\"memberId\"] }}",\n          \"assignedToName\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberName\"] }}\",\n          \"assignedToEmail\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberEmail\"] }}\",\n          \"assignedToPhone\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberPhone\"] }}\",\n          \"priorityLevel\": \"={{ $json[\"priorityLevel\"] }}\",\n          \"leadScore\": \"={{ $json[\"leadScore\"] }}\",\n          \"routingReason\": \"={{ $json[\"routing\"][\"routingReason\"] }}\",\n          \"maxResponseTime\": \"={{ $json[\"routing\"][\"maxResponseTime\"] }}\",\n          \"routingType\": \"={{ $json[\"routing\"][\"routingType\"] }}\",\n          \"escalated\": \"={{ $json[\"routing\"][\"escalated\"] || false }}\",\n          \"assignedAt\": \"{{ new Date().toISOString() }}\",\n          \"routing\": \"={{ $json[\"routing\"] }}\"\n        }\n      },\n      \"id\": \"h8i9j0k1-2345-6789-ijkl-lead-routing-08\",\n      \"name\": \"Assign Lead to Team Member\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        1660,\n        300\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"={{ $node[\"Parse Routing Data\"].json[\"notification_base_url\"] || 'http://localhost:3000' }}/api/notifications/lead-assignment\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"assignedTo\": {\n            \"id\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberId\"] }}\",\n            \"name\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberName\"] }}\",\n            \"email\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberEmail\"] }}\",\n            \"phone\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberPhone\"] }}\"\n          },\n          \"leadData\": {\n            \"name\": \"={{ $json[\"firstName\"] }} {{ $json[\"lastName\"] }}\",\n            \"email\": \"={{ $json[\"email\"] }}\",\n            \"phone\": \"={{ $json[\"phone\"] }}\",\n            \"projectType\": \"={{ $json[\"projectType\"] }}\",\n            \"urgency\": \"={{ $json[\"urgency\"] }}\",\n            \"score\": \"={{ $json[\"leadScore\"] }}\",\n            \"priority\": \"={{ $json[\"priorityLevel\"] }}\"\n          },\n          \"assignment\": {\n            \"routingReason\": \"={{ $json[\"routing\"][\"routingReason\"] }}\",\n            \"maxResponseTime\": \"={{ $json[\"routing\"][\"maxResponseTime\"] }}\",\n            \"routingType\": \"={{ $json[\"routing\"][\"routingType\"] }}\",\n            \"escalated\": \"={{ $json[\"routing\"][\"escalated\"] || false }}\",\n            \"immediateContact\": \"={{ $json[\"routing\"][\"immediateContact\"] || false }}\"\n          },\n          \"notificationChannels\": \"={{ $json[\"routing\"][\"notificationChannels\"] || ['email'] }}\",\n          \"timestamp\": \"{{ new Date().toISOString() }}\"\n        }\n      },\n      \"id\": \"i9j0k1l2-3456-789a-jklm-lead-routing-09\",\n      \"name\": \"Send Assignment Notification\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        1880,\n        300\n      ]\n    },\n    {\n      \"parameters\": {\n        \"conditions\": {\n          \"options\": {\n            \"caseSensitive\": true,\n            \"leftValue\": \"\",\n            \"typeValidation\": \"strict\"\n          },\n          \"conditions\": [\n            {\n              \"leftValue\": \"={{ $json[\"routing\"][\"immediateContact\"] }}\",\n              \"rightValue\": true,\n              \"operator\": {\n                \"type\": \"boolean\",\n                \"operation\": \"equals\"\n              }\n            }\n          ],\n          \"combinator\": \"and\"\n        }\n      },\n      \"id\": \"j0k1l2m3-4567-89ab-klmn-lead-routing-10\",\n      \"name\": \"Check Immediate Contact Required\",\n      \"type\": \"n8n-nodes-base.if\",\n      \"typeVersion\": 2,\n      \"position\": [\n        2100,\n        300\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"={{ $node[\"Parse Routing Data\"].json[\"sms_base_url\"] || 'http://localhost:3000' }}/api/sms/urgent-assignment\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"to\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberPhone\"] }}\",\n          \"message\": \"URGENT: Hot lead {{ $json[\"firstName\"] }} {{ $json[\"lastName\"] }} assigned to you. Score: {{ $json[\"leadScore\"] }}. {{ $json[\"projectType\"] }} project. Contact within 15 minutes. Lead ID: {{ $json[\"leadId\"] }}\",\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"priority\": \"urgent\"\n        }\n      },\n      \"id\": \"k1l2m3n4-5678-9abc-lmno-lead-routing-11\",\n      \"name\": \"Send Urgent SMS Alert\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        2320,\n        200\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"={{ $node[\"Parse Routing Data\"].json[\"followup_base_url\"] || 'http://localhost:3000' }}/api/followup/schedule\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"assignedTo\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberId\"] }}\",\n          \"followUpType\": \"initial_contact\",\n          \"scheduleFor\": \"{{ new Date(Date.now() + ($json.routing.maxResponseTime * 60000)).toISOString() }}\",\n          \"priorityLevel\": \"={{ $json[\"priorityLevel\"] }}\",\n          \"contactMethod\": \"phone\",\n          \"notes\": \"Initial contact follow-up for {{ $json.priorityLevel }} lead\",\n          \"automated\": true\n        }\n      },\n      \"id\": \"l2m3n4o5-6789-abcd-mnop-lead-routing-12\",\n      \"name\": \"Schedule Follow-up Reminder\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        2100,\n        500\n      ]\n    },\n    {\n      \"parameters\": {\n        \"requestMethod\": \"POST\",\n        \"url\": \"={{ $node[\"Parse Routing Data\"].json[\"analytics_base_url\"] || 'http://localhost:3000' }}/api/analytics/lead-routing\",\n        \"options\": {\n          \"bodyContentType\": \"json\"\n        },\n        \"body\": {\n          \"event\": \"lead_routed\",\n          \"leadId\": \"={{ $json[\"leadId\"] }}\",\n          \"assignedTo\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberId\"] }}\",\n          \"assignedToName\": \"={{ $json[\"routing\"][\"selectedMember\"][\"memberName\"] }}\",\n          \"routingScore\": \"={{ $json[\"routing\"][\"selectedMember\"][\"matchScore\"] }}\",\n          \"priorityLevel\": \"={{ $json[\"priorityLevel\"] }}\",\n          \"leadScore\": \"={{ $json[\"leadScore\"] }}\",\n          \"routingType\": \"={{ $json[\"routing\"][\"routingType\"] }}\",\n          \"routingReason\": \"={{ $json[\"routing\"][\"routingReason\"] }}\",\n          \"escalated\": \"={{ $json[\"routing\"][\"escalated\"] || false }}\",\n          \"responseTimeTarget\": \"={{ $json[\"routing\"][\"maxResponseTime\"] }}\",\n          \"totalCandidates\": \"={{ $json[\"routing\"][\"totalCandidates\"] }}\",\n          \"timestamp\": \"{{ new Date().toISOString() }}\",\n          \"routing\": \"={{ $json[\"routing\"] }}\"\n        }\n      },\n      \"id\": \"m3n4o5p6-789a-bcde-nopq-lead-routing-13\",\n      \"name\": \"Log Routing Analytics\",\n      \"type\": \"n8n-nodes-base.httpRequest\",\n      \"typeVersion\": 4.2,\n      \"position\": [\n        2320,\n        500\n      ]\n    }\n  ],\n  \"connections\": {\n    \"Lead Scored Webhook\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Parse Routing Data\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Parse Routing Data\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Get Team Availability\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Get Team Availability\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Calculate Member Matching\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Calculate Member Matching\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Priority Routing Check\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Priority Routing Check\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Hot Lead Priority Routing\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ],\n        [\n          {\n            \"node\": \"Standard Lead Routing\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Hot Lead Priority Routing\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Assign Lead to Team Member\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Standard Lead Routing\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Assign Lead to Team Member\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Assign Lead to Team Member\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Send Assignment Notification\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Send Assignment Notification\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Check Immediate Contact Required\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"Schedule Follow-up Reminder\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Check Immediate Contact Required\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Send Urgent SMS Alert\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Send Urgent SMS Alert\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Log Routing Analytics\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Schedule Follow-up Reminder\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Log Routing Analytics\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    }\n  },\n  \"pinData\": {},\n  \"settings\": {\n    \"executionOrder\": \"v1\"\n  },\n  \"staticData\": null,\n  \"tags\": [\n    {\n      \"createdAt\": \"2025-09-07T21:30:00.000Z\",\n      \"updatedAt\": \"2025-09-07T21:30:00.000Z\",\n      \"id\": \"lead-routing\",\n      \"name\": \"Lead Routing\"\n    },\n    {\n      \"createdAt\": \"2025-09-07T21:30:00.000Z\",\n      \"updatedAt\": \"2025-09-07T21:30:00.000Z\",\n      \"id\": \"team-management\",\n      \"name\": \"Team Management\"\n    }\n  ],\n  \"triggerCount\": 1,\n  \"updatedAt\": \"2025-09-07T21:30:00.000Z\",\n  \"versionId\": \"alpine-peak-lead-routing-v1.0\"\n}

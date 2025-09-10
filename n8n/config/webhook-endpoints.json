@@ -1,0 +1,189 @@
+{
+  "name": "Alpine Peak Roofing - n8n Webhook Configuration",
+  "description": "Centralized webhook endpoint configuration for all n8n workflows",
+  "version": "1.0.0",
+  "base_url": "${NEXT_PUBLIC_N8N_WEBHOOK_BASE_URL}",
+  "endpoints": {
+    "ai_chatbot": {
+      "chatbot_processing": {
+        "path": "/chatbot-process",
+        "method": "POST",
+        "workflow": "chatbot-processing-workflow.json",
+        "description": "Basic chat message processing and intent detection",
+        "auth_required": false,
+        "rate_limit": "100/hour"
+      },
+      "rag_chat": {
+        "path": "/alpine-peak-chat",
+        "method": "POST", 
+        "workflow": "rag-chat.json",
+        "description": "RAG-powered chat responses with semantic search",
+        "auth_required": false,
+        "rate_limit": "50/hour"
+      },
+      "generate_embeddings": {
+        "path": "/generate-embeddings",
+        "method": "GET",
+        "workflow": "embedding-generation.json",
+        "description": "Generate embeddings for knowledge base content",
+        "auth_required": true,
+        "rate_limit": "10/hour"
+      }
+    },
+    "blog_automation": {
+      "content_planning": {
+        "path": "/blog-planning",
+        "method": "POST",
+        "workflow": "blog-content-planner.json",
+        "description": "Trigger content planning workflow",
+        "auth_required": true,
+        "rate_limit": "5/day"
+      },
+      "content_generation": {
+        "path": "/blog-generation",
+        "method": "POST",
+        "workflow": "blog-content-generator.json", 
+        "description": "Generate blog content using AI",
+        "auth_required": true,
+        "rate_limit": "20/day"
+      },
+      "content_publishing": {
+        "path": "/blog-publish",
+        "method": "POST",
+        "workflow": "blog-publisher.json",
+        "description": "Publish content across multiple channels",
+        "auth_required": true,
+        "rate_limit": "10/day"
+      }
+    },
+    "roof_estimator": {
+      "measurement_processing": {
+        "path": "/roof-measurement",
+        "method": "POST",
+        "workflow": "roof-measurement-processor.json",
+        "description": "Process satellite imagery for roof measurements",
+        "auth_required": false,
+        "rate_limit": "30/day"
+      },
+      "estimate_calculation": {
+        "path": "/estimate-calculate",
+        "method": "POST",
+        "workflow": "estimate-calculator.json",
+        "description": "Calculate roofing costs and generate estimates",
+        "auth_required": false,
+        "rate_limit": "50/day"
+      },
+      "pdf_generation": {
+        "path": "/estimate-pdf",
+        "method": "POST",
+        "workflow": "pdf-generator-email.json",
+        "description": "Generate and email PDF estimates",
+        "auth_required": false,
+        "rate_limit": "30/day"
+      }
+    },
+    "lead_crm": {
+      "lead_scoring": {
+        "path": "/lead-score",
+        "method": "POST",
+        "workflow": "lead-scoring-engine.json",
+        "description": "Score and qualify leads",
+        "auth_required": false,
+        "rate_limit": "100/hour"
+      },
+      "lead_routing": {
+        "path": "/lead-route",
+        "method": "POST",
+        "workflow": "lead-routing-system.json",
+        "description": "Route qualified leads to team members",
+        "auth_required": true,
+        "rate_limit": "50/hour"
+      },
+      "crm_sync": {
+        "path": "/crm-sync",
+        "method": "POST",
+        "workflow": "crm-synchronization.json",
+        "description": "Synchronize data with CRM systems",
+        "auth_required": true,
+        "rate_limit": "200/hour"
+      }
+    },
+    "forms_and_capture": {
+      "lead_capture": {
+        "path": "/lead-capture",
+        "method": "POST",
+        "workflow": "lead-scoring-engine.json",
+        "description": "Capture leads from forms and route to scoring",
+        "auth_required": false,
+        "rate_limit": "100/hour"
+      },
+      "roof_estimate_request": {
+        "path": "/roof-estimate-request", 
+        "method": "POST",
+        "workflow": "roof-measurement-processor.json",
+        "description": "Handle roof estimate requests from forms",
+        "auth_required": false,
+        "rate_limit": "30/day"
+      },
+      "contact_form": {
+        "path": "/contact-submit",
+        "method": "POST", 
+        "workflow": "lead-scoring-engine.json",
+        "description": "Process contact form submissions",
+        "auth_required": false,
+        "rate_limit": "50/hour"
+      }
+    }
+  },
+  "environment_variables": {
+    "required": [
+      "NEXT_PUBLIC_N8N_WEBHOOK_BASE_URL",
+      "N8N_API_KEY",
+      "OPENAI_API_KEY",
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "SUPABASE_SERVICE_ROLE_KEY"
+    ],
+    "optional": [
+      "N8N_WEBHOOK_AUTH_TOKEN",
+      "SENDGRID_API_KEY",
+      "TWILIO_ACCOUNT_SID",
+      "HUBSPOT_API_KEY",
+      "GOOGLE_MAPS_API_KEY"
+    ]
+  },
+  "security": {
+    "auth_methods": {
+      "api_key": "Include API key in X-API-Key header",
+      "webhook_auth": "Use n8n webhook authentication tokens",
+      "cors_origins": ["https://alpinepeakroofing.com", "http://localhost:3001"]
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "storage": "redis",
+      "key_generator": "ip_address",
+      "skip_failed_requests": true
+    }
+  },
+  "monitoring": {
+    "health_check": "/health",
+    "metrics": "/metrics",
+    "logs": {
+      "level": "info",
+      "format": "json",
+      "destinations": ["console", "file"]
+    }
+  },
+  "deployment_notes": {
+    "staging": {
+      "base_url": "https://staging-n8n.alpinepeakroofing.com",
+      "auth_required": true,
+      "rate_limits": "50% of production"
+    },
+    "production": {
+      "base_url": "https://n8n.alpinepeakroofing.com",
+      "auth_required": "selective",
+      "rate_limits": "as specified per endpoint"
+    }
+  }
+}

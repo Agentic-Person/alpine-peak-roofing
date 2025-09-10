@@ -1,0 +1,364 @@
+{
+  "name": "pdf-generator-email",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-pdf",
+        "options": {}
+      },
+      "name": "PDF Generation Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "generate-pdf-webhook",
+      "id": "webhook-generate-pdf"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate incoming PDF generation request\nconst requestData = items[0].json;\n\nif (!requestData.estimateId) {\n  throw new Error('Estimate ID is required');\n}\n\nif (!requestData.estimateData) {\n  throw new Error('Estimate data is required');\n}\n\nconst estimate = requestData.estimateData;\n\n// Validate required estimate fields\nif (!estimate.contactInfo || !estimate.contactInfo.email) {\n  throw new Error('Contact email is required for PDF generation');\n}\n\nif (!estimate.totalCost || !estimate.roofArea) {\n  throw new Error('Complete estimate data is required');\n}\n\nreturn [{ json: { \n  estimateId: requestData.estimateId,\n  estimate: estimate,\n  validatedAt: new Date().toISOString()\n}}];"
+      },
+      "name": "Validate PDF Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "id": "validate-pdf-request"
+    },
+    {
+      "parameters": {
+        "url": "https://maps.googleapis.com/maps/api/staticmap",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleMapsApi",
+        "options": {
+          "qs": {
+            "center": "={{$json.estimate.measurements?.coordinates?.lat}},{{$json.estimate.measurements?.coordinates?.lng}}",
+            "zoom": "19",
+            "size": "800x600",
+            "maptype": "satellite",
+            "format": "png",
+            "scale": "2",
+            "key": "={{$credentials.googleMaps.apiKey}}"
+          }
+        }
+      },
+      "name": "Generate Property Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 300],
+      "id": "generate-property-image"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Create comprehensive HTML template for PDF generation\nconst estimate = items[0].json.estimate;\nconst propertyImageData = items[1].binary.data;\nconst propertyImageBase64 = propertyImageData.toString('base64');\n\n// Format currency\nconst formatCurrency = (amount) => {\n  return new Intl.NumberFormat('en-US', {\n    style: 'currency',\n    currency: 'USD',\n    minimumFractionDigits: 0,\n    maximumFractionDigits: 0\n  }).format(amount);\n};\n\n// Format date\nconst formatDate = (dateString) => {\n  return new Date(dateString).toLocaleDateString('en-US', {\n    year: 'numeric',\n    month: 'long',\n    day: 'numeric'\n  });\n};\n\n// Generate HTML template\nconst htmlTemplate = `\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Roof Estimate - ${estimate.estimateId}</title>\n  <style>\n    * {\n      margin: 0;\n      padding: 0;\n      box-sizing: border-box;\n    }\n    \n    body {\n      font-family: 'Arial', sans-serif;\n      line-height: 1.6;\n      color: #333;\n      background: #fff;\n    }\n    \n    .container {\n      max-width: 800px;\n      margin: 0 auto;\n      padding: 40px;\n    }\n    \n    .header {\n      text-align: center;\n      margin-bottom: 40px;\n      padding-bottom: 20px;\n      border-bottom: 3px solid #2563eb;\n    }\n    \n    .company-logo {\n      font-size: 28px;\n      font-weight: bold;\n      color: #2563eb;\n      margin-bottom: 10px;\n    }\n    \n    .company-info {\n      color: #666;\n      font-size: 14px;\n    }\n    \n    .estimate-title {\n      font-size: 24px;\n      color: #1f2937;\n      margin: 30px 0 20px 0;\n      text-align: center;\n    }\n    \n    .estimate-id {\n      text-align: center;\n      color: #666;\n      font-size: 14px;\n      margin-bottom: 30px;\n    }\n    \n    .two-column {\n      display: flex;\n      gap: 30px;\n      margin-bottom: 30px;\n    }\n    \n    .column {\n      flex: 1;\n    }\n    \n    .property-section {\n      background: #f8fafc;\n      padding: 20px;\n      border-radius: 8px;\n      margin-bottom: 30px;\n    }\n    \n    .property-image {\n      width: 100%;\n      border-radius: 8px;\n      margin-bottom: 15px;\n      max-height: 300px;\n      object-fit: cover;\n    }\n    \n    .section-title {\n      font-size: 18px;\n      font-weight: bold;\n      color: #1f2937;\n      margin-bottom: 15px;\n      padding-bottom: 8px;\n      border-bottom: 2px solid #e5e7eb;\n    }\n    \n    .cost-breakdown {\n      background: #fff;\n      border: 1px solid #e5e7eb;\n      border-radius: 8px;\n      overflow: hidden;\n    }\n    \n    .cost-row {\n      display: flex;\n      justify-content: space-between;\n      padding: 12px 20px;\n      border-bottom: 1px solid #f3f4f6;\n    }\n    \n    .cost-row:last-child {\n      border-bottom: none;\n    }\n    \n    .cost-row.total {\n      background: #2563eb;\n      color: white;\n      font-weight: bold;\n      font-size: 18px;\n    }\n    \n    .cost-row.subtotal {\n      background: #f8fafc;\n      font-weight: 600;\n    }\n    \n    .material-details {\n      background: #f8fafc;\n      padding: 15px;\n      border-radius: 8px;\n      margin-bottom: 20px;\n    }\n    \n    .material-item {\n      display: flex;\n      justify-content: space-between;\n      margin-bottom: 8px;\n    }\n    \n    .material-item:last-child {\n      margin-bottom: 0;\n    }\n    \n    .warranty-info {\n      background: #dcfce7;\n      border: 1px solid #bbf7d0;\n      padding: 15px;\n      border-radius: 8px;\n      margin-bottom: 20px;\n    }\n    \n    .warranty-info h4 {\n      color: #166534;\n      margin-bottom: 8px;\n    }\n    \n    .terms-section {\n      margin-top: 40px;\n      padding-top: 20px;\n      border-top: 2px solid #e5e7eb;\n      font-size: 12px;\n      color: #666;\n    }\n    \n    .contact-cta {\n      background: linear-gradient(135deg, #2563eb, #1d4ed8);\n      color: white;\n      padding: 25px;\n      border-radius: 12px;\n      text-align: center;\n      margin: 30px 0;\n    }\n    \n    .contact-cta h3 {\n      font-size: 20px;\n      margin-bottom: 10px;\n    }\n    \n    .contact-info {\n      font-size: 16px;\n      margin-bottom: 15px;\n    }\n    \n    .cta-phone {\n      font-size: 24px;\n      font-weight: bold;\n      color: #fbbf24;\n    }\n    \n    .validity-notice {\n      background: #fef3c7;\n      border: 1px solid #f59e0b;\n      padding: 15px;\n      border-radius: 8px;\n      margin-bottom: 20px;\n      text-align: center;\n    }\n    \n    .page-break {\n      page-break-before: always;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <!-- Header -->\n    <div class=\"header\">\n      <div class=\"company-logo\">Alpine Peak Roofing</div>\n      <div class=\"company-info\">\n        Professional Roofing Services | Licensed & Insured<br>\n        Colorado Springs, CO | (719) 555-0123 | info@alpinepeakroofing.com\n      </div>\n    </div>\n    \n    <!-- Estimate Title -->\n    <h1 class=\"estimate-title\">Roof Replacement Estimate</h1>\n    <div class=\"estimate-id\">Estimate ID: ${estimate.estimateId}</div>\n    \n    <!-- Validity Notice -->\n    <div class=\"validity-notice\">\n      <strong>This estimate is valid until ${formatDate(estimate.validUntil)}</strong>\n    </div>\n    \n    <!-- Customer & Property Info -->\n    <div class=\"two-column\">\n      <div class=\"column\">\n        <div class=\"section-title\">Customer Information</div>\n        <p><strong>${estimate.contactInfo.firstName} ${estimate.contactInfo.lastName}</strong></p>\n        <p>${estimate.contactInfo.email}</p>\n        <p>${estimate.contactInfo.phone}</p>\n        <p>Project Timeline: ${estimate.urgency}</p>\n      </div>\n      <div class=\"column\">\n        <div class=\"section-title\">Property Details</div>\n        <p><strong>Roof Area:</strong> ${estimate.roofArea.toLocaleString()} sq ft</p>\n        <p><strong>Location:</strong> ${estimate.municipality}, ${estimate.region}</p>\n        <p><strong>Estimate Date:</strong> ${formatDate(estimate.createdAt)}</p>\n      </div>\n    </div>\n    \n    <!-- Property Image -->\n    <div class=\"property-section\">\n      <div class=\"section-title\">Property Satellite View</div>\n      <img src=\"data:image/png;base64,${propertyImageBase64}\" alt=\"Property Satellite View\" class=\"property-image\">\n      <p style=\"text-align: center; color: #666; font-size: 14px; margin-top: 10px;\">\n        Satellite imagery used for roof area calculation and analysis\n      </p>\n    </div>\n    \n    <!-- Selected Material -->\n    <div class=\"section-title\">Selected Roofing Material</div>\n    <div class=\"material-details\">\n      <h4>${estimate.selectedMaterial.name}</h4>\n      <p><strong>Category:</strong> ${estimate.selectedMaterial.category}</p>\n      <p><strong>Warranty:</strong> ${estimate.selectedMaterial.warranty}</p>\n    </div>\n    \n    <!-- Warranty Information -->\n    <div class=\"warranty-info\">\n      <h4>🛡️ Warranty Protection</h4>\n      <p>Your new roof comes with a comprehensive ${estimate.selectedMaterial.warranty} warranty, protecting your investment for years to come.</p>\n    </div>\n    \n    <!-- Cost Breakdown -->\n    <div class=\"section-title\">Detailed Cost Breakdown</div>\n    <div class=\"cost-breakdown\">\n      <div class=\"cost-row\">\n        <span><strong>Material Costs</strong></span>\n        <span></span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Primary Roofing Material</span>\n        <span>${formatCurrency(estimate.materialCosts.primary)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Underlayment</span>\n        <span>${formatCurrency(estimate.materialCosts.underlayment)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Flashing & Trim</span>\n        <span>${formatCurrency(estimate.materialCosts.flashing)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Ridge Ventilation</span>\n        <span>${formatCurrency(estimate.materialCosts.ridgeVent)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Accessories & Hardware</span>\n        <span>${formatCurrency(estimate.materialCosts.accessories)}</span>\n      </div>\n      <div class=\"cost-row subtotal\">\n        <span><strong>Material Subtotal</strong></span>\n        <span><strong>${formatCurrency(estimate.materialCosts.total)}</strong></span>\n      </div>\n      \n      <div class=\"cost-row\">\n        <span><strong>Labor Costs</strong></span>\n        <span></span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Professional Installation</span>\n        <span>${formatCurrency(estimate.laborCosts.installation)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Tear-off & Removal</span>\n        <span>${formatCurrency(estimate.laborCosts.tearOff)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Disposal & Cleanup</span>\n        <span>${formatCurrency(estimate.laborCosts.disposal)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Permits & Inspections</span>\n        <span>${formatCurrency(estimate.laborCosts.permits)}</span>\n      </div>\n      <div class=\"cost-row subtotal\">\n        <span><strong>Labor Subtotal</strong></span>\n        <span><strong>${formatCurrency(estimate.laborCosts.total)}</strong></span>\n      </div>\n      \n      <div class=\"cost-row\">\n        <span><strong>Additional Services</strong></span>\n        <span></span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Final Inspection</span>\n        <span>${formatCurrency(estimate.additionalCosts.inspection)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Site Cleanup</span>\n        <span>${formatCurrency(estimate.additionalCosts.cleanup)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>&nbsp;&nbsp;• Project Contingency</span>\n        <span>${formatCurrency(estimate.additionalCosts.contingency)}</span>\n      </div>\n      <div class=\"cost-row subtotal\">\n        <span><strong>Additional Services Subtotal</strong></span>\n        <span><strong>${formatCurrency(estimate.additionalCosts.total)}</strong></span>\n      </div>\n      \n      <div class=\"cost-row\">\n        <span>Subtotal</span>\n        <span>${formatCurrency(estimate.subtotal)}</span>\n      </div>\n      <div class=\"cost-row\">\n        <span>Sales Tax</span>\n        <span>${formatCurrency(estimate.salesTax)}</span>\n      </div>\n      ${estimate.urgencyAdjustment > 0 ? `\n      <div class=\"cost-row\">\n        <span>Urgency Adjustment</span>\n        <span>${formatCurrency(estimate.urgencyAdjustment)}</span>\n      </div>` : ''}\n      <div class=\"cost-row total\">\n        <span>TOTAL PROJECT COST</span>\n        <span>${formatCurrency(estimate.totalCost)}</span>\n      </div>\n    </div>\n    \n    <!-- Cost per Square Foot -->\n    <div style=\"text-align: center; margin: 20px 0; font-size: 16px; color: #666;\">\n      Cost per square foot: <strong>${formatCurrency(estimate.costPerSqft)}</strong>\n    </div>\n    \n    <!-- Contact CTA -->\n    <div class=\"contact-cta\">\n      <h3>Ready to Get Started?</h3>\n      <div class=\"contact-info\">\n        Contact us today to schedule your free consultation\n      </div>\n      <div class=\"cta-phone\">(719) 555-0123</div>\n    </div>\n    \n    <!-- Terms and Conditions -->\n    <div class=\"terms-section\">\n      <h4>Terms & Conditions</h4>\n      <p><strong>Estimate Validity:</strong> This estimate is valid for 30 days from the date of creation.</p>\n      <p><strong>Pricing:</strong> Final pricing may vary based on actual site conditions and material availability.</p>\n      <p><strong>Permits:</strong> All necessary permits will be obtained by Alpine Peak Roofing.</p>\n      <p><strong>Warranty:</strong> All work is backed by our comprehensive warranty program.</p>\n      <p><strong>Payment:</strong> Payment terms will be discussed and agreed upon before work begins.</p>\n      <p><strong>Weather:</strong> Installation timeline may be affected by weather conditions.</p>\n      \n      <br>\n      <p style=\"text-align: center; font-weight: bold; color: #2563eb;\">\n        Alpine Peak Roofing - Licensed, Bonded & Insured<br>\n        Colorado Contractor License #12345\n      </p>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\nreturn [{ json: { \n  estimateId: items[0].json.estimateId,\n  estimate: estimate,\n  htmlTemplate: htmlTemplate,\n  templateGeneratedAt: new Date().toISOString()\n}}];"
+      },
+      "name": "Generate HTML Template",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "id": "generate-html-template"
+    },
+    {
+      "parameters": {
+        "url": "https://api.htmlcsstoimage.com/v1/image",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Basic {{$env.HTMLCSS_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"html\": {{JSON.stringify($json.htmlTemplate)}},\n  \"css\": \"\",\n  \"google_fonts\": \"Arial\",\n  \"selector\": \"body\",\n  \"ms_delay\": 1000,\n  \"device_scale\": 2,\n  \"format\": \"pdf\",\n  \"width\": 800,\n  \"height\": 1200,\n  \"quality\": 100\n}"
+      },
+      "name": "Convert HTML to PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300],
+      "id": "convert-to-pdf"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "bucket": "={{$env.AWS_S3_BUCKET}}",
+        "fileKey": "estimates/{{$json.estimateId}}.pdf",
+        "binaryData": true,
+        "binaryPropertyName": "data",
+        "options": {
+          "acl": "public-read",
+          "contentType": "application/pdf"
+        }
+      },
+      "name": "Upload PDF to S3",
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 1,
+      "position": [1340, 300],
+      "credentials": {
+        "aws": {
+          "id": "aws-credentials",
+          "name": "Alpine Peak AWS"
+        }
+      },
+      "id": "upload-pdf-s3"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Prepare email data with PDF attachment\nconst estimate = items[0].json.estimate;\nconst pdfUrl = items[1].json.Location;\n\n// Format currency for email\nconst formatCurrency = (amount) => {\n  return new Intl.NumberFormat('en-US', {\n    style: 'currency',\n    currency: 'USD',\n    minimumFractionDigits: 0\n  }).format(amount);\n};\n\n// Create email subject\nconst emailSubject = `Your Roof Estimate - ${formatCurrency(estimate.totalCost)} | Alpine Peak Roofing`;\n\n// Create email HTML content\nconst emailHtml = `\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { text-align: center; background: #2563eb; color: white; padding: 20px; border-radius: 8px 8px 0 0; }\n    .content { background: #f8fafc; padding: 30px; }\n    .estimate-box { background: white; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }\n    .cost-highlight { font-size: 32px; font-weight: bold; color: #2563eb; }\n    .cta-button { display: inline-block; background: #f59e0b; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }\n    .footer { background: #1f2937; color: white; padding: 20px; border-radius: 0 0 8px 8px; text-align: center; font-size: 14px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🏠 Your Roof Estimate is Ready!</h1>\n      <p>Professional roofing estimate generated using satellite imagery</p>\n    </div>\n    \n    <div class=\"content\">\n      <p>Dear ${estimate.contactInfo.firstName},</p>\n      \n      <p>Thank you for choosing Alpine Peak Roofing for your roofing needs. We've prepared a detailed estimate for your ${estimate.roofArea.toLocaleString()} sq ft roof replacement.</p>\n      \n      <div class=\"estimate-box\">\n        <h3>Your Total Project Cost</h3>\n        <div class=\"cost-highlight\">${formatCurrency(estimate.totalCost)}</div>\n        <p>Cost per sq ft: ${formatCurrency(estimate.costPerSqft)}</p>\n        <p><strong>Selected Material:</strong> ${estimate.selectedMaterial.name}</p>\n        <p><strong>Warranty:</strong> ${estimate.selectedMaterial.warranty}</p>\n      </div>\n      \n      <p><strong>What's included in your estimate:</strong></p>\n      <ul>\n        <li>✅ Professional installation by licensed contractors</li>\n        <li>✅ Complete tear-off and disposal of existing roof</li>\n        <li>✅ High-quality materials with manufacturer warranty</li>\n        <li>✅ All necessary permits and inspections</li>\n        <li>✅ Comprehensive cleanup and site restoration</li>\n      </ul>\n      \n      <p><strong>📎 Your detailed PDF estimate is attached to this email.</strong></p>\n      \n      <p>This estimate is valid until <strong>${new Date(estimate.validUntil).toLocaleDateString()}</strong>. Material prices and availability may change after this date.</p>\n      \n      <div style=\"text-align: center;\">\n        <a href=\"tel:+17195550123\" class=\"cta-button\">📞 Call Now: (719) 555-0123</a>\n      </div>\n      \n      <p><strong>Next Steps:</strong></p>\n      <ol>\n        <li>Review your detailed PDF estimate</li>\n        <li>Call us to schedule a free in-person consultation</li>\n        <li>We'll answer any questions and finalize your project details</li>\n        <li>Schedule your installation at your convenience</li>\n      </ol>\n      \n      <p>Our experienced team is ready to transform your home with a beautiful, durable new roof. We're licensed, bonded, and insured, with hundreds of satisfied customers throughout Colorado.</p>\n      \n      <p>Questions? Reply to this email or call us at <strong>(719) 555-0123</strong>. We're here to help!</p>\n      \n      <p>Best regards,<br>\n      <strong>The Alpine Peak Roofing Team</strong></p>\n    </div>\n    \n    <div class=\"footer\">\n      <p><strong>Alpine Peak Roofing</strong><br>\n      Licensed & Insured • Colorado Springs, CO<br>\n      (719) 555-0123 • info@alpinepeakroofing.com<br>\n      Colorado Contractor License #12345</p>\n    </div>\n  </div>\n</body>\n</html>\n`;\n\n// Plain text version\nconst emailText = `\nYour Roof Estimate from Alpine Peak Roofing\n\nDear ${estimate.contactInfo.firstName},\n\nYour roof estimate is ready! Here are the details:\n\nProperty: ${estimate.roofArea.toLocaleString()} sq ft\nMaterial: ${estimate.selectedMaterial.name}\nTotal Cost: ${formatCurrency(estimate.totalCost)}\nCost per sq ft: ${formatCurrency(estimate.costPerSqft)}\n\nYour detailed PDF estimate is attached.\n\nThis estimate is valid until ${new Date(estimate.validUntil).toLocaleDateString()}.\n\nNext steps:\n1. Review your PDF estimate\n2. Call us at (719) 555-0123 for a free consultation\n3. Schedule your installation\n\nQuestions? Reply to this email or call us.\n\nBest regards,\nAlpine Peak Roofing Team\n(719) 555-0123\ninfo@alpinepeakroofing.com\n`;\n\nreturn [{ json: {\n  estimateId: items[0].json.estimateId,\n  email: {\n    to: estimate.contactInfo.email,\n    subject: emailSubject,\n    html: emailHtml,\n    text: emailText\n  },\n  pdfUrl: pdfUrl,\n  customerInfo: estimate.contactInfo,\n  emailGeneratedAt: new Date().toISOString()\n}}];"
+      },
+      "name": "Prepare Email Content",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1560, 300],
+      "id": "prepare-email"
+    },
+    {
+      "parameters": {
+        "resource": "email",
+        "operation": "send",
+        "to": "={{$json.email.to}}",
+        "subject": "={{$json.email.subject}}",
+        "emailType": "html",
+        "message": "={{$json.email.html}}",
+        "attachments": "pdfUrl",
+        "options": {
+          "replyTo": "info@alpinepeakroofing.com",
+          "fromName": "Alpine Peak Roofing"
+        }
+      },
+      "name": "Send Email with PDF",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1780, 300],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "Alpine Peak SMTP"
+        }
+      },
+      "id": "send-email"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "roof_estimates",
+        "where": {
+          "conditions": [
+            {
+              "column": "estimate_id",
+              "operator": "=",
+              "value": "={{$json.estimateId}}"
+            }
+          ]
+        },
+        "columns": {
+          "columnsUi": {
+            "column": [
+              {
+                "column": "pdf_url",
+                "value": "={{$json.pdfUrl}}"
+              },
+              {
+                "column": "email_sent_at",
+                "value": "={{$json.emailGeneratedAt}}"
+              },
+              {
+                "column": "status",
+                "value": "delivered"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Update Estimate Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2000, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials",
+          "name": "Alpine Peak Supabase"
+        }
+      },
+      "id": "update-estimate-status"
+    },
+    {
+      "parameters": {
+        "url": "={{$env.N8N_WEBHOOK_BASE_URL}}/webhook/create-crm-lead",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={\n  \"estimateId\": \"{{$json.estimateId}}\",\n  \"customerInfo\": {{JSON.stringify($json.customerInfo)}},\n  \"estimateValue\": {{$json.estimate.totalCost}},\n  \"urgency\": \"{{$json.estimate.urgency}}\",\n  \"roofArea\": {{$json.estimate.roofArea}},\n  \"material\": \"{{$json.estimate.selectedMaterial.name}}\",\n  \"leadSource\": \"roof-estimator\",\n  \"leadScore\": {{$json.estimate.urgency === 'urgent' ? 90 : ($json.estimate.urgency === 'soon' ? 70 : 50)}}\n}"
+      },
+      "name": "Create CRM Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2000, 450],
+      "id": "create-crm-lead"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"estimateId\": \"{{$json.estimateId}}\",\n  \"pdfGenerated\": true,\n  \"pdfUrl\": \"{{$json.pdfUrl}}\",\n  \"emailSent\": true,\n  \"emailAddress\": \"{{$json.email.to}}\",\n  \"crmLeadCreated\": true,\n  \"completedAt\": \"{{$json.emailGeneratedAt}}\"\n}"
+      },
+      "name": "Return Success Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [2220, 300],
+      "id": "return-success-response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"{{$json.error.message}}\",\n  \"code\": \"PDF_GENERATION_FAILED\"\n}",
+        "responseCode": 500
+      },
+      "name": "Error Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [1120, 500],
+      "id": "error-response"
+    }
+  ],
+  "connections": {
+    "PDF Generation Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate PDF Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate PDF Request": {
+      "main": [
+        [
+          {
+            "node": "Generate Property Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Property Image": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML Template": {
+      "main": [
+        [
+          {
+            "node": "Convert HTML to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert HTML to PDF": {
+      "main": [
+        [
+          {
+            "node": "Upload PDF to S3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload PDF to S3": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send Email with PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email with PDF": {
+      "main": [
+        [
+          {
+            "node": "Update Estimate Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create CRM Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Estimate Status": {
+      "main": [
+        [
+          {
+            "node": "Return Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create CRM Lead": {
+      "main": [
+        [
+          {
+            "node": "Return Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-09-07T00:00:00.000Z",
+  "updatedAt": "2025-09-07T00:00:00.000Z",
+  "settings": {},
+  "staticData": null,
+  "pinData": {},
+  "versionId": "pdf-generator-v1.0",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

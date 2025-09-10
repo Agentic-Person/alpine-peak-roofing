@@ -1,0 +1,385 @@
+{
+  "name": "blog-publisher",
+  "description": "Automated blog publishing and social media distribution workflow",
+  "version": 1,
+  "trigger": {
+    "type": "webhook",
+    "path": "/webhook/blog-publisher",
+    "method": "POST"
+  },
+  "estimated_cost_per_run": "$4.00",
+  "nodes": [
+    {
+      "id": "webhook_trigger",
+      "name": "Publishing Trigger",
+      "type": "webhook",
+      "position": [100, 300],
+      "parameters": {
+        "path": "/webhook/blog-publisher",
+        "method": "POST",
+        "responseCode": 200,
+        "responseData": "Publishing started"
+      }
+    },
+    {
+      "id": "fetch_blog_post",
+      "name": "Fetch Blog Post Data",
+      "type": "supabase",
+      "position": [300, 300],
+      "parameters": {
+        "operation": "select",
+        "table": "blog_posts",
+        "filters": {
+          "id": "{{$node.webhook_trigger.json.blog_post_id}}"
+        },
+        "limit": 1
+      }
+    },
+    {
+      "id": "prepare_cms_content",
+      "name": "Prepare CMS Content",
+      "type": "code",
+      "position": [500, 200],
+      "parameters": {
+        "jsCode": "const post = $node.fetch_blog_post.json[0];\n\n// Prepare content for CMS publishing\nconst cmsContent = {\n  title: post.seo_title || post.title,\n  slug: post.slug,\n  content: post.content,\n  excerpt: post.meta_description,\n  featuredImage: post.featured_image_url,\n  altText: post.alt_text,\n  focusKeyword: post.focus_keyword,\n  publishDate: post.publish_date,\n  categories: ['Roofing Tips', post.season.charAt(0).toUpperCase() + post.season.slice(1)],\n  tags: post.keywords,\n  status: 'publish'\n};\n\n// Generate schema markup\nconst schemaMarkup = {\n  '@context': 'https://schema.org',\n  '@type': 'BlogPosting',\n  'headline': post.title,\n  'description': post.meta_description,\n  'image': post.featured_image_url,\n  'author': {\n    '@type': 'Organization',\n    'name': 'Alpine Peak Roofing'\n  },\n  'publisher': {\n    '@type': 'Organization',\n    'name': 'Alpine Peak Roofing',\n    'logo': {\n      '@type': 'ImageObject',\n      'url': 'https://alpinepeakroofing.com/logo.png'\n    }\n  },\n  'datePublished': post.publish_date\n};\n\nreturn [{\n  cmsContent,\n  schemaMarkup,\n  postId: post.id\n}];"
+      }
+    },
+    {
+      "id": "publish_to_cms",
+      "name": "Publish to Next.js CMS",
+      "type": "http_request",
+      "position": [700, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "{{$env.NEXT_API_BASE_URL}}/api/blog/publish",
+        "headers": {
+          "Authorization": "Bearer {{$env.CMS_API_KEY}}",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "post": "{{$node.prepare_cms_content.json.cmsContent}}",
+          "schema": "{{$node.prepare_cms_content.json.schemaMarkup}}"
+        },
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "parse_social_content",
+      "name": "Parse Social Media Content",
+      "type": "code",
+      "position": [500, 400],
+      "parameters": {
+        "jsCode": "const socialData = JSON.parse($node.fetch_blog_post.json[0].social_media);\nconst blogUrl = `https://alpinepeakroofing.com/blog/${$node.fetch_blog_post.json[0].slug}`;\n\n// Add blog URL to each social post\nconst result = {\n  facebook: `${socialData.facebook}\\n\\nRead more: ${blogUrl}`,\n  linkedin: `${socialData.linkedin}\\n\\nRead the full article: ${blogUrl}`,\n  instagram: `${socialData.instagram}\\n\\nLink in bio! 👆`,\n  blogUrl: blogUrl\n};\n\nreturn [result];"
+      }
+    },
+    {
+      "id": "schedule_facebook_post",
+      "name": "Schedule Facebook Post",
+      "type": "http_request",
+      "position": [700, 350],
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/{{$env.FACEBOOK_PAGE_ID}}/feed",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "message": "{{$node.parse_social_content.json.facebook}}",
+          "link": "{{$node.parse_social_content.json.blogUrl}}",
+          "access_token": "{{$env.FACEBOOK_ACCESS_TOKEN}}",
+          "published": false,
+          "scheduled_publish_time": "{{Math.floor((Date.now() + 2*60*60*1000) / 1000)}}"
+        }
+      }
+    },
+    {
+      "id": "schedule_linkedin_post",
+      "name": "Schedule LinkedIn Post",
+      "type": "http_request", 
+      "position": [700, 450],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "headers": {
+          "Authorization": "Bearer {{$env.LINKEDIN_ACCESS_TOKEN}}",
+          "Content-Type": "application/json",
+          "X-Restli-Protocol-Version": "2.0.0"
+        },
+        "body": {
+          "author": "urn:li:organization:{{$env.LINKEDIN_COMPANY_ID}}",
+          "lifecycleState": "PUBLISHED",
+          "specificContent": {
+            "com.linkedin.ugc.ShareContent": {
+              "shareCommentary": {
+                "text": "{{$node.parse_social_content.json.linkedin}}"
+              },
+              "shareMediaCategory": "ARTICLE",
+              "media": [
+                {
+                  "status": "READY",
+                  "description": {
+                    "text": "{{$node.fetch_blog_post.json[0].meta_description}}"
+                  },
+                  "originalUrl": "{{$node.parse_social_content.json.blogUrl}}",
+                  "title": {
+                    "text": "{{$node.fetch_blog_post.json[0].title}}"
+                  }
+                }
+              ]
+            }
+          },
+          "visibility": {
+            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+          }
+        }
+      }
+    },
+    {
+      "id": "create_google_my_business_post",
+      "name": "Create Google My Business Post",
+      "type": "http_request",
+      "position": [700, 550],
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/{{$env.GMB_ACCOUNT_ID}}/locations/{{$env.GMB_LOCATION_ID}}/localPosts",
+        "headers": {
+          "Authorization": "Bearer {{$env.GOOGLE_ACCESS_TOKEN}}",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "languageCode": "en-US",
+          "summary": "{{$node.fetch_blog_post.json[0].meta_description}}",
+          "callToAction": {
+            "actionType": "LEARN_MORE",
+            "url": "{{$node.parse_social_content.json.blogUrl}}"
+          },
+          "media": [
+            {
+              "mediaFormat": "PHOTO",
+              "sourceUrl": "{{$node.fetch_blog_post.json[0].featured_image_url}}"
+            }
+          ],
+          "topicType": "STANDARD"
+        }
+      }
+    },
+    {
+      "id": "update_sitemap",
+      "name": "Update XML Sitemap",
+      "type": "http_request",
+      "position": [900, 200],
+      "parameters": {
+        "method": "POST",
+        "url": "{{$env.NEXT_API_BASE_URL}}/api/sitemap/refresh",
+        "headers": {
+          "Authorization": "Bearer {{$env.CMS_API_KEY}}",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "new_url": "{{$node.parse_social_content.json.blogUrl}}",
+          "priority": "0.8",
+          "changefreq": "weekly"
+        }
+      }
+    },
+    {
+      "id": "notify_search_engines",
+      "name": "Ping Search Engines",
+      "type": "http_request",
+      "position": [900, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.google.com/ping",
+        "qs": {
+          "sitemap": "https://alpinepeakroofing.com/sitemap.xml"
+        }
+      }
+    },
+    {
+      "id": "create_email_newsletter_entry",
+      "name": "Add to Newsletter Queue",
+      "type": "supabase",
+      "position": [900, 400],
+      "parameters": {
+        "operation": "insert",
+        "table": "newsletter_queue",
+        "data": {
+          "blog_post_id": "{{$node.webhook_trigger.json.blog_post_id}}",
+          "title": "{{$node.fetch_blog_post.json[0].title}}",
+          "excerpt": "{{$node.fetch_blog_post.json[0].meta_description}}",
+          "url": "{{$node.parse_social_content.json.blogUrl}}",
+          "featured_image": "{{$node.fetch_blog_post.json[0].featured_image_url}}",
+          "status": "queued",
+          "created_at": "{{new Date().toISOString()}}"
+        }
+      }
+    },
+    {
+      "id": "update_blog_post_status",
+      "name": "Update Blog Post Status",
+      "type": "supabase",
+      "position": [1100, 300],
+      "parameters": {
+        "operation": "update",
+        "table": "blog_posts",
+        "filters": {
+          "id": "{{$node.webhook_trigger.json.blog_post_id}}"
+        },
+        "data": {
+          "status": "published",
+          "published_at": "{{new Date().toISOString()}}",
+          "cms_id": "{{$node.publish_to_cms.json.id}}",
+          "social_media_scheduled": true
+        }
+      }
+    },
+    {
+      "id": "update_content_calendar_final",
+      "name": "Update Content Calendar - Published",
+      "type": "supabase",
+      "position": [1100, 450],
+      "parameters": {
+        "operation": "update",
+        "table": "blog_content_calendar",
+        "filters": {
+          "id": "{{$node.webhook_trigger.json.calendar_id}}"
+        },
+        "data": {
+          "status": "published",
+          "published_at": "{{new Date().toISOString()}}",
+          "final_cost": 10.50,
+          "performance_tracking_enabled": true
+        }
+      }
+    },
+    {
+      "id": "send_team_notification",
+      "name": "Notify Team via Slack",
+      "type": "http_request",
+      "position": [1100, 600],
+      "parameters": {
+        "method": "POST",
+        "url": "{{$env.SLACK_WEBHOOK_URL}}",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "text": "📝 New blog post published!",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "*New Blog Post Published* 🎉\\n*Title:* {{$node.fetch_blog_post.json[0].title}}\\n*URL:* {{$node.parse_social_content.json.blogUrl}}\\n*Cost:* $10.50\\n*Social Media:* Scheduled for 2 hours"
+              }
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "View Post"
+                  },
+                  "url": "{{$node.parse_social_content.json.blogUrl}}"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "source": "webhook_trigger",
+      "target": "fetch_blog_post"
+    },
+    {
+      "source": "fetch_blog_post",
+      "target": "prepare_cms_content"
+    },
+    {
+      "source": "fetch_blog_post", 
+      "target": "parse_social_content"
+    },
+    {
+      "source": "prepare_cms_content",
+      "target": "publish_to_cms"
+    },
+    {
+      "source": "parse_social_content",
+      "target": "schedule_facebook_post"
+    },
+    {
+      "source": "parse_social_content",
+      "target": "schedule_linkedin_post"
+    },
+    {
+      "source": "parse_social_content",
+      "target": "create_google_my_business_post"
+    },
+    {
+      "source": "publish_to_cms",
+      "target": "update_sitemap"
+    },
+    {
+      "source": "update_sitemap",
+      "target": "notify_search_engines"
+    },
+    {
+      "source": "fetch_blog_post",
+      "target": "create_email_newsletter_entry"
+    },
+    {
+      "source": "publish_to_cms",
+      "target": "update_blog_post_status"
+    },
+    {
+      "source": "schedule_facebook_post",
+      "target": "update_content_calendar_final"
+    },
+    {
+      "source": "schedule_linkedin_post",
+      "target": "update_content_calendar_final"
+    },
+    {
+      "source": "create_google_my_business_post",
+      "target": "update_content_calendar_final"
+    },
+    {
+      "source": "update_blog_post_status",
+      "target": "send_team_notification"
+    },
+    {
+      "source": "update_content_calendar_final",
+      "target": "send_team_notification"
+    }
+  ],
+  "settings": {
+    "errorWorkflow": "error-handler",
+    "timezone": "America/Denver",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  },
+  "cost_breakdown": {
+    "cms_publishing": "$0.50",
+    "social_media_apis": "$1.50",
+    "google_services": "$1.00",
+    "notification_services": "$0.50", 
+    "database_operations": "$0.50",
+    "total_estimated": "$4.00"
+  },
+  "implementation_notes": [
+    "Requires social media API access tokens and permissions",
+    "Next.js API endpoints must be created for CMS publishing",
+    "Google My Business API requires business verification",
+    "Supabase tables for newsletter_queue must exist",
+    "Slack webhook URL for team notifications",
+    "Monitor API rate limits for social platforms",
+    "Set up error handling for failed publishing attempts"
+  ]
+}
