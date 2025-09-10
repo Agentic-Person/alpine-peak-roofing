@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { BlogService } from '@/lib/blog/blogService';
 import { BlogFilters } from '@/components/blog/BlogFilters';
 import { BlogCard, BlogCardSkeleton } from '@/components/blog/BlogCard';

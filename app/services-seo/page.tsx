@@ -28,6 +28,7 @@ import {
   BadgeCheck,
   ChevronRight,
   Factory,
+  Camera,
   Snowflake,
   Wind,
   Sun,
