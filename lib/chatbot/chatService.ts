@@ -171,13 +171,18 @@ export class ChatService {
         .eq('session_id', sessionId)
         .single()
 
-      if (error && error.code !== 'PGRST116') { // Not found is ok for new sessions
-        throw error
+      // If no record found (PGRST116), that's fine for new sessions
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return [] // No conversation found, return empty array
+        }
+        console.warn('Supabase error getting conversation:', error)
+        return [] // Return empty array for any other errors too
       }
 
       return data?.messages || []
     } catch (error) {
-      console.error('ChatService.getConversation error:', error)
+      console.warn('ChatService.getConversation error (returning empty):', error)
       return []
     }
   }

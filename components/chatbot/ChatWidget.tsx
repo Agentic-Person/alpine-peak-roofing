@@ -66,10 +66,16 @@ export function ChatWidget({
       const existingSessionId = chatService.getOrCreateSessionId()
       setSessionId(existingSessionId)
 
-      // Load existing conversation
-      const existingMessages = await chatService.getConversation(existingSessionId)
-      setMessages(existingMessages)
+      // Try to load existing conversation, but continue if it fails
+      let existingMessages = []
+      try {
+        existingMessages = await chatService.getConversation(existingSessionId)
+      } catch (dbError) {
+        console.warn('Could not load chat history, starting fresh session:', dbError)
+        existingMessages = []
+      }
       
+      setMessages(existingMessages)
       setIsConnected(true)
 
       // Send welcome message for new sessions
@@ -79,8 +85,10 @@ export function ChatWidget({
 
     } catch (error) {
       console.error('Failed to initialize chat session:', error)
-      setError('Failed to connect to chat service')
-      setIsConnected(false)
+      // Still show the widget even if DB connection fails
+      setSessionId(`local_${Date.now()}`)
+      setIsConnected(true)
+      await sendWelcomeMessage(`local_${Date.now()}`)
     }
   }
 
