@@ -217,8 +217,8 @@ export default function ColorsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <GradientSwatch 
               name="Brand Header Gradient" 
-              gradient="linear-gradient(to right, #2563EB, #1E40AF)" 
-              usage="Current header gradient used throughout the site"
+              gradient="linear-gradient(to right, #0066CC, #003399)" 
+              usage="Horizontal header gradient - brand blue to brand navy"
             />
             <GradientSwatch 
               name="Brand Navy to Sky Gradient" 
@@ -229,6 +229,16 @@ export default function ColorsPage() {
               name="Brand Vertical Gradient" 
               gradient="linear-gradient(to bottom, #0066CC, #003399)" 
               usage="Vertical gradient from Brand Blue to Brand Navy"
+            />
+            <GradientSwatch 
+              name="Brand Vertical Invert Gradient" 
+              gradient="linear-gradient(to bottom, #003399, #0066CC)" 
+              usage="Inverted vertical gradient - darker navy to brighter blue"
+            />
+            <GradientSwatch 
+              name="Brand Header Invert Gradient" 
+              gradient="linear-gradient(to right, #003399, #0066CC)" 
+              usage="Horizontal header gradient - brand navy to brand blue"
             />
           </div>
         </section>

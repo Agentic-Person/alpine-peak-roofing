@@ -50,9 +50,11 @@ const config: Config = {
       },
       backgroundImage: {
         // Brand Gradients
-        'brand-header': 'linear-gradient(to right, #2563EB, #1E40AF)',
+        'brand-header': 'linear-gradient(to right, #0066CC, #003399)',
+        'brand-header-invert': 'linear-gradient(to right, #003399, #0066CC)',
         'brand-navy-sky': 'linear-gradient(to right, #003399, #33CCFF)',
-        'brand-vertical': 'linear-gradient(to bottom, #0066CC, #003399)'
+        'brand-vertical': 'linear-gradient(to bottom, #0066CC, #003399)',
+        'brand-vertical-invert': 'linear-gradient(to bottom, #003399, #0066CC)'
       }
     },
   },
