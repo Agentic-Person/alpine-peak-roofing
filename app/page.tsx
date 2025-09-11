@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -16,47 +18,94 @@ import {
   Award,
   Clock,
   Users,
-  MapPin
+  MapPin,
+  Bot,
+  FileText,
+  Calculator
 } from 'lucide-react'
 
 export default function HomePage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+  const heroImages = [
+    '/images/heroes/hero-roofers-001.png',
+    '/images/heroes/hero-roofers-002.png',
+    '/images/heroes/hero-roofers-003.png',
+    '/images/heroes/hero-roofers-004.png'
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
+    }, 5000) // Change image every 5 seconds
+
+    return () => clearInterval(interval)
+  }, [heroImages.length])
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#003399]">
 
       {/* Hero Section */}
-      <section className="relative py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-blue-800 dark:from-[#003399] dark:to-[#0066CC] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+      <section className="relative py-24 sm:py-36 bg-gradient-to-b from-[#0066CC] to-[#003399] text-white overflow-hidden">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-white dark:text-[#C7E1FC]">
-                <span className="text-yellow-400 dark:text-[#FFCC00]">Pinnacle of Protection</span>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-white">
+                <span className="text-yellow-400">The Labor Equation</span>
                 <br />
-                Peak of Performance
+                Solved.
               </h1>
-              <p className="mt-6 text-lg leading-8 text-blue-100 dark:text-[#DDDDDD]">
-                Professional roofing solutions for homes and businesses across the Denver metro area. 
-                Licensed, insured, and trusted by thousands of satisfied customers.
+              <p className="mt-6 text-2xl leading-10 text-blue-100">
+                Agentic workflows solve the toughest equation in roofing—cutting admin costs so you can pay for the best on the roof.
               </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button size="lg" variant="secondary" className="px-8 bg-yellow-400 dark:bg-brand-gold text-blue-900 dark:text-brand-navy hover:bg-yellow-300 dark:hover:bg-accent-gold-light">
-                  <Phone className="mr-2 h-5 w-5" />
-                  Call (303) 555-ROOF
-                </Button>
-                <Button size="lg" variant="outline" className="px-8 border-white dark:border-brand-sky text-white dark:text-brand-sky hover:bg-white hover:text-blue-600 dark:hover:bg-brand-sky dark:hover:text-brand-navy" asChild>
-                  <Link href="/estimator">
-                    Get Free Instant Estimate
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+              <div className="mt-8 flex justify-start">
+                <Button 
+                  className="bg-gradient-to-r from-[#9333EA] to-[#213FB0] text-white border-2 border-yellow-400 hover:border-yellow-300 transition-all duration-300 px-8 py-3 text-lg font-semibold hover:shadow-lg"
+                  onClick={() => {
+                    const chatWidget = document.querySelector('[aria-label*="Chat"]') || document.querySelector('[data-testid*="chat"]');
+                    if (chatWidget) {
+                      (chatWidget as HTMLElement).click();
+                    }
+                  }}
+                >
+                  Chat with our AI
                 </Button>
               </div>
             </div>
             <div className="relative">
-              {/* Placeholder for hero image */}
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg shadow-2xl flex items-center justify-center">
-                <div className="text-center text-white/80">
-                  <Home className="h-16 w-16 mx-auto mb-4" />
-                  <p className="text-lg">Professional Roofing Project</p>
+              {/* Hero Image Slideshow */}
+              <div className="aspect-[4/3] rounded-lg shadow-2xl overflow-hidden relative border-2 border-white backdrop-blur-sm bg-white/5">
+                {heroImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                      index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`Alpine Peak Roofing Professional Project ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
+                  </div>
+                ))}
+                
+                {/* Slideshow indicators */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {heroImages.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentImageIndex
+                          ? 'bg-yellow-400 scale-110'
+                          : 'bg-white/50 hover:bg-white/80'
+                      }`}
+                      onClick={() => setCurrentImageIndex(index)}
+                      aria-label={`View image ${index + 1}`}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -68,123 +117,200 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 sm:py-24 bg-gray-50 dark:bg-[#003399]">
+      <section className="py-24 sm:py-36 bg-gradient-to-b from-[#003399] to-[#0066CC]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-[#C7E1FC] sm:text-4xl">
-              Our Roofing Services
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: '#FFCC00' }}>
+              Intelligent Automations for Roofing Contractors
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-[#DDDDDD]">
-              Comprehensive roofing solutions for every need, backed by decades of experience
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white font-bold">
+              Utilize Agentic workflows to streamline admin, freeing up capital so you can pay your roofing crews what they deserve.
             </p>
           </div>
 
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Residential Roofing */}
-            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 dark:hover:border-[#33CCFF] dark:bg-[#0066CC] dark:border-[#33CCFF]/30 transition-all duration-300 hover:shadow-xl">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-[#33CCFF]/20">
-                  <Home className="h-6 w-6 text-blue-600 dark:text-[#33CCFF]" />
+            {/* AI-Powered Chatbot System */}
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/10 before:via-transparent before:to-purple-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              {/* Holographic border effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              
+              {/* Image at top */}
+              <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-blue-700">
+                  <Bot className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">AI Chatbot Interface</p>
                 </div>
-                <CardTitle className="text-xl dark:text-[#C7E1FC]">Residential Roofing</CardTitle>
-                <CardDescription className="dark:text-[#DDDDDD]">
-                  Complete home roofing solutions including repair, replacement, and new construction
+              </div>
+              
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <Bot className="h-6 w-6 text-blue-600 mr-2" />
+                  AI-Powered Chatbot System
+                </CardTitle>
+                <CardDescription className="text-blue-600 font-semibold">
+                  24/7 Customer Engagement & Lead Qualification
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600 dark:text-[#DDDDDD]">
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Our intelligent chatbot operates around the clock, engaging with visitors, qualifying leads, 
+                  and scheduling appointments with human-like conversation flow.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-blue-600">150+</div>
+                    <div className="text-blue-800 text-xs">Qualified leads monthly</div>
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-blue-600">85%</div>
+                    <div className="text-blue-800 text-xs">Lead qualification accuracy</div>
+                  </div>
+                </div>
+
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
-                    Roof replacement & repair
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    24/7 availability with instant responses
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
-                    Shingle & metal roofing
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Natural conversation flow and roofing expertise
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
-                    Gutters & downspouts
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500 dark:text-[#33CCFF]" />
-                    Insurance claims help
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Automatic lead scoring and CRM integration
                   </li>
                 </ul>
-                <Button variant="outline" className="mt-4 w-full group-hover:bg-blue-600 group-hover:text-white dark:border-[#33CCFF] dark:text-[#33CCFF] dark:hover:bg-[#33CCFF] dark:hover:text-[#003399] transition-colors" asChild>
-                  <Link href="/services/residential">Learn More</Link>
+                
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
+                  <Link href="/ai-tools">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Commercial Roofing */}
-            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                  <Building className="h-6 w-6 text-green-600" />
+            {/* Automated Blog Content System */}
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/10 before:via-transparent before:to-blue-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              {/* Holographic border effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-blue-400/20 to-green-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              
+              {/* Image at top */}
+              <div className="relative h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-green-700">
+                  <FileText className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">Content Generation System</p>
                 </div>
-                <CardTitle className="text-xl">Commercial Roofing</CardTitle>
-                <CardDescription>
-                  Professional commercial roofing services for businesses and property managers
+              </div>
+              
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <FileText className="h-6 w-6 text-green-600 mr-2" />
+                  Automated Blog Content System
+                </CardTitle>
+                <CardDescription className="text-green-600 font-semibold">
+                  SEO-Optimized Content Generation
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Our content automation system generates high-quality, SEO-optimized blog posts about roofing topics, 
+                  local Denver weather patterns, and industry trends.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-green-600">$11.72</div>
+                    <div className="text-green-800 text-xs">Cost per blog post</div>
+                  </div>
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-green-600">5+</div>
+                    <div className="text-green-800 text-xs">Leads per post average</div>
+                  </div>
+                </div>
+
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    TPO & EPDM systems
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    2-3 posts published weekly automatically
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Built-up roofing
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Local Denver SEO optimization
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Maintenance programs
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Emergency repairs
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Industry trend analysis and integration
                   </li>
                 </ul>
-                <Button variant="outline" className="mt-4 w-full group-hover:bg-green-600 group-hover:text-white transition-colors" asChild>
-                  <Link href="/services/commercial">Learn More</Link>
+                
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white" asChild>
+                  <Link href="/ai-tools">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Emergency Repairs */}
-            <Card className="group relative overflow-hidden border-2 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
-              <CardHeader className="pb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
-                  <Zap className="h-6 w-6 text-red-600" />
+            {/* Instant Roof Estimator */}
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/10 before:via-transparent before:to-red-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              {/* Holographic border effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 via-red-400/20 to-orange-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              
+              {/* Image at top */}
+              <div className="relative h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-orange-700">
+                  <Calculator className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">Instant Estimator Tool</p>
                 </div>
-                <CardTitle className="text-xl">Emergency Repairs</CardTitle>
-                <CardDescription>
-                  24/7 emergency roofing services for storm damage and urgent repairs
+              </div>
+              
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <Calculator className="h-6 w-6 text-orange-600 mr-2" />
+                  Instant Roof Estimator
+                </CardTitle>
+                <CardDescription className="text-orange-600 font-semibold">
+                  AI-Powered Satellite Measurement Technology
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-gray-600">
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Revolutionary technology that provides accurate roof estimates in just 30 seconds using Google Maps 
+                  satellite imagery, AI measurement algorithms, and real-time material pricing.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-orange-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-orange-600">30</div>
+                    <div className="text-orange-800 text-xs">Seconds for estimate</div>
+                  </div>
+                  <div className="bg-orange-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-orange-600">95%</div>
+                    <div className="text-orange-800 text-xs">Accuracy rate</div>
+                  </div>
+                </div>
+
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    24/7 availability
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Satellite imagery analysis and measurement
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Storm damage repair
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Real-time material pricing integration
                   </li>
                   <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Leak detection & repair
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="mr-2 h-4 w-4 text-green-500" />
-                    Insurance coordination
+                    <Check className="mr-2 h-3 w-3 text-green-500" />
+                    Multiple material options and pricing tiers
                   </li>
                 </ul>
-                <Button variant="outline" className="mt-4 w-full bg-red-600 text-white hover:bg-red-700 transition-colors">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Call Now
+                
+                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white" asChild>
+                  <Link href="/ai-tools">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -192,104 +318,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Choose Alpine Peak Section */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Why Choose Alpine Peak Roofing?
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Trusted by thousands of homeowners and businesses across the Denver metro area
-            </p>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 mx-auto">
-                <Clock className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">24/7 Support</h3>
-              <p className="mt-2 text-gray-600">Round-the-clock emergency services and customer support</p>
-            </div>
-
-            <div className="text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mx-auto">
-                <Zap className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">Instant Estimates</h3>
-              <p className="mt-2 text-gray-600">Get accurate roof estimates in 30 seconds using satellite technology</p>
-            </div>
-
-            <div className="text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100 mx-auto">
-                <Award className="h-8 w-8 text-yellow-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">Licensed & Insured</h3>
-              <p className="mt-2 text-gray-600">Fully licensed, bonded, and insured professionals</p>
-            </div>
-
-            <div className="text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 mx-auto">
-                <Shield className="h-8 w-8 text-purple-600" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">10-Year Warranty</h3>
-              <p className="mt-2 text-gray-600">Comprehensive workmanship warranty on all installations</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Projects Section */}
-      <section className="py-16 sm:py-24 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Recent Projects
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              See our quality craftsmanship in action across the Denver metro area
-            </p>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Project placeholders - will be replaced with real portfolio data */}
-            {[
-              { title: 'Residential Shingle Roof', location: 'Denver, CO', type: 'Residential' },
-              { title: 'Commercial TPO Installation', location: 'Lakewood, CO', type: 'Commercial' },
-              { title: 'Storm Damage Repair', location: 'Aurora, CO', type: 'Emergency' },
-            ].map((project, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl transition-shadow">
-                <div className="aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                  <Home className="h-12 w-12 text-gray-400" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900">{project.title}</h3>
-                  <p className="text-gray-600 flex items-center mt-2">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    {project.location}
-                  </p>
-                  <span className="inline-block mt-3 px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                    {project.type}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button asChild variant="outline" size="lg">
-              <Link href="/portfolio">View All Projects</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
 
       {/* Customer Testimonials Section */}
-      <section className="py-16 sm:py-24 bg-white">
+      <section className="py-16 sm:py-24 bg-gradient-to-b from-[#0066CC] to-[#003399]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               What Our Customers Say
             </h2>
           </div>
@@ -330,29 +364,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-blue-600 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Ready to Protect Your Property?
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-              Get your free instant estimate today and join thousands of satisfied customers 
-              across the Denver metro area.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6">
-              <Button size="lg" className="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8">
-                <Phone className="mr-2 h-5 w-5" />
-                Call (303) 555-ROOF
-              </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 px-8" asChild>
-                <Link href="/estimator">Get Free Estimate</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
     </div>
   )

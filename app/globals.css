@@ -17,6 +17,7 @@
   --brand-header-gradient: linear-gradient(to right, #0066CC, #003399);
   --brand-vertical-invert-gradient: linear-gradient(to bottom, #003399, #0066CC);
   --brand-header-invert-gradient: linear-gradient(to right, #003399, #0066CC);
+  --ai-tools-gradient: linear-gradient(to right, #9333EA, #213FB0);
   
   /* Text Colors */
   --text-primary: #FFFFFF;

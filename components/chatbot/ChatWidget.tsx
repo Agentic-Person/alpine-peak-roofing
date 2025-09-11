@@ -261,41 +261,61 @@ export function ChatWidget({
       <div className={cn('fixed z-50', positionClasses[position])}>
         {/* Animated gradient border container */}
         <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-yellow-400 opacity-75 blur-sm animate-pulse" />
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 via-blue-400 to-yellow-400 animate-spin-slow opacity-60" style={{ animation: 'spin 8s linear infinite' }} />
+          {/* Pulsing purple shadow background */}
+          <div 
+            className="absolute inset-0 rounded-full bg-purple-500/30 blur-xl" 
+            style={{ 
+              animation: 'pulse 2s ease-in-out infinite',
+            }} 
+          />
+          
+          {/* Animated yellow-to-gold rotating border */}
+          <div 
+            className="absolute inset-1 rounded-full opacity-80" 
+            style={{ 
+              animation: 'spin 4s linear infinite',
+              background: 'conic-gradient(from 0deg, #fbbf24, #f59e0b, #d97706, #92400e, #78350f, #fbbf24)'
+            }} 
+          />
+          
+          {/* Secondary counter-rotating ring */}
+          <div 
+            className="absolute inset-2 rounded-full opacity-60" 
+            style={{ 
+              animation: 'spin 6s linear infinite reverse',
+              background: 'conic-gradient(from 180deg, #3b82f6, #1d4ed8, #1e40af, #3b82f6)'
+            }} 
+          />
           
           <Button
             onClick={toggleWidget}
-            className="relative h-42 w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-4 border-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 group overflow-hidden"
+            className="relative h-42 w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-2 border-yellow-400 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-yellow-500/25 group overflow-hidden"
             aria-label="Open AI Assistant Chat"
           >
-            {/* AI Agent Avatar */}
+            {/* AI Agent Avatar - Perfect Circle */}
             <div className="relative w-full h-full flex items-center justify-center">
-              <div className="relative w-36 h-36 rounded-full overflow-hidden border-3 border-white/30 shadow-inner">
+              <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-white shadow-inner">
                 <Image
                   src="/images/team/ai-agent-avatar-02.png"
                   alt="AI Assistant"
-                  fill
-                  className="object-cover object-center"
+                  width={128}
+                  height={128}
+                  className="object-cover object-center w-full h-full"
                   priority
                 />
               </div>
-              {/* Pulse overlay */}
-              <div className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping" />
-              {/* Glow effect */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/0 via-blue-400/10 to-blue-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
           </Button>
 
           {/* Enhanced notification badge */}
           {leadScore > 0 && (
-            <div className="absolute -top-3 -right-3 h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
+            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
               !
             </div>
           )}
 
           {/* Floating text hint */}
-          <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
             Chat with AI Assistant
             <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
           </div>

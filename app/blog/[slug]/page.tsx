@@ -1,326 +1,303 @@
-import React from 'react';
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { BlogService } from '@/lib/blog/blogService';
-import { BlogCard } from '@/components/blog/BlogCard';
-import { Button } from '@/components/ui/button';
+import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Clock, ArrowLeft, ArrowRight, Calendar, Tag } from 'lucide-react'
+import { blogPosts } from '@/lib/blog/blogData'
+import { Button } from '@/components/ui/button'
 
 interface BlogPostPageProps {
-  params: { slug: string };
+  params: { slug: string }
+}
+
+function getBlogPost(slug: string) {
+  return blogPosts.find(post => post.slug === slug)
+}
+
+function getRelatedPosts(currentPost: any, limit = 3) {
+  return blogPosts
+    .filter(post => 
+      post.id !== currentPost.id && 
+      (post.category === currentPost.category || 
+       post.tags.some(tag => currentPost.tags.includes(tag)))
+    )
+    .slice(0, limit)
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  try {
-    const post = await BlogService.getPostBySlug(params.slug);
-    
-    if (!post) {
-      return {
-        title: 'Blog Post Not Found | Alpine Peak Roofing',
-        description: 'The requested blog post could not be found.',
-      };
-    }
-
+  const post = getBlogPost(params.slug)
+  
+  if (!post) {
     return {
-      title: post.seo_title || `${post.title} | Alpine Peak Roofing`,
-      description: post.meta_description || post.content?.substring(0, 160) + '...',
-      keywords: post.keywords || [],
-      authors: [{ name: 'Alpine Peak Roofing' }],
-      openGraph: {
-        title: post.seo_title || post.title,
-        description: post.meta_description || post.content?.substring(0, 160) + '...',
-        type: 'article',
-        publishedTime: post.published_at || undefined,
-        modifiedTime: post.updated_at,
-        authors: ['Alpine Peak Roofing'],
-        images: post.featured_image_url ? [
-          {
-            url: post.featured_image_url,
-            width: 1200,
-            height: 630,
-            alt: post.alt_text || post.title,
-          },
-        ] : [],
-        siteName: 'Alpine Peak Roofing',
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: post.seo_title || post.title,
-        description: post.meta_description || post.content?.substring(0, 160) + '...',
-        images: post.featured_image_url ? [post.featured_image_url] : [],
-      },
-      alternates: {
-        canonical: `https://alpinepeakroofing.com/blog/${post.slug}`,
-      },
-    };
-  } catch (error) {
-    return {
-      title: 'Blog Post | Alpine Peak Roofing',
-      description: 'Read expert roofing insights from Alpine Peak Roofing.',
-    };
-  }
-}
-
-// Generate static paths for published blog posts (optional - for better performance)
-export async function generateStaticParams() {
-  try {
-    // Get first 50 published posts for static generation
-    const { posts } = await BlogService.getPublishedPosts({ limit: 50 });
-    return posts.map((post) => ({
-      slug: post.slug,
-    }));
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    return [];
-  }
-}
-
-const seasonColors = {
-  spring: 'bg-green-100 text-green-800 border-green-200',
-  summer: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  fall: 'bg-orange-100 text-orange-800 border-orange-200',
-  winter: 'bg-blue-100 text-blue-800 border-blue-200',
-};
-
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  try {
-    const post = await BlogService.getPostBySlug(params.slug);
-    
-    if (!post) {
-      notFound();
+      title: 'Blog Post Not Found | Alpine Peak Roofing',
+      description: 'The requested blog post could not be found.'
     }
+  }
 
-    // Track the view (this would typically be handled client-side for better UX)
-    BlogService.trackView(post.id);
-
-    // Get related posts
-    const relatedPosts = await BlogService.getRelatedPosts(post.id, post.season, 3);
-
-    const publishedDate = post.published_at
-      ? new Date(post.published_at).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      : null;
-
-    const updatedDate = post.updated_at
-      ? new Date(post.updated_at).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      : null;
-
-    // Generate structured data for SEO
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: post.title,
-      description: post.meta_description,
-      image: post.featured_image_url ? [post.featured_image_url] : [],
-      datePublished: post.published_at,
-      dateModified: post.updated_at,
-      author: {
-        '@type': 'Organization',
-        name: 'Alpine Peak Roofing',
-        url: 'https://alpinepeakroofing.com',
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'Alpine Peak Roofing',
-        logo: {
-          '@type': 'ImageObject',
-          url: 'https://alpinepeakroofing.com/logo.png',
+  return {
+    title: `${post.title} | Alpine Peak Roofing Blog`,
+    description: post.excerpt,
+    keywords: [...post.tags, 'roofing', 'Denver', 'Colorado'],
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      images: [
+        {
+          url: post.image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
         },
-      },
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': `https://alpinepeakroofing.com/blog/${post.slug}`,
-      },
-      keywords: post.keywords?.join(', '),
-      articleSection: 'Roofing',
-      inLanguage: 'en-US',
-    };
+      ],
+      publishedTime: post.publishDate,
+      tags: post.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
+  }
+}
 
-    return (
-      <>
-        {/* JSON-LD Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+export async function generateStaticParams() {
+  return blogPosts.map((post) => ({
+    slug: post.slug,
+  }))
+}
 
-        <article className="min-h-screen bg-white">
-          {/* Breadcrumbs */}
-          <div className="bg-gray-50 py-4">
-            <div className="container mx-auto px-4 max-w-4xl">
-              <nav className="flex items-center space-x-2 text-sm text-gray-600">
-                <Link href="/" className="hover:text-blue-600">
-                  Home
-                </Link>
-                <span>/</span>
-                <Link href="/blog" className="hover:text-blue-600">
-                  Blog
-                </Link>
-                <span>/</span>
-                <span className="text-gray-900 truncate">{post.title}</span>
-              </nav>
-            </div>
-          </div>
+export default function BlogPostPage({ params }: BlogPostPageProps) {
+  const post = getBlogPost(params.slug)
+  
+  if (!post) {
+    notFound()
+  }
+
+  const relatedPosts = getRelatedPosts(post)
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Breadcrumb Navigation */}
+      <div className="bg-gray-50 py-4">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <nav className="flex items-center space-x-2 text-sm text-gray-600">
+            <Link href="/" className="hover:text-blue-600 transition-colors">
+              Home
+            </Link>
+            <span>/</span>
+            <Link href="/blog" className="hover:text-blue-600 transition-colors">
+              Blog
+            </Link>
+            <span>/</span>
+            <span className="text-gray-900 font-medium truncate">
+              {post.title}
+            </span>
+          </nav>
+        </div>
+      </div>
+
+      <article className="py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
+          {/* Back to Blog */}
+          <Link 
+            href="/blog"
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to All Articles
+          </Link>
 
           {/* Article Header */}
-          <header className="py-12">
-            <div className="container mx-auto px-4 max-w-4xl">
-              <div className="text-center max-w-3xl mx-auto">
-                {/* Season Badge */}
-                {post.season && (
-                  <div className="mb-4">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${seasonColors[post.season]}`}>
-                      {post.season.charAt(0).toUpperCase() + post.season.slice(1)} Guide
-                    </span>
-                  </div>
-                )}
-
-                {/* Title */}
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                  {post.title}
-                </h1>
-
-                {/* Meta Description */}
-                {post.meta_description && (
-                  <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                    {post.meta_description}
-                  </p>
-                )}
-
-                {/* Article Meta */}
-                <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500 mb-8">
-                  <div className="flex items-center gap-2">
-                    <span>📅</span>
-                    <time dateTime={post.published_at || post.created_at}>
-                      Published {publishedDate}
-                    </time>
-                  </div>
-                  
-                  {updatedDate && updatedDate !== publishedDate && (
-                    <div className="flex items-center gap-2">
-                      <span>🔄</span>
-                      <time dateTime={post.updated_at}>
-                        Updated {updatedDate}
-                      </time>
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center gap-2">
-                    <span>🏢</span>
-                    <span>Alpine Peak Roofing</span>
-                  </div>
-
-                  {post.estimated_cost && (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <span>💰</span>
-                      <span>Generated for ${post.estimated_cost}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Keywords */}
-                {post.keywords && post.keywords.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-2 mb-8">
-                    {post.keywords.map((keyword, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full border border-blue-200"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                )}
+          <header className="mb-8">
+            <div className="flex items-center space-x-4 text-sm text-gray-600 mb-4">
+              <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                {post.category}
+              </span>
+              <div className="flex items-center space-x-1">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  {new Date(post.publishDate).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Clock className="h-4 w-4" />
+                <span>{post.readTime}</span>
               </div>
             </div>
+
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              {post.title}
+            </h1>
+
+            <p className="text-xl text-gray-600 leading-relaxed">
+              {post.excerpt}
+            </p>
           </header>
 
           {/* Featured Image */}
-          {post.featured_image_url && (
-            <div className="mb-12">
-              <div className="container mx-auto px-4 max-w-4xl">
-                <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-lg">
-                  <Image
-                    src={post.featured_image_url}
-                    alt={post.alt_text || post.title}
-                    fill
-                    priority
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src={post.image}
+              alt={post.title}
+              width={1200}
+              height={600}
+              className="w-full h-96 object-cover"
+              priority
+            />
+          </div>
 
           {/* Article Content */}
-          <div className="pb-12">
-            <div className="container mx-auto px-4 max-w-4xl">
-              <div className="prose prose-lg prose-gray max-w-none">
-                {/* Content would be parsed from markdown or HTML */}
-                <div 
-                  className="prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="bg-blue-600 text-white py-12 mb-12">
-            <div className="container mx-auto px-4 max-w-4xl text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                Need Professional Roofing Services?
-              </h2>
-              <p className="text-xl text-blue-100 mb-8">
-                Our expert team is ready to help with all your roofing needs in Denver and surrounding areas.
+          <div className="prose prose-lg max-w-none mb-12">
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-lg">
+              <p className="text-blue-900 font-medium mb-2">
+                🏔️ Colorado Mountain Climate Focus
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-                  Get Free Inspection
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
-                  Call (555) 123-4567
-                </Button>
+              <p className="text-blue-800">
+                This article is specifically tailored for Colorado's unique mountain climate, 
+                altitude considerations, and seasonal weather patterns. Our expertise comes 
+                from over 25 years serving Denver metro and surrounding mountain communities.
+              </p>
+            </div>
+
+            {/* Placeholder content - in a real implementation, this would come from the post.content field */}
+            <div className="space-y-6 text-gray-700 leading-relaxed">
+              <p>
+                {post.excerpt} In this comprehensive guide, we'll explore the unique challenges 
+                and solutions specific to Colorado's mountain climate.
+              </p>
+              
+              <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+                Understanding Colorado's Climate Impact
+              </h2>
+              
+              <p>
+                Colorado's high altitude and dramatic weather changes create unique roofing challenges 
+                that require specialized knowledge and materials. From sudden hailstorms to heavy snow 
+                loads, your roof faces conditions that demand professional-grade solutions.
+              </p>
+
+              <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
+                Key Factors to Consider
+              </h3>
+
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Altitude effects on material performance and installation</li>
+                <li>UV exposure at high elevation</li>
+                <li>Temperature fluctuations and thermal cycling</li>
+                <li>Snow load requirements and ice dam prevention</li>
+                <li>Wind resistance for mountain locations</li>
+              </ul>
+
+              <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+                Professional Recommendations
+              </h2>
+
+              <p>
+                Based on our extensive experience in the Colorado market, we recommend working 
+                with local professionals who understand these unique challenges. Alpine Peak Roofing 
+                has been serving the Denver metro area for over 25 years, providing solutions 
+                specifically designed for Colorado's mountain climate.
+              </p>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 my-8">
+                <h4 className="font-bold text-yellow-800 mb-2">⚠️ Important Safety Note</h4>
+                <p className="text-yellow-700">
+                  Working on roofs at high altitude presents additional safety risks. Always 
+                  consult with licensed professionals for any roofing work, especially in 
+                  mountain communities where weather can change rapidly.
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Related Posts */}
-          {relatedPosts.length > 0 && (
-            <div className="bg-gray-50 py-12">
-              <div className="container mx-auto px-4 max-w-6xl">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
-                  Related Articles
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {relatedPosts.map((relatedPost) => (
-                    <BlogCard key={relatedPost.id} post={relatedPost} />
-                  ))}
-                </div>
-                <div className="text-center mt-8">
-                  <Link href="/blog">
-                    <Button variant="outline">
-                      View All Blog Posts →
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+              >
+                <Tag className="h-3 w-3 mr-1" />
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* CTA Section */}
+          <div className="bg-blue-50 rounded-2xl p-8 mb-12 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Need Professional Roofing Services?
+            </h3>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              Ready to protect your Colorado home with expert roofing solutions? 
+              Get a free inspection and estimate from Alpine Peak Roofing today.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+                Get Free Inspection
+              </Button>
+              <Button size="lg" variant="outline">
+                Call (555) 123-4567
+              </Button>
             </div>
-          )}
-        </article>
-      </>
-    );
-  } catch (error) {
-    console.error('Error loading blog post:', error);
-    notFound();
-  }
+          </div>
+        </div>
+      </article>
+
+      {/* Related Posts */}
+      {relatedPosts.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+              Related Articles
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {relatedPosts.map((relatedPost) => (
+                <Link 
+                  key={relatedPost.id}
+                  href={`/blog/${relatedPost.slug}`}
+                  className="group"
+                >
+                  <article className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <div className="relative overflow-hidden">
+                      <Image
+                        src={relatedPost.image}
+                        alt={relatedPost.title}
+                        width={400}
+                        height={200}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                          {relatedPost.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {relatedPost.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                        {relatedPost.excerpt}
+                      </p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {relatedPost.readTime}
+                      </div>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
+  )
 }

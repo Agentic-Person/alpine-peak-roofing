@@ -235,10 +235,15 @@ export default function ColorsPage() {
               gradient="linear-gradient(to bottom, #003399, #0066CC)" 
               usage="Inverted vertical gradient - darker navy to brighter blue"
             />
-            <GradientSwatch 
-              name="Brand Header Invert Gradient" 
-              gradient="linear-gradient(to right, #003399, #0066CC)" 
+            <GradientSwatch
+              name="Brand Header Invert Gradient"
+              gradient="linear-gradient(to right, #003399, #0066CC)"
               usage="Horizontal header gradient - brand navy to brand blue"
+            />
+            <GradientSwatch
+              name="AI Tools Gradient"
+              gradient="linear-gradient(to right, #9333EA, #213FB0)"
+              usage="Specialized gradient for AI tools and tech-focused sections"
             />
           </div>
         </section>
