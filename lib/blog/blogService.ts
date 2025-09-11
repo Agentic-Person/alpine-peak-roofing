@@ -1,5 +1,5 @@
 // Blog service for interacting with Supabase backend
-import { getSupabaseClient } from '@/lib/getSupabaseClient()/client';
+import { getSupabaseClient } from '@/lib/supabase/client';
 import { BlogPost, BlogListResponse, BlogFilters, DEFAULT_PAGE_SIZE, BlogContentCalendar, BlogPerformance } from './types';
 
 export class BlogService {
