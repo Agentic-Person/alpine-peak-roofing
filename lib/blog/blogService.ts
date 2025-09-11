@@ -1,5 +1,5 @@
 // Blog service for interacting with Supabase backend
-import { supabase } from '@/lib/supabase/client';
+import { getSupabaseClient } from '@/lib/getSupabaseClient()/client';
 import { BlogPost, BlogListResponse, BlogFilters, DEFAULT_PAGE_SIZE, BlogContentCalendar, BlogPerformance } from './types';
 
 export class BlogService {
@@ -15,7 +15,7 @@ export class BlogService {
       limit = DEFAULT_PAGE_SIZE
     } = filters;
 
-    let query = supabase
+    let query = getSupabaseClient()
       .from('blog_posts')
       .select('*', { count: 'exact' })
       .eq('status', 'published')
@@ -57,7 +57,7 @@ export class BlogService {
    * Get a single blog post by slug
    */
   static async getPostBySlug(slug: string): Promise<BlogPost | null> {
-    const { data: post, error } = await supabase
+    const { data: post, error } = await getSupabaseClient()
       .from('blog_posts')
       .select('*')
       .eq('slug', slug)
@@ -87,7 +87,7 @@ export class BlogService {
       limit = DEFAULT_PAGE_SIZE
     } = filters;
 
-    let query = supabase
+    let query = getSupabaseClient()
       .from('blog_posts')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false });
@@ -132,7 +132,7 @@ export class BlogService {
    * Get recent blog posts for homepage
    */
   static async getRecentPosts(limit: number = 3): Promise<BlogPost[]> {
-    const { data: posts, error } = await supabase
+    const { data: posts, error } = await getSupabaseClient()
       .from('blog_posts')
       .select('id, title, slug, meta_description, featured_image_url, alt_text, published_at, season')
       .eq('status', 'published')
@@ -150,7 +150,7 @@ export class BlogService {
    * Get related blog posts based on season or keywords
    */
   static async getRelatedPosts(currentPostId: string, season?: string, limit: number = 3): Promise<BlogPost[]> {
-    let query = supabase
+    let query = getSupabaseClient()
       .from('blog_posts')
       .select('id, title, slug, meta_description, featured_image_url, alt_text, published_at, season')
       .eq('status', 'published')
@@ -176,7 +176,7 @@ export class BlogService {
    * Search blog posts by keyword
    */
   static async searchPosts(searchTerm: string, limit: number = 10): Promise<BlogPost[]> {
-    const { data: posts, error } = await supabase
+    const { data: posts, error } = await getSupabaseClient()
       .from('blog_posts')
       .select('id, title, slug, meta_description, featured_image_url, alt_text, published_at, season')
       .eq('status', 'published')
@@ -195,7 +195,7 @@ export class BlogService {
    * Get content calendar (admin)
    */
   static async getContentCalendar(): Promise<BlogContentCalendar[]> {
-    const { data: calendar, error } = await supabase
+    const { data: calendar, error } = await getSupabaseClient()
       .from('blog_content_calendar')
       .select('*')
       .order('planned_date', { ascending: true });
@@ -211,7 +211,7 @@ export class BlogService {
    * Get blog performance metrics (admin)
    */
   static async getBlogPerformance(blogPostId: string): Promise<BlogPerformance[]> {
-    const { data: performance, error } = await supabase
+    const { data: performance, error } = await getSupabaseClient()
       .from('blog_performance')
       .select('*')
       .eq('blog_post_id', blogPostId)
@@ -228,7 +228,7 @@ export class BlogService {
    * Create a blog post (used by n8n workflow)
    */
   static async createBlogPost(postData: Partial<BlogPost>): Promise<BlogPost> {
-    const { data: post, error } = await supabase
+    const { data: post, error } = await getSupabaseClient()
       .from('blog_posts')
       .insert([postData])
       .select()
@@ -245,7 +245,7 @@ export class BlogService {
    * Update blog post status
    */
   static async updateBlogPost(id: string, updates: Partial<BlogPost>): Promise<BlogPost> {
-    const { data: post, error } = await supabase
+    const { data: post, error } = await getSupabaseClient()
       .from('blog_posts')
       .update(updates)
       .eq('id', id)
@@ -263,7 +263,7 @@ export class BlogService {
    * Delete a blog post
    */
   static async deleteBlogPost(id: string): Promise<void> {
-    const { error } = await supabase
+    const { error } = await getSupabaseClient()
       .from('blog_posts')
       .delete()
       .eq('id', id);
@@ -286,7 +286,7 @@ export class BlogService {
    * Get seasonal blog posts
    */
   static async getSeasonalPosts(season: string, limit: number = 6): Promise<BlogPost[]> {
-    const { data: posts, error } = await supabase
+    const { data: posts, error } = await getSupabaseClient()
       .from('blog_posts')
       .select('id, title, slug, meta_description, featured_image_url, alt_text, published_at, season')
       .eq('status', 'published')
@@ -305,7 +305,7 @@ export class BlogService {
    * Get blog posts by keyword/tag
    */
   static async getPostsByKeyword(keyword: string, limit: number = 6): Promise<BlogPost[]> {
-    const { data: posts, error } = await supabase
+    const { data: posts, error } = await getSupabaseClient()
       .from('blog_posts')
       .select('id, title, slug, meta_description, featured_image_url, alt_text, published_at, season, keywords')
       .eq('status', 'published')

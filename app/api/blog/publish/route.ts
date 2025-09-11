@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { BlogService } from '@/lib/blog/blogService';
-import { supabase } from '@/lib/supabase/client';
+import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase/client';
 import { BlogPost } from '@/lib/blog/types';
 
 // API endpoint for publishing blog posts from n8n workflow
 export async function POST(request: NextRequest) {
   try {
+    // Check if Supabase is configured
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
     // Verify API key for security
     const authHeader = request.headers.get('authorization');
     const expectedApiKey = process.env.CMS_API_KEY;
