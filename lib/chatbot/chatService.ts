@@ -39,11 +39,18 @@ export class ChatService {
         last_activity: new Date(),
       }
 
-      // Call n8n chatbot workflow
-      const response = await n8nClient.processChatMessage(sessionId, message, {
-        context: fullContext,
-        timestamp: new Date().toISOString()
-      })
+      // Try n8n first, fallback to local demo API if n8n is unavailable
+      let response: any
+      try {
+        response = await n8nClient.processChatMessage(sessionId, message, {
+          context: fullContext,
+          timestamp: new Date().toISOString()
+        })
+      } catch (n8nError) {
+        console.warn('n8n unavailable, using local demo API:', n8nError)
+        // Fallback to local demo API
+        response = await this.callLocalDemoAPI(sessionId, message, fullContext)
+      }
 
       // Store the conversation in Supabase
       await this.storeMessage(sessionId, {
@@ -314,6 +321,37 @@ export class ChatService {
   }
 
   // Private helper methods
+
+  private async callLocalDemoAPI(sessionId: string, message: string, context: ConversationContext): Promise<any> {
+    try {
+      const response = await fetch('/api/chatbot/demo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          message,
+          context: {
+            page: context.page,
+            user_agent: context.user_agent,
+            referrer: context.referrer,
+            conversation_history: context.conversation_history,
+            user_info: context.user_info
+          }
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Demo API failed: ${response.status}`)
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Local demo API call failed:', error)
+      throw error
+    }
+  }
 
   private async getSessionContext(sessionId: string): Promise<ConversationContext> {
     try {
