@@ -1,29 +1,39 @@
 // n8n Client for webhook calls and workflow management
 export class N8nClient {
-  private baseUrl: string
+  private webhookUrl: string
   private apiKey: string
 
   constructor() {
-    this.baseUrl = process.env.N8N_WEBHOOK_URL || ''
+    this.webhookUrl = process.env.N8N_WEBHOOK_URL || ''
     this.apiKey = process.env.N8N_API_KEY || ''
   }
 
   async triggerWebhook(webhookPath: string, data: Record<string, unknown>) {
     try {
-      const response = await fetch(`${this.baseUrl}/${webhookPath}`, {
+      // Use the full webhook URL directly, ignore webhookPath since it's already in the URL
+      console.log('n8n webhook URL:', this.webhookUrl)
+      console.log('n8n webhook data:', data)
+      
+      const response = await fetch(this.webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
         },
         body: JSON.stringify(data)
       })
 
+      console.log('n8n response status:', response.status)
+      console.log('n8n response headers:', response.headers.get('content-type'))
+
       if (!response.ok) {
-        throw new Error(`n8n webhook failed: ${response.statusText}`)
+        const errorText = await response.text()
+        console.error('n8n webhook error response:', errorText)
+        throw new Error(`n8n webhook failed: ${response.status} ${response.statusText}`)
       }
 
-      return await response.json()
+      const result = await response.json()
+      console.log('n8n webhook success:', result)
+      return result
     } catch (error) {
       console.error('n8n webhook error:', error)
       throw error
@@ -37,11 +47,17 @@ export class N8nClient {
 
   // Trigger chatbot conversation workflow
   async processChatMessage(sessionId: string, message: string, context: Record<string, unknown>) {
-    return this.triggerWebhook('chatbot-process', {
+    const payload = {
       session_id: sessionId,
       message,
-      context
-    })
+      page_context: context.page || 'website',
+      user_data: context.user_info || {},
+      timestamp: new Date().toISOString(),
+      ip_address: 'unknown'
+    }
+    
+    console.log('n8n processChatMessage payload:', payload)
+    return this.triggerWebhook('alpine-peak-chatbot', payload)
   }
 
   // Trigger blog generation workflow

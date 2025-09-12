@@ -41,15 +41,25 @@ export class ChatService {
 
       // Try n8n first, fallback to local demo API if n8n is unavailable
       let response: any
+      let usedN8n = false
       try {
+        console.log('ChatService: Attempting n8n webhook call')
         response = await n8nClient.processChatMessage(sessionId, message, {
           context: fullContext,
           timestamp: new Date().toISOString()
         })
+        console.log('ChatService: n8n response received:', response)
+        usedN8n = true
+
+        // Handle n8n response format - it might have different structure
+        if (response.success && response.message) {
+          response.response = response.message
+        }
       } catch (n8nError) {
         console.warn('n8n unavailable, using local demo API:', n8nError)
         // Fallback to local demo API
         response = await this.callLocalDemoAPI(sessionId, message, fullContext)
+        console.log('ChatService: Using demo API response:', response.response.substring(0, 100) + '...')
       }
 
       // Store the conversation in Supabase
@@ -74,7 +84,7 @@ export class ChatService {
         })
       }
 
-      return {
+      const finalResponse = {
         success: true,
         response: response.response || 'I apologize, but I encountered an issue processing your message. Please try again.',
         lead_score: response.lead_score || 0,
@@ -83,6 +93,9 @@ export class ChatService {
         session_id: sessionId,
         quick_actions: response.quick_actions
       }
+
+      console.log(`ChatService: Returning response (used ${usedN8n ? 'n8n' : 'demo API'}):`, finalResponse.response.substring(0, 100) + '...')
+      return finalResponse
 
     } catch (error) {
       console.error('ChatService.sendMessage error:', error)

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -39,15 +40,15 @@ export function ChatHeader({
       className
     )}>
       <div className="flex items-center space-x-3">
-        {/* Company Logo/Icon */}
-        <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-          <svg
-            className="h-5 w-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
-          </svg>
+        {/* AI Agent Avatar */}
+        <div className="h-8 w-8 rounded-full overflow-hidden border border-white/30">
+          <Image
+            src="/images/team/ai-agent-avatar-02.png"
+            alt="Sarah - AI Assistant"
+            width={32}
+            height={32}
+            className="object-cover object-center w-full h-full"
+          />
         </div>
         
         <div className="flex flex-col">

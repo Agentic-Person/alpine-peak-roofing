@@ -1,0 +1,214 @@
+{
+  "name": "Alpine Peak - Embedding Generation",
+  "description": "Generates OpenAI embeddings for knowledge base content and stores in Supabase",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "generate-embeddings",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "alpine-peak-generate-embeddings"
+    },
+    {
+      "parameters": {
+        "resource": "rows",
+        "operation": "getAll",
+        "tableId": "knowledge_content",
+        "options": {
+          "queryName": "embedding IS NULL OR embedding_created_at IS NULL",
+          "limit": 50
+        }
+      },
+      "id": "supabase-get-content",
+      "name": "Get Content Without Embeddings",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "id": "split-in-batches",
+      "name": "Process in Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare text for embedding generation\nconst items = [];\n\nfor (const item of $input.all()) {\n  const content = item.json;\n  \n  // Combine title and content for better embeddings\n  const textForEmbedding = `${content.title}\\n\\n${content.content}`;\n  \n  // Clean and truncate if necessary (OpenAI limit ~8000 tokens)\n  const cleanText = textForEmbedding\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .substring(0, 8000);\n  \n  items.push({\n    id: content.id,\n    title: content.title,\n    text_for_embedding: cleanText,\n    word_count: content.word_count,\n    category_id: content.category_id\n  });\n}\n\nreturn items;"
+      },
+      "id": "prepare-text",
+      "name": "Prepare Text for Embedding",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "options": {
+          "headers": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "timeout": 30000
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "model",
+              "value": "text-embedding-ada-002"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.text_for_embedding }}"
+            }
+          ]
+        }
+      },
+      "id": "generate-embedding",
+      "name": "Generate OpenAI Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1000, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "openai-api-key",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process OpenAI embedding response\nconst items = [];\n\nfor (const item of $input.all()) {\n  const response = item.json;\n  const originalData = $node['Prepare Text for Embedding'].json;\n  \n  if (response.data && response.data[0] && response.data[0].embedding) {\n    const embedding = response.data[0].embedding;\n    \n    items.push({\n      id: originalData.id,\n      embedding: embedding,\n      embedding_model: 'text-embedding-ada-002',\n      embedding_created_at: new Date().toISOString(),\n      dimensions: embedding.length\n    });\n  }\n}\n\nreturn items;"
+      },
+      "id": "process-embedding-response",
+      "name": "Process Embedding Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "resource": "rows",
+        "operation": "update",
+        "tableId": "knowledge_content",
+        "updateKey": "id",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "embedding",
+              "value": "={{ JSON.stringify($json.embedding) }}"
+            },
+            {
+              "column": "embedding_model",
+              "value": "={{ $json.embedding_model }}"
+            },
+            {
+              "column": "embedding_created_at",
+              "value": "={{ $json.embedding_created_at }}"
+            }
+          ]
+        }
+      },
+      "id": "update-supabase",
+      "name": "Update Supabase with Embedding",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Content Without Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Content Without Embeddings": {
+      "main": [
+        [
+          {
+            "node": "Process in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process in Batches": {
+      "main": [
+        [
+          {
+            "node": "Prepare Text for Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Text for Embedding": {
+      "main": [
+        [
+          {
+            "node": "Generate OpenAI Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate OpenAI Embedding": {
+      "main": [
+        [
+          {
+            "node": "Process Embedding Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Embedding Response": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase with Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["alpine-peak", "rag", "embeddings", "ai"],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-09T00:00:00.000Z",
+  "versionId": "1.0.0"
+}

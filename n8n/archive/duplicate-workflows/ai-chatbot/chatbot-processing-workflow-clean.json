@@ -1,0 +1,250 @@
+{
+  "name": "AI Chatbot Processing Workflow - Alpine Peak Roofing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot-process",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "3c3c3c3c-3c3c-3c3c-3c3c-3c3c3c3c3c3c",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "alpine-peak-chatbot"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract and validate chat message data\nconst inputData = $input.first().json;\n\n// Validate required fields\nif (!inputData.message) {\n  throw new Error('Message is required');\n}\n\n// Extract context and user data\nconst chatData = {\n  message: inputData.message,\n  session_id: inputData.session_id || `session_${Date.now()}`,\n  page_context: inputData.page_context || 'website',\n  user_data: inputData.user_data || {},\n  timestamp: new Date().toISOString(),\n  ip_address: 'unknown'\n};\n\n// Determine message intent\nconst message = inputData.message.toLowerCase();\nlet intent = 'general';\nlet priority = 'normal';\n\n// Intent classification\nif (message.includes('estimate') || message.includes('quote') || message.includes('price')) {\n  intent = 'estimation_request';\n  priority = 'high';\n} else if (message.includes('emergency') || message.includes('urgent') || message.includes('leak')) {\n  intent = 'emergency';\n  priority = 'urgent';\n} else if (message.includes('schedule') || message.includes('appointment') || message.includes('inspection')) {\n  intent = 'scheduling';\n  priority = 'high';\n} else if (message.includes('material') || message.includes('shingle') || message.includes('warranty')) {\n  intent = 'product_inquiry';\n  priority = 'normal';\n} else if (message.includes('contact') || message.includes('phone') || message.includes('email')) {\n  intent = 'contact_info';\n  priority = 'normal';\n}\n\n// Add classification to data\nchatData.intent = intent;\nchatData.priority = priority;\n\nreturn [{ json: chatData }];"
+      },
+      "id": "4d4d4d4d-4d4d-4d4d-4d4d-4d4d4d4d4d4d",
+      "name": "Message Processing & Intent Detection",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "chatInput": "You are an AI assistant for Alpine Peak Roofing, a premium roofing contractor in Denver, Colorado. You help customers with:\n\n1. Roofing estimates and quotes\n2. Emergency roof repairs\n3. Scheduling inspections\n4. Product information (shingles, materials, warranties)\n5. General roofing questions\n\nCOMPANY INFO:\n- Location: Denver, Colorado\n- Services: Residential & Commercial Roofing, Emergency Repairs, Inspections\n- Specialties: Asphalt shingles, Metal roofing, Tile roofing, Flat roofing\n- Coverage: Denver Metro Area\n- Emergency: 24/7 emergency service available\n- Phone: (303) 555-ROOF\n- Website: www.alpinepeakroofing.com\n\nRESPONSE GUIDELINES:\n- Be helpful, professional, and knowledgeable\n- Always mention our 24/7 emergency service for urgent issues\n- For estimates, ask for: address, roof type, issue description\n- Suggest scheduling a free inspection when appropriate\n- Keep responses concise but informative\n- Always end with a call-to-action\n\nUser Message: {{ $json.message }}\nIntent: {{ $json.intent }}\nPage Context: {{ $json.page_context }}\nPriority: {{ $json.priority }}\n\nProvide a helpful response to the user's message."
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "id": "5e5e5e5e-5e5e-5e5e-5e5e-5e5e5e5e5e5e",
+      "name": "OpenAI GPT-4 Response",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Get the AI response\nconst aiResponseData = $input.first().json;\nlet aiResponse = 'I apologize, but I encountered an issue processing your request. Please try again.';\n\n// Try to extract the AI response safely\nif (aiResponseData.choices && aiResponseData.choices[0] && aiResponseData.choices[0].message) {\n  aiResponse = aiResponseData.choices[0].message.content;\n} else if (aiResponseData.message) {\n  aiResponse = aiResponseData.message;\n}\n\n// Get original data from the first node\nconst originalData = $('Message Processing & Intent Detection').first().json;\n\n// Structure the response\nconst formattedResponse = {\n  success: true,\n  response: {\n    message: aiResponse,\n    type: 'text',\n    timestamp: new Date().toISOString(),\n    session_id: originalData.session_id\n  },\n  metadata: {\n    intent: originalData.intent,\n    priority: originalData.priority,\n    requires_followup: originalData.priority === 'urgent' || originalData.intent === 'estimation_request'\n  },\n  original_data: originalData\n};\n\n// Add structured data for specific intents\nif (originalData.intent === 'estimation_request') {\n  formattedResponse.structured_data = {\n    action: 'request_estimate_form',\n    next_steps: ['Provide your address', 'Describe the roofing issue', 'Schedule free inspection']\n  };\n} else if (originalData.intent === 'emergency') {\n  formattedResponse.structured_data = {\n    action: 'emergency_contact',\n    phone: '(303) 555-ROOF',\n    available: '24/7'\n  };\n} else if (originalData.intent === 'scheduling') {\n  formattedResponse.structured_data = {\n    action: 'schedule_inspection',\n    calendar_link: 'https://alpinepeakroofing.com/schedule'\n  };\n}\n\nreturn [{ json: formattedResponse }];"
+      },
+      "id": "6f6f6f6f-6f6f-6f6f-6f6f-6f6f6f6f6f6f",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.metadata.priority }}",
+              "rightValue": "urgent",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "condition2",
+              "leftValue": "={{ $json.metadata.intent }}",
+              "rightValue": "estimation_request",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combineOperation": "or"
+        },
+        "options": {}
+      },
+      "id": "7g7g7g7g-7g7g-7g7g-7g7g-7g7g7g7g7g7g",
+      "name": "Check for Follow-up Actions",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "table": "chat_interactions",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $json.original_data.session_id }}",
+            "message": "={{ $json.original_data.message }}",
+            "response": "={{ $json.response.message }}",
+            "intent": "={{ $json.metadata.intent }}",
+            "priority": "={{ $json.metadata.priority }}",
+            "page_context": "={{ $json.original_data.page_context }}",
+            "ip_address": "={{ $json.original_data.ip_address }}",
+            "created_at": "={{ $json.response.timestamp }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "8h8h8h8h-8h8h-8h8h-8h8h-8h8h8h8h8h8h",
+      "name": "Log Chat Interaction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1340, 180]
+    },
+    {
+      "parameters": {
+        "channel": "#sales-leads",
+        "text": "🚨 URGENT Chat Interaction Alert!\n\n👤 Session: {{ $json.original_data.session_id }}\n📝 Intent: {{ $json.metadata.intent }}\n⚡ Priority: {{ $json.metadata.priority }}\n📄 Page: {{ $json.original_data.page_context }}\n\n💬 Message: \"{{ $json.original_data.message }}\"\n\n🎯 Action Required: Follow up needed",
+        "otherOptions": {}
+      },
+      "id": "9i9i9i9i-9i9i-9i9i-9i9i-9i9i9i9i9i9i",
+      "name": "Slack Team Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1340, 420]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "aj0j0j0j-0j0j-0j0j-0j0j-0j0j0j0j0j0j",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message Processing & Intent Detection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Processing & Intent Detection": {
+      "main": [
+        [
+          {
+            "node": "OpenAI GPT-4 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4 Response": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Check for Follow-up Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Follow-up Actions": {
+      "main": [
+        [
+          {
+            "node": "Log Chat Interaction",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack Team Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Chat Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Chat Interaction": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Team Notification": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "chatbot-processing-alpine-peak-clean",
+  "tags": [
+    {
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "id": "alpine-peak",
+      "name": "Alpine Peak Roofing"
+    }
+  ]
+}

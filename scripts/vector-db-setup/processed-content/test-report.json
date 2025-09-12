@@ -1,0 +1,123 @@
+{
+  "testSuite": "Alpine Peak Roofing Vector Search",
+  "timestamp": "2025-09-12T06:40:40.611Z",
+  "summary": {
+    "totalTests": 8,
+    "successfulTests": 0,
+    "failedTests": 8,
+    "successRate": 0
+  },
+  "performance": {
+    "avgTotalTime": 383,
+    "avgEmbeddingTime": 257,
+    "avgSearchTime": 126,
+    "avgResultsCount": 0,
+    "avgTopSimilarity": 0
+  },
+  "detailedResults": [
+    {
+      "testNumber": 1,
+      "category": "Emergency",
+      "query": "My roof is leaking water into my living room after the storm last night",
+      "success": false,
+      "error": null,
+      "embedding_time": 289,
+      "search_time": 159,
+      "total_time": 448,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 2,
+      "category": "Materials - Hail Resistance",
+      "query": "What's the best shingle type for Colorado hail damage protection?",
+      "success": false,
+      "error": null,
+      "embedding_time": 248,
+      "search_time": 141,
+      "total_time": 389,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 3,
+      "category": "Seasonal Preparation",
+      "query": "How should I prepare my roof for Denver winter snow loads?",
+      "success": false,
+      "error": null,
+      "embedding_time": 268,
+      "search_time": 113,
+      "total_time": 381,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 4,
+      "category": "Commercial Systems",
+      "query": "TPO membrane installation best practices for commercial buildings",
+      "success": false,
+      "error": null,
+      "embedding_time": 223,
+      "search_time": 129,
+      "total_time": 352,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 5,
+      "category": "Cost Estimation",
+      "query": "How much does a metal roof cost for a 2000 sq ft house in Denver?",
+      "success": false,
+      "error": null,
+      "embedding_time": 327,
+      "search_time": 114,
+      "total_time": 441,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 6,
+      "category": "Installation Process",
+      "query": "What's involved in proper roof ventilation installation?",
+      "success": false,
+      "error": null,
+      "embedding_time": 253,
+      "search_time": 111,
+      "total_time": 364,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 7,
+      "category": "Insurance Claims",
+      "query": "Help with roof insurance claim after hail damage",
+      "success": false,
+      "error": null,
+      "embedding_time": 265,
+      "search_time": 114,
+      "total_time": 379,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    },
+    {
+      "testNumber": 8,
+      "category": "Maintenance",
+      "query": "When should I schedule my annual roof inspection?",
+      "success": false,
+      "error": null,
+      "embedding_time": 186,
+      "search_time": 123,
+      "total_time": 309,
+      "results_count": 0,
+      "top_similarity": 0,
+      "relevant_categories": []
+    }
+  ]
+}

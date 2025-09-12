@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import type { ChatMessage as ChatMessageType } from '@/lib/chatbot/types'
 
@@ -61,15 +62,19 @@ export function ChatMessage({ message, theme = 'alpine', className }: ChatMessag
       )}>
         {/* Avatar */}
         <div className={cn(
-          'flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-sm font-semibold',
+          'flex-shrink-0 h-8 w-8 rounded-full overflow-hidden',
           isBot 
-            ? 'bg-blue-600 text-white' 
-            : 'bg-gray-300 text-gray-700'
+            ? 'border border-blue-200' 
+            : 'bg-gray-300 flex items-center justify-center text-sm font-semibold text-gray-700'
         )}>
           {isBot ? (
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z" />
-            </svg>
+            <Image
+              src="/images/team/ai-agent-avatar-02.png"
+              alt="Sarah - AI Assistant"
+              width={32}
+              height={32}
+              className="object-cover object-center w-full h-full"
+            />
           ) : (
             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />

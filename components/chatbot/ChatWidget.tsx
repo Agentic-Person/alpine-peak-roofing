@@ -96,13 +96,13 @@ export function ChatWidget({
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       type: 'bot',
-      content: "Hi! I'm Alpine Peak Roofing's AI assistant. I can help you with roofing questions, provide estimates, or schedule an inspection. What brings you here today?",
+      content: "Hi, I am Sarah, Alpine Peak Roofing's AI assistant. I have a massive knowledge base of roofing information. I can help you with specific roofing questions, information about Alpine Peak Roofing, quickly answer general FAQ... I can also get you into the schedule for the next available appointment to talk to one of our associates. How can I assist you today?",
       timestamp: new Date(),
       metadata: {
         actions: [
-          { id: 'quote', label: 'Get a Quote', action: 'send_message', value: 'I need a roofing quote' },
-          { id: 'inspection', label: 'Schedule Inspection', action: 'schedule_inspection' },
-          { id: 'emergency', label: 'Emergency Repair', action: 'emergency_contact' }
+          { id: 'consultation', label: 'Schedule Consultation', action: 'schedule_inspection', value: 'I would like to schedule a consultation' },
+          { id: 'metal-roofs', label: 'Tell me about metal roofs', action: 'send_message', value: 'Tell me about metal roofs' },
+          { id: 'emergency', label: 'Emergency repair', action: 'emergency_contact', value: 'I need emergency repair' }
         ]
       }
     }

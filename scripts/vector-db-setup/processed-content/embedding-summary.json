@@ -1,0 +1,14 @@
+{
+  "totalEmbeddings": 619,
+  "totalTokensUsed": 63056,
+  "apiCallsCount": 619,
+  "failedChunks": 0,
+  "model": "text-embedding-ada-002",
+  "generatedAt": "2025-09-12T06:38:45.824Z",
+  "categoryDistribution": {
+    "climate": 207,
+    "materials": 306,
+    "maintenance": 90,
+    "emergency": 16
+  }
+}

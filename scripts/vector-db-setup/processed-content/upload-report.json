@@ -1,0 +1,13 @@
+{
+  "uploadedAt": "2025-09-12T06:40:09.637Z",
+  "uploadStats": {
+    "totalUploaded": 569,
+    "duplicatesSkipped": 0,
+    "failedUploads": 1
+  },
+  "databaseStats": {
+    "total_chunks": 569,
+    "categories": {},
+    "urgency_levels": {}
+  }
+}

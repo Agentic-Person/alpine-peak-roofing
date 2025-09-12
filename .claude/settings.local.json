@@ -4,7 +4,11 @@
       "Bash(git add:*)",
       "Bash(npm run build:*)",
       "Bash(npm uninstall:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__n8n-mcp__validate_workflow",
+      "mcp__n8n-mcp__search_nodes",
+      "mcp__n8n-mcp__list_nodes",
+      "mcp__n8n-mcp__get_node_info"
     ],
     "deny": [],
     "ask": []

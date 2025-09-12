@@ -1,0 +1,274 @@
+{
+  "name": "Alpine Peak - RAG Chat System",
+  "description": "Processes chat messages with semantic search and AI-enhanced responses using knowledge base",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-rag",
+      "name": "RAG Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookId": "alpine-peak-rag-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and validate chat input\nconst input = $input.first().json;\n\n// Validate required fields\nif (!input.message) {\n  throw new Error('Message is required');\n}\n\nconst chatData = {\n  message: input.message,\n  session_id: input.session_id || `session_${Date.now()}`,\n  conversation_id: input.conversation_id || null,\n  user_context: input.user_context || {},\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: chatData }];"
+      },
+      "id": "validate-input",
+      "name": "Validate Chat Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "options": {
+          "headers": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "timeout": 10000
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "model",
+              "value": "text-embedding-ada-002"
+            },
+            {
+              "name": "input",
+              "value": "={{ $json.message }}"
+            }
+          ]
+        }
+      },
+      "id": "generate-query-embedding",
+      "name": "Generate Query Embedding",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [600, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "openai-api-key",
+          "name": "OpenAI API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM search_knowledge_content(ARRAY[={{ $json.embedding }}]::vector, 0.78, 5)",
+        "options": {}
+      },
+      "id": "semantic-search",
+      "name": "Semantic Search Knowledge Base",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process semantic search results\nconst queryData = $node['Validate Chat Input'].json;\nconst embeddingResponse = $node['Generate Query Embedding'].json;\nconst searchResults = $input.all();\n\n// Extract embedding vector\nlet queryEmbedding = [];\nif (embeddingResponse.data && embeddingResponse.data[0] && embeddingResponse.data[0].embedding) {\n  queryEmbedding = embeddingResponse.data[0].embedding;\n}\n\n// Process search results\nconst relevantContent = [];\nlet contextText = '';\n\nif (searchResults && searchResults.length > 0) {\n  for (const result of searchResults) {\n    const content = result.json;\n    if (content.similarity > 0.75) { // High relevance threshold\n      relevantContent.push({\n        title: content.title,\n        content: content.content.substring(0, 500), // Truncate for context\n        category: content.category_name,\n        similarity: content.similarity,\n        priority: content.priority\n      });\n      \n      contextText += `## ${content.title}\\n${content.content.substring(0, 300)}...\\n\\n`;\n    }\n  }\n}\n\n// Prepare data for AI response generation\nconst aiPromptData = {\n  user_message: queryData.message,\n  context_content: contextText,\n  relevant_sources: relevantContent,\n  session_id: queryData.session_id,\n  conversation_id: queryData.conversation_id,\n  has_relevant_content: relevantContent.length > 0,\n  search_quality: relevantContent.length > 0 ? relevantContent[0].similarity : 0\n};\n\nreturn [{ json: aiPromptData }];"
+      },
+      "id": "process-search-results",
+      "name": "Process Search Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "chatId": "={{ $json.session_id }}",
+        "options": {
+          "systemMessage": "You are Alpine Peak Roofing's expert assistant. You provide helpful, accurate information about roofing services in Colorado, especially mountain communities like Aspen, Vail, and surrounding areas. You are knowledgeable, professional, and focused on sustainable, high-quality roofing solutions.\\n\\nWhen provided with relevant context from the knowledge base, use it to give detailed, accurate answers. If the context doesn't contain relevant information, provide general helpful guidance but suggest the user contact Alpine Peak Roofing directly for specific details.\\n\\nAlways maintain a professional, helpful tone and emphasize Alpine Peak Roofing's expertise in mountain roofing, sustainability, and premium materials.\\n\\n{{ $json.has_relevant_content ? 'RELEVANT CONTEXT FROM KNOWLEDGE BASE:\\n' + $json.context_content : 'No specific context found in knowledge base for this query.' }}"
+        },
+        "requestOptions": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "id": "generate-ai-response",
+      "name": "Generate AI Response",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1200, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-api",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare final response with metadata\nconst aiResponse = $input.first().json;\nconst searchData = $node['Process Search Results'].json;\nconst originalInput = $node['Validate Chat Input'].json;\n\nconst response = {\n  message: aiResponse.message || aiResponse.choices?.[0]?.message?.content || 'I apologize, but I encountered an issue generating a response.',\n  session_id: originalInput.session_id,\n  conversation_id: originalInput.conversation_id,\n  timestamp: new Date().toISOString(),\n  metadata: {\n    sources_used: searchData.relevant_sources.length,\n    search_quality: searchData.search_quality,\n    response_type: searchData.has_relevant_content ? 'knowledge_based' : 'general',\n    relevant_sources: searchData.relevant_sources.map(source => ({\n      title: source.title,\n      category: source.category,\n      similarity: Math.round(source.similarity * 100) / 100\n    }))\n  },\n  user_message: originalInput.message\n};\n\nreturn [{ json: response }];"
+      },
+      "id": "format-response",
+      "name": "Format Final Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 300]
+    },
+    {
+      "parameters": {
+        "resource": "rows",
+        "operation": "insert",
+        "tableId": "chat_messages",
+        "columnsUi": {
+          "columnValues": [
+            {
+              "column": "conversation_id",
+              "value": "={{ $json.conversation_id }}"
+            },
+            {
+              "column": "role",
+              "value": "assistant"
+            },
+            {
+              "column": "content",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "column": "retrieved_content_ids",
+              "value": "={{ JSON.stringify($json.metadata.relevant_sources.map(s => s.title)) }}"
+            },
+            {
+              "column": "confidence_score",
+              "value": "={{ $json.metadata.search_quality }}"
+            }
+          ]
+        }
+      },
+      "id": "save-message",
+      "name": "Save Message to Database",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1600, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}"
+      },
+      "id": "webhook-response",
+      "name": "Return Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1800, 300]
+    }
+  ],
+  "connections": {
+    "RAG Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Chat Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Semantic Search Knowledge Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Semantic Search Knowledge Base": {
+      "main": [
+        [
+          {
+            "node": "Process Search Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Search Results": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Response": {
+      "main": [
+        [
+          {
+            "node": "Format Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Final Response": {
+      "main": [
+        [
+          {
+            "node": "Save Message to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Message to Database": {
+      "main": [
+        [
+          {
+            "node": "Return Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["alpine-peak", "rag", "chat", "ai", "semantic-search"],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-09T00:00:00.000Z",
+  "versionId": "1.0.0"
+}

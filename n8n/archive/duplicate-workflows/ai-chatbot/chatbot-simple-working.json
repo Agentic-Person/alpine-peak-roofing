@@ -1,0 +1,123 @@
+{
+  "name": "AI Chatbot Processing Workflow - Alpine Peak Roofing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot-process",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger-001",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "alpine-peak-chatbot"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract and validate chat message data\nfor (const item of $input.all()) {\n  const inputData = item.json;\n  \n  // Validate required fields\n  if (!inputData.message) {\n    throw new Error('Message is required');\n  }\n  \n  // Extract context and user data\n  const chatData = {\n    message: inputData.message,\n    session_id: inputData.session_id || `session_${Date.now()}`,\n    page_context: inputData.page_context || 'website',\n    user_data: inputData.user_data || {},\n    timestamp: new Date().toISOString(),\n    ip_address: 'unknown'\n  };\n  \n  // Determine message intent\n  const message = inputData.message.toLowerCase();\n  let intent = 'general';\n  let priority = 'normal';\n  \n  // Intent classification\n  if (message.includes('estimate') || message.includes('quote') || message.includes('price')) {\n    intent = 'estimation_request';\n    priority = 'high';\n  } else if (message.includes('emergency') || message.includes('urgent') || message.includes('leak')) {\n    intent = 'emergency';\n    priority = 'urgent';\n  } else if (message.includes('schedule') || message.includes('appointment') || message.includes('inspection')) {\n    intent = 'scheduling';\n    priority = 'high';\n  } else if (message.includes('material') || message.includes('shingle') || message.includes('warranty')) {\n    intent = 'product_inquiry';\n    priority = 'normal';\n  } else if (message.includes('contact') || message.includes('phone') || message.includes('email')) {\n    intent = 'contact_info';\n    priority = 'normal';\n  }\n  \n  // Add classification to data\n  chatData.intent = intent;\n  chatData.priority = priority;\n  \n  return { json: chatData };\n}"
+      },
+      "id": "intent-detection-002",
+      "name": "Message Processing",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "chatInput": "You are an AI assistant for Alpine Peak Roofing, a premium roofing contractor in Denver, Colorado.\n\nCOMPANY INFO:\n- Location: Denver, Colorado\n- Services: Residential & Commercial Roofing, Emergency Repairs, Inspections\n- Phone: (303) 555-ROOF\n- Emergency: 24/7 emergency service available\n\nUser Message: {{ $json.message }}\nIntent: {{ $json.intent }}\n\nProvide a helpful, professional response."
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 300
+        }
+      },
+      "id": "openai-response-003",
+      "name": "OpenAI Response",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Simple response formatting\nfor (const item of $input.all()) {\n  const data = item.json;\n  \n  let responseMessage = 'Thank you for your message. We will get back to you soon.';\n  \n  // Try to get AI response\n  if (data.choices && data.choices[0] && data.choices[0].message) {\n    responseMessage = data.choices[0].message.content;\n  } else if (data.message) {\n    responseMessage = data.message;\n  }\n  \n  const result = {\n    success: true,\n    message: responseMessage,\n    timestamp: new Date().toISOString()\n  };\n  \n  return { json: result };\n}"
+      },
+      "id": "format-response-004",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "webhook-response-005",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Processing": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Response": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "chatbot-simple-working",
+  "tags": []
+}
