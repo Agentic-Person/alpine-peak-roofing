@@ -4,7 +4,7 @@ import { Shield, Phone, BookOpen, HelpCircle, Brain, Bot, MapPin, Mountain } fro
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900">
+    <footer className="bg-[#261700]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           
@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <div className="text-yellow-400 font-semibold">
               <Phone className="inline h-4 w-4 mr-1" />
-              (303) 555-ROOF
+              (970) 446-8995
             </div>
           </div>
 
