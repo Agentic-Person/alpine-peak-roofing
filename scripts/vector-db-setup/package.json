@@ -1,0 +1,33 @@
+{
+  "name": "alpine-peak-vector-setup",
+  "version": "1.0.0",
+  "description": "Vector database setup scripts for Alpine Peak Roofing knowledge base",
+  "main": "content-processor.js",
+  "scripts": {
+    "process": "node content-processor.js",
+    "embed": "node embedding-generator.js",
+    "upload": "node data-uploader.js",
+    "setup-db": "echo 'Run the SQL in supabase-setup.sql in your Supabase SQL editor'",
+    "full-setup": "npm run process && npm run embed && npm run upload",
+    "test-search": "node test-search.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "vector-database",
+    "embeddings",
+    "rag",
+    "supabase",
+    "openai"
+  ],
+  "author": "Alpine Peak Roofing",
+  "license": "MIT"
+}
