@@ -128,20 +128,23 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 perspective-1000">
             {/* AI-Powered Chatbot System */}
-            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/10 before:via-transparent before:to-purple-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+            <Link href="/ai-tools" className="block">
+              <Card className="group relative overflow-hidden bg-white/85 backdrop-blur-sm border border-white/30 shadow-xl shadow-blue-500/10 hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 hover:-translate-y-3 hover:bg-white/95 h-[690px] transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 cursor-pointer
+                before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/8 before:via-transparent before:to-purple-500/8 before:opacity-60 hover:before:opacity-100 before:transition-opacity before:duration-500
+                after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
               {/* Holographic border effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
               
               {/* Image at top */}
-              <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-t-lg flex items-center justify-center overflow-hidden">
-                <div className="text-center text-blue-700">
-                  <Bot className="h-16 w-16 mx-auto mb-2" />
-                  <p className="text-sm font-semibold">AI Chatbot Interface</p>
-                </div>
+              <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-t-lg overflow-hidden">
+                <Image
+                  src="/images/ai-tools/chatbot-card.png"
+                  alt="AI Chatbot Interface showing conversational flow and automation"
+                  fill
+                  className="object-cover"
+                />
               </div>
               
               <CardHeader className="pb-4">
@@ -154,14 +157,14 @@ export default function HomePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 pb-6">
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-black text-sm mb-4">
                   Our intelligent chatbot operates around the clock, engaging with visitors, qualifying leads, 
                   and scheduling appointments with human-like conversation flow.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <div className="bg-blue-50 p-3 rounded-lg text-center">
-                    <div className="text-xl font-bold text-blue-600">150+</div>
+                    <div className="text-xl font-bold text-blue-600">15+</div>
                     <div className="text-blue-800 text-xs">Qualified leads monthly</div>
                   </div>
                   <div className="bg-blue-50 p-3 rounded-lg text-center">
@@ -170,7 +173,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                <ul className="space-y-2 text-xs text-black mb-4">
                   <li className="flex items-center">
                     <Check className="mr-2 h-3 w-3 text-green-500" />
                     24/7 availability with instant responses
@@ -185,25 +188,31 @@ export default function HomePage() {
                   </li>
                 </ul>
                 
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
-                  <Link href="/ai-tools">Learn More</Link>
-                </Button>
+                <div className="mt-4">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg border-2 border-yellow-400 hover:border-yellow-300 transition-colors duration-200 pointer-events-none">
+                    Learn More
+                  </button>
+                </div>
               </CardContent>
-            </Card>
+              </Card>
+            </Link>
 
             {/* Automated Blog Content System */}
-            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/10 before:via-transparent before:to-blue-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+            <Link href="/ai-tools" className="block">
+              <Card className="group relative overflow-hidden bg-white/85 backdrop-blur-sm border border-white/30 shadow-xl shadow-green-500/10 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-500 hover:-translate-y-3 hover:bg-white/95 h-[690px] transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 cursor-pointer
+                before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/8 before:via-transparent before:to-blue-500/8 before:opacity-60 hover:before:opacity-100 before:transition-opacity before:duration-500
+                after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
               {/* Holographic border effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-blue-400/20 to-green-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
               
               {/* Image at top */}
-              <div className="relative h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg flex items-center justify-center overflow-hidden">
-                <div className="text-center text-green-700">
-                  <FileText className="h-16 w-16 mx-auto mb-2" />
-                  <p className="text-sm font-semibold">Content Generation System</p>
-                </div>
+              <div className="relative h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg overflow-hidden">
+                <Image
+                  src="/images/ai-tools/autoblog-card.png"
+                  alt="Automated Blog Content Generation System with SEO optimization"
+                  fill
+                  className="object-cover"
+                />
               </div>
               
               <CardHeader className="pb-4">
@@ -216,23 +225,23 @@ export default function HomePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 pb-6">
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-black text-sm mb-4">
                   Our content automation system generates high-quality, SEO-optimized blog posts about roofing topics, 
                   local Denver weather patterns, and industry trends.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <div className="bg-green-50 p-3 rounded-lg text-center">
-                    <div className="text-xl font-bold text-green-600">$11.72</div>
+                    <div className="text-xl font-bold text-green-600">$0.72</div>
                     <div className="text-green-800 text-xs">Cost per blog post</div>
                   </div>
                   <div className="bg-green-50 p-3 rounded-lg text-center">
                     <div className="text-xl font-bold text-green-600">5+</div>
-                    <div className="text-green-800 text-xs">Leads per post average</div>
+                    <div className="text-green-800 text-xs">Leads per week average</div>
                   </div>
                 </div>
 
-                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                <ul className="space-y-2 text-xs text-black mb-4">
                   <li className="flex items-center">
                     <Check className="mr-2 h-3 w-3 text-green-500" />
                     2-3 posts published weekly automatically
@@ -247,25 +256,31 @@ export default function HomePage() {
                   </li>
                 </ul>
                 
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white" asChild>
-                  <Link href="/ai-tools">Learn More</Link>
-                </Button>
+                <div className="mt-4">
+                  <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg border-2 border-yellow-400 hover:border-yellow-300 transition-colors duration-200 pointer-events-none">
+                    Learn More
+                  </button>
+                </div>
               </CardContent>
-            </Card>
+              </Card>
+            </Link>
 
             {/* Instant Roof Estimator */}
-            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/10 before:via-transparent before:to-red-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+            <Link href="/ai-tools" className="block">
+              <Card className="group relative overflow-hidden bg-white/85 backdrop-blur-sm border border-white/30 shadow-xl shadow-orange-500/10 hover:shadow-2xl hover:shadow-orange-500/30 transition-all duration-500 hover:-translate-y-3 hover:bg-white/95 h-[690px] transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 cursor-pointer
+                before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/8 before:via-transparent before:to-red-500/8 before:opacity-60 hover:before:opacity-100 before:transition-opacity before:duration-500
+                after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/10 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
               {/* Holographic border effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 via-red-400/20 to-orange-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
               
               {/* Image at top */}
-              <div className="relative h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-t-lg flex items-center justify-center overflow-hidden">
-                <div className="text-center text-orange-700">
-                  <Calculator className="h-16 w-16 mx-auto mb-2" />
-                  <p className="text-sm font-semibold">Instant Estimator Tool</p>
-                </div>
+              <div className="relative h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-t-lg overflow-hidden">
+                <Image
+                  src="/images/ai-tools/roofestimator-card.png"
+                  alt="Instant Roof Estimator with satellite imagery and AI measurement technology"
+                  fill
+                  className="object-cover"
+                />
               </div>
               
               <CardHeader className="pb-4">
@@ -278,15 +293,15 @@ export default function HomePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-1 pb-6">
-                <p className="text-gray-600 text-sm mb-4">
-                  Revolutionary technology that provides accurate roof estimates in just 30 seconds using Google Maps 
+                <p className="text-black text-sm mb-4">
+                  Revolutionary technology that provides accurate roof estimates in just 3 minutes using Google Maps 
                   satellite imagery, AI measurement algorithms, and real-time material pricing.
                 </p>
                 
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <div className="bg-orange-50 p-3 rounded-lg text-center">
-                    <div className="text-xl font-bold text-orange-600">30</div>
-                    <div className="text-orange-800 text-xs">Seconds for estimate</div>
+                    <div className="text-xl font-bold text-orange-600">3</div>
+                    <div className="text-orange-800 text-xs">Minutes for estimate</div>
                   </div>
                   <div className="bg-orange-50 p-3 rounded-lg text-center">
                     <div className="text-xl font-bold text-orange-600">95%</div>
@@ -294,7 +309,7 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                <ul className="space-y-2 text-xs text-black mb-4">
                   <li className="flex items-center">
                     <Check className="mr-2 h-3 w-3 text-green-500" />
                     Satellite imagery analysis and measurement
@@ -309,11 +324,14 @@ export default function HomePage() {
                   </li>
                 </ul>
                 
-                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white" asChild>
-                  <Link href="/ai-tools">Learn More</Link>
-                </Button>
+                <div className="mt-4">
+                  <button className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-lg border-2 border-yellow-400 hover:border-yellow-300 transition-colors duration-200 pointer-events-none">
+                    Learn More
+                  </button>
+                </div>
               </CardContent>
-            </Card>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>

@@ -89,9 +89,19 @@ interface GradientSwatchProps {
 export function GradientSwatch({ name, gradient, usage, className = '' }: GradientSwatchProps) {
   const [copied, setCopied] = useState(false)
 
+  // Convert CSS gradient to readable format for copying
+  const getReadableGradient = (cssGradient: string) => {
+    return cssGradient
+      .replace('to right', 'left-to-right')
+      .replace('to bottom', 'top-to-bottom')
+      .replace('to left', 'right-to-left')
+      .replace('to top', 'bottom-to-top')
+  }
+
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(gradient)
+      const readableGradient = getReadableGradient(gradient)
+      await navigator.clipboard.writeText(readableGradient)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {

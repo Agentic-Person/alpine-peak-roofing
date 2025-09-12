@@ -55,7 +55,8 @@ const config: Config = {
         'brand-navy-sky': 'linear-gradient(to right, #003399, #33CCFF)',
         'brand-vertical': 'linear-gradient(to bottom, #0066CC, #003399)',
         'brand-vertical-invert': 'linear-gradient(to bottom, #003399, #0066CC)',
-        'ai-tools': 'linear-gradient(to right, #9333EA, #213FB0)'
+        'ai-tools': 'linear-gradient(to right, #9333EA, #213FB0)',
+        'ai-tools-horizontal': 'linear-gradient(to bottom, #9333EA, #213FB0)'
       }
     },
   },

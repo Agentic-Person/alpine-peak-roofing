@@ -245,6 +245,11 @@ export default function ColorsPage() {
               gradient="linear-gradient(to right, #9333EA, #213FB0)"
               usage="Specialized gradient for AI tools and tech-focused sections"
             />
+            <GradientSwatch
+              name="AI Tools Horizontal Gradient"
+              gradient="linear-gradient(to bottom, #9333EA, #213FB0)"
+              usage="Vertical AI tools gradient - purple to blue top to bottom"
+            />
           </div>
         </section>
 
