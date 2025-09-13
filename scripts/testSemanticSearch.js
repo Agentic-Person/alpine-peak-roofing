@@ -6,8 +6,17 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = 'https://adueyerxzutuuwtxyage.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkdWV5ZXJ4enV0dXV3dHh5YWdlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzAxNzk5MSwiZXhwIjoyMDcyNTkzOTkxfQ.Fwyqe-JS-qcno7bjhftM-Y8izVGsxv5sa3A9UZWBruo';
+// Load environment variables from .env file
+require('dotenv').config({ path: '../.env.local' });
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error('Error: Missing Supabase configuration.');
+  console.error('Please check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local');
+  process.exit(1);
+}
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 

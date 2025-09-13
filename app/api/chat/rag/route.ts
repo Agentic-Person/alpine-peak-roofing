@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Supabase configuration
-const SUPABASE_URL = 'https://adueyerxzutuuwtxyage.supabase.co'
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkdWV5ZXJ4enV0dXV3dHh5YWdlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzAxNzk5MSwiZXhwIjoyMDcyNTkzOTkxfQ.Fwyqe-JS-qcno7bjhftM-Y8izVGsxv5sa3A9UZWBruo'
+// Supabase configuration - using environment variables for security
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  throw new Error('Missing Supabase configuration. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
+}
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
 
