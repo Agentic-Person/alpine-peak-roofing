@@ -10,17 +10,27 @@ export class N8nClient {
 
   async triggerWebhook(webhookPath: string, data: Record<string, unknown>) {
     try {
-      // Use the full webhook URL directly, ignore webhookPath since it's already in the URL
+      if (!this.webhookUrl) {
+        throw new Error('N8N_WEBHOOK_URL not configured')
+      }
+
       console.log('n8n webhook URL:', this.webhookUrl)
-      console.log('n8n webhook data:', data)
-      
+      console.log('n8n webhook data:', JSON.stringify(data, null, 2))
+
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
       const response = await fetch(this.webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'User-Agent': 'Alpine-Peak-Roofing-Chatbot/1.0'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        signal: controller.signal
       })
+
+      clearTimeout(timeoutId)
 
       console.log('n8n response status:', response.status)
       console.log('n8n response headers:', response.headers.get('content-type'))
@@ -28,13 +38,24 @@ export class N8nClient {
       if (!response.ok) {
         const errorText = await response.text()
         console.error('n8n webhook error response:', errorText)
-        throw new Error(`n8n webhook failed: ${response.status} ${response.statusText}`)
+        throw new Error(`n8n webhook failed: ${response.status} ${response.statusText} - ${errorText}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      if (!contentType?.includes('application/json')) {
+        console.warn('n8n response is not JSON:', contentType)
+        const text = await response.text()
+        return { response: text, success: true }
       }
 
       const result = await response.json()
-      console.log('n8n webhook success:', result)
+      console.log('n8n webhook success:', JSON.stringify(result, null, 2))
       return result
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('n8n webhook timeout')
+        throw new Error('n8n webhook timeout after 10 seconds')
+      }
       console.error('n8n webhook error:', error)
       throw error
     }
@@ -49,14 +70,19 @@ export class N8nClient {
   async processChatMessage(sessionId: string, message: string, context: Record<string, unknown>) {
     const payload = {
       session_id: sessionId,
-      message,
+      message: message.trim(),
       page_context: context.page || 'website',
       user_data: context.user_info || {},
+      conversation_history: context.conversation_history || [],
       timestamp: new Date().toISOString(),
-      ip_address: 'unknown'
+      user_agent: context.user_agent || 'unknown',
+      referrer: context.referrer || '',
+      session_start: context.session_start || new Date().toISOString(),
+      last_activity: context.last_activity || new Date().toISOString(),
+      ip_address: 'unknown' // In production, get from request headers
     }
-    
-    console.log('n8n processChatMessage payload:', payload)
+
+    console.log('n8n processChatMessage payload:', JSON.stringify(payload, null, 2))
     return this.triggerWebhook('alpine-peak-chatbot', payload)
   }
 

@@ -8,7 +8,11 @@
       "mcp__n8n-mcp__validate_workflow",
       "mcp__n8n-mcp__search_nodes",
       "mcp__n8n-mcp__list_nodes",
-      "mcp__n8n-mcp__get_node_info"
+      "mcp__n8n-mcp__get_node_info",
+      "WebSearch",
+      "mcp__n8n-mcp__validate_node_operation",
+      "mcp__n8n-mcp__validate_workflow_connections",
+      "mcp__supabase__apply_migration"
     ],
     "deny": [],
     "ask": []

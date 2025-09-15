@@ -28,6 +28,11 @@ export class ChatService {
     message: string, 
     context?: Partial<ConversationContext>
   ): Promise<ChatResponse> {
+    // First, try a simple mock response to ensure UI works
+    if (this.shouldUseMockResponse(message)) {
+      return this.getMockResponse(message)
+    }
+
     try {
       // Get current session context
       const currentContext = await this.getSessionContext(sessionId)
@@ -39,27 +44,21 @@ export class ChatService {
         last_activity: new Date(),
       }
 
-      // Try n8n first, fallback to local demo API if n8n is unavailable
+      // Try n8n first, fall back to demo API if it fails
       let response: any
       let usedN8n = false
-      try {
-        console.log('ChatService: Attempting n8n webhook call')
-        response = await n8nClient.processChatMessage(sessionId, message, {
-          context: fullContext,
-          timestamp: new Date().toISOString()
-        })
-        console.log('ChatService: n8n response received:', response)
-        usedN8n = true
 
-        // Handle n8n response format - it might have different structure
-        if (response.success && response.message) {
-          response.response = response.message
-        }
+      try {
+        console.log('ChatService: Attempting n8n workflow...')
+        // Try n8n workflow first
+        response = await this.callN8nWithTimeout(sessionId, message, fullContext)
+        usedN8n = true
+        console.log('ChatService: n8n response received:', response?.response?.substring(0, 100) + '...')
       } catch (n8nError) {
-        console.warn('n8n unavailable, using local demo API:', n8nError)
-        // Fallback to local demo API
+        console.warn('ChatService: n8n failed, falling back to demo API:', n8nError)
+        // Fall back to local demo API
         response = await this.callLocalDemoAPI(sessionId, message, fullContext)
-        console.log('ChatService: Using demo API response:', response.response.substring(0, 100) + '...')
+        console.log('ChatService: Demo API fallback response:', response.response.substring(0, 100) + '...')
       }
 
       // Store the conversation in Supabase
@@ -335,6 +334,36 @@ export class ChatService {
 
   // Private helper methods
 
+  private async callN8nWithTimeout(sessionId: string, message: string, context: ConversationContext): Promise<any> {
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('n8n workflow timeout')), this.REQUEST_TIMEOUT)
+    })
+
+    const n8nPromise = n8nClient.processChatMessage(sessionId, message, context)
+
+    try {
+      const result = await Promise.race([n8nPromise, timeoutPromise])
+
+      // Validate and normalize the n8n response format
+      if (result && typeof result === 'object') {
+        return {
+          response: result.response || result.message || 'I received your message but had trouble generating a response.',
+          lead_score: result.lead_score || result.leadScore || 0,
+          is_hot_lead: result.is_hot_lead || result.isHotLead || false,
+          requires_human: result.requires_human || result.requiresHuman || false,
+          is_emergency: result.is_emergency || result.isEmergency || false,
+          next_action: result.next_action || result.nextAction || 'continue_conversation',
+          quick_actions: result.quick_actions || result.quickActions || []
+        }
+      }
+
+      throw new Error('Invalid n8n response format')
+    } catch (error) {
+      console.error('n8n call failed:', error)
+      throw error
+    }
+  }
+
   private async callLocalDemoAPI(sessionId: string, message: string, context: ConversationContext): Promise<any> {
     try {
       const response = await fetch('/api/chatbot/demo', {
@@ -525,6 +554,43 @@ Conversation Summary:
       next_action: 'continue_conversation',
       session_id: sessionId,
       error: chatError.message
+    }
+  }
+
+  /**
+   * Check if we should use mock responses (for development/testing)
+   */
+  private shouldUseMockResponse(message: string): boolean {
+    // Use real API responses now that UI is tested
+    return false
+  }
+
+  /**
+   * Get a mock response for testing UI functionality
+   */
+  private getMockResponse(message: string): ChatResponse {
+    const roofingResponses = [
+      "Thanks for your question about roofing! As Sarah from Alpine Peak Roofing, I'd be happy to help. Based on Denver's climate, I'd recommend considering metal roofing or high-quality asphalt shingles for durability against hail and temperature changes.",
+      "That's a great question! For roof replacement in the Denver area, we typically see projects take 1-3 days depending on size and complexity. We always prioritize quality workmanship while working efficiently.",
+      "I can definitely help with that! Alpine Peak Roofing offers comprehensive inspections and we work directly with insurance companies for storm damage claims. Would you like to schedule a free inspection?",
+      "Excellent question! The signs of hail damage include missing granules, exposed mat, cracked shingles, and damaged gutters. If you suspect hail damage, it's important to have it inspected quickly.",
+      "Great choice considering metal roofing! Metal roofs are excellent for Colorado weather - they're durable, energy-efficient, and can last 50+ years. They also perform very well in hail storms."
+    ]
+
+    const randomResponse = roofingResponses[Math.floor(Math.random() * roofingResponses.length)]
+
+    return {
+      success: true,
+      response: randomResponse,
+      session_id: this.getOrCreateSessionId(),
+      lead_score: Math.floor(Math.random() * 3) + 1, // Random score 1-3
+      quick_actions: [
+        { id: 'schedule', label: 'Schedule Inspection', action: 'schedule_inspection', value: 'I would like to schedule an inspection' },
+        { id: 'emergency', label: 'Emergency Service', action: 'emergency_contact', value: 'I need emergency roofing service' },
+        { id: 'materials', label: 'Learn About Materials', action: 'send_message', value: 'Tell me about different roofing materials' }
+      ],
+      is_hot_lead: Math.random() > 0.8, // 20% chance of being flagged as hot lead
+      next_action: 'continue_conversation'
     }
   }
 }

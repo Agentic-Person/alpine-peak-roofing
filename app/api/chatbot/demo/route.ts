@@ -182,14 +182,14 @@ async function generateDemoResponse(
     }
     
     if (messageLower.includes('price') || messageLower.includes('cost') || messageLower.includes('estimate')) {
-      return "Roofing costs vary based on several factors including roof size, material choice, and complexity. For a typical 2,000 sq ft home in the Denver area, asphalt shingle replacement ranges from $8,500-$15,000, while premium metal roofing runs $12,000-$25,000. We offer free, detailed estimates with no obligation, and financing options including 0% interest for qualified homeowners. This is a demonstration of Agentic Personnel's AI chatbot technology. Would you like to schedule a free inspection?"
+      return "Roofing costs vary based on several factors including roof size, material choice, and complexity. For a typical 2,000 sq ft home in the Denver area, asphalt shingle replacement ranges from $8,500-$15,000, while premium metal roofing runs $12,000-$25,000. We offer free, detailed estimates with no obligation, and financing options including 0% interest for qualified homeowners. Would you like to schedule a free inspection?"
     }
     
     if (messageLower.includes('emergency') || messageLower.includes('leak') || messageLower.includes('damage')) {
-      return "I understand you have urgent roofing concerns! Alpine Peak Roofing provides 24/7 emergency response for storm damage, leaks, and structural issues. Our emergency protocol includes immediate temporary protection, comprehensive damage assessment, and insurance claim assistance. For demo purposes, I'd normally route this to our emergency team within 5 minutes. This is a demonstration of Agentic Personnel's AI chatbot technology. In a real emergency, would you need immediate callback or temporary protection?"
+      return "I understand you have urgent roofing concerns! Alpine Peak Roofing provides 24/7 emergency response for storm damage, leaks, and structural issues. Our emergency protocol includes immediate temporary protection, comprehensive damage assessment, and insurance claim assistance. I can connect you with our emergency team right away. In a real emergency, would you need immediate callback or temporary protection?"
     }
     
-    return "As Alpine Peak Roofing's AI assistant, I'm here to help with all your roofing needs! We provide expert residential and commercial roofing services throughout Colorado, specializing in quality installations, reliable repairs, and storm damage restoration. Our experienced team delivers the 'Pinnacle of Protection, Peak of Performance' on every project. This is a demonstration of Agentic Personnel's AI chatbot technology. What specific roofing questions can I help answer for you?"
+    return "As Alpine Peak Roofing's AI assistant, I'm here to help with all your roofing needs! We provide expert residential and commercial roofing services throughout Colorado, specializing in quality installations, reliable repairs, and storm damage restoration. Our experienced team delivers the 'Pinnacle of Protection, Peak of Performance' on every project. What specific roofing questions can I help answer for you?"
   }
 
   // Agentic Personnel context responses  
@@ -210,7 +210,7 @@ async function generateDemoResponse(
   }
 
   // General context responses
-  return "Hello! I'm Alpine Peak Roofing's AI assistant, powered by Agentic Personnel's advanced chatbot technology. I can help you with roofing services, materials, estimates, and emergency repairs - or I can explain how this AI system works and what it could do for your roofing company. You're experiencing a live demonstration of intelligent customer service automation that's available 24/7. This is a demonstration of Agentic Personnel's AI chatbot technology. What would you like to explore - our roofing expertise or the chatbot technology behind this conversation?"
+  return "Hello! I'm Sarah, Alpine Peak Roofing's AI assistant. I'm here to help you with all your roofing needs in the Denver metro area. Whether you need emergency repairs, a full roof replacement, or just have questions about roofing materials and costs, I'm here to provide expert guidance. How can I help you with your roofing project today?"
 }
 
 /**
