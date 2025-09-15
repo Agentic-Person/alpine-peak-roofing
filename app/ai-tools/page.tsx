@@ -112,11 +112,13 @@ export default function IntelligentRoofingAutomationsPage() {
                 </ul>
 
                 <Button className="mr-4" asChild>
-                  <Link href="/chatbot-demo">Try Live Demo</Link>
+                  <Link href="/ai-chat">Try Live Demo</Link>
                 </Button>
-                <Button variant="outline">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Start Chat Now
+                <Button variant="outline" asChild>
+                  <Link href="/ai-chat">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Start Chat Now
+                  </Link>
                 </Button>
               </div>
 

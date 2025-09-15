@@ -71,7 +71,7 @@ export default function Navigation() {
               className="bg-gradient-to-r from-[#9333EA] to-[#213FB0] text-white border-2 border-yellow-400 hover:border-yellow-300 transition-all duration-300 px-8 py-3 text-lg font-semibold hover:shadow-lg"
               asChild
             >
-              <Link href="#chatbot">Chat with our AI</Link>
+              <Link href="/ai-chat">Chat with our AI</Link>
             </Button>
           </div>
 
@@ -123,7 +123,7 @@ export default function Navigation() {
                 className="w-full bg-gradient-to-r from-[#9333EA] to-[#213FB0] text-white border-2 border-yellow-400 hover:border-yellow-300 transition-all duration-300 px-8 py-3 text-lg font-semibold hover:shadow-lg"
                 asChild
               >
-                <Link href="#chatbot">
+                <Link href="/ai-chat">
                   Chat with our AI
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>

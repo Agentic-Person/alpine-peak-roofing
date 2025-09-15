@@ -4,7 +4,7 @@ import "./globals.css";
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
-import ChatWidget from '@/components/chatbot/ChatWidget';
+import ConditionalChatWidget from '@/components/chatbot/ConditionalChatWidget';
 import { 
   PrimaryBusinessSchema,
   ServiceAreaSchema,
@@ -72,7 +72,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <ChatWidget />
+          <ConditionalChatWidget />
         </ThemeProvider>
       </body>
     </html>

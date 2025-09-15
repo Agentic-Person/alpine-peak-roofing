@@ -61,14 +61,12 @@ export default function HomePage() {
               <div className="mt-8 flex justify-start">
                 <Button 
                   className="bg-gradient-to-r from-[#9333EA] to-[#213FB0] text-white border-2 border-yellow-400 hover:border-yellow-300 transition-all duration-300 px-8 py-3 text-lg font-semibold hover:shadow-lg"
-                  onClick={() => {
-                    const chatWidget = document.querySelector('[aria-label*="Chat"]') || document.querySelector('[data-testid*="chat"]');
-                    if (chatWidget) {
-                      (chatWidget as HTMLElement).click();
-                    }
-                  }}
+                  asChild
                 >
-                  Chat with our AI
+                  <Link href="/ai-chat">
+                    Chat with our AI
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
             </div>

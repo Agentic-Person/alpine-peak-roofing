@@ -24,7 +24,7 @@ interface ChatWidgetProps {
   className?: string
 }
 
-export function ChatWidget({ 
+function ChatWidget({ 
   position = 'bottom-right',
   theme = 'alpine',
   autoOpen = false,
@@ -258,7 +258,7 @@ export function ChatWidget({
 
   if (!isOpen) {
     return (
-      <div className={cn('fixed z-50', positionClasses[position])}>
+      <div className={cn('fixed z-[9999]', positionClasses[position])}>
         {/* Animated gradient border container */}
         <div className="relative">
           {/* Pulsing purple shadow background */}
@@ -325,9 +325,9 @@ export function ChatWidget({
   }
 
   return (
-    <div className={cn('fixed z-50', positionClasses[position])}>
+    <div className={cn('fixed z-[9999]', positionClasses[position])}>
       <div className={cn(
-        'flex flex-col h-[500px] w-[380px] rounded-lg border shadow-2xl',
+        'flex flex-col h-[500px] w-[380px] rounded-lg border shadow-2xl bg-white',
         'md:h-[600px] md:w-[400px]',
         themeClasses[theme],
         className

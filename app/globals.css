@@ -72,3 +72,183 @@ body {
 .border-3 {
   border-width: 3px;
 }
+
+/* Scrollbar hide utility for suggested questions */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+/* Chat page specific styles */
+.chat-gradient-bg {
+  background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+}
+
+/* Enhanced message animations */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-slide-in {
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+/* AI Chat page specific enhancements */
+.ai-avatar-border {
+  background: linear-gradient(45deg, #9333EA, #213FB0, #9333EA);
+}
+
+/* Chat bubble hover effects */
+.chat-bubble {
+  transition: all 0.2s ease;
+}
+
+.chat-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Sample question animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sample-question {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Backdrop blur enhancement for better glass effect */
+.glass-effect {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Custom scrollbar for chat messages */
+.chat-messages-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.chat-messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages-container::-webkit-scrollbar-track {
+  background: transparent;
+  margin-right: 8px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.message-slide-in {
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+/* Holographic floating effect for Emily's panel */
+@keyframes holographicFloat {
+  0%, 100% {
+    transform: translateY(0) rotateX(0) rotateY(0);
+  }
+  33% {
+    transform: translateY(-8px) rotateX(1deg) rotateY(-0.5deg);
+  }
+  66% {
+    transform: translateY(-4px) rotateX(-0.5deg) rotateY(1deg);
+  }
+}
+
+.holographic-panel {
+  animation: holographicFloat 6s ease-in-out infinite;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 80px rgba(6, 182, 212, 0.2),
+    0 0 120px rgba(139, 92, 246, 0.1);
+  transform-style: preserve-3d;
+}
+
+/* Gentle border pulse animation */
+@keyframes gentlePulse {
+  0%, 100% {
+    opacity: 0.8;
+    box-shadow:
+      0 0 30px rgba(6, 182, 212, 0.4),
+      0 0 60px rgba(139, 92, 246, 0.2);
+  }
+  50% {
+    opacity: 1;
+    box-shadow:
+      0 0 40px rgba(6, 182, 212, 0.6),
+      0 0 80px rgba(139, 92, 246, 0.3);
+  }
+}
+
+.pulsing-border {
+  animation: gentlePulse 2.5s ease-in-out infinite;
+}
+
+/* Embedded/sunken chat window effect */
+.embedded-window {
+  box-shadow:
+    inset 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  border: 2px solid #4B5563;
+  background: linear-gradient(
+    145deg,
+    rgba(55, 65, 81, 0.1) 0%,
+    rgba(31, 41, 55, 0.2) 50%,
+    rgba(17, 24, 39, 0.3) 100%
+  );
+}
+
+/* Premium call button styling */
+.premium-call-button {
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(219, 234, 254, 0.8) 50%,
+    rgba(147, 197, 253, 0.9) 100%
+  );
+  color: #1e40af;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.premium-call-button:hover {
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(219, 234, 254, 0.95) 50%,
+    rgba(147, 197, 253, 1) 100%
+  );
+  box-shadow:
+    0 12px 40px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
