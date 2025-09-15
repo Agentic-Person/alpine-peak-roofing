@@ -1,0 +1,69 @@
+# MCP Environment Configuration Example
+# Copy this file to create your own environment configuration
+# Replace all placeholder values with your actual API keys and tokens
+
+# =============================================================================
+# GITHUB MCP SERVER CONFIGURATION
+# =============================================================================
+# GitHub Personal Access Token
+# Required for: Repository access, issue management, PR operations, etc.
+# How to get: GitHub Settings > Developer settings > Personal access tokens > Tokens (classic)
+# Scopes needed: repo, read:org, user, project, gist
+GITHUB_PERSONAL_ACCESS_TOKEN=github_pat_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# =============================================================================
+# SUPABASE MCP SERVER CONFIGURATION  
+# =============================================================================
+# Supabase Access Token
+# Required for: Database operations, project management, authentication
+# How to get: Supabase Dashboard > Settings > Access Tokens > Create new token
+SUPABASE_ACCESS_TOKEN=sbp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# =============================================================================
+# N8N MCP SERVER CONFIGURATION
+# =============================================================================
+# N8N Server Configuration
+# These are typically set for the n8n-mcp server environment
+NODE_ENV=production
+LOG_LEVEL=error
+MCP_MODE=stdio
+DISABLE_CONSOLE_OUTPUT=true
+
+# Optional N8N specific configurations (if needed)
+# N8N_HOST=localhost
+# N8N_PORT=5678
+# N8N_PROTOCOL=http
+# N8N_API_KEY=your_n8n_api_key_here
+
+# =============================================================================
+# ADDITIONAL ENVIRONMENT VARIABLES (if needed)
+# =============================================================================
+# Add any other environment variables your MCP servers might need
+
+# Database connections
+# DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+
+# API endpoints
+# API_BASE_URL=https://your-api-endpoint.com
+
+# Authentication secrets
+# JWT_SECRET=your_jwt_secret_here
+# ENCRYPTION_KEY=your_encryption_key_here
+
+# =============================================================================
+# USAGE INSTRUCTIONS
+# =============================================================================
+# 1. Copy this file to create your actual environment file:
+#    cp MCP_ENV.example .env.mcp
+#    
+# 2. Replace all placeholder values with your actual credentials
+#
+# 3. Update your .mcp.json to reference environment variables:
+#    Instead of hardcoded values, use: "${VARIABLE_NAME}"
+#
+# 4. Make sure to add your environment file to .gitignore:
+#    echo ".env.mcp" >> .gitignore
+#
+# 5. Load environment variables before starting your MCP servers
+#
+# SECURITY NOTE: Never commit actual API keys or tokens to version control!
