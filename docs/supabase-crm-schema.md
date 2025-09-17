@@ -4,7 +4,13 @@ This document outlines the database schema required for the Alpine Peak Roofing 
 
 ## Overview
 
-The CRM system captures leads, logs conversations, and manages follow-up email queues through three main tables in Supabase.
+The CRM system captures leads, logs conversations, and manages follow-up email queues through three main tables in Supabase. The system integrates with a vector-powered knowledge base for RAG (Retrieval Augmented Generation) functionality, enabling intelligent chatbot responses and knowledge-based follow-up emails.
+
+### Key Features
+- **Voice-Enhanced Lead Scoring**: +15 bonus points for voice interactions
+- **Vector-Powered RAG**: 566 knowledge base entries with 1536-dimensional embeddings
+- **Automated Email Queuing**: Follow-up emails with relevant knowledge base content
+- **Real-time Conversation Logging**: Complete audit trail of all interactions
 
 ## Tables
 
@@ -188,6 +194,112 @@ GROUP BY input_type;
 SELECT status, COUNT(*) as count
 FROM email_queue
 GROUP BY status;
+```
+
+## Vector-Powered Knowledge Base Integration
+
+### Overview
+
+The CRM system integrates seamlessly with a vector-powered knowledge base containing 566 roofing-related documents with 1536-dimensional embeddings (OpenAI text-embedding-ada-002). This enables sophisticated RAG functionality for both chatbot responses and automated follow-up emails.
+
+### Knowledge Base Table Structure
+
+```sql
+-- Existing knowledge_base table (read-only reference)
+knowledge_base (
+    id TEXT PRIMARY KEY,
+    content TEXT NOT NULL,
+    title TEXT,
+    embedding vector(1536),  -- OpenAI ada-002 embeddings
+    tokens INTEGER,
+    metadata JSONB,          -- Category, urgency, season, etc.
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
+);
+```
+
+### Vector Indexes (Already Configured)
+
+The following high-performance indexes are already in place:
+
+1. **`knowledge_base_embedding_idx`** - IVFFlat vector similarity search (100 lists)
+2. **`knowledge_base_category_idx`** - Category-based filtering
+3. **`knowledge_base_content_fts_idx`** - Full-text search (GIN)
+4. **`knowledge_base_metadata_idx`** - Metadata JSON search (GIN)
+5. **`knowledge_base_urgency_idx`** - Urgency-based filtering
+
+### RAG Workflow Integration
+
+#### 1. Conversation Enhancement
+When `knowledge_used = TRUE` in the conversations table, it indicates that the RAG system:
+- Performed vector similarity search on user query
+- Retrieved relevant knowledge base content
+- Enhanced the AI response with authoritative information
+- Stored the interaction for follow-up processing
+
+#### 2. Email Queue Knowledge Articles
+The `knowledge_articles` JSONB field in `email_queue` contains:
+```json
+[
+  {
+    "id": "chunk_ea2939894bd7",
+    "title": "Commercial Roofing",
+    "excerpt": "A damaged or leaky roof can be...",
+    "similarity_score": 0.94,
+    "category": "emergency"
+  }
+]
+```
+
+#### 3. Vector Search Functions
+
+For advanced RAG operations, use the functions in `supabase-vector-operations.sql`:
+
+```sql
+-- Semantic similarity search
+SELECT * FROM search_knowledge_semantic(query_embedding, 0.7, 5);
+
+-- Hybrid search (vector + full-text)
+SELECT * FROM search_knowledge_hybrid(query_text, query_embedding, 0.6, 10);
+
+-- Category-filtered search
+SELECT * FROM search_knowledge_by_category(query_embedding, 'emergency', 5);
+```
+
+### Performance Metrics
+
+- **Knowledge Base Size**: 566 documents
+- **Embedding Coverage**: 100% (all entries have embeddings)
+- **Vector Dimensions**: 1536 (OpenAI text-embedding-ada-002)
+- **Search Performance**: Sub-100ms for similarity queries
+- **Index Type**: IVFFlat optimized for cosine similarity
+
+### Integration with n8n Workflow
+
+1. **User Query** → Vector embedding generation (OpenAI API)
+2. **Similarity Search** → Retrieve top 3-5 relevant knowledge entries
+3. **Context Enhancement** → Inject knowledge into AI prompt
+4. **Response Generation** → AI response with authoritative information
+5. **CRM Logging** → Record interaction with `knowledge_used = TRUE`
+6. **Email Queue** → Add follow-up email with knowledge articles (if email captured)
+
+### Monitoring and Maintenance
+
+Use these queries to monitor vector performance:
+
+```sql
+-- Check vector index statistics
+SELECT * FROM vector_index_stats();
+
+-- Monitor embedding coverage
+SELECT
+    COUNT(*) as total_rows,
+    COUNT(embedding) as rows_with_embeddings,
+    ROUND(COUNT(embedding) * 100.0 / COUNT(*), 2) as coverage_percent
+FROM knowledge_base;
+
+-- Find missing embeddings
+SELECT * FROM check_missing_embeddings();
 ```
 
 ## Future Enhancements

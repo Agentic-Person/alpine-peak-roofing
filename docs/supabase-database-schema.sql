@@ -84,8 +84,11 @@ CREATE INDEX idx_email_queue_lead_id ON email_queue(lead_id);
 CREATE INDEX idx_email_queue_scheduled_at ON email_queue(scheduled_at);
 CREATE INDEX idx_email_queue_status ON email_queue(status);
 
-CREATE INDEX IF NOT EXISTS idx_knowledge_embedding ON knowledge_base USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
-CREATE INDEX IF NOT EXISTS idx_knowledge_category ON knowledge_base(category);
+-- Knowledge base indexes (already exist - managed separately)
+-- Vector index: knowledge_base_embedding_idx (IVFFlat with 100 lists)
+-- Category index: knowledge_base_category_idx
+-- Full-text search: knowledge_base_content_fts_idx
+-- See supabase-vector-operations.sql for vector index management
 
 -- =====================================================
 -- TRIGGERS AND FUNCTIONS
