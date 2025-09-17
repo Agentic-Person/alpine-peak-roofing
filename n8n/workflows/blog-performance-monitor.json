@@ -1,0 +1,440 @@
+{
+  "name": "Blog Performance Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weekdaysType": "specific",
+              "weekdays": [
+                0
+              ]
+            }
+          ]
+        },
+        "startDate": "2025-09-21T15:00:00.000Z",
+        "timezone": "America/Denver"
+      },
+      "id": "schedule-trigger-monitor-001",
+      "name": "Schedule Trigger - Weekly Sunday 8AM MST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "blog_posts",
+        "options": {
+          "queryFilters": [
+            {
+              "key": "status",
+              "operator": "=",
+              "value": "published"
+            },
+            {
+              "key": "published_at",
+              "operator": ">",
+              "value": "{{ $now.minus({days: 30}).toISO() }}"
+            }
+          ],
+          "sort": [
+            {
+              "key": "published_at",
+              "direction": "desc"
+            }
+          ]
+        }
+      },
+      "id": "supabase-get-recent-posts-001",
+      "name": "Supabase - Get Recent Published Posts",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://analyticsreporting.googleapis.com/v4/reports:batchGet",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.GOOGLE_ANALYTICS_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "reportRequests",
+              "value": [
+                {
+                  "viewId": "={{ $env.GOOGLE_ANALYTICS_VIEW_ID }}",
+                  "dateRanges": [
+                    {
+                      "startDate": "7daysAgo",
+                      "endDate": "today"
+                    }
+                  ],
+                  "metrics": [
+                    {
+                      "expression": "ga:pageviews"
+                    },
+                    {
+                      "expression": "ga:bounceRate"
+                    },
+                    {
+                      "expression": "ga:avgTimeOnPage"
+                    },
+                    {
+                      "expression": "ga:goalCompletionsAll"
+                    }
+                  ],
+                  "dimensions": [
+                    {
+                      "name": "ga:pagePath"
+                    }
+                  ],
+                  "dimensionFilterClauses": [
+                    {
+                      "filters": [
+                        {
+                          "dimensionName": "ga:pagePath",
+                          "operator": "BEGINS_WITH",
+                          "expressions": ["/blog/"]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "http-google-analytics-001",
+      "name": "HTTP Request - Google Analytics Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Falpinepeakroofing.com%2F/searchAnalytics/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.GOOGLE_SEARCH_CONSOLE_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "startDate",
+              "value": "{{ $now.minus({days: 7}).toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "endDate",
+              "value": "{{ $now.toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "dimensions",
+              "value": ["page"]
+            },
+            {
+              "name": "searchType",
+              "value": "web"
+            },
+            {
+              "name": "dimensionFilterGroups",
+              "value": [
+                {
+                  "filters": [
+                    {
+                      "dimension": "page",
+                      "operator": "contains",
+                      "expression": "/blog/"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "id": "http-search-console-001",
+      "name": "HTTP Request - Search Console Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "leads",
+        "options": {
+          "queryFilters": [
+            {
+              "key": "created_at",
+              "operator": ">",
+              "value": "{{ $now.minus({days: 7}).toISO() }}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-get-recent-leads-001",
+      "name": "Supabase - Get Recent Leads",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        620,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process analytics data and match with blog posts\nconst blogPosts = $('Supabase - Get Recent Published Posts').all();\nconst analyticsData = $('HTTP Request - Google Analytics Data').first().json;\nconst searchConsoleData = $('HTTP Request - Search Console Data').first().json;\nconst leads = $('Supabase - Get Recent Leads').all();\n\n// Process Google Analytics data\nconst gaRows = analyticsData.reports?.[0]?.data?.rows || [];\nconst scRows = searchConsoleData.rows || [];\n\n// Create performance data for each blog post\nconst performanceMetrics = blogPosts.map(post => {\n  const postSlug = post.json.slug;\n  const postPath = `/blog/${postSlug}`;\n  \n  // Find matching GA data\n  const gaRow = gaRows.find(row => row.dimensions[0] === postPath);\n  const scRow = scRows.find(row => row.keys[0] === `https://alpinepeakroofing.com${postPath}`);\n  \n  // Extract metrics\n  const pageViews = gaRow ? parseInt(gaRow.metrics[0].values[0]) : 0;\n  const bounceRate = gaRow ? parseFloat(gaRow.metrics[0].values[1]) : 0;\n  const avgTimeOnPage = gaRow ? parseInt(gaRow.metrics[0].values[2]) : 0;\n  const goalCompletions = gaRow ? parseInt(gaRow.metrics[0].values[3]) : 0;\n  \n  const clicks = scRow ? scRow.clicks : 0;\n  const impressions = scRow ? scRow.impressions : 0;\n  const ctr = scRow ? scRow.ctr : 0;\n  const position = scRow ? scRow.position : 0;\n  \n  // Calculate estimated leads from this post (basic attribution)\n  const estimatedLeads = Math.round(goalCompletions * 0.3); // 30% of goals attributed to blog\n  \n  return {\n    blog_post_id: post.json.id,\n    page_views: pageViews,\n    bounce_rate: Math.round(bounceRate * 100) / 100,\n    time_on_page: avgTimeOnPage,\n    leads_generated: estimatedLeads,\n    social_shares: 0, // Would need to integrate with social APIs\n    click_through_rate: Math.round(ctr * 10000) / 100, // Convert to percentage\n    conversion_rate: goalCompletions > 0 ? Math.round((estimatedLeads / pageViews) * 10000) / 100 : 0,\n    search_impressions: impressions,\n    search_clicks: clicks,\n    search_position: Math.round(position * 10) / 10,\n    measured_at: new Date().toISOString()\n  };\n});\n\n// Calculate top and low performers\nconst sortedByViews = [...performanceMetrics].sort((a, b) => b.page_views - a.page_views);\nconst topPerformers = sortedByViews.slice(0, 3);\nconst lowPerformers = sortedByViews.slice(-3);\n\n// Calculate total metrics\nconst totalPageViews = performanceMetrics.reduce((sum, metric) => sum + metric.page_views, 0);\nconst totalLeads = performanceMetrics.reduce((sum, metric) => sum + metric.leads_generated, 0);\nconst avgBounceRate = performanceMetrics.length > 0 \n  ? performanceMetrics.reduce((sum, metric) => sum + metric.bounce_rate, 0) / performanceMetrics.length \n  : 0;\n\nreturn {\n  json: {\n    performance_metrics: performanceMetrics,\n    summary: {\n      total_posts_analyzed: performanceMetrics.length,\n      total_page_views: totalPageViews,\n      total_leads_generated: totalLeads,\n      average_bounce_rate: Math.round(avgBounceRate * 100) / 100,\n      top_performers: topPerformers.map(p => ({\n        blog_post_id: p.blog_post_id,\n        page_views: p.page_views,\n        leads: p.leads_generated\n      })),\n      low_performers: lowPerformers.map(p => ({\n        blog_post_id: p.blog_post_id,\n        page_views: p.page_views,\n        leads: p.leads_generated\n      }))\n    },\n    analysis_date: new Date().toISOString()\n  }\n};"
+      },
+      "id": "code-process-analytics-001",
+      "name": "Code - Process Analytics Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1000,
+        "operation": "insert",
+        "table": "blog_performance_metrics",
+        "columns": {
+          "values": {
+            "blog_post_id": "={{ $json.blog_post_id }}",
+            "page_views": "={{ $json.page_views }}",
+            "bounce_rate": "={{ $json.bounce_rate }}",
+            "time_on_page": "={{ $json.time_on_page }}",
+            "leads_generated": "={{ $json.leads_generated }}",
+            "social_shares": "={{ $json.social_shares }}",
+            "click_through_rate": "={{ $json.click_through_rate }}",
+            "conversion_rate": "={{ $json.conversion_rate }}",
+            "measured_at": "={{ $json.measured_at }}"
+          }
+        }
+      },
+      "id": "supabase-insert-metrics-001",
+      "name": "Supabase - Insert Performance Metrics",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a content performance analyst for Alpine Peak Roofing. Analyze blog performance data and suggest topics that would improve engagement and lead generation."
+            },
+            {
+              "role": "user",
+              "content": "Analyze this blog performance data and suggest 2 topics for next biweekly posts:\n\nPerformance Summary:\n- Total posts analyzed: {{ $('Code - Process Analytics Data').first().json.summary.total_posts_analyzed }}\n- Total page views: {{ $('Code - Process Analytics Data').first().json.summary.total_page_views }}\n- Total leads generated: {{ $('Code - Process Analytics Data').first().json.summary.total_leads_generated }}\n- Average bounce rate: {{ $('Code - Process Analytics Data').first().json.summary.average_bounce_rate }}%\n\nTop 3 performing posts (by page views):\n{{ $('Code - Process Analytics Data').first().json.summary.top_performers.map((p, i) => `${i+1}. Post ID: ${p.blog_post_id} - ${p.page_views} views, ${p.leads} leads`).join('\\n') }}\n\nLowest 3 performing posts:\n{{ $('Code - Process Analytics Data').first().json.summary.low_performers.map((p, i) => `${i+1}. Post ID: ${p.blog_post_id} - ${p.page_views} views, ${p.leads} leads`).join('\\n') }}\n\nCurrent season: {{ $now.toFormat('M') > 2 && $now.toFormat('M') < 6 ? 'spring' : $now.toFormat('M') > 5 && $now.toFormat('M') < 9 ? 'summer' : $now.toFormat('M') > 8 && $now.toFormat('M') < 12 ? 'fall' : 'winter' }}\n\nSuggest 2 topics that would:\n1. Build on successful themes from top performers\n2. Address seasonal needs for Denver homeowners\n3. Fill content gaps from low performers\n4. Drive higher lead generation\n\nFormat:\nTopic 1: [Title]\nReasoning: [Why this would perform well]\nContent Type: [seasonal/problem_solving/industry_update]\n\nTopic 2: [Title]\nReasoning: [Why this would perform well]\nContent Type: [seasonal/problem_solving/industry_update]"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.4,
+          "maxTokens": 400
+        }
+      },
+      "id": "openai-analyze-performance-001",
+      "name": "OpenAI - Analyze Performance & Suggest Topics",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1220,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_automation_logs",
+        "columns": {
+          "values": {
+            "workflow_name": "blog-performance-monitor",
+            "workflow_execution_id": "={{ $workflow.id }}",
+            "status": "completed",
+            "cost_incurred": 0.50,
+            "tokens_used": "={{ $('OpenAI - Analyze Performance & Suggest Topics').first().json.usage.total_tokens }}",
+            "execution_time_ms": "={{ $workflow.executionTime }}",
+            "metadata": {
+              "posts_analyzed": "={{ $('Code - Process Analytics Data').first().json.summary.total_posts_analyzed }}",
+              "total_page_views": "={{ $('Code - Process Analytics Data').first().json.summary.total_page_views }}",
+              "total_leads": "={{ $('Code - Process Analytics Data').first().json.summary.total_leads_generated }}",
+              "performance_analysis": "={{ $('OpenAI - Analyze Performance & Suggest Topics').first().json.choices[0].message.content }}",
+              "metrics_inserted": "={{ $('Code - Process Analytics Data').first().json.performance_metrics.length }}"
+            }
+          }
+        }
+      },
+      "id": "supabase-log-monitor-001",
+      "name": "Supabase - Log Monitor Execution",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        350
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger - Weekly Sunday 8AM MST": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Get Recent Published Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Get Recent Published Posts": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Google Analytics Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - Search Console Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase - Get Recent Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Google Analytics Data": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Analytics Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Search Console Data": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Analytics Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Get Recent Leads": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Analytics Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Process Analytics Data": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Insert Performance Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Insert Performance Metrics": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Analyze Performance & Suggest Topics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Analyze Performance & Suggest Topics": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Log Monitor Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-16T12:00:00.000Z",
+      "updatedAt": "2025-09-16T12:00:00.000Z",
+      "id": "blog-automation",
+      "name": "Blog Automation"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-16T12:00:00.000Z",
+  "versionId": "1"
+}

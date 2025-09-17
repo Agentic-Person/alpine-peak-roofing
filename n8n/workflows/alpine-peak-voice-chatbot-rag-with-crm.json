@@ -758,6 +758,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },

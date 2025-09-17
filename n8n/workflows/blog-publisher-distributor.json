@@ -1,0 +1,595 @@
+{
+  "name": "Blog Publisher & Distributor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "blog-publisher",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "webhook-trigger-publisher-001",
+      "name": "Webhook Trigger - Publisher",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        300
+      ],
+      "webhookId": "blog-publisher"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "blog_posts",
+        "options": {
+          "queryFilters": [
+            {
+              "key": "id",
+              "operator": "=",
+              "value": "={{ $json.body.blog_post_id }}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-get-post-001",
+      "name": "Supabase - Get Blog Post",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Create engaging social media posts for Alpine Peak Roofing that drive traffic to blog content and generate leads."
+            },
+            {
+              "role": "user",
+              "content": "Create social media posts for this blog: \"{{ $('Supabase - Get Blog Post').first().json.title }}\"\n\nBlog excerpt: {{ $('Supabase - Get Blog Post').first().json.excerpt }}\nKeywords: {{ $('Supabase - Get Blog Post').first().json.seo_keywords.join(', ') }}\n\nCreate posts for:\n1. **Facebook** (casual, engaging, 2-3 sentences + CTA)\n2. **LinkedIn** (professional, industry insights, hashtags)\n3. **Instagram** (visual focus, emojis, local hashtags)\n4. **Twitter/X** (concise, engaging, hashtags)\n\nEach post should:\n- Include link to blog\n- Use relevant hashtags\n- Have clear call-to-action\n- Mention Denver/Colorado when relevant\n- Drive engagement and website traffic\n\nReturn as JSON:\n{\n  \"facebook\": {\n    \"text\": \"post content\",\n    \"hashtags\": [\"#hashtag1\", \"#hashtag2\"]\n  },\n  \"linkedin\": {\n    \"text\": \"post content\",\n    \"hashtags\": [\"#hashtag1\", \"#hashtag2\"]\n  },\n  \"instagram\": {\n    \"text\": \"post content\",\n    \"hashtags\": [\"#hashtag1\", \"#hashtag2\"]\n  },\n  \"twitter\": {\n    \"text\": \"post content\",\n    \"hashtags\": [\"#hashtag1\", \"#hashtag2\"]\n  }\n}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 600
+        }
+      },
+      "id": "openai-social-001",
+      "name": "OpenAI - Generate Social Posts",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        620,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://your-nextjs-app.com/api/blog/publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.NEXTJS_API_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.id }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.title }}"
+            },
+            {
+              "name": "slug",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.slug }}"
+            },
+            {
+              "name": "content",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.content }}"
+            },
+            {
+              "name": "excerpt",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.excerpt }}"
+            },
+            {
+              "name": "meta_title",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.meta_title }}"
+            },
+            {
+              "name": "meta_description",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.meta_description }}"
+            },
+            {
+              "name": "featured_image_url",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.featured_image_url }}"
+            },
+            {
+              "name": "featured_image_alt",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.featured_image_alt }}"
+            },
+            {
+              "name": "category",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.category }}"
+            },
+            {
+              "name": "tags",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.tags }}"
+            },
+            {
+              "name": "seo_keywords",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.seo_keywords }}"
+            },
+            {
+              "name": "internal_links",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.internal_links }}"
+            }
+          ]
+        }
+      },
+      "id": "http-publish-nextjs-001",
+      "name": "HTTP Request - Publish to Next.js",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        620,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bufferapp.com/1/updates.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.BUFFER_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).facebook.text }} {{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).facebook.hashtags.join(' ') }} \\n\\nRead more: https://alpinepeakroofing.com/blog/{{ $('Supabase - Get Blog Post').first().json.slug }}"
+            },
+            {
+              "name": "profile_ids[]",
+              "value": "={{ $env.BUFFER_FACEBOOK_PROFILE_ID }}"
+            },
+            {
+              "name": "shorten",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      "id": "http-buffer-facebook-001",
+      "name": "HTTP Request - Schedule Facebook Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bufferapp.com/1/updates.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.BUFFER_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).linkedin.text }} {{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).linkedin.hashtags.join(' ') }} \\n\\nRead the full guide: https://alpinepeakroofing.com/blog/{{ $('Supabase - Get Blog Post').first().json.slug }}"
+            },
+            {
+              "name": "profile_ids[]",
+              "value": "={{ $env.BUFFER_LINKEDIN_PROFILE_ID }}"
+            },
+            {
+              "name": "shorten",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      "id": "http-buffer-linkedin-001",
+      "name": "HTTP Request - Schedule LinkedIn Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bufferapp.com/1/updates.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.BUFFER_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).instagram.text }} {{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).instagram.hashtags.join(' ') }} \\n\\nLink in bio → Blog → {{ $('Supabase - Get Blog Post').first().json.title }}"
+            },
+            {
+              "name": "profile_ids[]",
+              "value": "={{ $env.BUFFER_INSTAGRAM_PROFILE_ID }}"
+            },
+            {
+              "name": "shorten",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      "id": "http-buffer-instagram-001",
+      "name": "HTTP Request - Schedule Instagram Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.bufferapp.com/1/updates.json",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.BUFFER_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).twitter.text }} {{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content).twitter.hashtags.join(' ') }} \\n\\nhttps://alpinepeakroofing.com/blog/{{ $('Supabase - Get Blog Post').first().json.slug }}"
+            },
+            {
+              "name": "profile_ids[]",
+              "value": "={{ $env.BUFFER_TWITTER_PROFILE_ID }}"
+            },
+            {
+              "name": "shorten",
+              "value": "false"
+            }
+          ]
+        }
+      },
+      "id": "http-buffer-twitter-001",
+      "name": "HTTP Request - Schedule Twitter Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://business.googleapis.com/v4/accounts/{{ $env.GOOGLE_MY_BUSINESS_ACCOUNT_ID }}/locations/{{ $env.GOOGLE_MY_BUSINESS_LOCATION_ID }}/localPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ={{ $env.GOOGLE_MY_BUSINESS_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "languageCode",
+              "value": "en-US"
+            },
+            {
+              "name": "summary",
+              "value": "{{ $('Supabase - Get Blog Post').first().json.excerpt }}"
+            },
+            {
+              "name": "callToAction",
+              "value": {
+                "actionType": "LEARN_MORE",
+                "url": "https://alpinepeakroofing.com/blog/{{ $('Supabase - Get Blog Post').first().json.slug }}"
+              }
+            },
+            {
+              "name": "topicType",
+              "value": "STANDARD"
+            }
+          ]
+        }
+      },
+      "id": "http-google-mybusiness-001",
+      "name": "HTTP Request - Google My Business Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        820,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "blog_posts",
+        "where": {
+          "values": [
+            {
+              "key": "id",
+              "value": "={{ $('Supabase - Get Blog Post').first().json.id }}"
+            }
+          ]
+        },
+        "columns": {
+          "values": {
+            "status": "published",
+            "published_at": "={{ $now.toISO() }}",
+            "social_posts": "={{ JSON.parse($('OpenAI - Generate Social Posts').first().json.choices[0].message.content) }}"
+          }
+        }
+      },
+      "id": "supabase-update-published-001",
+      "name": "Supabase - Update Published Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calculate social media distribution costs and compile results\nconst socialTokens = $('OpenAI - Generate Social Posts').first().json.usage.total_tokens;\nconst socialCost = socialTokens * 0.0015 / 1000; // GPT-3.5 cost\n\n// Distribution results\nconst distributionResults = {\n  nextjs_published: $('HTTP Request - Publish to Next.js').first().json || { success: true },\n  facebook_scheduled: $('HTTP Request - Schedule Facebook Post').first().json || { success: true },\n  linkedin_scheduled: $('HTTP Request - Schedule LinkedIn Post').first().json || { success: true },\n  instagram_scheduled: $('HTTP Request - Schedule Instagram Post').first().json || { success: true },\n  twitter_scheduled: $('HTTP Request - Schedule Twitter Post').first().json || { success: true },\n  google_mybusiness_posted: $('HTTP Request - Google My Business Post').first().json || { success: true }\n};\n\n// Count successful distributions\nconst successfulDistributions = Object.values(distributionResults)\n  .filter(result => result.success !== false).length;\n\nreturn {\n  json: {\n    blog_post_id: $('Supabase - Get Blog Post').first().json.id,\n    social_generation_cost: Math.round(socialCost * 100) / 100,\n    distribution_results: distributionResults,\n    successful_distributions: successfulDistributions,\n    total_distributions: 6,\n    social_tokens_used: socialTokens\n  }\n};"
+      },
+      "id": "code-distribution-results-001",
+      "name": "Code - Process Distribution Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_automation_logs",
+        "columns": {
+          "values": {
+            "workflow_name": "blog-publisher-distributor",
+            "workflow_execution_id": "={{ $workflow.id }}",
+            "blog_post_id": "={{ $('Code - Process Distribution Results').first().json.blog_post_id }}",
+            "status": "completed",
+            "cost_incurred": "={{ $('Code - Process Distribution Results').first().json.social_generation_cost }}",
+            "tokens_used": "={{ $('Code - Process Distribution Results').first().json.social_tokens_used }}",
+            "execution_time_ms": "={{ $workflow.executionTime }}",
+            "metadata": {
+              "distribution_results": "={{ $('Code - Process Distribution Results').first().json.distribution_results }}",
+              "successful_distributions": "={{ $('Code - Process Distribution Results').first().json.successful_distributions }}",
+              "total_distributions": "={{ $('Code - Process Distribution Results').first().json.total_distributions }}"
+            }
+          }
+        }
+      },
+      "id": "supabase-log-distribution-001",
+      "name": "Supabase - Log Distribution",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        350
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger - Publisher": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Get Blog Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Get Blog Post": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Generate Social Posts",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - Publish to Next.js",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Generate Social Posts": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Schedule Facebook Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - Schedule LinkedIn Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - Schedule Instagram Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - Schedule Twitter Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Publish to Next.js": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Google My Business Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Schedule Facebook Post": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Update Published Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Schedule LinkedIn Post": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Update Published Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Schedule Instagram Post": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Update Published Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Schedule Twitter Post": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Update Published Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Google My Business Post": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Update Published Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Update Published Status": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Distribution Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Process Distribution Results": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Log Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-16T12:00:00.000Z",
+      "updatedAt": "2025-09-16T12:00:00.000Z",
+      "id": "blog-automation",
+      "name": "Blog Automation"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-16T12:00:00.000Z",
+  "versionId": "1"
+}

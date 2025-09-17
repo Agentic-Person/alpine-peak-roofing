@@ -1,0 +1,379 @@
+{
+  "name": "Blog Content Planner",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weekdaysType": "specific",
+              "weekdays": [
+                2
+              ]
+            }
+          ]
+        },
+        "startDate": "2025-09-17T13:00:00.000Z",
+        "timezone": "America/Denver"
+      },
+      "id": "1ef5a90a-95c7-4a30-93b8-47a1e5c8d5f2",
+      "name": "Schedule Trigger - Biweekly Tuesday 6AM MST",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/RoofingContractor",
+        "options": {
+          "limit": 10
+        }
+      },
+      "id": "2b1c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+      "name": "RSS Read - Roofing Industry",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        420,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://feeds.feedburner.com/ProRoofer",
+        "options": {
+          "limit": 10
+        }
+      },
+      "id": "3c2d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
+      "name": "RSS Read - Pro Roofer",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://api.openweathermap.org/data/2.5/forecast",
+        "options": {
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "q",
+                "value": "Denver,CO,US"
+              },
+              {
+                "name": "appid",
+                "value": "={{$env.OPENWEATHER_API_KEY}}"
+              },
+              {
+                "name": "units",
+                "value": "imperial"
+              },
+              {
+                "name": "cnt",
+                "value": "5"
+              }
+            ]
+          }
+        },
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBasicAuth"
+      },
+      "id": "4d3e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a",
+      "name": "Weather API - Denver Forecast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "table": "conversations",
+        "options": {
+          "queryFilters": [
+            {
+              "key": "timestamp",
+              "operator": ">",
+              "value": "{{ $now.minus({days: 14}).toISO() }}"
+            }
+          ],
+          "limit": 50
+        }
+      },
+      "id": "5e4f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b",
+      "name": "Supabase - Recent Customer FAQs",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        420,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a roofing content expert for Alpine Peak Roofing in Denver. Based on current season, weather data, industry news, and customer questions, select ONE blog topic that addresses immediate homeowner needs and has seasonal relevance."
+            },
+            {
+              "role": "user",
+              "content": "Current date: {{ $now.toFormat('yyyy-MM-dd') }}\nSeason: {{ $now.toFormat('M') > 2 && $now.toFormat('M') < 6 ? 'spring' : $now.toFormat('M') > 5 && $now.toFormat('M') < 9 ? 'summer' : $now.toFormat('M') > 8 && $now.toFormat('M') < 12 ? 'fall' : 'winter' }}\n\nRecent Industry Headlines:\n{{ $('RSS Read - Roofing Industry').all().map(item => '- ' + item.json.title).join('\\n').substring(0, 500) }}\n\nWeather Forecast: {{ $('Weather API - Denver Forecast').first().json.list[0].weather[0].description }} ({{ $('Weather API - Denver Forecast').first().json.list[0].main.temp }}°F)\n\nRecent Customer Topics:\n{{ $('Supabase - Recent Customer FAQs').all().map(item => '- ' + item.json.message).join('\\n').substring(0, 400) }}\n\nSelect ONE blog topic that:\n1. Addresses current homeowner needs\n2. Has seasonal relevance\n3. Hasn't been covered in last 6 months\n4. Can drive lead generation\n\nFormat response as:\nTopic: [Title]\nKeywords: [3-5 target keywords]\nUser Intent: [informational/commercial/navigational]\nContent Type: [seasonal/problem_solving/industry_update]"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 200
+        }
+      },
+      "id": "6f5a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c",
+      "name": "OpenAI - Topic Selection",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        620,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse OpenAI response and prepare data for database\nconst response = $input.first().json.choices[0].message.content;\n\n// Extract topic details using regex\nconst topicMatch = response.match(/Topic: (.+)/);\nconst keywordsMatch = response.match(/Keywords: (.+)/);\nconst intentMatch = response.match(/User Intent: (.+)/);\nconst typeMatch = response.match(/Content Type: (.+)/);\n\n// Get current season\nconst currentMonth = new Date().getMonth() + 1;\nlet season;\nif (currentMonth >= 3 && currentMonth <= 5) season = 'spring';\nelse if (currentMonth >= 6 && currentMonth <= 8) season = 'summer';\nelse if (currentMonth >= 9 && currentMonth <= 11) season = 'fall';\nelse season = 'winter';\n\n// Process keywords\nconst keywordsArray = keywordsMatch ? keywordsMatch[1].split(',').map(k => k.trim()) : [];\n\n// Calculate scheduled date (next business day)\nconst scheduledDate = new Date();\nscheduledDate.setDate(scheduledDate.getDate() + 1);\nif (scheduledDate.getDay() === 0) scheduledDate.setDate(scheduledDate.getDate() + 1); // Skip Sunday\nif (scheduledDate.getDay() === 6) scheduledDate.setDate(scheduledDate.getDate() + 2); // Skip Saturday\n\n// Prepare research data\nconst researchData = {\n  rss_headlines: $('RSS Read - Roofing Industry').all().map(item => ({\n    title: item.json.title,\n    link: item.json.link,\n    date: item.json.pubDate\n  })).slice(0, 5),\n  weather_context: {\n    description: $('Weather API - Denver Forecast').first().json.list[0].weather[0].description,\n    temp: $('Weather API - Denver Forecast').first().json.list[0].main.temp,\n    date: new Date().toISOString()\n  },\n  customer_topics: $('Supabase - Recent Customer FAQs').all().map(item => item.json.message).slice(0, 10),\n  selection_reasoning: response\n};\n\nreturn {\n  json: {\n    topic: topicMatch ? topicMatch[1] : 'Denver Roofing Maintenance Guide',\n    keywords: keywordsArray,\n    user_intent: intentMatch ? intentMatch[1].toLowerCase() : 'informational',\n    content_type: typeMatch ? typeMatch[1].toLowerCase() : 'seasonal',\n    season: season,\n    scheduled_for: scheduledDate.toISOString().split('T')[0],\n    research_data: researchData,\n    status: 'pending'\n  }\n};"
+      },
+      "id": "7a6b8c9d-0e1f-2a3b-4c5d-6e7f8a9b0c1d",
+      "name": "Code - Process Topic Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_content_plans",
+        "columns": {
+          "values": {
+            "topic": "={{ $json.topic }}",
+            "keywords": "={{ $json.keywords }}",
+            "user_intent": "={{ $json.user_intent }}",
+            "content_type": "={{ $json.content_type }}",
+            "season": "={{ $json.season }}",
+            "scheduled_for": "={{ $json.scheduled_for }}",
+            "research_data": "={{ $json.research_data }}",
+            "status": "={{ $json.status }}"
+          }
+        }
+      },
+      "id": "8b7c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e",
+      "name": "Supabase - Insert Content Plan",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "blog_automation_logs",
+        "columns": {
+          "values": {
+            "workflow_name": "blog-content-planner",
+            "workflow_execution_id": "={{ $workflow.id }}",
+            "content_plan_id": "={{ $('Supabase - Insert Content Plan').first().json.id }}",
+            "status": "completed",
+            "cost_incurred": 1.00,
+            "tokens_used": "={{ $('OpenAI - Topic Selection').first().json.usage.total_tokens }}",
+            "execution_time_ms": "={{ $workflow.executionTime }}",
+            "metadata": {
+              "topic_selected": "={{ $('Code - Process Topic Data').first().json.topic }}",
+              "content_type": "={{ $('Code - Process Topic Data').first().json.content_type }}"
+            }
+          }
+        }
+      },
+      "id": "9c8d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
+      "name": "Supabase - Log Execution",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://your-n8n-instance.com/webhook/blog-content-generator",
+        "options": {
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "content_plan_id",
+                "value": "={{ $('Supabase - Insert Content Plan').first().json.id }}"
+              },
+              {
+                "name": "trigger_source",
+                "value": "blog-content-planner"
+              }
+            ]
+          }
+        }
+      },
+      "id": "0d9e1f2a-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
+      "name": "HTTP Request - Trigger Content Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        350
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger - Biweekly Tuesday 6AM MST": {
+      "main": [
+        [
+          {
+            "node": "RSS Read - Roofing Industry",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read - Pro Roofer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Weather API - Denver Forecast",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase - Recent Customer FAQs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read - Roofing Industry": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Topic Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read - Pro Roofer": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Topic Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather API - Denver Forecast": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Topic Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Recent Customer FAQs": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Topic Selection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Topic Selection": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Topic Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Process Topic Data": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Insert Content Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Insert Content Plan": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Log Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Log Execution": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Trigger Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-09-16T12:00:00.000Z",
+      "updatedAt": "2025-09-16T12:00:00.000Z",
+      "id": "blog-automation",
+      "name": "Blog Automation"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-16T12:00:00.000Z",
+  "versionId": "1"
+}
