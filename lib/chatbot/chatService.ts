@@ -339,7 +339,23 @@ export class ChatService {
       setTimeout(() => reject(new Error('n8n workflow timeout')), this.REQUEST_TIMEOUT)
     })
 
-    const n8nPromise = n8nClient.processChatMessage(sessionId, message, context)
+    const n8nPromise = fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionId,
+        message,
+        page_context: context.page || 'website',
+        user_data: context.user_info || {},
+        conversation_history: context.conversation_history || []
+      })
+    }).then(async (res) => {
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '')
+        throw new Error(`Chat proxy failed: ${res.status} ${res.statusText} ${txt}`)
+      }
+      return res.json()
+    })
 
     try {
       const result = await Promise.race([n8nPromise, timeoutPromise])
@@ -347,7 +363,7 @@ export class ChatService {
       // Validate and normalize the n8n response format
       if (result && typeof result === 'object') {
         return {
-          response: result.response || result.message || 'I received your message but had trouble generating a response.',
+          response: result.response || result.message || result.reply || 'I received your message but had trouble generating a response.',
           lead_score: result.lead_score || result.leadScore || 0,
           is_hot_lead: result.is_hot_lead || result.isHotLead || false,
           requires_human: result.requires_human || result.requiresHuman || false,

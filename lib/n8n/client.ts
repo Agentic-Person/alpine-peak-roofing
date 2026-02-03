@@ -1,26 +1,38 @@
 // n8n Client for webhook calls and workflow management
 export class N8nClient {
-  private webhookUrl: string
+  private webhookBaseUrl: string
   private apiKey: string
 
   constructor() {
-    this.webhookUrl = process.env.N8N_WEBHOOK_URL || ''
+    // NOTE: This client is primarily intended for server-side usage.
+    // In the browser, we proxy via /api/chat to avoid exposing webhook URLs and dealing with CORS.
+    this.webhookBaseUrl = process.env.N8N_WEBHOOK_BASE_URL || process.env.N8N_WEBHOOK_URL || ''
     this.apiKey = process.env.N8N_API_KEY || ''
+  }
+
+  private resolveWebhookUrl(webhookPath: string) {
+    // If a full URL was provided (back-compat), use it.
+    if (this.webhookBaseUrl.startsWith('http') && this.webhookBaseUrl.includes('/webhook/')) {
+      return this.webhookBaseUrl
+    }
+
+    const base = this.webhookBaseUrl.replace(/\/$/, '')
+    const path = webhookPath.replace(/^\//, '')
+    return `${base}/webhook/${path}`
   }
 
   async triggerWebhook(webhookPath: string, data: Record<string, unknown>) {
     try {
-      if (!this.webhookUrl) {
-        throw new Error('N8N_WEBHOOK_URL not configured')
+      if (!this.webhookBaseUrl) {
+        throw new Error('N8N_WEBHOOK_BASE_URL not configured')
       }
 
-      console.log('n8n webhook URL:', this.webhookUrl)
-      console.log('n8n webhook data:', JSON.stringify(data, null, 2))
+      const url = this.resolveWebhookUrl(webhookPath)
 
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
-      const response = await fetch(this.webhookUrl, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
