@@ -56,6 +56,14 @@ export async function POST(req: NextRequest) {
     const contentType = res.headers.get('content-type') || ''
     const rawText = await res.text()
 
+    // Basic observability (Vercel logs)
+    console.log('n8n proxy:', {
+      status: res.status,
+      ok: res.ok,
+      contentType,
+      bodyPreview: rawText?.slice(0, 200) || ''
+    })
+
     if (!res.ok) {
       return NextResponse.json(
         { success: false, error: `n8n webhook failed: ${res.status} ${res.statusText}`, details: rawText },
@@ -65,11 +73,31 @@ export async function POST(req: NextRequest) {
 
     // n8n workflow typically responds with JSON like { success: true, message: "..." }
     if (contentType.includes('application/json')) {
-      const json = JSON.parse(rawText)
+      const trimmed = rawText.trim()
+      if (!trimmed) {
+        // n8n sometimes returns an empty 200 response; avoid crashing the proxy.
+        return NextResponse.json({
+          success: true,
+          message:
+            "Thanks — I’m here. Our system is reconnecting right now. Please try again in a moment (or call (970) 446-8995 for immediate help).",
+          n8n_empty_response: true
+        })
+      }
+
+      const json = JSON.parse(trimmed)
       return NextResponse.json(json)
     }
 
     // fallback: treat non-JSON as the assistant reply
+    if (!rawText.trim()) {
+      return NextResponse.json({
+        success: true,
+        message:
+          "Thanks — I’m here. Our system is reconnecting right now. Please try again in a moment (or call (970) 446-8995 for immediate help).",
+        n8n_empty_response: true
+      })
+    }
+
     return NextResponse.json({ success: true, message: rawText })
   } catch (err: any) {
     const isAbort = err?.name === 'AbortError'
