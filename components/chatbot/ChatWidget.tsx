@@ -100,7 +100,7 @@ function ChatWidget({
       timestamp: new Date(),
       metadata: {
         actions: [
-          { id: 'call-emily', label: '📞 Call Emily', action: 'call_emily', value: 'tel:+19704561154' },
+          { id: 'call-emily', label: '📞 Call Emily', action: 'call_emily', value: `tel:${process.env.NEXT_PUBLIC_EMILY_PHONE || '+19704561154'}` },
           { id: 'consultation', label: '📅 Schedule Consultation', action: 'schedule_inspection', value: 'I would like to schedule a consultation' },
           { id: 'metal-roofs', label: 'Tell me about metal roofs', action: 'send_message', value: 'Tell me about metal roofs' },
           { id: 'emergency', label: '🚨 Emergency repair', action: 'emergency_contact', value: 'I need emergency repair' }
@@ -187,7 +187,7 @@ function ChatWidget({
         break
       case 'call_emily':
         // Open phone dialer to call Emily's ElevenLabs voice agent
-        window.open('tel:+19704561154', '_self')
+        window.open(`tel:${process.env.NEXT_PUBLIC_EMILY_PHONE || '+19704561154'}`, '_self')
         break
       case 'schedule_inspection':
         // Open Calendly booking link
