@@ -586,7 +586,7 @@ Conversation Summary:
    */
   private getMockResponse(message: string): ChatResponse {
     const roofingResponses = [
-      "Thanks for your question about roofing! As Sarah from Alpine Peak Roofing, I'd be happy to help. Based on Denver's climate, I'd recommend considering metal roofing or high-quality asphalt shingles for durability against hail and temperature changes.",
+      "Thanks for your question about roofing! I'm Emily from Alpine Peak Roofing, and I'd be happy to help. Based on Denver's climate, I'd recommend considering metal roofing or high-quality asphalt shingles for durability against hail and temperature changes.",
       "That's a great question! For roof replacement in the Denver area, we typically see projects take 1-3 days depending on size and complexity. We always prioritize quality workmanship while working efficiently.",
       "I can definitely help with that! Alpine Peak Roofing offers comprehensive inspections and we work directly with insurance companies for storm damage claims. Would you like to schedule a free inspection?",
       "Excellent question! The signs of hail damage include missing granules, exposed mat, cracked shingles, and damaged gutters. If you suspect hail damage, it's important to have it inspected quickly.",

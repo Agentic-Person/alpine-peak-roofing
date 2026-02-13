@@ -96,13 +96,14 @@ function ChatWidget({
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       type: 'bot',
-      content: "Hi, I am Sarah, Alpine Peak Roofing's AI assistant. I have a massive knowledge base of roofing information. I can help you with specific roofing questions, information about Alpine Peak Roofing, quickly answer general FAQ... I can also get you into the schedule for the next available appointment to talk to one of our associates. How can I assist you today?",
+      content: "Hi, I'm Emily, Alpine Peak Roofing's AI assistant! I have deep knowledge about roofing — from materials and installation to storm damage and insurance claims. I can answer your questions, tell you about Alpine Peak Roofing's services, or get you scheduled for a consultation with Jimmy. How can I help you today?",
       timestamp: new Date(),
       metadata: {
         actions: [
-          { id: 'consultation', label: 'Schedule Consultation', action: 'schedule_inspection', value: 'I would like to schedule a consultation' },
+          { id: 'call-emily', label: '📞 Call Emily', action: 'call_emily', value: 'tel:+19704561154' },
+          { id: 'consultation', label: '📅 Schedule Consultation', action: 'schedule_inspection', value: 'I would like to schedule a consultation' },
           { id: 'metal-roofs', label: 'Tell me about metal roofs', action: 'send_message', value: 'Tell me about metal roofs' },
-          { id: 'emergency', label: 'Emergency repair', action: 'emergency_contact', value: 'I need emergency repair' }
+          { id: 'emergency', label: '🚨 Emergency repair', action: 'emergency_contact', value: 'I need emergency repair' }
         ]
       }
     }
@@ -184,8 +185,14 @@ function ChatWidget({
           await sendMessage(action.value)
         }
         break
+      case 'call_emily':
+        // Open phone dialer to call Emily's ElevenLabs voice agent
+        window.open('tel:+19704561154', '_self')
+        break
       case 'schedule_inspection':
-        await sendMessage('I would like to schedule a roof inspection')
+        // Open Calendly booking link
+        window.open('https://calendly.com/jimmy-agenticpersonnel/30min', '_blank')
+        await sendMessage('Opening the scheduling calendar for you!')
         break
       case 'emergency_contact':
         await sendMessage('I have a roofing emergency that needs immediate attention')
