@@ -70,7 +70,7 @@ export function ChatMessage({ message, theme = 'alpine', className }: ChatMessag
           {isBot ? (
             <Image
               src="/images/team/ai-agent-avatar-02.png"
-              alt="Sarah - AI Assistant"
+              alt="Emily - AI Assistant"
               width={32}
               height={32}
               className="object-cover object-center w-full h-full"
