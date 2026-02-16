@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,16 +17,165 @@ import {
   FileText,
   AlertTriangle,
   Home,
-  Building,
-  Star,
   Award,
   Calendar,
   Users,
   Bot,
-  MessageSquare
+  MessageSquare,
+  CheckCircle,
+  Loader2,
+  XCircle
 } from 'lucide-react'
 
+type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
+
+interface FormState {
+  status: FormStatus
+  message: string
+}
+
 export default function ContactPage() {
+  // Estimate form state
+  const [estimateForm, setEstimateForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    projectType: '',
+    details: '',
+    isInsurance: false
+  })
+  const [estimateStatus, setEstimateStatus] = useState<FormState>({ status: 'idle', message: '' })
+
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  })
+  const [contactStatus, setContactStatus] = useState<FormState>({ status: 'idle', message: '' })
+
+  const handleEstimateSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setEstimateStatus({ status: 'submitting', message: '' })
+
+    try {
+      const response = await fetch('/api/leads/capture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'contact_page_estimate',
+          firstName: estimateForm.firstName,
+          lastName: estimateForm.lastName,
+          email: estimateForm.email,
+          phone: estimateForm.phone,
+          address: estimateForm.address,
+          projectType: estimateForm.projectType,
+          propertyType: estimateForm.isInsurance ? 'insurance_claim' : 'standard'
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setEstimateStatus({ 
+          status: 'success', 
+          message: 'Thank you! We\'ve received your estimate request. Our team will contact you within 24 hours.' 
+        })
+        // Reset form
+        setEstimateForm({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          address: '',
+          projectType: '',
+          details: '',
+          isInsurance: false
+        })
+      } else {
+        throw new Error(data.error || 'Failed to submit form')
+      }
+    } catch (error) {
+      setEstimateStatus({ 
+        status: 'error', 
+        message: error instanceof Error ? error.message : 'Something went wrong. Please try again or call us directly.' 
+      })
+    }
+  }
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setContactStatus({ status: 'submitting', message: '' })
+
+    try {
+      const response = await fetch('/api/leads/capture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'contact_page_general',
+          firstName: contactForm.firstName,
+          lastName: contactForm.lastName,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          projectType: contactForm.subject
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setContactStatus({ 
+          status: 'success', 
+          message: 'Message sent! We\'ll get back to you as soon as possible.' 
+        })
+        // Reset form
+        setContactForm({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        })
+      } else {
+        throw new Error(data.error || 'Failed to submit form')
+      }
+    } catch (error) {
+      setContactStatus({ 
+        status: 'error', 
+        message: error instanceof Error ? error.message : 'Something went wrong. Please try again or call us directly.' 
+      })
+    }
+  }
+
+  const StatusMessage = ({ status, message }: FormState) => {
+    if (status === 'idle') return null
+    
+    return (
+      <div className={`p-4 rounded-lg flex items-start gap-3 ${
+        status === 'success' ? 'bg-green-50 border border-green-200' :
+        status === 'error' ? 'bg-red-50 border border-red-200' :
+        'bg-blue-50 border border-blue-200'
+      }`}>
+        {status === 'success' && <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />}
+        {status === 'error' && <XCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />}
+        {status === 'submitting' && <Loader2 className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />}
+        <p className={`text-sm ${
+          status === 'success' ? 'text-green-800' :
+          status === 'error' ? 'text-red-800' :
+          'text-blue-800'
+        }`}>
+          {status === 'submitting' ? 'Submitting your request...' : message}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -87,9 +238,11 @@ export default function ContactPage() {
                 <p className="text-red-700 text-sm mb-4">
                   Storm damage, leaks, structural issues - we respond immediately
                 </p>
-                <Button className="w-full bg-red-600 hover:bg-red-700">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Call Emergency Line
+                <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
+                  <a href="tel:3035557663">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Call Emergency Line
+                  </a>
                 </Button>
               </CardContent>
             </Card>
@@ -121,9 +274,11 @@ export default function ContactPage() {
                     Sat-Sun: 8am-5pm
                   </div>
                 </div>
-                <Button className="w-full">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Call Main Line
+                <Button className="w-full" asChild>
+                  <a href="tel:3035557663">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Call Main Line
+                  </a>
                 </Button>
               </CardContent>
             </Card>
@@ -148,9 +303,11 @@ export default function ContactPage() {
                 <p className="text-gray-600 text-sm mb-4">
                   Send photos, project details, or questions for detailed responses
                 </p>
-                <Button className="w-full bg-green-600 hover:bg-green-700">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Send Email
+                <Button className="w-full bg-green-600 hover:bg-green-700" asChild>
+                  <a href="mailto:info@alpinepeakroofing.com">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Email
+                  </a>
                 </Button>
               </CardContent>
             </Card>
@@ -196,10 +353,10 @@ export default function ContactPage() {
                   <div className="text-left text-gray-700">
                     <div className="font-semibold mb-2 text-purple-600">Try asking:</div>
                     <div className="space-y-1 text-sm">
-                      <div>• "How much does a roof replacement cost?"</div>
-                      <div>• "What roofing materials do you recommend for Denver?"</div>
-                      <div>• "Can you schedule an inspection this week?"</div>
-                      <div>• "Do you handle insurance claims?"</div>
+                      <div>• &quot;How much does a roof replacement cost?&quot;</div>
+                      <div>• &quot;What roofing materials do you recommend for Denver?&quot;</div>
+                      <div>• &quot;Can you schedule an inspection this week?&quot;</div>
+                      <div>• &quot;Do you handle insurance claims?&quot;</div>
                     </div>
                   </div>
                 </div>
@@ -226,74 +383,150 @@ export default function ContactPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                      <Input placeholder="John" required />
+                <StatusMessage {...estimateStatus} />
+                
+                {estimateStatus.status !== 'success' && (
+                  <form onSubmit={handleEstimateSubmit} className="space-y-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                        <Input 
+                          placeholder="John" 
+                          required 
+                          value={estimateForm.firstName}
+                          onChange={(e) => setEstimateForm(prev => ({ ...prev, firstName: e.target.value }))}
+                          disabled={estimateStatus.status === 'submitting'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                        <Input 
+                          placeholder="Doe" 
+                          required 
+                          value={estimateForm.lastName}
+                          onChange={(e) => setEstimateForm(prev => ({ ...prev, lastName: e.target.value }))}
+                          disabled={estimateStatus.status === 'submitting'}
+                        />
+                      </div>
                     </div>
+                    
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                      <Input placeholder="Doe" required />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                      <Input 
+                        type="email" 
+                        placeholder="john.doe@email.com" 
+                        required 
+                        value={estimateForm.email}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, email: e.target.value }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      />
                     </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                      <Input 
+                        type="tel" 
+                        placeholder="(303) 555-1234" 
+                        required 
+                        value={estimateForm.phone}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, phone: e.target.value }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Property Address *</label>
+                      <Input 
+                        placeholder="123 Main St, Denver, CO 80202" 
+                        required 
+                        value={estimateForm.address}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, address: e.target.value }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
+                      <select 
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        value={estimateForm.projectType}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, projectType: e.target.value }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      >
+                        <option value="">Select project type</option>
+                        <option value="residential-replacement">Residential - Full Replacement</option>
+                        <option value="residential-repair">Residential - Repair</option>
+                        <option value="commercial-new">Commercial - New Installation</option>
+                        <option value="commercial-replacement">Commercial - Replacement</option>
+                        <option value="emergency">Emergency Repair</option>
+                        <option value="inspection">Inspection Only</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
+                      <textarea 
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                        rows={4}
+                        placeholder="Describe your roofing needs, any issues you've noticed, preferred materials, timeline, etc."
+                        value={estimateForm.details}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, details: e.target.value }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      ></textarea>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        id="insurance" 
+                        className="mr-2" 
+                        checked={estimateForm.isInsurance}
+                        onChange={(e) => setEstimateForm(prev => ({ ...prev, isInsurance: e.target.checked }))}
+                        disabled={estimateStatus.status === 'submitting'}
+                      />
+                      <label htmlFor="insurance" className="text-sm text-gray-600">
+                        This may be an insurance claim
+                      </label>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      disabled={estimateStatus.status === 'submitting'}
+                    >
+                      {estimateStatus.status === 'submitting' ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Request Free Estimate
+                        </>
+                      )}
+                    </Button>
+                    
+                    <p className="text-xs text-gray-500 text-center">
+                      Or get an instant estimate with our{" "}
+                      <Link href="/estimator" className="text-blue-600 hover:underline">
+                        AI-powered estimator tool
+                      </Link>
+                    </p>
+                  </form>
+                )}
+
+                {estimateStatus.status === 'success' && (
+                  <div className="mt-4 text-center">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setEstimateStatus({ status: 'idle', message: '' })}
+                    >
+                      Submit Another Request
+                    </Button>
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                    <Input type="email" placeholder="john.doe@email.com" required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                    <Input type="tel" placeholder="(303) 555-1234" required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Property Address *</label>
-                    <Input placeholder="123 Main St, Denver, CO 80202" required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
-                    <select className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                      <option value="">Select project type</option>
-                      <option value="residential-replacement">Residential - Full Replacement</option>
-                      <option value="residential-repair">Residential - Repair</option>
-                      <option value="commercial-new">Commercial - New Installation</option>
-                      <option value="commercial-replacement">Commercial - Replacement</option>
-                      <option value="emergency">Emergency Repair</option>
-                      <option value="inspection">Inspection Only</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
-                    <textarea 
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                      rows={4}
-                      placeholder="Describe your roofing needs, any issues you've noticed, preferred materials, timeline, etc."
-                    ></textarea>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <input type="checkbox" id="insurance" className="mr-2" />
-                    <label htmlFor="insurance" className="text-sm text-gray-600">
-                      This may be an insurance claim
-                    </label>
-                  </div>
-                  
-                  <Button className="w-full" size="lg">
-                    <Send className="mr-2 h-4 w-4" />
-                    Request Free Estimate
-                  </Button>
-                  
-                  <p className="text-xs text-gray-500 text-center">
-                    Or get an instant estimate with our{" "}
-                    <Link href="/estimator" className="text-blue-600 hover:underline">
-                      AI-powered estimator tool
-                    </Link>
-                  </p>
-                </form>
+                )}
               </CardContent>
             </Card>
 
@@ -309,56 +542,118 @@ export default function ContactPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                      <Input placeholder="Jane" required />
+                <StatusMessage {...contactStatus} />
+                
+                {contactStatus.status !== 'success' && (
+                  <form onSubmit={handleContactSubmit} className="space-y-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                        <Input 
+                          placeholder="Jane" 
+                          required 
+                          value={contactForm.firstName}
+                          onChange={(e) => setContactForm(prev => ({ ...prev, firstName: e.target.value }))}
+                          disabled={contactStatus.status === 'submitting'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                        <Input 
+                          placeholder="Smith" 
+                          required 
+                          value={contactForm.lastName}
+                          onChange={(e) => setContactForm(prev => ({ ...prev, lastName: e.target.value }))}
+                          disabled={contactStatus.status === 'submitting'}
+                        />
+                      </div>
                     </div>
+                    
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                      <Input placeholder="Smith" required />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                      <Input 
+                        type="email" 
+                        placeholder="jane.smith@email.com" 
+                        required 
+                        value={contactForm.email}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                        disabled={contactStatus.status === 'submitting'}
+                      />
                     </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                      <Input 
+                        type="tel" 
+                        placeholder="(303) 555-1234" 
+                        value={contactForm.phone}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                        disabled={contactStatus.status === 'submitting'}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                      <select 
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        value={contactForm.subject}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
+                        disabled={contactStatus.status === 'submitting'}
+                      >
+                        <option value="">Select subject</option>
+                        <option value="general-question">General Question</option>
+                        <option value="consultation">Free Consultation</option>
+                        <option value="warranty">Warranty Question</option>
+                        <option value="maintenance">Maintenance Program</option>
+                        <option value="feedback">Feedback/Review</option>
+                        <option value="partnership">Business Partnership</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+                      <textarea 
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed" 
+                        rows={6}
+                        placeholder="How can we help you? Please provide as much detail as possible."
+                        required
+                        value={contactForm.message}
+                        onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
+                        disabled={contactStatus.status === 'submitting'}
+                      ></textarea>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-green-600 hover:bg-green-700" 
+                      size="lg"
+                      disabled={contactStatus.status === 'submitting'}
+                    >
+                      {contactStatus.status === 'submitting' ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="mr-2 h-4 w-4" />
+                          Send Message
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                )}
+
+                {contactStatus.status === 'success' && (
+                  <div className="mt-4 text-center">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setContactStatus({ status: 'idle', message: '' })}
+                    >
+                      Send Another Message
+                    </Button>
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                    <Input type="email" placeholder="jane.smith@email.com" required />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <Input type="tel" placeholder="(303) 555-1234" />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                    <select className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                      <option value="">Select subject</option>
-                      <option value="general-question">General Question</option>
-                      <option value="consultation">Free Consultation</option>
-                      <option value="warranty">Warranty Question</option>
-                      <option value="maintenance">Maintenance Program</option>
-                      <option value="feedback">Feedback/Review</option>
-                      <option value="partnership">Business Partnership</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-                    <textarea 
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent" 
-                      rows={6}
-                      placeholder="How can we help you? Please provide as much detail as possible."
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <Button className="w-full bg-green-600 hover:bg-green-700" size="lg">
-                    <Send className="mr-2 h-4 w-4" />
-                    Send Message
-                  </Button>
-                </form>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -441,9 +736,11 @@ export default function ContactPage() {
                   </div>
                   
                   <div className="space-y-3">
-                    <Button className="w-full">
-                      <MapPin className="mr-2 h-4 w-4" />
-                      Get Directions
+                    <Button className="w-full" asChild>
+                      <a href="https://maps.google.com/?q=1234+Mountain+View+Drive+Denver+CO+80202" target="_blank" rel="noopener noreferrer">
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Get Directions
+                      </a>
                     </Button>
                     <Button variant="outline" className="w-full">
                       <Calendar className="mr-2 h-4 w-4" />
@@ -516,7 +813,7 @@ export default function ContactPage() {
           
           <div className="text-center mt-8">
             <p className="text-gray-600">
-              Don't see your area listed?{" "}
+              Don&apos;t see your area listed?{" "}
               <a href="tel:3035557663" className="text-blue-600 hover:underline font-medium">
                 Call us at (303) 555-ROOF
               </a>{" "}
@@ -564,9 +861,11 @@ export default function ContactPage() {
             </div>
             
             <div className="mt-10">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-                <Phone className="mr-2 h-5 w-5" />
-                Insurance Claim Help: (303) 555-ROOF
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
+                <a href="tel:3035557663">
+                  <Phone className="mr-2 h-5 w-5" />
+                  Insurance Claim Help: (303) 555-ROOF
+                </a>
               </Button>
             </div>
           </div>
