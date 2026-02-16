@@ -17,7 +17,16 @@ interface LeadData {
   utmSource?: string
   utmMedium?: string
   utmCampaign?: string
+  message?: string // For contact form messages
 }
+
+// Required columns for leads table
+const REQUIRED_COLUMNS = [
+  'first_name', 'last_name', 'email', 'phone', 'address',
+  'property_type', 'project_type', 'timeline', 'budget_range',
+  'lead_score', 'status', 'priority', 'utm_source', 'utm_medium',
+  'utm_campaign', 'user_agent', 'ip_address', 'session_id', 'source'
+]
 
 function calculateLeadScore(leadData: LeadData): number {
   let score = 0
@@ -126,17 +135,64 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Lead capture error:', error)
     
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    
+    // Check for schema-related errors and provide helpful guidance
+    const isSchemaError = errorMessage.includes('column') || 
+                          errorMessage.includes('schema cache') ||
+                          errorMessage.includes('does not exist')
+    
     return NextResponse.json(
       { 
         error: 'Failed to capture lead',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: errorMessage,
+        ...(isSchemaError && {
+          schemaHelp: 'Run migration 005_fix_leads_columns.sql to add missing columns. See scripts/apply-leads-fix.md for instructions.'
+        })
       },
       { status: 500 }
     )
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const checkSchema = request.nextUrl.searchParams.get('check') === 'schema'
+  
+  if (checkSchema) {
+    // Check which columns exist in the leads table
+    try {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .limit(0)
+      
+      if (error) {
+        // Parse error to find missing columns
+        const missingColumns = REQUIRED_COLUMNS.filter(col => 
+          error.message.includes(col) || error.message.includes('schema cache')
+        )
+        
+        return NextResponse.json({
+          status: 'schema_error',
+          error: error.message,
+          missingColumns: missingColumns.length > 0 ? missingColumns : 'Unable to determine - run migration',
+          fix: 'Run supabase/migrations/005_fix_leads_columns.sql'
+        }, { status: 503 })
+      }
+      
+      return NextResponse.json({
+        status: 'healthy',
+        message: 'Leads table schema is correct',
+        tableExists: true
+      })
+    } catch (err) {
+      return NextResponse.json({
+        status: 'error',
+        error: err instanceof Error ? err.message : 'Unknown error checking schema'
+      }, { status: 500 })
+    }
+  }
+  
   return NextResponse.json({
     message: 'Lead capture endpoint is active',
     methods: ['POST'],
@@ -144,7 +200,9 @@ export async function GET() {
     optionalFields: [
       'sessionId', 'source', 'firstName', 'lastName', 
       'address', 'propertyType', 'projectType', 'timeline', 
-      'budgetRange', 'utmSource', 'utmMedium', 'utmCampaign'
-    ]
+      'budgetRange', 'utmSource', 'utmMedium', 'utmCampaign',
+      'message'
+    ],
+    healthCheck: 'Add ?check=schema to verify table schema'
   })
 }
