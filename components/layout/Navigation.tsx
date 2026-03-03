@@ -1,221 +1,342 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import {
-  ArrowRight,
   Phone,
   Menu,
   X,
   ChevronDown,
-  Bot
+  Bot,
+  ArrowRight,
+  Calculator,
+  MessageSquare,
+  Zap
 } from 'lucide-react'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
-  const navigationItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About Us' },
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const navItems = [
+    { href: '/',         label: 'Home' },
+    { href: '/about',    label: 'About' },
     { href: '/services', label: 'Services' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/process', label: 'Our Process' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/portfolio',label: 'Portfolio' },
+    { href: '/process',  label: 'Our Process' },
+    { href: '/blog',     label: 'Blog' },
+    { href: '/contact',  label: 'Contact' },
   ]
 
   const isActive = (href: string) => {
-    if (href === '/') {
-      return pathname === href
-    }
+    if (href === '/') return pathname === '/'
     return pathname.startsWith(href)
   }
 
   return (
-    <header className="bg-background-inverse border-b-4 border-interactive-primary sticky top-0 z-50">
-      <div className="container mx-auto max-w-6xl px-4">
+    <>
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;700;900&display=swap');
+      `}</style>
 
-        {/* Logo Section - Centered */}
-        <div className="text-center py-4">
-          <Link href="/" className="inline-flex flex-col items-center space-y-1">
-            <Image
-              src="/images/logo/APR-LOGO-solo.png"
-              alt="Alpine Peak Roofing Logo"
-              width={48}
-              height={48}
-              className="h-12 w-12"
-              onError={(e) => {
-                // Fallback: hide image if not found
-                (e.target as HTMLImageElement).style.display = 'none'
-              }}
-            />
-            <h1 className="text-2xl font-bold text-text-inverse">Alpine Peak Roofing</h1>
-          </Link>
-        </div>
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'shadow-[0_4px_24px_rgba(26,61,43,0.35)]'
+            : 'shadow-none'
+        }`}
+        style={{ background: 'var(--forest-deep)' }}
+      >
+        {/* Top accent bar */}
+        <div style={{ background: 'var(--cedar)', height: '3px' }} />
 
-        {/* Desktop Navigation - Centered */}
-        <nav className="hidden lg:block pb-3">
-          <ul className="flex justify-center items-center space-x-6">
-            {navigationItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`text-sm font-medium uppercase tracking-wide transition-colors hover:text-interactive-primary ${
-                    isActive(item.href)
-                      ? 'text-interactive-primary'
-                      : 'text-text-inverse'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-
-            {/* AI Tools Dropdown */}
-            <li className="relative group">
-              <button
-                className={`text-sm font-medium uppercase tracking-wide transition-colors flex items-center ${
-                  pathname.startsWith('/ai-tools') || pathname.startsWith('/ai-chat')
-                    ? 'text-interactive-primary'
-                    : 'text-text-inverse hover:text-interactive-primary'
-                }`}
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                <Bot className="mr-1 h-3 w-3" />
-                AI Tools
-                <ChevronDown className="ml-1 h-3 w-3" />
-              </button>
-
-              <div
-                className={`absolute left-0 mt-2 w-64 bg-background-primary rounded-lg shadow-lg border border-border-primary transition-all duration-200 z-50 ${
-                  isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-                }`}
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                <Link
-                  href="/ai-tools"
-                  className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors rounded-t-lg"
-                >
-                  <Bot className="h-4 w-4 mr-2 text-interactive-primary" />
-                  AI Platform Overview
-                </Link>
-                <Link
-                  href="/ai-tools/solutions"
-                  className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 text-interactive-primary" />
-                  All AI Solutions
-                </Link>
-                <Link
-                  href="/estimator"
-                  className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 text-interactive-primary" />
-                  Instant Roof Estimator
-                </Link>
-                <Link
-                  href="/ai-chat"
-                  className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors rounded-b-lg"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 text-interactive-primary" />
-                  Chat with AI
-                </Link>
-              </div>
-            </li>
-          </ul>
-        </nav>
-
-        {/* Desktop CTA */}
-        <div className="hidden lg:flex justify-center items-center space-x-6 pb-3">
-          <div className="flex items-center text-sm">
-            <Phone className="h-4 w-4 text-interactive-primary mr-2" />
-            <a href="tel:9704468995" className="font-semibold text-interactive-primary hover:text-interactive-primary-hover">
-              (970) 446-8995
-            </a>
-          </div>
-          <ThemeToggle />
-          <Button asChild>
-            <Link href="/estimator">Free Estimate</Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile menu button */}
-      <div className="lg:hidden flex justify-end px-4 pb-3">
-        <button
-          type="button"
-          className="inline-flex items-center justify-center p-2 rounded-md text-text-inverse hover:text-interactive-primary hover:bg-background-secondary"
-          onClick={() => setIsOpen(!isOpen)}
+        {/* Utility bar */}
+        <div
+          className="hidden lg:block border-b"
+          style={{
+            background: 'rgba(15,36,25,0.6)',
+            borderColor: 'rgba(212,175,55,0.15)'
+          }}
         >
-          <span className="sr-only">Open main menu</span>
-          {isOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-background-primary border-t border-border-primary">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive(item.href)
-                    ? 'text-interactive-primary bg-background-secondary'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <Link
-              href="/ai-tools"
-              className={`flex items-center px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                pathname.startsWith('/ai-tools')
-                  ? 'text-interactive-primary bg-background-secondary'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-background-secondary'
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              <Bot className="h-4 w-4 mr-2" />
-              AI Tools
-            </Link>
-
-            {/* Mobile CTA */}
-            <div className="px-3 py-2 space-y-3 border-t border-border-primary mt-2 pt-4">
+          <div className="mx-auto max-w-7xl px-6 flex justify-between items-center py-1.5">
+            <p style={{ color: 'rgba(250,247,242,0.55)', fontSize: '0.72rem', letterSpacing: '0.04em' }}>
+              Denver Metro&apos;s Premier Roofing Specialists — Serving Colorado Since 1999
+            </p>
+            <div className="flex items-center gap-6">
               <a
                 href="tel:9704468995"
-                className="flex items-center text-interactive-primary hover:text-interactive-primary-hover font-semibold"
+                className="flex items-center gap-1.5 font-bold text-xs tracking-wide transition-colors"
+                style={{ color: 'var(--gold)', letterSpacing: '0.06em' }}
               >
-                <Phone className="h-4 w-4 mr-2" />
+                <Phone size={11} />
                 (970) 446-8995
               </a>
               <ThemeToggle />
-              <Button className="w-full" asChild>
-                <Link href="/estimator">
-                  Get Free Estimate
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
-      )}
-    </header>
+
+        {/* Main nav */}
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex items-center justify-between h-16">
+
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+              <div
+                className="relative rounded"
+                style={{ width: 36, height: 36, background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)' }}
+              >
+                <Image
+                  src="/images/logo/APR-LOGO-solo.png"
+                  alt="Alpine Peak Roofing"
+                  fill
+                  className="object-contain p-1"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+              </div>
+              <div>
+                <span
+                  className="block font-display font-bold leading-tight"
+                  style={{ color: 'var(--cream)', fontFamily: "'Playfair Display', serif", fontSize: '1rem' }}
+                >
+                  Alpine Peak
+                </span>
+                <span
+                  className="block font-body"
+                  style={{ color: 'var(--sandstone)', fontFamily: "'Lato', sans-serif", fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase' }}
+                >
+                  Roofing
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop nav links */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-link-craftsman px-3 py-2 rounded transition-colors ${
+                    isActive(item.href) ? 'active' : ''
+                  }`}
+                  style={{
+                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(250,247,242,0.80)',
+                    fontFamily: "'Lato', sans-serif",
+                    fontSize: '0.775rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.07em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              {/* AI Tools Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
+                <button
+                  className={`nav-link-craftsman flex items-center gap-1 px-3 py-2 rounded transition-colors ${
+                    pathname.startsWith('/ai-tools') || pathname.startsWith('/ai-chat')
+                      ? 'active' : ''
+                  }`}
+                  style={{
+                    color: pathname.startsWith('/ai') ? 'var(--gold)' : 'rgba(250,247,242,0.80)',
+                    fontFamily: "'Lato', sans-serif",
+                    fontSize: '0.775rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.07em',
+                    textTransform: 'uppercase',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Bot size={12} />
+                  AI Tools
+                  <ChevronDown
+                    size={11}
+                    className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {/* Dropdown */}
+                <div
+                  className={`absolute right-0 top-full mt-2 w-60 rounded-lg overflow-hidden transition-all duration-200 ${
+                    isDropdownOpen
+                      ? 'opacity-100 translate-y-0 pointer-events-auto'
+                      : 'opacity-0 -translate-y-2 pointer-events-none'
+                  }`}
+                  style={{
+                    background: 'var(--cream)',
+                    border: '1px solid var(--border-primary)',
+                    boxShadow: '0 16px 40px rgba(26,61,43,0.25)',
+                  }}
+                >
+                  <div style={{ padding: '0.375rem' }}>
+                    {[
+                      { href: '/ai-tools',     icon: Zap,          label: 'AI Platform', sub: 'Automated roofing tools' },
+                      { href: '/estimator',    icon: Calculator,    label: 'Instant Estimator', sub: 'Satellite roof analysis' },
+                      { href: '/ai-chat',      icon: MessageSquare, label: 'Chat with AI', sub: '24/7 expert assistant' },
+                    ].map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-start gap-3 px-3 py-2.5 rounded-md transition-colors group"
+                        style={{ color: 'var(--charcoal)' }}
+                        onMouseEnter={e => {
+                          (e.currentTarget as HTMLElement).style.background = 'var(--cream-dark)'
+                        }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLElement).style.background = 'transparent'
+                        }}
+                      >
+                        <div
+                          className="rounded flex-shrink-0 flex items-center justify-center mt-0.5"
+                          style={{
+                            width: 28, height: 28,
+                            background: 'var(--forest-deep)',
+                            color: 'var(--gold)',
+                          }}
+                        >
+                          <item.icon size={13} />
+                        </div>
+                        <div>
+                          <div
+                            style={{
+                              fontFamily: "'Lato', sans-serif",
+                              fontSize: '0.8rem',
+                              fontWeight: 700,
+                              color: 'var(--cedar)',
+                            }}
+                          >
+                            {item.label}
+                          </div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                            {item.sub}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </nav>
+
+            {/* Desktop CTA */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Link
+                href="/estimator"
+                className="btn-gold text-xs"
+                style={{ fontFamily: "'Lato', sans-serif", padding: '0.5rem 1.25rem' }}
+              >
+                Free Estimate
+                <ArrowRight size={13} />
+              </Link>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              className="lg:hidden p-2 rounded"
+              style={{ color: 'var(--cream)', background: 'rgba(212,175,55,0.1)' }}
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isOpen && (
+          <div
+            className="lg:hidden border-t"
+            style={{
+              background: 'var(--background-dark)',
+              borderColor: 'rgba(212,175,55,0.2)',
+            }}
+          >
+            {/* Phone — mobile */}
+            <div
+              className="flex items-center gap-2 px-5 py-3 border-b"
+              style={{ borderColor: 'rgba(212,175,55,0.15)' }}
+            >
+              <Phone size={14} style={{ color: 'var(--gold)' }} />
+              <a
+                href="tel:9704468995"
+                style={{ color: 'var(--gold)', fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: '0.875rem' }}
+              >
+                (970) 446-8995
+              </a>
+            </div>
+
+            <nav className="px-3 py-2 space-y-0.5">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center px-3 py-3 rounded-md transition-colors"
+                  style={{
+                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(250,247,242,0.85)',
+                    background: isActive(item.href) ? 'rgba(212,175,55,0.08)' : 'transparent',
+                    fontFamily: "'Lato', sans-serif",
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                href="/ai-tools"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-2 px-3 py-3 rounded-md transition-colors"
+                style={{
+                  color: 'rgba(250,247,242,0.85)',
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                }}
+              >
+                <Bot size={14} style={{ color: 'var(--gold)' }} />
+                AI Tools
+              </Link>
+            </nav>
+
+            <div className="px-5 py-4 border-t" style={{ borderColor: 'rgba(212,175,55,0.15)' }}>
+              <Link
+                href="/estimator"
+                onClick={() => setIsOpen(false)}
+                className="btn-gold w-full justify-center"
+                style={{ fontFamily: "'Lato', sans-serif" }}
+              >
+                Get Free Estimate
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        )}
+      </header>
+    </>
   )
 }

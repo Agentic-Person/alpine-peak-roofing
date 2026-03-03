@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-02 (Session 2)
+**Last Updated:** 2026-03-03 (Session 3)
 **Branch:** `feature/blog-automation-and-workflow-optimization`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
@@ -13,19 +13,19 @@
 ### Public Routes
 | Route | Status | Notes |
 |-------|--------|-------|
-| `/` | ✅ Done | Traditional roofing homepage restored |
-| `/about` | ✅ Exists | Team page — check SiteImage usage |
+| `/` | ✅ Done | **Mountain Craftsman** homepage — full redesign |
+| `/about` | ✅ Exists | Team page — needs design system audit |
 | `/services` | ✅ Exists | Services overview |
 | `/services/residential` | ✅ Exists | |
 | `/services/commercial` | ✅ Exists | |
 | `/services/emergency` | ✅ Exists | |
-| `/portfolio` | ✅ Exists | Before/after projects |
+| `/portfolio` | ✅ Exists | Before/after projects — needs design audit |
 | `/process` | ✅ Exists | Our process steps |
 | `/contact` | ✅ Exists | Contact form |
 | `/blog` | ✅ Exists | Blog listing (AI-generated content) |
 | `/blog/[slug]` | ✅ Exists | Individual blog posts |
 | `/estimator` | ✅ Exists | Instant roof estimator tool |
-| `/ai-tools` | ✅ Done | **Top-of-funnel landing** — "The Labor Equation Solved" (hero slideshow, 3-card overview, testimonials) |
+| `/ai-tools` | ✅ Done | **Top-of-funnel** — "The Labor Equation Solved" (hero slideshow, 3-card overview, testimonials) |
 | `/ai-tools/solutions` | ✅ Done | **Deep-dive** — "Intelligent Roofing Automations" (4 feature cards, ROI calculator, CTA) |
 | `/ai-chat` | ✅ Exists | Live chatbot interface |
 | `/faq` | ✅ Exists | FAQ page |
@@ -38,152 +38,94 @@
 
 ---
 
-## What Was Done This Session
+## Design System — Mountain Craftsman (Current)
 
-### Problem
-The site was stuck on an AI-marketing-focused homepage ("The Labor Equation Solved") with empty navigation. The original professional roofing website had been overwritten without branching.
+### Color Palette
+| Token | Hex | Usage |
+|-------|-----|-------|
+| `--forest-deep` | `#1A3D2B` | Nav background, hero overlays, dark CTAs |
+| `--forest-mid` | `#2E6B4A` | Accents, section dividers |
+| `--cedar` | `#6B3A1F` | Warm brown — headings, top accent bar |
+| `--sandstone` | `#C4956A` | Warm tan — subheadings, muted text |
+| `--gold` | `#D4AF37` | Mountain gold — CTAs, stars, highlights |
+| `--cream` | `#FAF7F2` | Primary background |
+| `--cream-dark` | slightly darker cream | Alternating section backgrounds |
+| `--charcoal` | dark charcoal | Final CTA strip, dark text |
 
-### Restored
-1. **`app/page.tsx`** — Full traditional roofing homepage with:
-   - Hero image section (60vh, overlay)
-   - Value props (Licensed & Insured, 25+ Years, Emergency, 5-Star)
-   - Services overview (Residential, Commercial, Emergency)
-   - Featured Projects section
-   - Testimonials (3 customers)
-   - Philosophy section
-   - Service Areas (Denver, Aurora, Lakewood, Highlands Ranch, etc.)
+### Typography
+- **Display / Headings:** `Playfair Display` — loaded via `next/font/google`, CSS var `--font-playfair`
+- **Body / UI:** `Lato` — loaded via `next/font/google`, CSS var `--font-lato`
+- Both loaded in `app/layout.tsx`, applied via className on `<body>`
 
-2. **`components/layout/Navigation.tsx`** — Full navigation restored:
-   - Home, About Us, Services, Portfolio, Our Process, Blog, Contact
-   - AI Tools dropdown → Roofing AI Toolset (`/ai-tools`), Instant Roof Estimator, Chat with AI
-   - APR logo image, phone (970) 446-8995, ThemeToggle, Free Estimate CTA
-   - Mobile hamburger menu
+### Layout Pattern
+- Max width: `max-w-7xl`, padding: `px-6 lg:px-12`
+- Alternating left/right content sections (image + text) — "swimming down the page" feel
+- Generous vertical spacing: `py-24` sections, `space-y-28` between service rows
+- Gold `h-0.5` dividers used as section accents
 
-3. **`tailwind.config.ts`** — Added CSS variable color system:
-   - `bg-background-primary/secondary/tertiary/inverse`
-   - `text-text-primary/secondary/tertiary/inverse/muted`
-   - `text-interactive-primary`, `border-interactive-primary`, etc.
+---
 
-4. **`app/globals.css`** — Added semantic CSS custom properties:
-   - Light mode: white/gray backgrounds, dark navy nav, blue interactive
-   - Dark mode: dark navy backgrounds, adjusted colors
-   - All existing chatbot/holographic CSS preserved
+## Current Homepage (`/`) — Mountain Craftsman
 
-5. **`components/SiteImage.tsx`** — Complete rewrite (simpler, correct):
-   - Imports `imageManifest.json` directly (no React context/provider)
-   - `fill=true`: renders `<Image fill className={...} />` directly on img
-   - `fill=false`: renders `<Image width height className={...} />` directly
-   - `onError` falls back to placeholder SVG
-   - Removed the broken `ImageProvider`/`useSafeImage` context system entirely
+Sections top to bottom:
+1. **Hero** — full-bleed (`min-h-[88vh]`), deep forest gradient overlay, "Pinnacle of Protection. Peak of Performance." in Playfair Display, gold CTA buttons
+2. **Trust Strip** — 4 stat cards: 25+ Years, 1,200+ Projects, 24/7 Emergency, 5★ Rating
+3. **Services** — 3 alternating `ServiceRow` components: Residential, Commercial, Emergency (each with SiteImage + feature list + CTA)
+4. **Before & After Showcase** — dark forest section, 2 project cards with before/after labels
+5. **AI Estimator Teaser** — sandstone section, steps list + estimator UI mockup card
+6. **Testimonials** — 3 customer cards with gold stars
+7. **Philosophy** — cedar section ("Built on Trust, Sealed with Craft") with 4 value pillars
+8. **Service Areas** — city pills for 12 Colorado locations
+9. **Final CTA Strip** — charcoal with gold border-top, "Ready to Protect What Matters Most?"
 
-6. **`docs/images/imageManifest.json`** — Rewritten with correct file paths:
-   - All images map to actual files in `public/images/M1/`, `public/images/heroes/`, etc.
+---
 
-7. **`app/layout.tsx`** — Removed broken `ImageProvider` wrapper
+## Current Navigation — Mountain Craftsman
 
-### AI Tools Funnel (Two-Page Structure)
+- **Forest-deep** background (`#1A3D2B`)
+- **Top accent bar** — 3px cedar stripe
+- **Utility bar** (desktop only) — "Serving Colorado Since 1999", gold phone number, ThemeToggle
+- **Logo** — APR image in gold-bordered 36×36 square + "Alpine Peak / ROOFING" text
+- **Nav links** — Lato 700, 0.775rem, uppercase, gold when active
+- **AI Tools dropdown** — 3 items: AI Platform (`/ai-tools`), Instant Estimator, Chat with AI
+- **CTA button** — gold "Free Estimate" → `/estimator`
+- **Scroll-aware** — adds shadow when scrolled past 20px
+- **Mobile** — hamburger with full nav list + gold CTA
 
-**`/ai-tools` — "The Labor Equation Solved"** (top-of-funnel entry)
-- Blue-to-navy gradient hero with auto-playing image slideshow (4 roofer images)
-- Headline: "The Labor Equation Solved" (yellow accent)
-- Tagline: "Agentic workflows solve the toughest equation in roofing..."
-- "Chat with our AI" primary CTA + "See All Tools" secondary CTA
-- 3 tool overview cards (Chatbot, Blog, Estimator) with holographic hover effects
-- Customer testimonials section
-- Each card links to `/ai-tools/solutions`
+---
 
-**`/ai-tools/solutions` — "Intelligent Roofing Automations"** (deep dive)
-- Purple-to-blue gradient hero
-- 4 full feature cards with stats, bullet lists, demo buttons:
-  - 🤖 AI-Powered Chatbot System
-  - 📝 Automated Blog Content System
-  - 🏠 Instant Roof Estimator
-  - 🎯 Lead Generation & CRM System
-- ROI Business Impact Calculator section
-- Business Inquiry / CTA section
+## AI Tools Funnel
 
-**Navigation AI Tools dropdown:**
-- AI Platform Overview → `/ai-tools`
-- All AI Solutions → `/ai-tools/solutions`
-- Instant Roof Estimator → `/estimator`
-- Chat with AI → `/ai-chat`
+| URL | Page | Description |
+|-----|------|-------------|
+| `/ai-tools` | "The Labor Equation Solved" | Top-of-funnel: blue/navy hero slideshow, 3 tool overview cards, testimonials |
+| `/ai-tools/solutions` | "Intelligent Roofing Automations" | Deep-dive: 4 full feature cards, ROI calculator, business inquiry CTA |
+
+Cards on `/ai-tools` link to `/ai-tools/solutions` for full details.
 
 ---
 
 ## Image System
 
-### How It Works
-- `SiteImage` component reads `docs/images/imageManifest.json` at build time
-- Each image has an `id`, `path` (in `public/`), `placeholder`, `alt`, `dimensions`
-- `onError` fallback to placeholder SVG
-- For fill images (hero, portfolio): parent needs `relative` + height/aspect-ratio
+- `SiteImage` (`components/SiteImage.tsx`) imports `docs/images/imageManifest.json` directly
+- `fill=true` → `<Image fill className={...} />` — parent needs `position: relative` + height
+- `fill=false` → `<Image width height className={...} />` — no wrapper div, className on img
+- `onError` swaps to placeholder SVG automatically
+- **No ImageProvider / useSafeImage** — removed (violated React hooks rules)
 
-### Available Images (in `public/images/`)
+### Available Images (`public/images/`)
 ```
-heroes/
-  hero-home-001.png       ← Homepage hero (WORKING)
-  hero-home-002.png
-  hero-home-003.png
-  hero-roofers-001/2/3/4.png
-  roofing_split_screen_sunset_rain.png
-  residential.webp
-
-M1/                        ← AI-generated roofing imagery
-  hero_about.png
-  hero_services.png
-  hero_portfolio.png
-  hero_contact.png
-  hero_homepage.png
-  service_residential.png
-  service_commercial.png
-  service_emergency.png
-  commercial_after.png
-  commercial_before.png
-  team_founder.png
-  team_foreman.png
-  team_safety.png
-  team_roofer_2.png
-  team_customer_service.png
-  facebook_crew.png
-  quality_inspection.png
-  + many more...
-
-services/
-  residential.webp
-  commercial.webp
-  emergency.webp
-
-team/
-  founder.webp
-  foreman.webp
-  customer-service.webp
-  roofer-2.webp
-  safety.webp
-  project-manager.webp
-
-ai-tools/
-  chatbot-card.png
-  autoblog-card.png
-  roofestimator-card.png
-  crm-card.png
-
-blog/
-  blog_1_diy_vs_professional.jpg  through  blog_18_warranties.jpg
-
-logo/
-  APR-LOGO-solo.png
-  APR-favicon.png
-
-placeholders/
-  hero-placeholder.svg
-  team-placeholder.svg
-  service-placeholder.svg
-  project-before-placeholder.svg
-  project-after-placeholder.svg
+heroes/   hero-home-001/2/3.png, hero-roofers-001/2/3/4.png, roofing_split_screen_sunset_rain.png
+M1/       hero_about/services/portfolio/contact/homepage.png, service_residential/commercial/emergency.png,
+          commercial_after/before.png, team_founder/foreman/safety/roofer_2/customer_service.png, + more
+services/ residential/commercial/emergency.webp
+team/     founder/foreman/customer-service/roofer-2/safety/project-manager.webp
+ai-tools/ chatbot-card/autoblog-card/roofestimator-card/crm-card.png
+blog/     blog_1 through blog_18 .jpg
+logo/     APR-LOGO-solo.png, APR-favicon.png
 ```
 
-### Portfolio "Before/After" Note
-The homepage Featured Projects section uses `/images/M1/service_residential.png` and `/images/M1/commercial_after.png` as stand-ins. **Real before/after photography is needed** to populate the portfolio properly.
+**Note:** No actual before/after photography exists yet. Portfolio images use M1 AI-generated stand-ins.
 
 ---
 
@@ -201,30 +143,29 @@ The homepage Featured Projects section uses `/images/M1/service_residential.png`
 ## Pending / Next Steps
 
 ### High Priority
-- [ ] **Commit current work** to `feature/blog-automation-and-workflow-optimization`
-- [ ] **Real photography** — upload actual before/after project photos to `/images/portfolio/`
-- [ ] **About page audit** — check team SiteImage ids match manifest
-- [ ] **Portfolio page audit** — check all SiteImage ids and fix fill/aspect-ratio
+- [ ] **Real photography** — actual before/after project photos → `/images/portfolio/`
+- [ ] **About page** — apply Mountain Craftsman design system, audit SiteImage IDs
+- [ ] **Portfolio page** — apply Mountain Craftsman design, fix fill/aspect-ratio patterns
+- [ ] **Services pages** — audit for design consistency with new system
 
 ### Medium Priority
-- [ ] Mobile responsiveness check across all restored pages
-- [ ] Contact form validation and submission flow
-- [ ] Blog SEO metadata review
+- [ ] Mobile responsiveness audit across all pages
+- [ ] Contact form — validate submission flow works end to end
+- [ ] Blog — SEO metadata, featured image display
+- [ ] Merge branch to `main` once site is stable
 
 ### Future
 - [ ] Google Analytics 4 integration
 - [ ] Real customer testimonials with photos
 - [ ] Location pages content review
+- [ ] `/ai-tools/solutions` — wire up "Request Demo" and "Get Pricing" CTAs to contact form
 
 ---
 
-## Key Design Decisions
-
-**CSS Variable System:**
-All colors use semantic variables (`--background-primary`, `--interactive-primary`, etc.) defined in `globals.css` and mapped in `tailwind.config.ts`. This supports light/dark mode via `.dark` class.
-
-**SiteImage Philosophy:**
-Keep `SiteImage` as a thin wrapper — its only job is ID→path lookup and onError fallback. No async checks, no providers, no complexity.
-
-**AI Tools Strategy:**
-`/ai-tools` serves as the sales/funnel page for the AI automation services. It's separate from the main roofing site persona but accessible via the nav dropdown. This keeps the company's roofing credibility on the main pages while showcasing the tech on `/ai-tools`.
+## Git Commits This Branch (key ones)
+| Hash | Description |
+|------|-------------|
+| `c6e3b6b` | Restore full roofing website + fix image system |
+| `e08eb86` | Restore Labor Equation funnel as `/ai-tools` |
+| `9694cfb` | PROJECT-STATUS.md initial version |
+| latest | Mountain Craftsman homepage + navigation redesign |
