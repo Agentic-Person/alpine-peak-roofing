@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-03 (Session 3)
+**Last Updated:** 2026-03-03 (Session 4)
 **Branch:** `feature/blog-automation-and-workflow-optimization`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
@@ -20,7 +20,7 @@
 | `/services/commercial` | ✅ Exists | |
 | `/services/emergency` | ✅ Exists | |
 | `/portfolio` | ✅ Exists | Before/after projects — needs design audit |
-| `/process` | ✅ Exists | Our process steps |
+| `/process` | ✅ Done | **Mountain Craftsman** — cinematic alternating left/right 6-step layout |
 | `/contact` | ✅ Exists | Contact form |
 | `/blog` | ✅ Exists | Blog listing (AI-generated content) |
 | `/blog/[slug]` | ✅ Exists | Individual blog posts |
@@ -167,5 +167,16 @@ logo/     APR-LOGO-solo.png, APR-favicon.png
 |------|-------------|
 | `c6e3b6b` | Restore full roofing website + fix image system |
 | `e08eb86` | Restore Labor Equation funnel as `/ai-tools` |
-| `9694cfb` | PROJECT-STATUS.md initial version |
-| latest | Mountain Craftsman homepage + navigation redesign |
+| `9694cfb` | PROJECT-STATUS.md with AI tools funnel |
+| `b86096d` | Mountain Craftsman design system — homepage + nav |
+| `959990f` | Mountain Craftsman applied to About, Portfolio, Services |
+| latest | Process page redesign + CSS system expansion + image prompts |
+
+## Image Prompts Document
+`docs/image-prompts-for-manus.md` — **50+ AI image generation prompts** for Manus (Midjourney/DALL-E):
+- Hero images (5 variations, wide-angle and aerial)
+- Before/after realistic pairs (5 projects, drone/ladder perspective, same angle/lighting)
+- Estimator 5-step animated sequence
+- Team portraits (5 members)
+- Services, portfolio, and background texture images
+- Midjourney flags: `--style raw --v 6`, `--ar 16:9` or `--ar 3:4`
