@@ -51,34 +51,34 @@ const coreValues = [
 
 const teamMembers = [
   {
-    name: 'Michael Chen',
-    role: 'Founder & Master Roofer',
+    name: 'Alexandra Pierce',
+    role: 'CEO & Founder',
     imageId: 'team_founder',
-    desc: '25+ years of roofing experience with expertise in all residential and commercial systems.',
-  },
-  {
-    name: 'Sarah Mitchell',
-    role: 'Operations Director',
-    imageId: 'team_project_manager',
-    desc: 'Oversees daily operations and ensures every project meets our exacting quality standards.',
+    desc: '20+ years building Colorado\'s most trusted roofing company from the ground up — one roof at a time.',
   },
   {
     name: 'Marcus Rodriguez',
-    role: 'Senior Project Manager',
+    role: 'Lead Foreman',
     imageId: 'team_foreman',
-    desc: 'Expert coordinator with a sharp focus on timeline management and quality control.',
+    desc: '15 years on the tools. Marcus runs every job site with the precision of a master craftsman.',
+  },
+  {
+    name: 'Sarah Mitchell',
+    role: 'Project Coordinator',
+    imageId: 'team_project_manager',
+    desc: 'Keeps every project on schedule and every homeowner informed — from permit to final walkthrough.',
+  },
+  {
+    name: 'David Chen',
+    role: 'Senior Technician',
+    imageId: 'team_safety',
+    desc: 'Specializes in complex roofing systems, flashing details, and the installations others turn down.',
   },
   {
     name: 'Jennifer Park',
-    role: 'Customer Experience Manager',
+    role: 'Sales & Estimating',
     imageId: 'team_customer_service',
-    desc: 'Dedicated to ensuring exceptional customer satisfaction from first call to final inspection.',
-  },
-  {
-    name: 'David Thompson',
-    role: 'Lead Safety Officer',
-    imageId: 'team_safety',
-    desc: 'OSHA-certified coordinator ensuring crew and customer safety on every job site.',
+    desc: 'Combines deep technical knowledge with a commitment to transparent, pressure-free pricing.',
   },
 ]
 
@@ -99,7 +99,7 @@ export default function AboutPage() {
           <SiteImage id="hero_about" fill className="object-cover" priority />
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(26,61,43,0.90) 0%, rgba(107,58,31,0.72) 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.90) 0%, rgba(0,64,128,0.72) 100%)' }}
           />
         </div>
         <div
@@ -194,7 +194,7 @@ export default function AboutPage() {
               <SiteImage id="crew_action" fill className="object-cover" />
               <div
                 className="absolute bottom-0 left-0 right-0 px-6 py-5"
-                style={{ background: 'linear-gradient(to top, rgba(26,61,43,0.88), transparent)' }}
+                style={{ background: 'linear-gradient(to top, rgba(0,64,128,0.88), transparent)' }}
               >
                 <p
                   style={{
@@ -348,15 +348,15 @@ export default function AboutPage() {
                 key={member.name}
                 className="rounded-xl overflow-hidden"
                 style={{
-                  background: 'rgba(250,247,242,0.06)',
-                  border: '1px solid rgba(212,175,55,0.2)',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(229,168,0,0.2)',
                 }}
               >
                 <div className="relative" style={{ aspectRatio: '4/3' }}>
                   <SiteImage id={member.imageId} fill className="object-cover object-top" />
                   <div
                     className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to top, rgba(15,36,25,0.85) 0%, transparent 55%)' }}
+                    style={{ background: 'linear-gradient(to top, rgba(0,45,90,0.85) 0%, transparent 55%)' }}
                   />
                 </div>
                 <div className="p-5">
@@ -388,7 +388,7 @@ export default function AboutPage() {
                     style={{
                       fontFamily: "'Lato', sans-serif",
                       fontSize: '0.875rem',
-                      color: 'rgba(250,247,242,0.68)',
+                      color: 'rgba(255,255,255,0.68)',
                       lineHeight: 1.65,
                     }}
                   >

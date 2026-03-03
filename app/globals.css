@@ -3,120 +3,149 @@
 @tailwind utilities;
 
 /* ============================================================
-   MOUNTAIN CRAFTSMAN COLOR SYSTEM
+   DENVER BLUE COLOR SYSTEM
    Alpine Peak Roofing — 5-Color Palette
    ============================================================
-   Forest Deep:   #1A3D2B  (dark forest green — nav, heroes)
-   Forest Mid:    #2E6B4A  (medium green — accents, hovers)
-   Cedar Brown:   #6B3A1F  (warm dark brown — headings, anchors)
-   Sandstone:     #C4956A  (light warm brown — card bgs, offsets)
-   Mountain Gold: #D4AF37  (bright gold — CTAs, highlights, stars)
+   Sky Captain:  #004080  (dark navy — nav, heroes, footers)
+   Azure:        #0077CC  (medium blue — buttons, sections)
+   Cornflower:   #5599FF  (bright blue — icons, highlights, hover)
+   Amber Gold:   #E5A800  (gold — CTAs, stars, trust badges)
+   Warm Slate:   #4A5C6A  (neutral — text blocks, card surfaces)
+   + White:      #FFFFFF  (backgrounds, inverse text)
+   + Ink:        #1A2332  (primary body text)
    ============================================================ */
 
 :root {
-  /* Base */
-  --background: #FAF7F2;
-  --foreground: #1C1208;
+  /* ── Canonical Denver Blue Names ─────────────────────────────── */
+  --sky-captain:      #004080;
+  --sky-deep:         #002D5A;
+  --sky-mid:          #005FA3;
+  --azure:            #0077CC;
+  --azure-dark:       #005FA3;
+  --azure-light:      #2299EE;
+  --cornflower:       #5599FF;
+  --cornflower-light: #88BBFF;
+  --cornflower-pale:  #E0EEFF;
+  --amber-gold:       #E5A800;
+  --amber-dark:       #B88200;
+  --amber-light:      #FFD050;
+  --amber-pale:       #FFF3CC;
+  --warm-slate:       #4A5C6A;
+  --slate-dark:       #2D3A4A;
+  --slate-mid:        #607D8E;
+  --slate-light:      #A0B4C4;
+  --slate-pale:       #E8EFF4;
+  --ink:              #1A2332;
+  --ink-mid:          #2D3E52;
+  --off-white:        #F0F6FF;
+  --near-white:       #E0EEFF;
 
-  /* Core Brand Palette */
-  --forest-deep:    #1A3D2B;
-  --forest-mid:     #2E6B4A;
-  --forest-light:   #4A9B6E;
-  --cedar:          #6B3A1F;
-  --cedar-light:    #9B5A35;
-  --sandstone:      #C4956A;
-  --sandstone-light:#E8D5BE;
-  --gold:           #D4AF37;
-  --gold-light:     #F0D060;
-  --gold-dark:      #A88B20;
-  --cream:          #FAF7F2;
-  --cream-dark:     #F0EAE0;
-  --charcoal:       #1C1208;
-  --charcoal-mid:   #3D2E1A;
-  --stone:          #6B5C48;
-  --stone-light:    #9E8E7A;
-  --sandstone-light:#E8D5BE;
+  /* ── Legacy variable names → Denver Blue values ──────────────── */
+  /* (kept so existing components work without changes)             */
+  --forest-deep:    #004080;   /* was #1A3D2B green → sky captain */
+  --forest-mid:     #0077CC;   /* was #2E6B4A green → azure       */
+  --forest-light:   #5599FF;   /* was #4A9B6E green → cornflower  */
+  --cedar:          #4A5C6A;   /* was #6B3A1F brown → warm slate  */
+  --cedar-light:    #607D8E;   /* was #9B5A35 brown → slate mid   */
+  --sandstone:      #88BBFF;   /* was #C4956A tan  → cornflower lt*/
+  --sandstone-light:#E0EEFF;   /* was #E8D5BE tan  → cornflower pl*/
+  --gold:           #E5A800;   /* was #D4AF37 gold → amber gold   */
+  --gold-light:     #FFD050;   /* was #F0D060      → amber light  */
+  --gold-dark:      #B88200;   /* was #A88B20      → amber dark   */
+  --cream:          #FFFFFF;   /* was #FAF7F2 cream→ white        */
+  --cream-dark:     #F0F6FF;   /* was #F0EAE0 cream→ off-white    */
+  --charcoal:       #1A2332;   /* was #1C1208 brown→ ink          */
+  --charcoal-mid:   #2D3E52;   /* was #3D2E1A brown→ ink mid      */
+  --stone:          #4A5C6A;   /* was #6B5C48 stone→ warm slate   */
+  --stone-light:    #607D8E;   /* was #9E8E7A stone→ slate mid    */
 
-  /* Semantic Design System — Light (Mountain Craftsman) */
-  --background-primary:    #FAF7F2;
-  --background-secondary:  #F0EAE0;
-  --background-tertiary:   #E8D5BE;
-  --background-inverse:    #1A3D2B;
-  --background-dark:       #0F2419;
+  /* ── Semantic Design Tokens ──────────────────────────────────── */
+  --background:   #FFFFFF;
+  --foreground:   #1A2332;
 
-  --text-primary:   #1C1208;
-  --text-secondary: #3D2E1A;
-  --text-tertiary:  #6B5C48;
-  --text-inverse:   #FAF7F2;
-  --text-muted:     #9E8E7A;
-  --text-gold:      #D4AF37;
-  --text-forest:    #2E6B4A;
-  --text-off-white: #E8D5BE;
-  --text-body:      #F0EAE0;
+  --background-primary:   #FFFFFF;
+  --background-secondary: #F0F6FF;
+  --background-tertiary:  #E0EEFF;
+  --background-inverse:   #004080;
+  --background-dark:      #002D5A;
 
-  --border-primary:   #D5C4B0;
-  --border-secondary: #C4956A;
-  --border-focus:     #D4AF37;
-  --border-forest:    #2E6B4A;
+  --text-primary:   #1A2332;
+  --text-secondary: #2D3E52;
+  --text-tertiary:  #4A5C6A;
+  --text-inverse:   #FFFFFF;
+  --text-muted:     #607D8E;
+  --text-gold:      #E5A800;
+  --text-forest:    #0077CC;
+  --text-off-white: #E0EEFF;
+  --text-body:      #F0F6FF;
 
-  --interactive-primary:       #2E6B4A;
-  --interactive-primary-hover: #1A3D2B;
-  --interactive-secondary:     #F0EAE0;
-  --interactive-secondary-hover: #E8D5BE;
-  --interactive-gold:          #D4AF37;
-  --interactive-gold-hover:    #A88B20;
+  --border-primary:   #CCE0F5;
+  --border-secondary: #88BBFF;
+  --border-focus:     #E5A800;
+  --border-forest:    #0077CC;
 
-  /* Gradients */
-  --hero-gradient:        linear-gradient(135deg, rgba(26,61,43,0.92) 0%, rgba(15,36,25,0.80) 100%);
-  --forest-gradient:      linear-gradient(135deg, #1A3D2B 0%, #2E6B4A 100%);
-  --cedar-gradient:       linear-gradient(135deg, #6B3A1F 0%, #9B5A35 100%);
-  --gold-gradient:        linear-gradient(135deg, #D4AF37 0%, #F0D060 100%);
-  --section-gradient:     linear-gradient(180deg, #FAF7F2 0%, #F0EAE0 100%);
-  --dark-section-gradient:linear-gradient(180deg, #1A3D2B 0%, #0F2419 100%);
+  --interactive-primary:        #004080;
+  --interactive-primary-hover:  #002D5A;
+  --interactive-secondary:      #F0F6FF;
+  --interactive-secondary-hover:#E0EEFF;
+  --interactive-gold:           #E5A800;
+  --interactive-gold-hover:     #B88200;
 
-  /* AI Tools (kept for /ai-tools page) */
-  --brand-navy:    #003399;
-  --brand-primary: #0033CC;
-  --brand-blue:    #0066CC;
-  --brand-sky:     #33CCFF;
-  --brand-gold:    #FFCC00;
-  --brand-header-gradient:       linear-gradient(to right, #0066CC, #003399);
-  --brand-vertical-invert-gradient: linear-gradient(to bottom, #003399, #0066CC);
-  --brand-header-invert-gradient:linear-gradient(to right, #003399, #0066CC);
-  --ai-tools-gradient:           linear-gradient(to right, #9333EA, #213FB0);
-  --ai-tools-horizontal-gradient:linear-gradient(to bottom, #9333EA, #213FB0);
-  --alpine-gradient:  linear-gradient(135deg, #3399ff, #36b0d9);
-  --hero-gradient-blue: linear-gradient(135deg, #66c7ff, #3399ff);
-  --teal-gradient:    linear-gradient(135deg, #36b0d9, #5cc4e5);
-  --purple-gradient:  linear-gradient(135deg, #5d4aa1, #2D1B69);
+  /* ── Gradients ───────────────────────────────────────────────── */
+  --hero-gradient:         linear-gradient(135deg, rgba(0,64,128,0.92) 0%, rgba(0,45,90,0.85) 100%);
+  --navy-gradient:         linear-gradient(135deg, #004080 0%, #0077CC 100%);
+  --azure-gradient:        linear-gradient(135deg, #0077CC 0%, #5599FF 100%);
+  --gold-gradient:         linear-gradient(135deg, #E5A800 0%, #FFD050 100%);
+  --section-gradient:      linear-gradient(180deg, #FFFFFF 0%, #F0F6FF 100%);
+  --dark-section-gradient: linear-gradient(180deg, #004080 0%, #002D5A 100%);
+
+  /* Legacy gradient names → new values */
+  --forest-gradient:       linear-gradient(135deg, #004080 0%, #0077CC 100%);
+  --cedar-gradient:        linear-gradient(135deg, #4A5C6A 0%, #607D8E 100%);
+
+  /* AI Tools / Chat Widget (now unified with Denver Blue) */
+  --brand-navy:    #004080;
+  --brand-primary: #0077CC;
+  --brand-blue:    #0077CC;
+  --brand-sky:     #5599FF;
+  --brand-gold:    #E5A800;
+  --brand-header-gradient:           linear-gradient(to right, #0077CC, #004080);
+  --brand-vertical-invert-gradient:  linear-gradient(to bottom, #004080, #0077CC);
+  --brand-header-invert-gradient:    linear-gradient(to right, #004080, #0077CC);
+  --ai-tools-gradient:               linear-gradient(to right, #0077CC, #004080);
+  --ai-tools-horizontal-gradient:    linear-gradient(to bottom, #0077CC, #004080);
+  --alpine-gradient:  linear-gradient(135deg, #5599FF, #0077CC);
+  --hero-gradient-blue: linear-gradient(135deg, #88BBFF, #5599FF);
+  --teal-gradient:    linear-gradient(135deg, #0077CC, #5599FF);
+  --purple-gradient:  linear-gradient(135deg, #004080, #002D5A);
 }
 
 .dark {
-  --background: #0F2419;
-  --foreground: #E8D5BE;
+  --background: #002D5A;
+  --foreground: #E0EEFF;
 
-  --background-primary:   #0F2419;
-  --background-secondary: #1A3D2B;
-  --background-tertiary:  #2E6B4A;
-  --background-inverse:   #FAF7F2;
+  --background-primary:   #002D5A;
+  --background-secondary: #004080;
+  --background-tertiary:  #0077CC;
+  --background-inverse:   #FFFFFF;
 
-  --text-primary:   #FAF7F2;
-  --text-secondary: #E8D5BE;
-  --text-tertiary:  #C4956A;
-  --text-inverse:   #1C1208;
-  --text-muted:     #9E8E7A;
+  --text-primary:   #E0EEFF;
+  --text-secondary: #A8C4E0;
+  --text-tertiary:  #88BBFF;
+  --text-inverse:   #1A2332;
+  --text-muted:     #607D8E;
 
-  --border-primary:   #2E6B4A;
-  --border-secondary: #6B3A1F;
-  --border-focus:     #D4AF37;
+  --border-primary:   #0077CC;
+  --border-secondary: #5599FF;
+  --border-focus:     #E5A800;
 
-  --interactive-primary:       #4A9B6E;
-  --interactive-primary-hover: #2E6B4A;
-  --interactive-secondary:     #1A3D2B;
-  --interactive-secondary-hover: #2E6B4A;
+  --interactive-primary:        #5599FF;
+  --interactive-primary-hover:  #0077CC;
+  --interactive-secondary:      #004080;
+  --interactive-secondary-hover:#0077CC;
 
-  --forest-gradient:     linear-gradient(135deg, #0F2419 0%, #1A3D2B 100%);
-  --section-gradient:    linear-gradient(180deg, #0F2419 0%, #1A3D2B 100%);
+  --forest-gradient:    linear-gradient(135deg, #002D5A 0%, #004080 100%);
+  --section-gradient:   linear-gradient(180deg, #002D5A 0%, #004080 100%);
 }
 
 /* ============================================================
@@ -166,7 +195,7 @@ body {
   font-family: 'Lato', system-ui, sans-serif;
 }
 
-/* Gold accent underline */
+/* Gold/amber accent underline */
 .gold-underline {
   position: relative;
   display: inline-block;
@@ -183,9 +212,9 @@ body {
   border-radius: 2px;
 }
 
-/* Vertical gold rule */
+/* Vertical amber rule */
 .gold-rule-left {
-  border-left: 4px solid var(--gold);
+  border-left: 4px solid var(--amber-gold);
   padding-left: 1.25rem;
 }
 
@@ -193,9 +222,10 @@ body {
    BUTTON SYSTEM
    ============================================================ */
 
+/* Primary CTA — Amber Gold */
 .btn-primary {
-  background: var(--cedar);
-  color: var(--cream);
+  background: var(--amber-gold);
+  color: var(--ink);
   border: 2px solid transparent;
   padding: 0.75rem 2rem;
   font-weight: 700;
@@ -210,16 +240,17 @@ body {
 }
 
 .btn-primary:hover {
-  background: var(--gold);
-  color: var(--charcoal);
+  background: var(--amber-light);
+  color: var(--ink);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212,175,55,0.35);
+  box-shadow: 0 8px 24px rgba(229,168,0,0.40);
 }
 
+/* Dark Navy Button */
 .btn-forest {
-  background: var(--forest-deep);
-  color: var(--cream);
-  border: 2px solid var(--forest-mid);
+  background: var(--sky-captain);
+  color: #FFFFFF;
+  border: 2px solid var(--azure);
   padding: 0.75rem 2rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -233,15 +264,16 @@ body {
 }
 
 .btn-forest:hover {
-  background: var(--forest-mid);
-  border-color: var(--gold);
+  background: var(--azure);
+  border-color: var(--amber-gold);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(26,61,43,0.35);
+  box-shadow: 0 8px 24px rgba(0,64,128,0.35);
 }
 
+/* Azure Blue Button */
 .btn-gold {
-  background: var(--gold);
-  color: var(--charcoal);
+  background: var(--azure);
+  color: #FFFFFF;
   border: 2px solid transparent;
   padding: 0.75rem 2rem;
   font-weight: 800;
@@ -256,15 +288,16 @@ body {
 }
 
 .btn-gold:hover {
-  background: var(--gold-light);
+  background: var(--sky-captain);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(212,175,55,0.5);
+  box-shadow: 0 8px 24px rgba(0,119,204,0.45);
 }
 
+/* Outline on dark backgrounds */
 .btn-outline-cream {
   background: transparent;
-  color: var(--cream);
-  border: 2px solid rgba(250,247,242,0.6);
+  color: #FFFFFF;
+  border: 2px solid rgba(255,255,255,0.6);
   padding: 0.75rem 2rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -278,9 +311,9 @@ body {
 }
 
 .btn-outline-cream:hover {
-  background: rgba(250,247,242,0.1);
-  border-color: var(--gold);
-  color: var(--gold-light);
+  background: rgba(255,255,255,0.1);
+  border-color: var(--amber-gold);
+  color: var(--amber-light);
 }
 
 /* ============================================================
@@ -288,30 +321,30 @@ body {
    ============================================================ */
 
 .section-cream {
-  background: var(--cream);
+  background: #FFFFFF;
 }
 
 .section-cream-dark {
-  background: var(--cream-dark);
+  background: var(--off-white);
 }
 
 .section-sandstone {
-  background: var(--sandstone-light);
+  background: var(--cornflower-pale);
 }
 
 .section-forest {
-  background: var(--forest-deep);
-  color: var(--cream);
+  background: var(--sky-captain);
+  color: #FFFFFF;
 }
 
 .section-forest-mid {
-  background: var(--forest-mid);
-  color: var(--cream);
+  background: var(--azure);
+  color: #FFFFFF;
 }
 
 .section-dark {
-  background: var(--charcoal);
-  color: var(--cream);
+  background: var(--sky-deep);
+  color: #FFFFFF;
 }
 
 /* ============================================================
@@ -320,20 +353,20 @@ body {
 
 .card-craftsman {
   background: #FFFFFF;
-  border: 1px solid var(--sandstone-light);
+  border: 1px solid var(--cornflower-pale);
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(107,58,31,0.08);
+  box-shadow: 0 2px 12px rgba(0,64,128,0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card-craftsman:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(107,58,31,0.16);
+  box-shadow: 0 12px 32px rgba(0,64,128,0.16);
 }
 
 .card-forest {
-  background: rgba(46,107,74,0.08);
-  border: 1px solid rgba(46,107,74,0.2);
+  background: rgba(0,119,204,0.06);
+  border: 1px solid rgba(0,119,204,0.18);
   border-radius: 8px;
 }
 
@@ -342,7 +375,7 @@ body {
   font-size: 8rem;
   font-weight: 900;
   line-height: 1;
-  color: rgba(212,175,55,0.08);
+  color: rgba(229,168,0,0.10);
   position: absolute;
   top: -1rem;
   user-select: none;
@@ -413,7 +446,7 @@ body {
 .animate-delay-600 { animation-delay: 0.6s; }
 
 /* ============================================================
-   CHAT / AI WIDGET STYLES (unchanged)
+   CHAT / AI WIDGET STYLES
    ============================================================ */
 
 @keyframes spin-slow {
@@ -432,7 +465,7 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
-.chat-gradient-bg { background: linear-gradient(to bottom, #f0f7ff, #ffffff); }
+.chat-gradient-bg { background: linear-gradient(to bottom, #E0EEFF, #FFFFFF); }
 
 @keyframes messageSlideIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -440,7 +473,7 @@ body {
 }
 .message-slide-in { animation: messageSlideIn 0.3s ease-out; }
 
-.ai-avatar-border { background: linear-gradient(45deg, #9333EA, #213FB0, #9333EA); }
+.ai-avatar-border { background: linear-gradient(45deg, #004080, #0077CC, #5599FF); }
 
 .chat-bubble { transition: all 0.2s ease; }
 .chat-bubble:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
@@ -473,19 +506,19 @@ body {
   animation: holographicFloat 6s ease-in-out infinite;
   box-shadow:
     0 20px 40px rgba(0,0,0,0.3),
-    0 0 80px rgba(6,182,212,0.2),
-    0 0 120px rgba(139,92,246,0.1);
+    0 0 80px rgba(0,119,204,0.2),
+    0 0 120px rgba(85,153,255,0.1);
   transform-style: preserve-3d;
 }
 
 @keyframes gentlePulse {
   0%, 100% {
     opacity: 0.8;
-    box-shadow: 0 0 30px rgba(6,182,212,0.4), 0 0 60px rgba(139,92,246,0.2);
+    box-shadow: 0 0 30px rgba(0,119,204,0.4), 0 0 60px rgba(85,153,255,0.2);
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 40px rgba(6,182,212,0.6), 0 0 80px rgba(139,92,246,0.3);
+    box-shadow: 0 0 40px rgba(0,119,204,0.6), 0 0 80px rgba(85,153,255,0.3);
   }
 }
 .pulsing-border { animation: gentlePulse 2.5s ease-in-out infinite; }
@@ -506,17 +539,17 @@ body {
 .premium-call-button {
   background: linear-gradient(135deg,
     rgba(255,255,255,0.9) 0%,
-    rgba(219,234,254,0.8) 50%,
-    rgba(147,197,253,0.9) 100%
+    rgba(224,238,255,0.8) 50%,
+    rgba(136,187,255,0.9) 100%
   );
-  color: #1e40af;
+  color: #004080;
   border: 1px solid rgba(255,255,255,0.3);
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+  box-shadow: 0 8px 32px rgba(0,119,204,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
   transition: all 0.3s ease;
 }
 .premium-call-button:hover {
-  box-shadow: 0 12px 40px rgba(59,130,246,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow: 0 12px 40px rgba(0,119,204,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
   transform: translateY(-2px);
 }
 
@@ -535,15 +568,15 @@ body {
   font-size: 0.875rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  background: var(--forest-deep);
-  color: var(--cream);
-  box-shadow: 0 4px 16px rgba(26,61,43,0.25);
+  background: var(--sky-captain);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0,64,128,0.25);
   transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   text-decoration: none;
 }
 .service-row-cta:hover {
-  background: var(--cedar);
-  box-shadow: 0 8px 24px rgba(107,58,31,0.35);
+  background: var(--azure);
+  box-shadow: 0 8px 24px rgba(0,119,204,0.35);
   transform: translateY(-2px);
 }
 
@@ -558,17 +591,17 @@ body {
   transform: translateX(-50%);
   width: 2px;
   height: 3rem;
-  background: linear-gradient(to bottom, var(--gold), transparent);
+  background: linear-gradient(to bottom, var(--amber-gold), transparent);
 }
 
 .process-image-placeholder {
-  background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest-mid) 100%);
+  background: linear-gradient(135deg, var(--sky-captain) 0%, var(--azure) 100%);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--sandstone-light);
+  color: var(--cornflower-pale);
   aspect-ratio: 4/3;
 }
 
@@ -577,8 +610,8 @@ body {
    ============================================================ */
 
 .estimator-step-card {
-  background: linear-gradient(135deg, var(--forest-deep) 0%, var(--forest-mid) 60%);
-  border: 2px solid rgba(212,175,55,0.3);
+  background: linear-gradient(135deg, var(--sky-captain) 0%, var(--azure) 60%);
+  border: 2px solid rgba(229,168,0,0.3);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
@@ -588,7 +621,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at top right, rgba(212,175,55,0.15), transparent 60%);
+  background: radial-gradient(circle at top right, rgba(229,168,0,0.15), transparent 60%);
   pointer-events: none;
 }
 
@@ -602,7 +635,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(250,247,242,0.85);
+  color: rgba(255,255,255,0.85);
   transition: color 0.2s ease;
 }
 
@@ -613,13 +646,13 @@ body {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--gold);
+  background: var(--amber-gold);
   transition: width 0.25s ease;
   border-radius: 1px;
 }
 
 .nav-link-craftsman:hover {
-  color: var(--gold-light);
+  color: var(--amber-light);
 }
 
 .nav-link-craftsman:hover::after,
@@ -628,5 +661,5 @@ body {
 }
 
 .nav-link-craftsman.active {
-  color: var(--gold);
+  color: var(--amber-gold);
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import SiteImage from '@/components/SiteImage'
 import {
   Users,
   Search,
@@ -23,6 +24,7 @@ import {
 interface ProcessStep {
   step: number
   title: string
+  imageId: string
   subtitle: string
   duration: string
   description: string
@@ -52,7 +54,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'Our AI chatbot can schedule consultations 24/7 and provide preliminary pricing before we even arrive.',
     Icon: Users,
-    imageBg: 'linear-gradient(135deg, #1A3D2B 0%, #2E6B4A 100%)',
+    imageId: 'team_project_coordinator',
+    imageBg: 'linear-gradient(135deg, #004080 0%, #0077CC 100%)',
   },
   {
     step: 2,
@@ -70,7 +73,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'AI algorithms trained on 50,000+ roofs detect micro-fractures and sub-surface damage missed by standard inspections.',
     Icon: Search,
-    imageBg: 'linear-gradient(135deg, #2E6B4A 0%, #4A9B6E 100%)',
+    imageId: 'service_inspection',
+    imageBg: 'linear-gradient(135deg, #0077CC 0%, #5599FF 100%)',
   },
   {
     step: 3,
@@ -88,7 +92,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'Automated estimation systems generate accurate proposals in hours instead of the industry-standard days.',
     Icon: FileText,
-    imageBg: 'linear-gradient(135deg, #6B3A1F 0%, #9B5A35 100%)',
+    imageId: 'portfolio_craftsmanship',
+    imageBg: 'linear-gradient(135deg, #004080 0%, #005FA3 100%)',
   },
   {
     step: 4,
@@ -106,7 +111,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'Intelligent scheduling systems optimize crew deployment and material delivery for maximum efficiency.',
     Icon: Calendar,
-    imageBg: 'linear-gradient(135deg, #4A2010 0%, #6B3A1F 100%)',
+    imageId: 'portfolio_crew_installation',
+    imageBg: 'linear-gradient(135deg, #002D5A 0%, #004080 100%)',
   },
   {
     step: 5,
@@ -124,7 +130,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'Project management software tracks progress in real-time, sending you milestone notifications throughout.',
     Icon: Hammer,
-    imageBg: 'linear-gradient(135deg, #1A3D2B 0%, #0F2419 100%)',
+    imageId: 'portfolio_victorian',
+    imageBg: 'linear-gradient(135deg, #004080 0%, #002D5A 100%)',
   },
   {
     step: 6,
@@ -142,7 +149,8 @@ const steps: ProcessStep[] = [
     ],
     aiNote: 'Digital warranty registration and AI-triggered maintenance reminders protect your investment long-term.',
     Icon: CheckCircle,
-    imageBg: 'linear-gradient(135deg, #D4AF37 0%, #A88B20 100%)',
+    imageId: 'portfolio_modern_metal',
+    imageBg: 'linear-gradient(135deg, #E5A800 0%, #B88200 100%)',
   },
 ]
 
@@ -152,40 +160,35 @@ const steps: ProcessStep[] = [
 function ImagePanel({ step, bg }: { step: ProcessStep; bg: string }) {
   return (
     <div
-      className="relative rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(26,61,43,0.22)]"
-      style={{ aspectRatio: '4/3', background: bg }}
+      className="relative rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(0,64,128,0.22)]"
+      style={{ aspectRatio: '4/3' }}
     >
-      {/* Big ghost step number */}
-      <div
-        className="absolute inset-0 flex items-center justify-center select-none"
-        style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: '11rem',
-          fontWeight: 900,
-          color: 'rgba(255,255,255,0.07)',
-          lineHeight: 1,
-        }}
-      >
-        {String(step.step).padStart(2, '0')}
-      </div>
+      {/* Real photo */}
+      <SiteImage id={step.imageId} fill className="object-cover" />
 
-      {/* Icon centered */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      {/* Dark gradient overlay */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(135deg, rgba(0,45,90,0.72) 0%, rgba(0,64,128,0.45) 100%)' }}
+      />
+
+      {/* Icon & duration centered */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
         <div
           className="w-20 h-20 rounded-full flex items-center justify-center mb-4"
           style={{
             background: 'rgba(255,255,255,0.12)',
-            border: '2px solid rgba(255,255,255,0.2)',
+            border: '2px solid rgba(255,255,255,0.25)',
             backdropFilter: 'blur(8px)',
           }}
         >
-          <step.Icon size={36} color="rgba(255,255,255,0.9)" />
+          <step.Icon size={36} color="rgba(255,255,255,0.95)" />
         </div>
         <span
           className="text-xs uppercase font-bold tracking-widest"
           style={{
             fontFamily: "'Lato', sans-serif",
-            color: 'rgba(255,255,255,0.6)',
+            color: 'rgba(255,255,255,0.7)',
             letterSpacing: '0.18em',
           }}
         >
@@ -194,22 +197,20 @@ function ImagePanel({ step, bg }: { step: ProcessStep; bg: string }) {
       </div>
 
       {/* Bottom tag */}
-      <div
-        className="absolute bottom-5 left-5 right-5 flex items-center justify-between"
-      >
+      <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between z-10">
         <span
           className="text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded"
           style={{
             fontFamily: "'Lato', sans-serif",
-            background: 'rgba(212,175,55,0.25)',
-            color: 'var(--gold-light)',
+            background: 'rgba(229,168,0,0.30)',
+            color: 'var(--amber-light)',
             letterSpacing: '0.12em',
-            border: '1px solid rgba(212,175,55,0.3)',
+            border: '1px solid rgba(229,168,0,0.35)',
           }}
         >
           Step {step.step} of 6
         </span>
-        <Clock size={14} color="rgba(255,255,255,0.4)" />
+        <Clock size={14} color="rgba(255,255,255,0.5)" />
       </div>
     </div>
   )
@@ -288,8 +289,8 @@ function StepRow({ step, reverse }: { step: ProcessStep; reverse: boolean }) {
       <div
         className="flex items-start gap-3 p-4 rounded-xl"
         style={{
-          background: 'rgba(26,61,43,0.06)',
-          border: '1px solid rgba(46,107,74,0.2)',
+          background: 'rgba(0,64,128,0.06)',
+          border: '1px solid rgba(0,119,204,0.2)',
         }}
       >
         <Zap size={16} style={{ color: 'var(--forest-mid)', flexShrink: 0, marginTop: 2 }} />
@@ -353,8 +354,8 @@ export default function ProcessPage() {
         <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 mb-10 text-xs">
-            <Link href="/" style={{ color: 'rgba(250,247,242,0.5)', fontFamily: "'Lato', sans-serif" }}>Home</Link>
-            <ChevronRight size={12} style={{ color: 'rgba(250,247,242,0.3)' }} />
+            <Link href="/" style={{ color: 'rgba(255,255,255,0.5)', fontFamily: "'Lato', sans-serif" }}>Home</Link>
+            <ChevronRight size={12} style={{ color: 'rgba(255,255,255,0.3)' }} />
             <span style={{ color: 'var(--gold)', fontFamily: "'Lato', sans-serif", fontWeight: 600 }}>Our Process</span>
           </div>
 
@@ -384,7 +385,7 @@ export default function ProcessPage() {
                 className="text-xl leading-relaxed max-w-lg"
                 style={{
                   fontFamily: "'Lato', sans-serif",
-                  color: 'rgba(250,247,242,0.70)',
+                  color: 'rgba(255,255,255,0.70)',
                   fontWeight: 300,
                   lineHeight: 1.8,
                 }}
@@ -405,8 +406,8 @@ export default function ProcessPage() {
                   key={i}
                   className="flex flex-col items-center justify-center text-center p-6 rounded-2xl"
                   style={{
-                    background: 'rgba(250,247,242,0.07)',
-                    border: '1px solid rgba(212,175,55,0.2)',
+                    background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(229,168,0,0.2)',
                   }}
                 >
                   <stat.icon size={20} style={{ color: 'var(--gold)', marginBottom: 8 }} />
@@ -418,7 +419,7 @@ export default function ProcessPage() {
                   </div>
                   <div
                     className="text-xs uppercase tracking-widest"
-                    style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.50)', letterSpacing: '0.12em' }}
+                    style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.50)', letterSpacing: '0.12em' }}
                   >
                     {stat.label}
                   </div>
@@ -468,7 +469,7 @@ export default function ProcessPage() {
               <div className="flex justify-center mt-12">
                 <div
                   className="flex flex-col items-center gap-1"
-                  style={{ color: 'rgba(212,175,55,0.4)' }}
+                  style={{ color: 'rgba(229,168,0,0.4)' }}
                 >
                   <div className="w-0.5 h-8" style={{ background: 'linear-gradient(to bottom, var(--gold), transparent)' }} />
                   <ChevronRight
@@ -503,7 +504,7 @@ export default function ProcessPage() {
             <div className="w-12 h-0.5 mx-auto mb-6" style={{ background: 'var(--gold)' }} />
             <p
               className="text-lg max-w-xl mx-auto"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.60)', fontWeight: 300 }}
+              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.60)', fontWeight: 300 }}
             >
               We maintain the highest standards through systematic controls at every phase of your project.
             </p>
@@ -520,13 +521,13 @@ export default function ProcessPage() {
                 key={i}
                 className="flex flex-col items-center text-center p-7 rounded-2xl"
                 style={{
-                  background: 'rgba(250,247,242,0.06)',
-                  border: '1px solid rgba(212,175,55,0.18)',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(229,168,0,0.18)',
                 }}
               >
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center mb-5"
-                  style={{ background: 'rgba(212,175,55,0.15)' }}
+                  style={{ background: 'rgba(229,168,0,0.15)' }}
                 >
                   <cp.Icon size={20} style={{ color: 'var(--gold)' }} />
                 </div>
@@ -538,7 +539,7 @@ export default function ProcessPage() {
                 </h3>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.55)' }}
+                  style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.55)' }}
                 >
                   {cp.desc}
                 </p>
@@ -586,7 +587,7 @@ export default function ProcessPage() {
                   <div
                     key={i}
                     className="flex items-start gap-4 p-5 rounded-xl"
-                    style={{ background: '#FFFFFF', border: '1px solid var(--border-primary)', boxShadow: '0 2px 12px rgba(107,58,31,0.07)' }}
+                    style={{ background: '#FFFFFF', border: '1px solid var(--border-primary)', boxShadow: '0 2px 12px rgba(0,64,128,0.07)' }}
                   >
                     <div
                       className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
@@ -615,11 +616,11 @@ export default function ProcessPage() {
 
             {/* Visual panel */}
             <div
-              className="rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(26,61,43,0.18)]"
+              className="rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(0,64,128,0.18)]"
               style={{
                 background: 'var(--forest-deep)',
                 padding: '2.5rem',
-                border: '2px solid rgba(212,175,55,0.2)',
+                border: '2px solid rgba(229,168,0,0.2)',
               }}
             >
               <h3
@@ -633,7 +634,7 @@ export default function ProcessPage() {
               <div className="relative">
                 <div
                   className="absolute left-4 top-0 bottom-0 w-0.5"
-                  style={{ background: 'rgba(212,175,55,0.25)' }}
+                  style={{ background: 'rgba(229,168,0,0.25)' }}
                 />
                 <div className="space-y-0">
                   {[
@@ -663,7 +664,7 @@ export default function ProcessPage() {
                         </div>
                         <div
                           className="text-sm leading-relaxed"
-                          style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.65)' }}
+                          style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)' }}
                         >
                           {item.event}
                         </div>
@@ -718,7 +719,7 @@ export default function ProcessPage() {
                 style={{
                   background: '#FFFFFF',
                   border: '1px solid var(--sandstone-light)',
-                  boxShadow: '0 4px 24px rgba(107,58,31,0.08)',
+                  boxShadow: '0 4px 24px rgba(0,64,128,0.08)',
                 }}
               >
                 <div className="flex gap-0.5 mb-5">
@@ -775,7 +776,7 @@ export default function ProcessPage() {
           </h2>
           <p
             className="text-xl mb-10 max-w-xl mx-auto"
-            style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.60)', fontWeight: 300 }}
+            style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.60)', fontWeight: 300 }}
           >
             Start with a free consultation and discover why Denver homeowners trust our systematic approach to roofing excellence.
           </p>
@@ -788,7 +789,7 @@ export default function ProcessPage() {
                 background: 'var(--gold)',
                 color: 'var(--charcoal)',
                 letterSpacing: '0.1em',
-                boxShadow: '0 8px 24px rgba(212,175,55,0.4)',
+                boxShadow: '0 8px 24px rgba(229,168,0,0.4)',
               }}
             >
               <Phone size={15} /> Call (970) 446-8995
@@ -800,7 +801,7 @@ export default function ProcessPage() {
                 fontFamily: "'Lato', sans-serif",
                 background: 'transparent',
                 color: '#FFFFFF',
-                border: '2px solid rgba(250,247,242,0.3)',
+                border: '2px solid rgba(255,255,255,0.3)',
                 letterSpacing: '0.1em',
               }}
             >

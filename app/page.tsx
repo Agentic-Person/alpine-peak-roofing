@@ -36,7 +36,7 @@ function StatCard({ value, label, icon: Icon }: { value: string; label: string; 
   return (
     <div
       className="flex flex-col items-center text-center p-6 rounded-xl"
-      style={{ background: 'rgba(26,61,43,0.06)', border: '1px solid rgba(212,175,55,0.18)' }}
+      style={{ background: 'rgba(0,64,128,0.06)', border: '1px solid rgba(229,168,0,0.18)' }}
     >
       <div
         className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
@@ -78,12 +78,12 @@ function ServiceRow({
   title, subtitle, description, features, href, imageId, reverse = false, accentColor = 'var(--cedar)'
 }: ServiceRowProps) {
   const imageBlock = (
-    <div className="relative rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(26,61,43,0.18)]" style={{ aspectRatio: '4/3' }}>
+    <div className="relative rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(0,64,128,0.18)]" style={{ aspectRatio: '4/3' }}>
       <SiteImage id={imageId} fill className="object-cover" />
       {/* Corner accent */}
       <div
         className="absolute bottom-0 left-0 right-0 p-5"
-        style={{ background: 'linear-gradient(to top, rgba(15,36,25,0.85) 0%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(to top, rgba(0,45,90,0.85) 0%, transparent 100%)' }}
       >
         <Link
           href={href}
@@ -157,7 +157,7 @@ function TestimonialCard({ text, author, location, project }: {
       style={{
         background: '#FFFFFF',
         border: '1px solid var(--sandstone-light)',
-        boxShadow: '0 4px 24px rgba(107,58,31,0.08)',
+        boxShadow: '0 4px 24px rgba(0,64,128,0.08)',
       }}
     >
       <div className="flex gap-0.5 mb-5">
@@ -219,7 +219,7 @@ export default function HomePage() {
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(135deg, rgba(15,36,25,0.93) 0%, rgba(26,61,43,0.82) 50%, rgba(107,58,31,0.60) 100%)'
+            background: 'linear-gradient(135deg, rgba(0,45,90,0.93) 0%, rgba(0,64,128,0.82) 50%, rgba(0,64,128,0.60) 100%)'
           }}
         />
 
@@ -228,7 +228,7 @@ export default function HomePage() {
           className="absolute right-0 top-0 bottom-0 hidden xl:block"
           style={{
             width: '1px',
-            background: 'linear-gradient(to bottom, transparent, rgba(212,175,55,0.4), transparent)',
+            background: 'linear-gradient(to bottom, transparent, rgba(229,168,0,0.4), transparent)',
             right: '12%',
           }}
         />
@@ -240,8 +240,8 @@ export default function HomePage() {
             <div
               className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
               style={{
-                background: 'rgba(212,175,55,0.15)',
-                border: '1px solid rgba(212,175,55,0.35)',
+                background: 'rgba(229,168,0,0.15)',
+                border: '1px solid rgba(229,168,0,0.35)',
                 color: 'var(--gold)',
                 letterSpacing: '0.14em',
                 fontFamily: "'Lato', sans-serif",
@@ -281,7 +281,7 @@ export default function HomePage() {
             {/* Subheadline */}
             <p
               className="text-xl leading-relaxed mb-10 max-w-xl"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.80)', fontWeight: 300 }}
+              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.80)', fontWeight: 300 }}
             >
               Licensed, insured, and trusted by thousands of Colorado homeowners.
               Expert craftsmanship from consultation to final inspection.
@@ -297,7 +297,7 @@ export default function HomePage() {
                   background: 'var(--gold)',
                   color: 'var(--charcoal)',
                   letterSpacing: '0.1em',
-                  boxShadow: '0 8px 24px rgba(212,175,55,0.45)',
+                  boxShadow: '0 8px 24px rgba(229,168,0,0.45)',
                 }}
               >
                 Free Satellite Estimate <ArrowRight size={15} />
@@ -309,7 +309,7 @@ export default function HomePage() {
                   fontFamily: "'Lato', sans-serif",
                   background: 'transparent',
                   color: '#FFFFFF',
-                  border: '2px solid rgba(250,247,242,0.45)',
+                  border: '2px solid rgba(255,255,255,0.45)',
                   letterSpacing: '0.1em',
                 }}
               >
@@ -381,7 +381,7 @@ export default function HomePage() {
                 'Insurance claim guidance from day one',
               ]}
               href="/services/residential"
-              imageId="residential_victorian_after"
+              imageId="service_residential"
               reverse={false}
               accentColor="var(--cedar)"
             />
@@ -399,7 +399,7 @@ export default function HomePage() {
                 'Minimal business disruption protocols',
               ]}
               href="/services/commercial"
-              imageId="commercial_office_after"
+              imageId="service_commercial"
               reverse={true}
               accentColor="var(--forest-mid)"
             />
@@ -417,7 +417,7 @@ export default function HomePage() {
                 'Complete repair follow-through',
               ]}
               href="/services/emergency"
-              imageId="hero_home"
+              imageId="service_emergency"
               reverse={false}
               accentColor="var(--gold-dark)"
             />
@@ -462,7 +462,7 @@ export default function HomePage() {
             <div className="w-16 h-0.5 mx-auto" style={{ background: 'var(--gold)' }} />
             <p
               className="mt-6 text-lg max-w-xl mx-auto"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.65)', fontWeight: 300 }}
+              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}
             >
               Real projects. Real results. See what a complete Alpine Peak transformation looks like.
             </p>
@@ -475,19 +475,19 @@ export default function HomePage() {
                 title: 'Victorian Home — Highlands Ranch',
                 material: 'Premium Architectural Shingles',
                 area: '2,800 sq ft',
-                id: 'residential_victorian_after'
+                id: 'portfolio_victorian'
               },
               {
                 title: 'Commercial Office — Denver CBD',
                 material: 'TPO Membrane System',
                 area: '8,400 sq ft',
-                id: 'commercial_office_after'
+                id: 'portfolio_modern_metal'
               }
             ].map((project, idx) => (
               <div
                 key={idx}
                 className="rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(250,247,242,0.06)', border: '1px solid rgba(212,175,55,0.2)' }}
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(229,168,0,0.2)' }}
               >
                 {/* Before / After image pair */}
                 <div className="relative" style={{ aspectRatio: '16/9' }}>
@@ -499,13 +499,13 @@ export default function HomePage() {
                   >
                     <div
                       className="flex-1 flex items-start p-4"
-                      style={{ background: 'linear-gradient(to bottom right, rgba(107,58,31,0.7), transparent)' }}
+                      style={{ background: 'linear-gradient(to bottom right, rgba(0,64,128,0.7), transparent)' }}
                     >
                       <span
                         className="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded"
                         style={{
                           fontFamily: "'Lato', sans-serif",
-                          background: 'rgba(107,58,31,0.85)',
+                          background: 'rgba(0,64,128,0.85)',
                           color: '#fff',
                           letterSpacing: '0.12em'
                         }}
@@ -515,13 +515,13 @@ export default function HomePage() {
                     </div>
                     <div
                       className="flex-1 flex items-start justify-end p-4"
-                      style={{ background: 'linear-gradient(to bottom left, rgba(26,61,43,0.7), transparent)' }}
+                      style={{ background: 'linear-gradient(to bottom left, rgba(0,64,128,0.7), transparent)' }}
                     >
                       <span
                         className="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded"
                         style={{
                           fontFamily: "'Lato', sans-serif",
-                          background: 'rgba(26,61,43,0.85)',
+                          background: 'rgba(0,64,128,0.85)',
                           color: 'var(--gold)',
                           letterSpacing: '0.12em'
                         }}
@@ -545,10 +545,10 @@ export default function HomePage() {
                     >
                       {project.material}
                     </span>
-                    <span style={{ color: 'rgba(212,175,55,0.4)' }}>·</span>
+                    <span style={{ color: 'rgba(229,168,0,0.4)' }}>·</span>
                     <span
                       className="text-xs"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.5)' }}
+                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.5)' }}
                     >
                       {project.area}
                     </span>
@@ -567,7 +567,7 @@ export default function HomePage() {
                 background: 'var(--gold)',
                 color: 'var(--charcoal)',
                 letterSpacing: '0.1em',
-                boxShadow: '0 8px 24px rgba(212,175,55,0.35)',
+                boxShadow: '0 8px 24px rgba(229,168,0,0.35)',
               }}
             >
               View Full Portfolio <ArrowRight size={14} />
@@ -640,7 +640,7 @@ export default function HomePage() {
                   background: 'var(--forest-deep)',
                   color: 'var(--cream)',
                   letterSpacing: '0.1em',
-                  boxShadow: '0 8px 24px rgba(26,61,43,0.3)',
+                  boxShadow: '0 8px 24px rgba(0,64,128,0.3)',
                 }}
               >
                 Get My Free Estimate <ArrowRight size={14} />
@@ -649,10 +649,10 @@ export default function HomePage() {
 
             {/* Estimator UI mockup card */}
             <div
-              className="rounded-2xl p-8 shadow-[0_20px_60px_rgba(26,61,43,0.2)]"
+              className="rounded-2xl p-8 shadow-[0_20px_60px_rgba(0,64,128,0.2)]"
               style={{
                 background: 'var(--forest-deep)',
-                border: '2px solid rgba(212,175,55,0.3)',
+                border: '2px solid rgba(229,168,0,0.3)',
               }}
             >
               {/* Step indicator */}
@@ -662,10 +662,10 @@ export default function HomePage() {
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
                       style={{
-                        background: n === 2 ? 'var(--gold)' : n < 2 ? 'var(--forest-mid)' : 'rgba(250,247,242,0.1)',
-                        color: n === 2 ? 'var(--charcoal)' : n < 2 ? 'var(--gold)' : 'rgba(250,247,242,0.4)',
+                        background: n === 2 ? 'var(--gold)' : n < 2 ? 'var(--forest-mid)' : 'rgba(255,255,255,0.1)',
+                        color: n === 2 ? 'var(--charcoal)' : n < 2 ? 'var(--gold)' : 'rgba(255,255,255,0.4)',
                         fontFamily: "'Lato', sans-serif",
-                        border: n === 2 ? 'none' : '1px solid rgba(212,175,55,0.2)',
+                        border: n === 2 ? 'none' : '1px solid rgba(229,168,0,0.2)',
                       }}
                     >
                       {n < 2 ? '✓' : n}
@@ -675,7 +675,7 @@ export default function HomePage() {
                         className="h-0.5"
                         style={{
                           width: '100%',
-                          background: n < 2 ? 'var(--gold)' : 'rgba(212,175,55,0.15)',
+                          background: n < 2 ? 'var(--gold)' : 'rgba(229,168,0,0.15)',
                           position: 'absolute',
                         }}
                       />
@@ -688,7 +688,7 @@ export default function HomePage() {
               <div className="text-center mb-6">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                  style={{ background: 'rgba(212,175,55,0.15)', border: '2px solid rgba(212,175,55,0.4)' }}
+                  style={{ background: 'rgba(229,168,0,0.15)', border: '2px solid rgba(229,168,0,0.4)' }}
                 >
                   <Eye size={22} style={{ color: 'var(--gold)' }} />
                 </div>
@@ -698,7 +698,7 @@ export default function HomePage() {
                 >
                   Property Analysis Complete
                 </h3>
-                <p style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.6)', fontSize: '0.85rem' }}>
+                <p style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
                   Satellite imagery analyzed — 92% confidence
                 </p>
               </div>
@@ -714,11 +714,11 @@ export default function HomePage() {
                   <div
                     key={stat.label}
                     className="rounded-lg p-3"
-                    style={{ background: 'rgba(250,247,242,0.06)', border: '1px solid rgba(212,175,55,0.15)' }}
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(229,168,0,0.15)' }}
                   >
                     <div
                       className="text-xs mb-1"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.5)', letterSpacing: '0.08em' }}
+                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}
                     >
                       {stat.label}
                     </div>
@@ -804,14 +804,14 @@ export default function HomePage() {
               <div className="w-12 h-0.5 mb-8" style={{ background: 'var(--gold)' }} />
               <p
                 className="text-lg leading-relaxed mb-6"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.80)', lineHeight: 1.85 }}
+                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.80)', lineHeight: 1.85 }}
               >
                 At Alpine Peak Roofing, we believe your roof is more than protection — it&apos;s peace of mind.
                 Every shingle, every seam, every seal is a commitment to the families we serve.
               </p>
               <p
                 className="text-lg leading-relaxed mb-10"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.65)', lineHeight: 1.85 }}
+                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', lineHeight: 1.85 }}
               >
                 25 years of Colorado roofing has taught us one thing: the pinnacle of this craft is the moment
                 a homeowner walks inside knowing their family is protected for decades to come.
@@ -835,8 +835,8 @@ export default function HomePage() {
                   style={{
                     fontFamily: "'Lato', sans-serif",
                     background: 'transparent',
-                    color: 'rgba(250,247,242,0.85)',
-                    border: '2px solid rgba(250,247,242,0.3)',
+                    color: 'rgba(255,255,255,0.85)',
+                    border: '2px solid rgba(255,255,255,0.3)',
                     letterSpacing: '0.1em',
                   }}
                 >
@@ -856,11 +856,11 @@ export default function HomePage() {
                 <div
                   key={i}
                   className="flex items-start gap-5 p-5 rounded-xl"
-                  style={{ background: 'rgba(250,247,242,0.07)', border: '1px solid rgba(212,175,55,0.15)' }}
+                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(229,168,0,0.15)' }}
                 >
                   <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(212,175,55,0.15)' }}
+                    style={{ background: 'rgba(229,168,0,0.15)' }}
                   >
                     <pillar.icon size={18} style={{ color: 'var(--gold)' }} />
                   </div>
@@ -872,7 +872,7 @@ export default function HomePage() {
                       {pillar.title}
                     </div>
                     <div
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.60)', fontSize: '0.875rem', lineHeight: 1.6 }}
+                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.60)', fontSize: '0.875rem', lineHeight: 1.6 }}
                     >
                       {pillar.desc}
                     </div>
@@ -916,7 +916,7 @@ export default function HomePage() {
                   background: '#FFFFFF',
                   border: '1px solid var(--sandstone-light)',
                   color: 'var(--charcoal-mid)',
-                  boxShadow: '0 2px 8px rgba(107,58,31,0.06)',
+                  boxShadow: '0 2px 8px rgba(0,64,128,0.06)',
                 }}
               >
                 <MapPin size={11} style={{ color: 'var(--cedar)' }} />
@@ -932,7 +932,7 @@ export default function HomePage() {
               background: 'var(--forest-deep)',
               color: 'var(--cream)',
               letterSpacing: '0.1em',
-              boxShadow: '0 8px 24px rgba(26,61,43,0.25)',
+              boxShadow: '0 8px 24px rgba(0,64,128,0.25)',
             }}
           >
             Schedule Free Inspection <ArrowRight size={14} />
@@ -956,7 +956,7 @@ export default function HomePage() {
           </h2>
           <p
             className="text-lg mb-10"
-            style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(250,247,242,0.65)', fontWeight: 300 }}
+            style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}
           >
             Start with a free satellite estimate — no commitment, no pressure.
           </p>
@@ -969,7 +969,7 @@ export default function HomePage() {
                 background: 'var(--gold)',
                 color: 'var(--charcoal)',
                 letterSpacing: '0.1em',
-                boxShadow: '0 8px 24px rgba(212,175,55,0.4)',
+                boxShadow: '0 8px 24px rgba(229,168,0,0.4)',
               }}
             >
               Free Satellite Estimate <ArrowRight size={14} />
@@ -981,7 +981,7 @@ export default function HomePage() {
                 fontFamily: "'Lato', sans-serif",
                 background: 'transparent',
                 color: '#FFFFFF',
-                border: '2px solid rgba(250,247,242,0.3)',
+                border: '2px solid rgba(255,255,255,0.3)',
                 letterSpacing: '0.1em',
               }}
             >

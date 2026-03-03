@@ -143,7 +143,7 @@ export default function PortfolioPage() {
           <SiteImage id="hero_portfolio" fill className="object-cover" priority />
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(26,61,43,0.88) 0%, rgba(15,36,25,0.80) 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.88) 0%, rgba(0,45,90,0.80) 100%)' }}
           />
         </div>
         <div
@@ -189,7 +189,7 @@ export default function PortfolioPage() {
               <div
                 key={label}
                 className="text-center py-8 px-4"
-                style={{ borderRight: '1px solid rgba(212,175,55,0.15)' }}
+                style={{ borderRight: '1px solid rgba(229,168,0,0.15)' }}
               >
                 <div
                   style={{
@@ -207,7 +207,7 @@ export default function PortfolioPage() {
                   style={{
                     fontFamily: "'Lato', sans-serif",
                     fontSize: '0.8rem',
-                    color: 'rgba(250,247,242,0.65)',
+                    color: 'rgba(255,255,255,0.65)',
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
                   }}

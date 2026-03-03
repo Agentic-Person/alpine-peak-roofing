@@ -54,7 +54,7 @@ export default function Navigation() {
       <header
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'shadow-[0_4px_24px_rgba(26,61,43,0.35)]'
+            ? 'shadow-[0_4px_24px_rgba(0,64,128,0.35)]'
             : 'shadow-none'
         }`}
         style={{ background: 'var(--forest-deep)' }}
@@ -66,12 +66,12 @@ export default function Navigation() {
         <div
           className="hidden lg:block border-b"
           style={{
-            background: 'rgba(15,36,25,0.6)',
-            borderColor: 'rgba(212,175,55,0.15)'
+            background: 'rgba(0,45,90,0.6)',
+            borderColor: 'rgba(229,168,0,0.15)'
           }}
         >
           <div className="mx-auto max-w-7xl px-6 flex justify-between items-center py-1.5">
-            <p style={{ color: 'rgba(250,247,242,0.55)', fontSize: '0.72rem', letterSpacing: '0.04em' }}>
+            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.72rem', letterSpacing: '0.04em' }}>
               Denver Metro&apos;s Premier Roofing Specialists — Serving Colorado Since 1999
             </p>
             <div className="flex items-center gap-6">
@@ -96,7 +96,7 @@ export default function Navigation() {
             <Link href="/" className="flex items-center gap-3 flex-shrink-0">
               <div
                 className="relative rounded"
-                style={{ width: 36, height: 36, background: 'rgba(212,175,55,0.12)', border: '1px solid rgba(212,175,55,0.3)' }}
+                style={{ width: 36, height: 36, background: 'rgba(229,168,0,0.12)', border: '1px solid rgba(229,168,0,0.3)' }}
               >
                 <Image
                   src="/images/logo/APR-LOGO-solo.png"
@@ -132,7 +132,7 @@ export default function Navigation() {
                     isActive(item.href) ? 'active' : ''
                   }`}
                   style={{
-                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(250,247,242,0.80)',
+                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(255,255,255,0.80)',
                     fontFamily: "'Lato', sans-serif",
                     fontSize: '0.775rem',
                     fontWeight: 700,
@@ -156,7 +156,7 @@ export default function Navigation() {
                       ? 'active' : ''
                   }`}
                   style={{
-                    color: pathname.startsWith('/ai') ? 'var(--gold)' : 'rgba(250,247,242,0.80)',
+                    color: pathname.startsWith('/ai') ? 'var(--gold)' : 'rgba(255,255,255,0.80)',
                     fontFamily: "'Lato', sans-serif",
                     fontSize: '0.775rem',
                     fontWeight: 700,
@@ -185,7 +185,7 @@ export default function Navigation() {
                   style={{
                     background: 'var(--cream)',
                     border: '1px solid var(--border-primary)',
-                    boxShadow: '0 16px 40px rgba(26,61,43,0.25)',
+                    boxShadow: '0 16px 40px rgba(0,64,128,0.25)',
                   }}
                 >
                   <div style={{ padding: '0.375rem' }}>
@@ -253,7 +253,7 @@ export default function Navigation() {
             {/* Mobile hamburger */}
             <button
               className="lg:hidden p-2 rounded"
-              style={{ color: 'var(--cream)', background: 'rgba(212,175,55,0.1)' }}
+              style={{ color: 'var(--cream)', background: 'rgba(229,168,0,0.1)' }}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -268,13 +268,13 @@ export default function Navigation() {
             className="lg:hidden border-t"
             style={{
               background: 'var(--background-dark)',
-              borderColor: 'rgba(212,175,55,0.2)',
+              borderColor: 'rgba(229,168,0,0.2)',
             }}
           >
             {/* Phone — mobile */}
             <div
               className="flex items-center gap-2 px-5 py-3 border-b"
-              style={{ borderColor: 'rgba(212,175,55,0.15)' }}
+              style={{ borderColor: 'rgba(229,168,0,0.15)' }}
             >
               <Phone size={14} style={{ color: 'var(--gold)' }} />
               <a
@@ -293,8 +293,8 @@ export default function Navigation() {
                   onClick={() => setIsOpen(false)}
                   className="flex items-center px-3 py-3 rounded-md transition-colors"
                   style={{
-                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(250,247,242,0.85)',
-                    background: isActive(item.href) ? 'rgba(212,175,55,0.08)' : 'transparent',
+                    color: isActive(item.href) ? 'var(--gold)' : 'rgba(255,255,255,0.85)',
+                    background: isActive(item.href) ? 'rgba(229,168,0,0.08)' : 'transparent',
                     fontFamily: "'Lato', sans-serif",
                     fontSize: '0.875rem',
                     fontWeight: 600,
@@ -310,7 +310,7 @@ export default function Navigation() {
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-2 px-3 py-3 rounded-md transition-colors"
                 style={{
-                  color: 'rgba(250,247,242,0.85)',
+                  color: 'rgba(255,255,255,0.85)',
                   fontFamily: "'Lato', sans-serif",
                   fontSize: '0.875rem',
                   fontWeight: 600,
@@ -323,7 +323,7 @@ export default function Navigation() {
               </Link>
             </nav>
 
-            <div className="px-5 py-4 border-t" style={{ borderColor: 'rgba(212,175,55,0.15)' }}>
+            <div className="px-5 py-4 border-t" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
               <Link
                 href="/estimator"
                 onClick={() => setIsOpen(false)}

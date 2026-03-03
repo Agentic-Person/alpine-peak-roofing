@@ -10,41 +10,84 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── Mountain Craftsman Core Palette ──────────────────────────────
+        // ── Denver Blue Core Palette ──────────────────────────────────────
+        // Sky Captain (dark navy) — nav, heroes, footers
+        // Azure (medium blue)    — buttons, sections, borders
+        // Cornflower (bright)    — icons, hover, highlights
+        // Amber Gold             — CTAs, stars, trust badges
+        // Warm Slate             — body text, card surfaces
+
+        // New canonical names
+        'sky-captain': {
+          DEFAULT: '#004080',
+          deep:    '#002D5A',
+          mid:     '#005FA3',
+        },
+        azure: {
+          dark:    '#005FA3',
+          DEFAULT: '#0077CC',
+          light:   '#2299EE',
+        },
+        cornflower: {
+          DEFAULT: '#5599FF',
+          light:   '#88BBFF',
+          pale:    '#E0EEFF',
+        },
+        amber: {
+          dark:    '#B88200',
+          DEFAULT: '#E5A800',
+          light:   '#FFD050',
+          pale:    '#FFF3CC',
+        },
+        slate: {
+          dark:    '#2D3A4A',
+          DEFAULT: '#4A5C6A',
+          mid:     '#607D8E',
+          light:   '#A0B4C4',
+          pale:    '#E8EFF4',
+        },
+        ink: {
+          DEFAULT: '#1A2332',
+          mid:     '#2D3E52',
+        },
+        'off-white': '#F0F6FF',
+
+        // ── Legacy names kept for component backward-compat ───────────────
+        // Values now point to Denver Blue equivalents
         forest: {
-          deep:    '#1A3D2B',   // dark forest green — nav, heroes
-          mid:     '#2E6B4A',   // medium green — accents, sections
-          light:   '#4A9B6E',   // lighter green — hover states
-          lighter: '#7DC0A0',   // soft green — backgrounds
-          pale:    '#D0E8DA',   // near-white green — subtle tints
+          deep:    '#004080',   // nav, heroes       (was dark green)
+          mid:     '#0077CC',   // sections, accents (was mid green)
+          light:   '#5599FF',   // hover states      (was light green)
+          lighter: '#88BBFF',   // soft accent       (was softer green)
+          pale:    '#E0EEFF',   // subtle tints      (was pale green)
         },
         cedar: {
-          dark:    '#4A2010',   // very dark brown — deepest
-          DEFAULT: '#6B3A1F',   // warm dark brown — headings
-          mid:     '#9B5A35',   // medium brown
-          light:   '#C4956A',   // sandstone
+          dark:    '#002D5A',   // deepest           (was darkest brown)
+          DEFAULT: '#4A5C6A',   // warm slate        (was warm brown)
+          mid:     '#607D8E',   // slate mid         (was mid brown)
+          light:   '#88BBFF',   // cornflower lt     (was sandstone)
         },
         sandstone: {
-          dark:    '#B5845A',   // deep sandstone
-          DEFAULT: '#C4956A',   // warm sandstone — card backgrounds
-          mid:     '#D9B899',   // mid sandstone
-          light:   '#E8D5BE',   // light sandstone — section backgrounds
-          pale:    '#FAF7F2',   // cream — main background
+          dark:    '#0077CC',   // azure             (was deep sandstone)
+          DEFAULT: '#88BBFF',   // cornflower light  (was warm sandstone)
+          mid:     '#A0B4C4',   // slate light       (was mid sandstone)
+          light:   '#E0EEFF',   // cornflower pale   (was light sandstone)
+          pale:    '#F0F6FF',   // off-white         (was cream)
         },
         gold: {
-          dark:    '#A88B20',   // deep gold — shadows, borders
-          DEFAULT: '#D4AF37',   // mountain gold — CTA, highlights
-          light:   '#F0D060',   // bright gold — hover states
-          pale:    '#FDF0A0',   // very light gold — tints
+          dark:    '#B88200',   // amber dark        (was deep gold)
+          DEFAULT: '#E5A800',   // amber gold        (was mountain gold)
+          light:   '#FFD050',   // amber light       (was bright gold)
+          pale:    '#FFF3CC',   // amber pale        (was very light gold)
         },
         cream: {
-          DEFAULT: '#FAF7F2',   // warm cream — primary background
-          dark:    '#F0EAE0',   // cream dark — secondary background
+          DEFAULT: '#FFFFFF',   // white             (was warm cream)
+          dark:    '#F0F6FF',   // off-white         (was cream dark)
         },
         charcoal: {
-          DEFAULT: '#1C1208',   // near-black warm
-          mid:     '#3D2E1A',   // dark brown-black
-          light:   '#6B5C48',   // warm stone
+          DEFAULT: '#1A2332',   // ink               (was near-black warm)
+          mid:     '#2D3E52',   // ink mid           (was dark brown-black)
+          light:   '#4A5C6A',   // warm slate        (was warm stone)
         },
 
         // ── Semantic CSS-variable tokens ─────────────────────────────────
@@ -71,52 +114,52 @@ const config: Config = {
           forest:    'var(--border-forest)',
         },
         interactive: {
-          primary:        'var(--interactive-primary)',
-          'primary-hover':'var(--interactive-primary-hover)',
-          secondary:      'var(--interactive-secondary)',
-          'secondary-hover':'var(--interactive-secondary-hover)',
-          gold:           'var(--interactive-gold)',
-          'gold-hover':   'var(--interactive-gold-hover)',
+          primary:             'var(--interactive-primary)',
+          'primary-hover':     'var(--interactive-primary-hover)',
+          secondary:           'var(--interactive-secondary)',
+          'secondary-hover':   'var(--interactive-secondary-hover)',
+          gold:                'var(--interactive-gold)',
+          'gold-hover':        'var(--interactive-gold-hover)',
         },
 
-        // ── AI Brand Colors (for /ai-tools page — kept) ─────────────────
+        // ── AI Brand (unified with Denver Blue) ──────────────────────────
         brand: {
-          navy:    '#003399',
-          primary: '#0033CC',
-          blue:    '#0066CC',
-          sky:     '#33CCFF',
-          gold:    '#FFCC00',
+          navy:    '#004080',
+          primary: '#0077CC',
+          blue:    '#0077CC',
+          sky:     '#5599FF',
+          gold:    '#E5A800',
         },
         alpine: {
-          'dark-blue':  '#001d39',
-          'dark-blue-2':'#002246',
-          'dark-blue-3':'#1a3a5c',
-          'dark-blue-4':'#2d4f73',
-          'dark-blue-5':'#44658a',
-          'light-blue': '#e6f2ff',
-          'light-blue-2':'#cce5ff',
-          'light-blue-3':'#99d6ff',
-          'light-blue-4':'#66c7ff',
-          'light-blue-5':'#3399ff',
-          teal:          '#36b0d9',
-          'teal-light':  '#5cc4e5',
-          'teal-dark':   '#2891b3',
-          purple:        '#2D1B69',
-          'purple-light':'#5d4aa1',
-          'purple-dark': '#1e1247',
+          'dark-blue':   '#002D5A',
+          'dark-blue-2': '#004080',
+          'dark-blue-3': '#005FA3',
+          'dark-blue-4': '#0077CC',
+          'dark-blue-5': '#2299EE',
+          'light-blue':  '#E0EEFF',
+          'light-blue-2':'#CCE0FF',
+          'light-blue-3':'#88BBFF',
+          'light-blue-4':'#6699FF',
+          'light-blue-5':'#5599FF',
+          teal:          '#0077CC',
+          'teal-light':  '#5599FF',
+          'teal-dark':   '#004080',
+          purple:        '#002D5A',
+          'purple-light':'#004080',
+          'purple-dark': '#001A3A',
         },
 
-        // ── Status colors ────────────────────────────────────────────────
+        // ── Status colors (universal — unchanged) ────────────────────────
         success: {
-          50:  '#ecfdf5',
-          100: '#d1fae5',
-          light:'#34D399',
+          50:      '#ecfdf5',
+          100:     '#d1fae5',
+          light:   '#34D399',
           DEFAULT: '#00CC00',
-          500: '#10b981',
-          600: '#059669',
-          dark:'#047857',
-          700: '#047857',
-          900: '#064e3b',
+          500:     '#10b981',
+          600:     '#059669',
+          dark:    '#047857',
+          700:     '#047857',
+          900:     '#064e3b',
         },
         warning: {
           50:  '#fffbeb',
@@ -144,25 +187,28 @@ const config: Config = {
       },
 
       backgroundImage: {
-        // Mountain Craftsman gradients
+        // Denver Blue gradients
         'hero-mountain':      'var(--hero-gradient)',
-        'forest-gradient':    'var(--forest-gradient)',
-        'cedar-gradient':     'var(--cedar-gradient)',
+        'navy-gradient':      'var(--navy-gradient)',
+        'azure-gradient':     'var(--azure-gradient)',
         'gold-gradient':      'var(--gold-gradient)',
         'section-gradient':   'var(--section-gradient)',
         'dark-section':       'var(--dark-section-gradient)',
-        // AI brand gradients (kept)
+        // Legacy names (point to new values via CSS vars)
+        'forest-gradient':    'var(--forest-gradient)',
+        'cedar-gradient':     'var(--cedar-gradient)',
+        // AI brand gradients (unified)
         'alpine-gradient':    'var(--alpine-gradient)',
         'hero-gradient':      'var(--hero-gradient-blue)',
         'teal-gradient':      'var(--teal-gradient)',
         'purple-gradient':    'var(--purple-gradient)',
-        'brand-header':       'linear-gradient(to right, #0066CC, #003399)',
-        'brand-header-invert':'linear-gradient(to right, #003399, #0066CC)',
-        'brand-navy-sky':     'linear-gradient(to right, #003399, #33CCFF)',
-        'brand-vertical':     'linear-gradient(to bottom, #0066CC, #003399)',
-        'brand-vertical-invert':'linear-gradient(to bottom, #003399, #0066CC)',
-        'ai-tools':           'linear-gradient(to right, #9333EA, #213FB0)',
-        'ai-tools-horizontal':'linear-gradient(to bottom, #9333EA, #213FB0)',
+        'brand-header':       'linear-gradient(to right, #0077CC, #004080)',
+        'brand-header-invert':'linear-gradient(to right, #004080, #0077CC)',
+        'brand-navy-sky':     'linear-gradient(to right, #004080, #5599FF)',
+        'brand-vertical':     'linear-gradient(to bottom, #0077CC, #004080)',
+        'brand-vertical-invert':'linear-gradient(to bottom, #004080, #0077CC)',
+        'ai-tools':           'linear-gradient(to right, #0077CC, #004080)',
+        'ai-tools-horizontal':'linear-gradient(to bottom, #0077CC, #004080)',
       },
 
       animation: {
@@ -209,12 +255,12 @@ const config: Config = {
       },
 
       boxShadow: {
-        'craftsman':    '0 2px 16px rgba(107,58,31,0.10)',
-        'craftsman-md': '0 6px 24px rgba(107,58,31,0.14)',
-        'craftsman-lg': '0 12px 40px rgba(107,58,31,0.18)',
-        'gold':         '0 8px 24px rgba(212,175,55,0.35)',
-        'gold-lg':      '0 16px 48px rgba(212,175,55,0.5)',
-        'forest':       '0 8px 24px rgba(26,61,43,0.35)',
+        'craftsman':    '0 2px 16px rgba(0,64,128,0.08)',
+        'craftsman-md': '0 6px 24px rgba(0,64,128,0.12)',
+        'craftsman-lg': '0 12px 40px rgba(0,64,128,0.16)',
+        'gold':         '0 8px 24px rgba(229,168,0,0.35)',
+        'gold-lg':      '0 16px 48px rgba(229,168,0,0.50)',
+        'forest':       '0 8px 24px rgba(0,64,128,0.30)',
       },
 
       maxWidth: {

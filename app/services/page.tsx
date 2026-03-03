@@ -93,7 +93,7 @@ export default function ServicesPage() {
           <SiteImage id="hero_services" fill className="object-cover" priority />
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(26,61,43,0.88) 0%, rgba(15,36,25,0.80) 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.88) 0%, rgba(0,45,90,0.80) 100%)' }}
           />
         </div>
         <div
@@ -159,7 +159,7 @@ export default function ServicesPage() {
                   <SiteImage id={svc.imageId} fill className="object-cover" />
                   <div
                     className="absolute inset-0"
-                    style={{ background: `linear-gradient(to top, rgba(15,36,25,0.7) 0%, transparent 55%)` }}
+                    style={{ background: `linear-gradient(to top, rgba(0,45,90,0.7) 0%, transparent 55%)` }}
                   />
                   {/* Icon badge */}
                   <div
