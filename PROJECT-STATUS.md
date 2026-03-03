@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-02
+**Last Updated:** 2026-03-02 (Session 2)
 **Branch:** `feature/blog-automation-and-workflow-optimization`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
@@ -25,7 +25,8 @@
 | `/blog` | ✅ Exists | Blog listing (AI-generated content) |
 | `/blog/[slug]` | ✅ Exists | Individual blog posts |
 | `/estimator` | ✅ Exists | Instant roof estimator tool |
-| `/ai-tools` | ✅ Done | **AI Funnel Page** — "Intelligent Roofing Automations" |
+| `/ai-tools` | ✅ Done | **Top-of-funnel landing** — "The Labor Equation Solved" (hero slideshow, 3-card overview, testimonials) |
+| `/ai-tools/solutions` | ✅ Done | **Deep-dive** — "Intelligent Roofing Automations" (4 feature cards, ROI calculator, CTA) |
 | `/ai-chat` | ✅ Exists | Live chatbot interface |
 | `/faq` | ✅ Exists | FAQ page |
 | `/glossary` | ✅ Exists | Roofing glossary |
@@ -80,17 +81,32 @@ The site was stuck on an AI-marketing-focused homepage ("The Labor Equation Solv
 
 7. **`app/layout.tsx`** — Removed broken `ImageProvider` wrapper
 
-### AI Tools Funnel (PRESERVED at `/ai-tools`)
-The `app/ai-tools/page.tsx` contains the full "Intelligent Roofing Automations" funnel page with:
-- Hero: purple-to-blue gradient, "Intelligent Roofing Automations"
-- 4 feature cards (holographic hover effects):
+### AI Tools Funnel (Two-Page Structure)
+
+**`/ai-tools` — "The Labor Equation Solved"** (top-of-funnel entry)
+- Blue-to-navy gradient hero with auto-playing image slideshow (4 roofer images)
+- Headline: "The Labor Equation Solved" (yellow accent)
+- Tagline: "Agentic workflows solve the toughest equation in roofing..."
+- "Chat with our AI" primary CTA + "See All Tools" secondary CTA
+- 3 tool overview cards (Chatbot, Blog, Estimator) with holographic hover effects
+- Customer testimonials section
+- Each card links to `/ai-tools/solutions`
+
+**`/ai-tools/solutions` — "Intelligent Roofing Automations"** (deep dive)
+- Purple-to-blue gradient hero
+- 4 full feature cards with stats, bullet lists, demo buttons:
   - 🤖 AI-Powered Chatbot System
   - 📝 Automated Blog Content System
   - 🏠 Instant Roof Estimator
   - 🎯 Lead Generation & CRM System
-- ROI Calculator section
+- ROI Business Impact Calculator section
 - Business Inquiry / CTA section
-- **Navigation AI Tools dropdown → "Roofing AI Toolset" links directly here**
+
+**Navigation AI Tools dropdown:**
+- AI Platform Overview → `/ai-tools`
+- All AI Solutions → `/ai-tools/solutions`
+- Instant Roof Estimator → `/estimator`
+- Chat with AI → `/ai-chat`
 
 ---
 
