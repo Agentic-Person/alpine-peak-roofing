@@ -105,7 +105,14 @@ export default function Navigation() {
                   className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors rounded-t-lg"
                 >
                   <Bot className="h-4 w-4 mr-2 text-interactive-primary" />
-                  Roofing AI Toolset
+                  AI Platform Overview
+                </Link>
+                <Link
+                  href="/ai-tools/solutions"
+                  className="flex items-center px-4 py-3 text-sm text-text-secondary hover:bg-background-secondary hover:text-text-primary transition-colors"
+                >
+                  <ArrowRight className="h-4 w-4 mr-2 text-interactive-primary" />
+                  All AI Solutions
                 </Link>
                 <Link
                   href="/estimator"

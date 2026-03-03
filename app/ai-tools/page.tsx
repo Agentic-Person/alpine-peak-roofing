@@ -1,522 +1,321 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { 
-  Bot, 
+import {
+  Check,
+  Star,
+  Bot,
   FileText,
   Calculator,
-  Users,
-  ArrowRight,
-  Check,
-  Phone,
-  ChevronRight,
-  Star,
-  TrendingUp,
-  DollarSign,
-  Clock,
-  Target,
-  Zap,
-  BarChart3,
-  MessageSquare,
-  Eye,
-  Award,
-  Rocket
+  ArrowRight
 } from 'lucide-react'
 
-export default function IntelligentRoofingAutomationsPage() {
+export default function AIToolsLandingPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  const heroImages = [
+    '/images/heroes/hero-roofers-001.png',
+    '/images/heroes/hero-roofers-002.png',
+    '/images/heroes/hero-roofers-003.png',
+    '/images/heroes/hero-roofers-004.png'
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [heroImages.length])
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-[#003399]">
+
       {/* Hero Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-r from-purple-600 to-blue-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
+      <section className="relative py-24 sm:py-36 bg-gradient-to-b from-[#0066CC] to-[#003399] text-white overflow-hidden">
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-              Intelligent Roofing Automations
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-purple-100">
-              See How We Deliver Superior Service Through Innovation
-            </p>
-            <p className="mx-auto mt-4 max-w-3xl text-sm text-purple-200">
-              Alpine Peak Roofing leverages four revolutionary AI-powered automation features to deliver 
-              faster, smarter, and more efficient roofing solutions than any competitor in the market.
-            </p>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* AI Features */}
-      <section className="py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-24">
-            
-            {/* AI-Powered Chatbot System */}
-            <Card className="group relative overflow-hidden border border-white/40 shadow-xl shadow-blue-500/15 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-500 hover:-translate-y-3 transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 p-8
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/12 before:via-transparent before:to-purple-500/12 before:opacity-70 hover:before:opacity-90 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/15 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000"
-              style={{ backgroundColor: '#33CCFF33' }}>
-              {/* Holographic border effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/25 via-purple-400/25 to-blue-400/25 rounded-lg opacity-0 group-hover:opacity-80 transition-opacity duration-500 blur-sm"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div>
-                <div className="flex items-center mb-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 mr-4">
-                    <Bot className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">🤖 AI-Powered Chatbot System</h3>
-                    <p className="text-blue-600 font-semibold">24/7 Customer Engagement & Lead Qualification</p>
-                  </div>
-                </div>
-                
-                <p className="text-black mb-6">
-                  Our intelligent chatbot operates around the clock, engaging with visitors, qualifying leads, 
-                  and scheduling appointments with human-like conversation flow. It understands roofing terminology, 
-                  emergency situations, and customer needs with remarkable accuracy.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">15+</div>
-                    <div className="text-blue-800 text-sm">Qualified leads monthly</div>
-                  </div>
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">85%</div>
-                    <div className="text-blue-800 text-sm">Lead qualification accuracy</div>
-                  </div>
-                </div>
-
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    24/7 availability with instant responses
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Natural conversation flow and roofing expertise
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Automatic lead scoring and CRM integration
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Emergency routing and priority scheduling
-                  </li>
-                </ul>
-
-                <Button className="mr-4" asChild>
-                  <Link href="/ai-chat">Try Live Demo</Link>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-white">
+                <span className="text-yellow-400">The Labor Equation</span>
+                <br />
+                Solved.
+              </h1>
+              <p className="mt-6 text-2xl leading-10 text-blue-100">
+                Agentic workflows solve the toughest equation in roofing—cutting admin costs so you can pay for the best on the roof.
+              </p>
+              <div className="mt-8 flex gap-4 flex-wrap">
+                <Button
+                  className="bg-gradient-to-r from-[#9333EA] to-[#213FB0] text-white border-2 border-yellow-400 hover:border-yellow-300 transition-all duration-300 px-8 py-3 text-lg font-semibold hover:shadow-lg"
+                  onClick={() => {
+                    const chatWidget = document.querySelector('[aria-label*="Chat"]') || document.querySelector('[data-testid*="chat"]');
+                    if (chatWidget) {
+                      (chatWidget as HTMLElement).click();
+                    }
+                  }}
+                >
+                  Chat with our AI
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link href="/ai-chat">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Start Chat Now
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-[#003399] px-8 py-3 text-lg">
+                  <Link href="/ai-tools/solutions">
+                    See All Tools
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
               </div>
+            </div>
+            <div className="relative">
+              {/* Hero Image Slideshow */}
+              <div className="aspect-[4/3] rounded-lg shadow-2xl overflow-hidden relative border-2 border-white backdrop-blur-sm bg-white/5">
+                {heroImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                      index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`Alpine Peak Roofing Professional Project ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
+                  </div>
+                ))}
 
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg overflow-hidden">
-                <Image
-                  src="/images/ai-tools/chatbot-card.png"
-                  alt="AI Chatbot Interface showing conversational flow and automation"
-                  width={600}
-                  height={450}
-                  className="object-cover w-full h-full"
-                />
+                {/* Slideshow indicators */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {heroImages.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentImageIndex
+                          ? 'bg-yellow-400 scale-110'
+                          : 'bg-white/50 hover:bg-white/80'
+                      }`}
+                      onClick={() => setCurrentImageIndex(index)}
+                      aria-label={`View image ${index + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-white/5 opacity-20 pointer-events-none"></div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-24 sm:py-36 bg-gradient-to-b from-[#003399] to-[#0066CC]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: '#FFCC00' }}>
+              Intelligent Automations for Roofing Contractors
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white font-bold">
+              Utilize Agentic workflows to streamline admin, freeing up capital so you can pay your roofing crews what they deserve.
+            </p>
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {/* AI-Powered Chatbot System */}
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/10 before:via-transparent before:to-purple-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-blue-700">
+                  <Bot className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">AI Chatbot Interface</p>
+                </div>
               </div>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <Bot className="h-6 w-6 text-blue-600 mr-2" />
+                  AI-Powered Chatbot System
+                </CardTitle>
+                <CardDescription className="text-blue-600 font-semibold">
+                  24/7 Customer Engagement & Lead Qualification
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Our intelligent chatbot operates around the clock, engaging with visitors, qualifying leads,
+                  and scheduling appointments with human-like conversation flow.
+                </p>
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-blue-600">150+</div>
+                    <div className="text-blue-800 text-xs">Qualified leads monthly</div>
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-blue-600">85%</div>
+                    <div className="text-blue-800 text-xs">Lead qualification accuracy</div>
+                  </div>
+                </div>
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />24/7 availability with instant responses</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Natural conversation flow and roofing expertise</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Automatic lead scoring and CRM integration</li>
+                </ul>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" asChild>
+                  <Link href="/ai-tools/solutions">Learn More</Link>
+                </Button>
+              </CardContent>
             </Card>
 
             {/* Automated Blog Content System */}
-            <Card className="group relative overflow-hidden border border-white/40 shadow-xl shadow-green-500/15 hover:shadow-2xl hover:shadow-green-500/40 transition-all duration-500 hover:-translate-y-3 transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 p-8
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/12 before:via-transparent before:to-emerald-500/12 before:opacity-70 hover:before:opacity-90 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/15 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000"
-              style={{ backgroundColor: '#00CC0033' }}>
-              {/* Holographic border effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400/25 via-emerald-400/25 to-green-400/25 rounded-lg opacity-0 group-hover:opacity-80 transition-opacity duration-500 blur-sm"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="order-2 lg:order-1 aspect-[4/3] bg-gradient-to-br from-green-100 to-green-200 rounded-lg overflow-hidden">
-                <Image
-                  src="/images/ai-tools/autoblog-card.png"
-                  alt="Automated Blog Content Generation System with SEO optimization"
-                  width={600}
-                  height={450}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <div className="order-1 lg:order-2">
-                <div className="flex items-center mb-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mr-4">
-                    <FileText className="h-8 w-8 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">📝 Automated Blog Content System</h3>
-                    <p className="text-green-600 font-semibold">SEO-Optimized Content Generation</p>
-                  </div>
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-green-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/10 before:via-transparent before:to-blue-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 via-blue-400/20 to-green-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              <div className="relative h-48 bg-gradient-to-br from-green-100 to-green-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-green-700">
+                  <FileText className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">Content Generation System</p>
                 </div>
-                
-                <p className="text-black mb-6">
-                  Our content automation system generates high-quality, SEO-optimized blog posts about roofing topics, 
-                  local Denver weather patterns, and industry trends. Each post is designed to rank well and drive 
-                  organic traffic to generate qualified leads.
+              </div>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <FileText className="h-6 w-6 text-green-600 mr-2" />
+                  Automated Blog Content System
+                </CardTitle>
+                <CardDescription className="text-green-600 font-semibold">
+                  SEO-Optimized Content Generation
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Our content automation system generates high-quality, SEO-optimized blog posts about roofing topics,
+                  local Denver weather patterns, and industry trends.
                 </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">$0.72</div>
-                    <div className="text-green-800 text-sm">Cost per blog post</div>
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-green-600">$11.72</div>
+                    <div className="text-green-800 text-xs">Cost per blog post</div>
                   </div>
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">5+</div>
-                    <div className="text-green-800 text-sm">Leads per week average</div>
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-green-600">5+</div>
+                    <div className="text-green-800 text-xs">Leads per post average</div>
                   </div>
                 </div>
-
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    2-3 posts published weekly automatically
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Local Denver SEO optimization
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Industry trend analysis and integration
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Social media distribution automation
-                  </li>
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />2-3 posts published weekly automatically</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Local Denver SEO optimization</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Industry trend analysis and integration</li>
                 </ul>
-
-                <Button className="mr-4" asChild>
-                  <Link href="/blog">View Generated Content</Link>
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white" asChild>
+                  <Link href="/ai-tools/solutions">Learn More</Link>
                 </Button>
-                <Button variant="outline">
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  SEO Performance
-                </Button>
-              </div>
-              </div>
+              </CardContent>
             </Card>
 
             {/* Instant Roof Estimator */}
-            <Card className="group relative overflow-hidden border border-white/40 shadow-xl shadow-orange-500/15 hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-500 hover:-translate-y-3 transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 p-8
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/12 before:via-transparent before:to-red-500/12 before:opacity-70 hover:before:opacity-90 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/15 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000"
-              style={{ backgroundColor: '#FFCC0033' }}>
-              {/* Holographic border effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/25 via-red-400/25 to-orange-400/25 rounded-lg opacity-0 group-hover:opacity-80 transition-opacity duration-500 blur-sm"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div>
-                <div className="flex items-center mb-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 mr-4">
-                    <Calculator className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">🏠 Instant Roof Estimator</h3>
-                    <p className="text-orange-600 font-semibold">AI-Powered Satellite Measurement Technology</p>
-                  </div>
+            <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-2 hover:bg-white/90 h-[690px]
+              before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/10 before:via-transparent before:to-red-500/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500
+              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/5 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 via-red-400/20 to-orange-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm"></div>
+              <div className="relative h-48 bg-gradient-to-br from-orange-100 to-orange-200 rounded-t-lg flex items-center justify-center overflow-hidden">
+                <div className="text-center text-orange-700">
+                  <Calculator className="h-16 w-16 mx-auto mb-2" />
+                  <p className="text-sm font-semibold">Instant Estimator Tool</p>
                 </div>
-                
-                <p className="text-black mb-6">
-                  Revolutionary technology that provides accurate roof estimates in just 3 minutes using Google Maps 
-                  satellite imagery, AI measurement algorithms, and real-time material pricing. Customers get instant 
-                  gratification while we capture high-quality leads.
+              </div>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl flex items-center">
+                  <Calculator className="h-6 w-6 text-orange-600 mr-2" />
+                  Instant Roof Estimator
+                </CardTitle>
+                <CardDescription className="text-orange-600 font-semibold">
+                  AI-Powered Satellite Measurement Technology
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 pb-6">
+                <p className="text-gray-600 text-sm mb-4">
+                  Revolutionary technology that provides accurate roof estimates in just 30 seconds using Google Maps
+                  satellite imagery, AI measurement algorithms, and real-time material pricing.
                 </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">3</div>
-                    <div className="text-orange-800 text-sm">Minutes for estimate</div>
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-orange-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-orange-600">30</div>
+                    <div className="text-orange-800 text-xs">Seconds for estimate</div>
                   </div>
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">95%</div>
-                    <div className="text-orange-800 text-sm">Accuracy rate</div>
+                  <div className="bg-orange-50 p-3 rounded-lg text-center">
+                    <div className="text-xl font-bold text-orange-600">95%</div>
+                    <div className="text-orange-800 text-xs">Accuracy rate</div>
                   </div>
                 </div>
-
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Satellite imagery analysis and measurement
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Real-time material pricing integration
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Multiple material options and pricing tiers
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    PDF generation and email delivery
-                  </li>
+                <ul className="space-y-2 text-xs text-gray-600 mb-4">
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Satellite imagery analysis and measurement</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Real-time material pricing integration</li>
+                  <li className="flex items-center"><Check className="mr-2 h-3 w-3 text-green-500" />Multiple material options and pricing tiers</li>
                 </ul>
-
-                <Button className="mr-4" asChild>
-                  <Link href="/estimator">Try Estimator Now</Link>
+                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white" asChild>
+                  <Link href="/ai-tools/solutions">Learn More</Link>
                 </Button>
-                <Button variant="outline">
-                  <Eye className="mr-2 h-4 w-4" />
-                  View Sample Report
-                </Button>
-              </div>
-
-              <div className="aspect-[4/3] bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg overflow-hidden">
-                <Image
-                  src="/images/ai-tools/roofestimator-card.png"
-                  alt="Instant Roof Estimator with satellite imagery and AI measurement technology"
-                  width={600}
-                  height={450}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              </div>
+              </CardContent>
             </Card>
+          </div>
 
-            {/* Lead Generation & CRM System */}
-            <Card className="group relative overflow-hidden border border-white/40 shadow-xl shadow-purple-500/15 hover:shadow-2xl hover:shadow-purple-500/40 transition-all duration-500 hover:-translate-y-3 transform hover:rotate-x-2 hover:rotate-y-1 perspective-1000 p-8
-              before:absolute before:inset-0 before:bg-gradient-to-br before:from-purple-500/12 before:via-transparent before:to-violet-500/12 before:opacity-70 hover:before:opacity-90 before:transition-opacity before:duration-500
-              after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/15 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-transform after:duration-1000"
-              style={{ backgroundColor: '#9333EA33' }}>
-              {/* Holographic border effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/25 via-violet-400/25 to-purple-400/25 rounded-lg opacity-0 group-hover:opacity-80 transition-opacity duration-500 blur-sm"></div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="order-2 lg:order-1 aspect-[4/3] bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg overflow-hidden">
-                <Image
-                  src="/images/ai-tools/crm-card.png"
-                  alt="Lead Generation and CRM Dashboard with automated pipeline management"
-                  width={600}
-                  height={450}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-
-              <div className="order-1 lg:order-2">
-                <div className="flex items-center mb-6">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 mr-4">
-                    <Users className="h-8 w-8 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">🎯 Lead Generation & CRM System</h3>
-                    <p className="text-purple-600 font-semibold">Automated Pipeline Management</p>
-                  </div>
-                </div>
-                
-                <p className="text-black mb-6">
-                  Complete lead management system with intelligent scoring, automated follow-ups, and pipeline tracking. 
-                  Every interaction is captured, analyzed, and acted upon to maximize conversion rates and customer satisfaction.
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">30%</div>
-                    <div className="text-purple-800 text-sm">Conversion rate</div>
-                  </div>
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">15</div>
-                    <div className="text-purple-800 text-sm">Minute response time</div>
-                  </div>
-                </div>
-
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Multi-channel lead capture and integration
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Intelligent lead scoring and prioritization
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Automated follow-up sequences and reminders
-                  </li>
-                  <li className="flex items-center text-sm text-black">
-                    <Check className="h-4 w-4 text-green-500 mr-2" />
-                    Real-time analytics and performance dashboards
-                  </li>
-                </ul>
-
-                <Button className="mr-4">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  View Dashboard Demo
-                </Button>
-                <Button variant="outline">
-                  <Target className="mr-2 h-4 w-4" />
-                  Lead Scoring Guide
-                </Button>
-              </div>
-              </div>
-            </Card>
+          <div className="text-center mt-12">
+            <Button asChild size="lg" className="bg-yellow-400 text-[#003399] hover:bg-yellow-300 font-bold px-10">
+              <Link href="/ai-tools/solutions">
+                See Full Platform Details
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* ROI Calculator */}
-      <section className="py-16 sm:py-24 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Calculate Your ROI
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              See how these automation tools can transform your roofing business
-            </p>
-          </div>
-
-          <Card className="max-w-4xl mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Business Impact Calculator</CardTitle>
-              <CardDescription>
-                Estimate the potential impact of our AI automation platform on your roofing business
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Input Side */}
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Current Metrics</h3>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Leads</label>
-                    <input type="number" placeholder="50" className="w-full p-3 border border-gray-300 rounded-md" />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Conversion Rate (%)</label>
-                    <input type="number" placeholder="15" className="w-full p-3 border border-gray-300 rounded-md" />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Average Job Value ($)</label>
-                    <input type="number" placeholder="8000" className="w-full p-3 border border-gray-300 rounded-md" />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Marketing Spend ($)</label>
-                    <input type="number" placeholder="5000" className="w-full p-3 border border-gray-300 rounded-md" />
-                  </div>
-                </div>
-
-                {/* Results Side */}
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Projected with AI Automation</h3>
-                  
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">Monthly Leads</span>
-                      <span className="text-xl font-bold text-green-600">150+</span>
-                    </div>
-                    <p className="text-xs text-green-700 mt-1">+200% increase with AI chatbot</p>
-                  </div>
-                  
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">Conversion Rate</span>
-                      <span className="text-xl font-bold text-blue-600">30%</span>
-                    </div>
-                    <p className="text-xs text-blue-700 mt-1">Improved with instant estimates</p>
-                  </div>
-                  
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">Monthly Revenue</span>
-                      <span className="text-xl font-bold text-purple-600">$360K+</span>
-                    </div>
-                    <p className="text-xs text-purple-700 mt-1">3x revenue increase potential</p>
-                  </div>
-                  
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">Marketing ROI</span>
-                      <span className="text-xl font-bold text-orange-600">7200%</span>
-                    </div>
-                    <p className="text-xs text-orange-700 mt-1">Reduced cost per lead</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-8 text-center">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600">
-                  <DollarSign className="mr-2 h-5 w-5" />
-                  Get Detailed ROI Analysis
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Business Inquiry Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      {/* Testimonials */}
+      <section className="py-16 sm:py-24 bg-gradient-to-b from-[#0066CC] to-[#003399]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Interested in These Tools for Your Roofing Business?
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              What Our Customers Say
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-              Transform your roofing business with our proven AI automation platform. 
-              Join industry leaders who are already seeing 3x revenue growth.
-            </p>
-            
-            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <Rocket className="h-6 w-6 text-white" />
+          </div>
+          <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {[
+              {
+                text: "Alpine Peak did an amazing job on our roof replacement. Professional, on time, and the quality is outstanding. Highly recommended!",
+                author: "Sarah Johnson",
+                location: "Denver, CO",
+                rating: 5
+              },
+              {
+                text: "Fast response for our emergency leak repair. They had our roof fixed within hours and prevented major water damage.",
+                author: "Mike Rodriguez",
+                location: "Lakewood, CO",
+                rating: 5
+              },
+              {
+                text: "Great communication throughout the entire process. The instant estimate tool was incredibly accurate and convenient.",
+                author: "Jennifer Chen",
+                location: "Aurora, CO",
+                rating: 5
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-gray-50 rounded-lg p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
                 </div>
-                <h3 className="text-lg font-semibold">Proven Results</h3>
-                <p className="mt-2 text-blue-100 text-sm">150+ leads monthly, 85% accuracy rates</p>
+                <p className="text-gray-700 mb-4">&ldquo;{testimonial.text}&rdquo;</p>
+                <div className="font-semibold text-gray-900">{testimonial.author}</div>
+                <div className="text-gray-600 text-sm">{testimonial.location}</div>
               </div>
-              
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold">Quick Implementation</h3>
-                <p className="mt-2 text-blue-100 text-sm">Full setup and training in 2-4 weeks</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <Award className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold">Ongoing Support</h3>
-                <p className="mt-2 text-blue-100 text-sm">Dedicated support and optimization team</p>
-              </div>
-            </div>
-            
-            <div className="mt-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
-                <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-                  <Phone className="mr-2 h-5 w-5" />
-                  Request Demo
-                </Button>
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600">
-                  <ArrowRight className="mr-2 h-5 w-5" />
-                  Get Pricing
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-8 text-blue-100 text-sm">
-              <p>🏆 Used by 200+ roofing contractors nationwide</p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
+
     </div>
   )
 }
