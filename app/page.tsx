@@ -212,14 +212,14 @@ export default function HomePage() {
       <section className="relative min-h-[88vh] flex flex-col justify-center overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0">
-          <HeroImage id="hero_home" fill className="object-cover" />
+          <SiteImage id="hero_home" fill priority className="object-cover" />
         </div>
 
-        {/* Deep gradient overlay */}
+        {/* Gradient overlay — heavy left (text legibility) → light right (image breathes) */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(135deg, rgba(0,45,90,0.93) 0%, rgba(0,64,128,0.82) 50%, rgba(0,64,128,0.60) 100%)'
+            background: 'linear-gradient(to right, rgba(0,45,90,0.88) 0%, rgba(0,45,90,0.68) 45%, rgba(0,45,90,0.22) 100%)'
           }}
         />
 
