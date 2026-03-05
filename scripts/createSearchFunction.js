@@ -4,8 +4,14 @@
  * Create the semantic search function in Supabase
  */
 
-const SUPABASE_ACCESS_TOKEN = 'sbp_86f37a9af098760663734873dba7ebe6b97ace92';
+const SUPABASE_ACCESS_TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 const PROJECT_ID = 'adueyerxzutuuwtxyage';
+
+if (!SUPABASE_ACCESS_TOKEN) {
+  console.error('❌ Error: SUPABASE_ACCESS_TOKEN environment variable is required');
+  console.error('Set it in your .env.local file or pass it when running this script');
+  process.exit(1);
+}
 
 const searchFunctionSQL = `
 CREATE OR REPLACE FUNCTION search_knowledge_content(

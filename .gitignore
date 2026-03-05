@@ -52,3 +52,4 @@ next-env.d.ts
 
 .vercel
 scripts/vector-db-setup/node_modules/
+.env*.local

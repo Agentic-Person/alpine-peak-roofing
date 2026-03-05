@@ -339,7 +339,23 @@ export class ChatService {
       setTimeout(() => reject(new Error('n8n workflow timeout')), this.REQUEST_TIMEOUT)
     })
 
-    const n8nPromise = n8nClient.processChatMessage(sessionId, message, context)
+    const n8nPromise = fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionId,
+        message,
+        page_context: context.page || 'website',
+        user_data: context.user_info || {},
+        conversation_history: context.conversation_history || []
+      })
+    }).then(async (res) => {
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '')
+        throw new Error(`Chat proxy failed: ${res.status} ${res.statusText} ${txt}`)
+      }
+      return res.json()
+    })
 
     try {
       const result = await Promise.race([n8nPromise, timeoutPromise])
@@ -347,7 +363,7 @@ export class ChatService {
       // Validate and normalize the n8n response format
       if (result && typeof result === 'object') {
         return {
-          response: result.response || result.message || 'I received your message but had trouble generating a response.',
+          response: result.response || result.message || result.reply || 'I received your message but had trouble generating a response.',
           lead_score: result.lead_score || result.leadScore || 0,
           is_hot_lead: result.is_hot_lead || result.isHotLead || false,
           requires_human: result.requires_human || result.requiresHuman || false,
@@ -570,7 +586,7 @@ Conversation Summary:
    */
   private getMockResponse(message: string): ChatResponse {
     const roofingResponses = [
-      "Thanks for your question about roofing! As Sarah from Alpine Peak Roofing, I'd be happy to help. Based on Denver's climate, I'd recommend considering metal roofing or high-quality asphalt shingles for durability against hail and temperature changes.",
+      "Thanks for your question about roofing! I'm Emily from Alpine Peak Roofing, and I'd be happy to help. Based on Denver's climate, I'd recommend considering metal roofing or high-quality asphalt shingles for durability against hail and temperature changes.",
       "That's a great question! For roof replacement in the Denver area, we typically see projects take 1-3 days depending on size and complexity. We always prioritize quality workmanship while working efficiently.",
       "I can definitely help with that! Alpine Peak Roofing offers comprehensive inspections and we work directly with insurance companies for storm damage claims. Would you like to schedule a free inspection?",
       "Excellent question! The signs of hail damage include missing granules, exposed mat, cracked shingles, and damaged gutters. If you suspect hail damage, it's important to have it inspected quickly.",

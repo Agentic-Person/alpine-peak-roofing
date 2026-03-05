@@ -44,7 +44,7 @@ export function ChatHeader({
         <div className="h-8 w-8 rounded-full overflow-hidden border border-white/30">
           <Image
             src="/images/team/ai-agent-avatar-02.png"
-            alt="Sarah - AI Assistant"
+            alt="Emily - AI Assistant"
             width={32}
             height={32}
             className="object-cover object-center w-full h-full"
