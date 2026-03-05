@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-04 (Session 7)
+**Last Updated:** 2026-03-05 (Session 8)
 **Branch:** `feature/blog-automation-and-workflow-optimization`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
@@ -13,7 +13,7 @@
 ### Public Routes
 | Route | Status | Notes |
 |-------|--------|-------|
-| `/` | ✅ Done | **Denver Blue** homepage — hero image visible (H1 gradient fix) |
+| `/` | ✅ Done | Hero: H1 image visible, Oswald headline, chat widget top-right, Colorado branding |
 | `/about` | ✅ Done | Denver Blue, new team photos (T1–T5) |
 | `/services` | ✅ Done | Denver Blue design, new service images (S1–S5) |
 | `/services/residential` | ✅ Exists | |
@@ -197,4 +197,5 @@ ai-tools/       chatbot-card, autoblog-card, roofestimator-card, crm-card .png
 | `959990f` | Mountain Craftsman applied to About, Portfolio, Services |
 | `9081b17` | Process page redesign + CSS system expansion + image prompts |
 | `b17d904` | Denver Blue color system + 40 AI-rendered images implemented |
-| `latest` | Homepage hero — fix invisible image (HeroImage → SiteImage), gradient 0.88→0.22 |
+| `fb35f86` | Homepage hero — fix invisible image (HeroImage → SiteImage), gradient 0.88→0.22 |
+| `latest` | Hero polish — Oswald font, Colorado branding, chat widget moved to top-right |

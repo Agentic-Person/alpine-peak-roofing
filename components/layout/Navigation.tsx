@@ -72,7 +72,7 @@ export default function Navigation() {
         >
           <div className="mx-auto max-w-7xl px-6 flex justify-between items-center py-1.5">
             <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.72rem', letterSpacing: '0.04em' }}>
-              Denver Metro&apos;s Premier Roofing Specialists — Serving Colorado Since 1999
+              The Rocky Mountains&apos; Premier Roofing Specialist — Serving Colorado Since 1989
             </p>
             <div className="flex items-center gap-6">
               <a

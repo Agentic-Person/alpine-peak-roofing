@@ -49,6 +49,7 @@ function ChatWidget({
     initializeSession()
   }, [])
 
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     scrollToBottom()
@@ -245,7 +246,7 @@ function ChatWidget({
 
   // Position classes
   const positionClasses = {
-    'bottom-right': 'bottom-4 right-4',
+    'bottom-right': 'top-[190px] right-[30px]',
     'bottom-left': 'bottom-4 left-4'
   }
 
@@ -258,7 +259,7 @@ function ChatWidget({
 
   if (!isOpen) {
     return (
-      <div className={cn('fixed z-[9999]', positionClasses[position])}>
+      <div className="fixed z-[9999]" style={{ top: '190px', right: '30px' }}>
         {/* Animated gradient border container */}
         <div className="relative">
           {/* Pulsing purple shadow background */}

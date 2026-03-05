@@ -25,7 +25,7 @@ import {
    ────────────────────────────────────────────────────────────────────── */
 const GoogleFonts = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Lato:wght@300;400;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Lato:wght@300;400;700;900&display=swap');
   `}</style>
 )
 
@@ -251,17 +251,19 @@ export default function HomePage() {
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ background: 'var(--gold)' }}
               />
-              Denver&apos;s Premier Roofing Specialists
+              Colorado&apos;s Premier Roofing Specialists
             </div>
 
             {/* Headline */}
             <h1
-              className="font-black leading-none mb-6"
+              className="font-bold leading-none mb-6"
               style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(2.75rem, 6vw, 5.5rem)',
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: 'clamp(3rem, 7vw, 6.5rem)',
                 color: '#FFFFFF',
-                lineHeight: 1.05,
+                lineHeight: 1.0,
+                letterSpacing: '0.01em',
+                textTransform: 'uppercase',
               }}
             >
               Pinnacle of{' '}
@@ -273,7 +275,7 @@ export default function HomePage() {
               </em>
               <br />
               Peak of{' '}
-              <em className="italic" style={{ color: 'var(--sandstone)' }}>
+              <em className="not-italic" style={{ color: 'rgba(255,255,255,0.70)' }}>
                 Performance.
               </em>
             </h1>
@@ -318,6 +320,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
 
         {/* Bottom fade */}
         <div
