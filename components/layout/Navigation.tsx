@@ -240,6 +240,22 @@ export default function Navigation() {
 
             {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-3">
+              <a
+                href="https://calendly.com/jimmy-agenticpersonnel/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-bold transition-colors"
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--amber-gold)',
+                  border: '1px solid rgba(229,168,0,0.4)',
+                  background: 'rgba(229,168,0,0.08)',
+                }}
+              >
+                Analyze My Roof
+              </a>
               <Link
                 href="/estimator"
                 className="btn-gold text-xs"
@@ -323,7 +339,24 @@ export default function Navigation() {
               </Link>
             </nav>
 
-            <div className="px-5 py-4 border-t" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
+            <div className="px-5 py-4 border-t space-y-2.5" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
+              <a
+                href="https://calendly.com/jimmy-agenticpersonnel/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center w-full py-3 rounded-lg font-bold text-sm transition-colors"
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--amber-gold)',
+                  border: '1px solid rgba(229,168,0,0.4)',
+                  background: 'rgba(229,168,0,0.08)',
+                }}
+              >
+                Analyze My Roof
+              </a>
               <Link
                 href="/estimator"
                 onClick={() => setIsOpen(false)}

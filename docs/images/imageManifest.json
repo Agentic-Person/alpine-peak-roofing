@@ -436,7 +436,7 @@
     "estimator_address": {
       "id": "estimator_address",
       "name": "Estimator Step 1 — Address Entry",
-      "path": "/images/estimator/E1_address_entry.jpg",
+      "path": "/images/estimator/E1_v3_address_entry.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Entering your address into the Alpine Peak AI roof estimator tool",
       "dimensions": { "width": 800, "height": 600 },
@@ -448,7 +448,7 @@
     "estimator_satellite": {
       "id": "estimator_satellite",
       "name": "Estimator Step 2 — Satellite Confirmation",
-      "path": "/images/estimator/E2_satellite_confirmation.jpg",
+      "path": "/images/estimator/E2_v4_satellite_confirmation.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Satellite aerial view of your roof for AI measurement and analysis",
       "dimensions": { "width": 800, "height": 600 },
@@ -460,7 +460,7 @@
     "estimator_analysis": {
       "id": "estimator_analysis",
       "name": "Estimator Step 3 — AI Analysis",
-      "path": "/images/estimator/E3_ai_analysis_v2.jpg",
+      "path": "/images/estimator/E3_v4_ai_analysis.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "AI-powered roof analysis detecting damage, measurements, and material needs",
       "dimensions": { "width": 800, "height": 600 },
@@ -472,7 +472,7 @@
     "estimator_materials": {
       "id": "estimator_materials",
       "name": "Estimator Step 4 — Material Selection",
-      "path": "/images/estimator/E4_material_selection.jpg",
+      "path": "/images/estimator/E4_v2_material_selection.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Choosing from premium roofing material options in the instant estimator",
       "dimensions": { "width": 800, "height": 600 },
@@ -484,7 +484,7 @@
     "estimator_delivered": {
       "id": "estimator_delivered",
       "name": "Estimator Step 5 — Estimate Delivered",
-      "path": "/images/estimator/E5_estimate_delivered.jpg",
+      "path": "/images/estimator/E5_v2_estimate_delivered.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Instant detailed roofing estimate delivered to your inbox",
       "dimensions": { "width": 800, "height": 600 },
