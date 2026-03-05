@@ -451,8 +451,8 @@ export default function HomePage() {
         {/* Background image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/portfolio/timber_home_brown_roof.jpg"
-            alt="Alpine Peak Roofing — mountain timber home with premium metal roof"
+            src="/images/heroes/hero-home-001.png"
+            alt="Alpine Peak Roofing — luxury mountain home with dark metal roof at dusk"
             fill
             className="object-cover object-center"
             priority={false}

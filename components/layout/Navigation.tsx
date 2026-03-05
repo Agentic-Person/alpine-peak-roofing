@@ -240,10 +240,8 @@ export default function Navigation() {
 
             {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-3">
-              <a
-                href="https://calendly.com/jimmy-agenticpersonnel/30min"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/estimator"
                 className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-bold transition-colors"
                 style={{
                   fontFamily: "'Lato', sans-serif",
@@ -255,15 +253,15 @@ export default function Navigation() {
                 }}
               >
                 Analyze My Roof
-              </a>
-              <Link
-                href="/estimator"
+              </Link>
+              <a
+                href="tel:9704468995"
                 className="btn-gold text-xs"
                 style={{ fontFamily: "'Lato', sans-serif", padding: '0.5rem 1.25rem' }}
               >
-                Free Estimate
-                <ArrowRight size={13} />
-              </Link>
+                Quick Call
+                <Phone size={13} />
+              </a>
             </div>
 
             {/* Mobile hamburger */}
@@ -340,10 +338,8 @@ export default function Navigation() {
             </nav>
 
             <div className="px-5 py-4 border-t space-y-2.5" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
-              <a
-                href="https://calendly.com/jimmy-agenticpersonnel/30min"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/estimator"
                 onClick={() => setIsOpen(false)}
                 className="flex items-center justify-center w-full py-3 rounded-lg font-bold text-sm transition-colors"
                 style={{
@@ -356,16 +352,16 @@ export default function Navigation() {
                 }}
               >
                 Analyze My Roof
-              </a>
-              <Link
-                href="/estimator"
+              </Link>
+              <a
+                href="tel:9704468995"
                 onClick={() => setIsOpen(false)}
                 className="btn-gold w-full justify-center"
                 style={{ fontFamily: "'Lato', sans-serif" }}
               >
-                Get Free Estimate
-                <ArrowRight size={14} />
-              </Link>
+                Quick Call
+                <Phone size={14} />
+              </a>
             </div>
           </div>
         )}

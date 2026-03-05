@@ -280,9 +280,9 @@
     "service_residential": {
       "id": "service_residential",
       "name": "Residential Roofing Service",
-      "path": "/images/services/S1_residential.jpg",
+      "path": "/images/heroes/hero-home-001.png",
       "placeholder": "/images/placeholders/service-placeholder.svg",
-      "alt": "Professional crew installing premium asphalt shingles on residential home",
+      "alt": "Luxury mountain home with dark metal standing seam roof — Alpine Peak Roofing residential",
       "dimensions": { "width": 800, "height": 600 },
       "category": "service",
       "service_type": "residential",
