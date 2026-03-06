@@ -106,13 +106,15 @@ export async function POST(request: NextRequest) {
     } else {
       // Legacy schema: id, email, name, phone, session_id, lead_score, lead_source, intent, priority
       const fullName = [body.firstName, body.lastName].filter(Boolean).join(' ') || null
+      // session_id might be NOT NULL in legacy schema - provide a fallback
+      const sessionId = body.sessionId || `web-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
       const { data, error } = await supabase
         .from('leads')
         .insert({
           email: body.email,
           name: fullName,
           phone: body.phone,
-          session_id: body.sessionId,
+          session_id: sessionId,
           lead_score: leadScore,
           lead_source: body.source || 'website',
           intent: body.projectType || body.message || null,
