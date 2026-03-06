@@ -40,41 +40,32 @@ export async function GET() {
     })
   }
   
-  // Check leads table schema
+  // Check leads table schema - detect which version is active
   try {
-    const { error } = await supabase
+    // Probe for first_name column (new schema)
+    const { error: probeErr } = await supabase
       .from('leads')
-      .insert({
-        first_name: '__health_check__',
-        email: 'healthcheck@test.invalid'
-      })
-      .select()
-      .single()
+      .select('first_name')
+      .limit(0)
     
-    // Delete the test record if it was created
-    if (!error) {
-      await supabase
-        .from('leads')
-        .delete()
-        .eq('email', 'healthcheck@test.invalid')
-      
+    if (!probeErr) {
       checks.push({
         name: 'leads_schema',
         status: 'healthy',
-        message: 'Schema validated successfully'
+        message: 'Full schema (first_name/last_name columns present)'
       })
-    } else if (error.message.includes('schema cache') || error.message.includes('column')) {
+    } else if (probeErr.message.includes('first_name') || probeErr.message.includes('schema cache')) {
+      // Legacy schema - app handles this gracefully, not a hard failure
       checks.push({
         name: 'leads_schema',
-        status: 'unhealthy',
-        message: `Schema issue: ${error.message}. Run migration 005_fix_leads_columns.sql`
+        status: 'degraded',
+        message: 'Legacy schema active - lead capture works but run migration 005_fix_leads_columns.sql for full features'
       })
     } else {
-      // Other errors (like RLS) don't indicate schema problems
       checks.push({
         name: 'leads_schema',
         status: 'healthy',
-        message: 'Schema appears valid (insert blocked by RLS or constraints)'
+        message: 'Schema appears valid'
       })
     }
   } catch (err) {
