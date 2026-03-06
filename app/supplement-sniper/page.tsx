@@ -91,6 +91,12 @@ export default function SupplementSniperPage() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [demoComplete, setDemoComplete]   = useState(false)
   const [activeGap, setActiveGap]         = useState<number | null>(null)
+  const [modalOpen, setModalOpen]         = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitting, setSubmitting]       = useState(false)
+  const [formData, setFormData]           = useState({
+    name: '', email: '', company: '', claimsPerMonth: '', phone: ''
+  })
   const demoRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -110,6 +116,32 @@ export default function SupplementSniperPage() {
   }
   const handleResetDemo = () => {
     setDemoStarted(false); setCurrentStep(0); setCompletedSteps([]); setDemoComplete(false)
+  }
+
+  const openModal = () => { setModalOpen(true); setSubmitSuccess(false); setFormData({ name: '', email: '', company: '', claimsPerMonth: '', phone: '' }) }
+  const closeModal = () => { setModalOpen(false); setSubmitSuccess(false) }
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    try {
+      await fetch('/api/supplement-sniper/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || undefined,
+          claimsPerMonth: formData.claimsPerMonth,
+          phone: formData.phone || undefined,
+        }),
+      })
+      setSubmitSuccess(true)
+    } catch {
+      setSubmitSuccess(true) // show success even on network error
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -170,12 +202,10 @@ export default function SupplementSniperPage() {
                 size="lg"
                 variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm text-base px-8"
-                asChild
+                onClick={openModal}
               >
-                <Link href="/contact">
-                  <Phone className="mr-2 h-5 w-5" />
-                  Request Early Access
-                </Link>
+                <Phone className="mr-2 h-5 w-5" />
+                Request Early Access
               </Button>
             </div>
           </div>
@@ -643,12 +673,10 @@ export default function SupplementSniperPage() {
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold hover:from-yellow-300 hover:to-orange-400 text-base px-10"
-                asChild
+                onClick={openModal}
               >
-                <Link href="/contact">
-                  <Zap className="mr-2 h-5 w-5" />
-                  Join the Waitlist
-                </Link>
+                <Zap className="mr-2 h-5 w-5" />
+                Join the Waitlist
               </Button>
               <Button
                 size="lg"
@@ -670,6 +698,148 @@ export default function SupplementSniperPage() {
           </div>
         </section>
 
+
+        {/* ── Waitlist Modal ───────────────────────────────────────────────── */}
+        {modalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={(e) => { if (e.target === e.currentTarget) closeModal() }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+          >
+            <div className="relative w-full max-w-lg rounded-2xl border border-white/15 bg-gradient-to-b from-[#1a0533] to-[#001155] shadow-2xl shadow-black/60 p-8">
+              {/* Close button */}
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 text-white/40 hover:text-white/80 transition-colors text-xl leading-none"
+                aria-label="Close modal"
+              >
+                &#x2715;
+              </button>
+
+              {!submitSuccess ? (
+                <>
+                  <div className="mb-6">
+                    <div className="inline-flex items-center gap-2 bg-yellow-400/10 border border-yellow-400/20 rounded-full px-3 py-1 text-xs text-yellow-300 mb-4">
+                      <Zap className="h-3 w-3" />
+                      Limited Early Access
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">Join the Waitlist</h2>
+                    <p className="text-blue-200 text-sm mt-2">
+                      Be first in line when we open access and lock in the founding member rate.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleFormSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-blue-300 mb-1.5">Name <span className="text-yellow-400">*</span></label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
+                          placeholder="Jane Smith"
+                          className="w-full rounded-lg bg-white/8 border border-white/15 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-400/60 focus:bg-white/10 transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-blue-300 mb-1.5">Email <span className="text-yellow-400">*</span></label>
+                        <input
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
+                          placeholder="jane@roofingco.com"
+                          className="w-full rounded-lg bg-white/8 border border-white/15 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-400/60 focus:bg-white/10 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-blue-300 mb-1.5">Company</label>
+                      <input
+                        type="text"
+                        value={formData.company}
+                        onChange={e => setFormData(p => ({ ...p, company: e.target.value }))}
+                        placeholder="Summit Roofing LLC"
+                        className="w-full rounded-lg bg-white/8 border border-white/15 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-400/60 focus:bg-white/10 transition-all"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-blue-300 mb-1.5">Claims per Month <span className="text-yellow-400">*</span></label>
+                      <select
+                        required
+                        value={formData.claimsPerMonth}
+                        onChange={e => setFormData(p => ({ ...p, claimsPerMonth: e.target.value }))}
+                        className="w-full rounded-lg bg-[#0d1a40] border border-white/15 px-4 py-2.5 text-sm text-white focus:outline-none focus:border-yellow-400/60 transition-all appearance-none"
+                      >
+                        <option value="" disabled>Select volume&hellip;</option>
+                        <option value="&lt;25">&lt;25 claims / month</option>
+                        <option value="25-100">25 &ndash; 100 claims / month</option>
+                        <option value="100-300">100 &ndash; 300 claims / month</option>
+                        <option value="300+">300+ claims / month</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-blue-300 mb-1.5">Phone <span className="text-white/30">(optional)</span></label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={e => setFormData(p => ({ ...p, phone: e.target.value }))}
+                        placeholder="(720) 555-0100"
+                        className="w-full rounded-lg bg-white/8 border border-white/15 px-4 py-2.5 text-sm text-white placeholder-white/30 focus:outline-none focus:border-yellow-400/60 focus:bg-white/10 transition-all"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full mt-2 flex items-center justify-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold rounded-lg px-6 py-3 text-sm hover:from-yellow-300 hover:to-orange-400 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {submitting ? (
+                        <><Loader2 className="h-4 w-4 animate-spin" /> Submitting&hellip;</>
+                      ) : (
+                        <><Zap className="h-4 w-4" /> Join the Waitlist</>
+                      )}
+                    </button>
+                  </form>
+
+                  <p className="text-center text-xs text-blue-300/60 mt-4">
+                    No credit card required &middot; Founding member pricing locked in at signup
+                  </p>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20 border border-green-400/30 mb-6">
+                    <CheckCircle2 className="h-8 w-8 text-green-400" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-3">You&apos;re on the list!</h2>
+                  <p className="text-blue-200 text-sm leading-relaxed mb-6">
+                    Check your inbox &mdash; we just sent you a confirmation.
+                    You&apos;ll be among the first to get access and lock in the founding rate.
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <button
+                      onClick={closeModal}
+                      className="w-full rounded-lg bg-white/10 hover:bg-white/15 border border-white/15 text-white text-sm font-medium px-6 py-2.5 transition-all"
+                    >
+                      Close
+                    </button>
+                    <Link
+                      href="/contact"
+                      className="w-full rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-sm font-bold px-6 py-2.5 text-center hover:from-yellow-300 hover:to-orange-400 transition-all"
+                    >
+                      <Phone className="inline mr-1.5 h-4 w-4" />
+                      Schedule a Demo Call
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>{/* /relative z-10 */}
     </div>
   )
