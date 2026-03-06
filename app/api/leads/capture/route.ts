@@ -105,9 +105,18 @@ export async function POST(request: NextRequest) {
       insertError = error
     } else {
       // Legacy schema: id, email, name, phone, session_id, lead_score, lead_source, intent, priority
+      // Constraints: lead_source IN ('text_chatbot'), intent IN ('contact_sharing','general','scheduling')
+      //              priority IN ('high','normal')
       const fullName = [body.firstName, body.lastName].filter(Boolean).join(' ') || null
-      // session_id might be NOT NULL in legacy schema - provide a fallback
       const sessionId = body.sessionId || `web-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+
+      // Map to allowed constraint values
+      const legacyPriority = leadScore >= 70 ? 'high' : 'normal'
+      const legacyIntent: 'contact_sharing' | 'general' | 'scheduling' =
+        body.source?.includes('contact') ? 'contact_sharing' :
+        body.projectType?.includes('schedul') || body.timeline ? 'scheduling' :
+        'general'
+
       const { data, error } = await supabase
         .from('leads')
         .insert({
@@ -116,9 +125,9 @@ export async function POST(request: NextRequest) {
           phone: body.phone,
           session_id: sessionId,
           lead_score: leadScore,
-          lead_source: body.source || 'website',
-          intent: body.projectType || body.message || null,
-          priority
+          lead_source: 'text_chatbot', // only allowed value in current schema
+          intent: legacyIntent,
+          priority: legacyPriority
         })
         .select()
         .single()
