@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "blog:generate": "node scripts/generate-blog-post.mjs",
+    "blog:generate:dry": "node scripts/generate-blog-post.mjs --dry-run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
