@@ -119,6 +119,18 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link href="/financing" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <TrendingUp className="h-3 w-3 mr-2 text-yellow-400" />
+                  Financing
+                </Link>
+              </li>
+              <li>
+                <Link href="/materials" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Settings className="h-3 w-3 mr-2 text-blue-300" />
+                  Materials
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -166,7 +178,37 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/service-areas/central-mountains" className="hover:text-yellow-300 transition-colors flex items-center">
+                <Link href="/locations/breckenridge" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Mountain className="h-3 w-3 mr-2 text-blue-300" />
+                  Breckenridge
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/frisco" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Mountain className="h-3 w-3 mr-2 text-blue-300" />
+                  Frisco
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/silverthorne" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Mountain className="h-3 w-3 mr-2 text-blue-300" />
+                  Silverthorne
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/glenwood-springs" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Mountain className="h-3 w-3 mr-2 text-blue-300" />
+                  Glenwood Springs
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/durango" className="hover:text-yellow-300 transition-colors flex items-center">
+                  <Mountain className="h-3 w-3 mr-2 text-blue-300" />
+                  Durango
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/central-mountains" className="hover:text-yellow-300 transition-colors flex items-center">
                   <Mountain className="h-3 w-3 mr-2 text-blue-300" />
                   Central Mountains
                 </Link>
