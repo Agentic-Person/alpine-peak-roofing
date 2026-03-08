@@ -34,6 +34,8 @@ export default function Navigation() {
     { href: '/about',    label: 'About' },
     { href: '/services', label: 'Services' },
     { href: '/portfolio',label: 'Portfolio' },
+    { href: '/locations',label: 'Locations' },
+    { href: '/financing',label: 'Financing' },
     { href: '/process',  label: 'Our Process' },
     { href: '/blog',     label: 'Blog' },
     { href: '/contact',  label: 'Contact' },
