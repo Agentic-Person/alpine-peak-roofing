@@ -97,10 +97,15 @@ export default function EnhancedBlogGrid({
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      <div className="absolute top-4 left-4">
+                      <div className="absolute top-4 left-4 flex gap-2">
                         <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                           {post.category}
                         </span>
+                        {post.id >= 1000 && (
+                          <span className="bg-emerald-500 text-white px-2 py-1 rounded-full text-xs font-semibold tracking-wide">
+                            NEW
+                          </span>
+                        )}
                       </div>
                     </div>
 
