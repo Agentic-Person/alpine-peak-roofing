@@ -5,6 +5,7 @@ import "./globals.css";
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { Toaster } from 'sonner';
 import ConditionalChatWidget from '@/components/chatbot/ConditionalChatWidget';
 import { 
   PrimaryBusinessSchema,
@@ -89,6 +90,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <ConditionalChatWidget />
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>
