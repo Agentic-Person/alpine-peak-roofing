@@ -246,7 +246,7 @@ export default function MaterialDetail({ params }: { params: { slug: string } })
             Material Not Found
           </h1>
           <Link
-            href="/materials"
+            href="/services#materials"
             className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all"
             style={{ fontFamily: "'Source Sans 3', sans-serif" }}
           >
@@ -275,7 +275,7 @@ export default function MaterialDetail({ params }: { params: { slug: string } })
         <div className="container relative z-10 pb-12 pt-32">
           <motion.div initial="hidden" animate="visible" variants={fadeUp}>
             <Link
-              href="/materials"
+              href="/services#materials"
               className="inline-flex items-center gap-2 text-gold hover:text-gold-light text-sm mb-6 transition-colors"
               style={{ fontFamily: "'Source Sans 3', sans-serif" }}
             >
@@ -381,7 +381,7 @@ export default function MaterialDetail({ params }: { params: { slug: string } })
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  Pros &amp; Cons
+                  Pros & Cons
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-navy-light border border-white/10 p-6">
