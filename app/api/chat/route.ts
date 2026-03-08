@@ -54,7 +54,7 @@ async function callOpenAIFallback(
   })
 
   const reply = completion.choices[0]?.message?.content?.trim() ||
-    "I'm sorry, I had trouble with that. Please call us at (970) 446-8995 for immediate help."
+    "I'm sorry, I had trouble with that. Please call us at (970) 456-1176 for immediate help."
 
   // Simple lead scoring from message intent
   const lower = message.toLowerCase()
@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
       // Absolute last resort
       return NextResponse.json({
         success: true,
-        message: "Thanks for reaching out! Please call us at (970) 446-8995 or we'll follow up with you shortly.",
+        message: "Thanks for reaching out! Please call us at (970) 456-1176 or we'll follow up with you shortly.",
         source: 'static_fallback'
       })
     }

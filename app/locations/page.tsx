@@ -220,7 +220,7 @@ export default function Locations() {
               </Link>
               <Link href="/contact">
                 <button className="px-8 py-4 border-2 border-[#C9A84C] text-[#C9A84C] font-semibold rounded hover:bg-[#C9A84C]/10 transition-colors">
-                  Call (970) 446-8995
+                  Call (970) 456-1176
                 </button>
               </Link>
             </motion.div>

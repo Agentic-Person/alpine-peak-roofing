@@ -87,7 +87,7 @@ export default function TermsPage() {
                     <li>• Chatbot responses are for general guidance and not professional advice</li>
                     <li>• For accurate estimates and technical advice, speak with our human experts</li>
                     <li>• Chatbot availability may vary and is not guaranteed 24/7</li>
-                    <li>• Emergency situations should be reported directly by phone: (970) 446-8995</li>
+                    <li>• Emergency situations should be reported directly by phone: (970) 456-1176</li>
                   </ul>
                 </div>
               </section>
@@ -194,7 +194,7 @@ export default function TermsPage() {
                 </div>
                 <div className="space-y-2 text-gray-700">
                   <p>For questions about these terms or our services:</p>
-                  <p><strong>Phone:</strong> (970) 446-8995</p>
+                  <p><strong>Phone:</strong> (970) 456-1176</p>
                   <p><strong>Email:</strong> info@alpinepeakroofing.com</p>
                   <p><strong>Address:</strong> Alpine Peak Roofing, Denver, Colorado</p>
                   <p><strong>Business Hours:</strong> Monday-Friday 8:00 AM - 6:00 PM</p>

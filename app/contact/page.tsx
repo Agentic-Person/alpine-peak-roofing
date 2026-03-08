@@ -79,7 +79,7 @@ export default function Contact() {
                   <CheckCircle2 size={48} className="text-gold mx-auto mb-4" />
                   <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Thank You!</h3>
                   <p className="text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-                    We've received your request and will be in touch within 24 hours. For immediate assistance, call us at (970) 446-8995.
+                    We've received your request and will be in touch within 24 hours. For immediate assistance, call us at (970) 456-1176.
                   </p>
                 </div>
               ) : (
@@ -170,10 +170,10 @@ export default function Contact() {
               <div className="bg-white/5 border border-white/10 p-6">
                 <h3 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>Get In Touch</h3>
                 <div className="space-y-4">
-                  <a href="tel:9704468995" className="flex items-start gap-3 text-white/60 hover:text-gold transition-colors group">
+                  <a href="tel:9704561176" className="flex items-start gap-3 text-white/60 hover:text-gold transition-colors group">
                     <Phone size={18} className="text-gold mt-0.5 flex-shrink-0" />
                     <div style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-                      <p className="text-sm font-medium text-white group-hover:text-gold transition-colors">(970) 446-8995</p>
+                      <p className="text-sm font-medium text-white group-hover:text-gold transition-colors">(970) 456-1176</p>
                       <p className="text-xs text-white/40">Call or text anytime</p>
                     </div>
                   </a>
@@ -209,7 +209,7 @@ export default function Contact() {
                 <p className="text-sm text-white/60 mb-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
                   Our team is standing by to answer your questions and schedule your free inspection.
                 </p>
-                <a href="tel:9704468995" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all w-full justify-center" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <a href="tel:9704561176" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all w-full justify-center" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
                   <Phone size={16} />
                   CALL NOW
                 </a>

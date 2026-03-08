@@ -545,12 +545,12 @@ export default function MaterialDetail({ params }: { params: { slug: string } })
                     Our roofing experts can help you decide if {material.shortName.toLowerCase()} is the right choice for your home.
                   </p>
                   <a
-                    href="tel:9704468995"
+                    href="tel:9704561176"
                     className="flex items-center justify-center gap-2 border border-gold/40 hover:border-gold text-gold px-6 py-3 text-sm font-semibold tracking-wide transition-all w-full"
                     style={{ fontFamily: "'Source Sans 3', sans-serif" }}
                   >
                     <Phone size={16} />
-                    (970) 446-8995
+                    (970) 456-1176
                   </a>
                 </div>
               </div>

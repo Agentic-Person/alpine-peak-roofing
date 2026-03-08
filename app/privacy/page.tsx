@@ -141,7 +141,7 @@ export default function PrivacyPage() {
                 <div className="space-y-2 text-gray-700">
                   <p>If you have questions about this privacy policy or want to exercise your privacy rights:</p>
                   <p><strong>Email:</strong> privacy@alpinepeakroofing.com</p>
-                  <p><strong>Phone:</strong> (970) 446-8995</p>
+                  <p><strong>Phone:</strong> (970) 456-1176</p>
                   <p><strong>Mail:</strong> Alpine Peak Roofing, Privacy Officer, Denver, CO</p>
                 </div>
               </section>

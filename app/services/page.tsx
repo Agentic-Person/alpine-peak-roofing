@@ -183,8 +183,8 @@ export default function Services() {
                   </li>
                 ))}
               </ul>
-              <a href="tel:9704468995" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-                CALL EMERGENCY LINE: (970) 446-8995
+              <a href="tel:9704561176" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                CALL EMERGENCY LINE: (970) 456-1176
               </a>
             </motion.div>
           </div>

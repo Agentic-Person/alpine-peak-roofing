@@ -152,12 +152,12 @@ export default function Home() {
                 <ChevronRight size={16} />
               </Link>
               <a
-                href="tel:9704468995"
+                href="tel:9704561176"
                 className="inline-flex items-center justify-center gap-2 border-2 border-white/20 hover:border-gold/50 text-white hover:text-gold px-8 py-4 text-sm font-bold tracking-wide transition-all"
                 style={{ fontFamily: "'Source Sans 3', sans-serif" }}
               >
                 <Phone size={16} />
-                (970) 446-8995
+                (970) 456-1176
               </a>
             </motion.div>
           </div>
