@@ -242,12 +242,26 @@ export default function Navigation() {
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/estimator"
+                className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-bold transition-colors"
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--amber-gold)',
+                  border: '1px solid rgba(229,168,0,0.4)',
+                  background: 'rgba(229,168,0,0.08)',
+                }}
+              >
+                Analyze My Roof
+              </Link>
+              <a
+                href="tel:9704468995"
                 className="btn-gold text-xs"
                 style={{ fontFamily: "'Lato', sans-serif", padding: '0.5rem 1.25rem' }}
               >
-                Free Estimate
-                <ArrowRight size={13} />
-              </Link>
+                Quick Call
+                <Phone size={13} />
+              </a>
             </div>
 
             {/* Mobile hamburger */}
@@ -323,16 +337,31 @@ export default function Navigation() {
               </Link>
             </nav>
 
-            <div className="px-5 py-4 border-t" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
+            <div className="px-5 py-4 border-t space-y-2.5" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
               <Link
                 href="/estimator"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center w-full py-3 rounded-lg font-bold text-sm transition-colors"
+                style={{
+                  fontFamily: "'Lato', sans-serif",
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: 'var(--amber-gold)',
+                  border: '1px solid rgba(229,168,0,0.4)',
+                  background: 'rgba(229,168,0,0.08)',
+                }}
+              >
+                Analyze My Roof
+              </Link>
+              <a
+                href="tel:9704468995"
                 onClick={() => setIsOpen(false)}
                 className="btn-gold w-full justify-center"
                 style={{ fontFamily: "'Lato', sans-serif" }}
               >
-                Get Free Estimate
-                <ArrowRight size={14} />
-              </Link>
+                Quick Call
+                <Phone size={14} />
+              </a>
             </div>
           </div>
         )}

@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   MapPin,
 } from 'lucide-react'
+import Image from 'next/image'
 import SiteImage from '@/components/SiteImage'
 
 const mainServices = [
@@ -90,7 +91,7 @@ export default function ServicesPage() {
       {/* ── Hero ── */}
       <section className="relative" style={{ minHeight: '50vh' }}>
         <div className="absolute inset-0">
-          <SiteImage id="hero_services" fill className="object-cover" priority />
+          <Image src="/images/heroes/hero-home-003.png" alt="Alpine Peak Roofing — mountain home with dark metal roof at dusk" fill className="object-cover" priority />
           <div
             className="absolute inset-0"
             style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.88) 0%, rgba(0,45,90,0.80) 100%)' }}

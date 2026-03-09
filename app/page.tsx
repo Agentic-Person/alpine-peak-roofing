@@ -445,10 +445,25 @@ export default function HomePage() {
       </section>
 
       {/* ══════════════════════════════════════════════════════════════
-          BEFORE / AFTER SHOWCASE — dark forest section
+          BEFORE / AFTER SHOWCASE — timber home background
           ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--forest-deep)' }} className="py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+      <section className="relative py-24 overflow-hidden">
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/heroes/hero-home-001.png"
+            alt="Alpine Peak Roofing — luxury mountain home with dark metal roof at dusk"
+            fill
+            className="object-cover object-center"
+            priority={false}
+          />
+        </div>
+        {/* Dark overlay — preserves text legibility while image shows through */}
+        <div
+          className="absolute inset-0"
+          style={{ background: 'rgba(0,32,64,0.82)' }}
+        />
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
           <div className="text-center mb-16">
             <p
               className="text-xs uppercase font-bold tracking-widest mb-3"

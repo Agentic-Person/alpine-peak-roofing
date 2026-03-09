@@ -12,7 +12,7 @@
       "id": "webhook-trigger-publisher-001",
       "name": "Webhook Trigger - Publisher",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1.1,
+      "typeVersion": 2.1,
       "position": [
         220,
         300
@@ -65,7 +65,7 @@
       "id": "openai-social-001",
       "name": "OpenAI - Generate Social Posts",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         620,
         200

@@ -1,0 +1,217 @@
+{
+  "name": "Alpine Peak Text Chatbot - Test Version",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chatbot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-800, 400],
+      "id": "text-webhook-01",
+      "name": "Text Webhook",
+      "webhookId": "alpine-peak-chatbot",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Text input preprocessing\nconst body = $json.body || {};\nconst messageRaw = body.message || $json.message || '';\n\nconst message = String(messageRaw).trim();\nif (!message) {\n  throw new Error('Message is required for text input');\n}\n\n// Email detection\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst emailMatch = message.match(emailPattern);\nconst hasEmail = emailMatch !== null;\nconst userEmail = hasEmail ? emailMatch[0].toLowerCase().trim() : null;\n\n// Intent analysis\nconst lowerMessage = message.toLowerCase();\nlet intent = 'general';\nlet priority = 'normal';\nlet leadScore = 10;\n\nif (hasEmail || lowerMessage.includes('email me')) {\n  intent = 'contact_sharing';\n  priority = 'high';\n  leadScore += 25;\n} else if (lowerMessage.includes('emergency') || lowerMessage.includes('leak')) {\n  intent = 'emergency';\n  priority = 'urgent';\n  leadScore += 50;\n} else if (lowerMessage.includes('estimate') || lowerMessage.includes('quote')) {\n  intent = 'estimation_request';\n  priority = 'high';\n  leadScore += 40;\n} else if (lowerMessage.includes('schedule') || lowerMessage.includes('inspection')) {\n  intent = 'scheduling';\n  priority = 'high';\n  leadScore += 35;\n}\n\nif (hasEmail) leadScore += 25;\nif (message.length > 100) leadScore += 5;\n\nreturn {\n  json: {\n    message: message,\n    session_id: body.session_id || $json.session_id || ('text_session_' + Date.now()),\n    page_context: body.page_context || $json.page_context || 'website',\n    user_data: body.user_data || $json.user_data || {},\n    timestamp: new Date().toISOString(),\n    input_type: 'text',\n    intent: intent,\n    priority: priority,\n    has_email: hasEmail,\n    user_email: userEmail,\n    lead_score: leadScore\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-400, 400],
+      "id": "text-preprocessing",
+      "name": "Text Preprocessing",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "tableName": "knowledge_base",
+        "prompt": "={{ $json.message + ' Denver Colorado roofing contractor services' }}",
+        "topK": 5,
+        "includeDocumentMetadata": true,
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [0, 400],
+      "id": "knowledge-search",
+      "name": "Knowledge Search",
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-credentials-id",
+          "name": "Supabase API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Build RAG context from knowledge search results\nconst originalData = $('Text Preprocessing').item.json;\nconst searchResults = $input.all();\nconst isVoiceInput = originalData.input_type === 'voice';\n\nlet ragContext = '';\nlet knowledgeSources = [];\nlet hasRelevantKnowledge = false;\n\nif (searchResults && searchResults.length > 0) {\n  const validResults = searchResults.filter(r => r.json && r.json.metadata);\n  \n  if (validResults.length > 0) {\n    hasRelevantKnowledge = true;\n    ragContext += '\\n=== ALPINE PEAK ROOFING KNOWLEDGE BASE ===\\n';\n    \n    validResults.slice(0, 3).forEach((result, index) => {\n      const data = result.json;\n      ragContext += '\\n' + (index + 1) + '. ' + (data.metadata && data.metadata.title ? data.metadata.title : 'Knowledge') + '\\n';\n      ragContext += '   Content: ' + data.pageContent + '\\n';\n      \n      knowledgeSources.push({\n        title: data.metadata && data.metadata.title ? data.metadata.title : 'Knowledge',\n        content: data.pageContent\n      });\n    });\n    \n    ragContext += '\\n=== END KNOWLEDGE BASE ===\\n';\n  }\n}\n\n// Build system prompt\nlet systemPrompt = 'You are Sarah, the AI assistant for Alpine Peak Roofing in Denver, Colorado.\\n\\nCOMPANY DETAILS:\\n- Phone: (970) 446-8995\\n- Services: Residential and commercial roofing, repairs, inspections, emergency services\\n- Specialties: High-altitude roofing, hail damage, snow load management\\n- Scheduling: https://calendly.com/alpinepeakroofing/inspection\\n\\nKNOWLEDGE CONTEXT:\\n' + ragContext + '\\n\\nINSTRUCTIONS:\\n- Always be helpful, professional, and knowledgeable about roofing\\n- For emergencies (leaks, storm damage), emphasize calling (970) 446-8995 immediately\\n- For estimates, always ask for email if not provided\\n- For scheduling, provide the Calendly link\\n- Use the knowledge base to provide accurate, detailed answers\\n- If you don\\'t know something, say so and offer to connect them with our team';\n\nif (isVoiceInput) {\n  systemPrompt += '\\n\\n🎙️ VOICE USER: Respond conversationally with shorter, natural sentences. Acknowledge they spoke to you.';\n}\n\nif (originalData.intent === 'emergency') {\n  systemPrompt += '\\n\\n🚨 EMERGENCY: This is urgent! Prioritize safety and immediate action.';\n}\n\nreturn {\n  json: {\n    message: originalData.message,\n    session_id: originalData.session_id,\n    page_context: originalData.page_context,\n    user_data: originalData.user_data,\n    timestamp: originalData.timestamp,\n    input_type: originalData.input_type,\n    intent: originalData.intent,\n    priority: originalData.priority,\n    has_email: originalData.has_email,\n    user_email: originalData.user_email,\n    lead_score: originalData.lead_score,\n    system_prompt: systemPrompt,\n    user_message: originalData.message,\n    knowledge_sources: knowledgeSources,\n    has_knowledge: hasRelevantKnowledge,\n    rag_context: ragContext\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 400],
+      "id": "build-context",
+      "name": "Build Context",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4-turbo",
+          "mode": "list"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.system_prompt }}",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.user_message }}",
+              "role": "user"
+            }
+          ]
+        },
+        "simplify": true,
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 400
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [800, 400],
+      "id": "ai-response",
+      "name": "AI Response",
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials-id",
+          "name": "OpenAI API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Format final response using input data\nconst aiData = $input.item.json;\nconst contextData = $('Build Context').item.json;\nconst isVoiceInput = contextData.input_type === 'voice';\n\nlet aiResponse = 'Thank you for your message.';\nif (aiData.message) {\n  aiResponse = aiData.message;\n} else if (aiData.content) {\n  aiResponse = aiData.content;\n} else if (aiData.choices && aiData.choices[0]) {\n  aiResponse = aiData.choices[0].message.content;\n}\n\n// Generate appropriate CTA\nlet ctaMessage = '';\nswitch (contextData.intent) {\n  case 'emergency':\n    ctaMessage = '🚨 Call (970) 446-8995 immediately!';\n    break;\n  case 'estimation_request':\n    ctaMessage = contextData.has_email ? \n      '📞 I\\'ll send details to ' + contextData.user_email :\n      '📞 What email should I send the estimate to?';\n    break;\n  case 'scheduling':\n    ctaMessage = '📅 Book at https://calendly.com/alpinepeakroofing/inspection';\n    break;\n  default:\n    ctaMessage = contextData.has_email ? \n      'I\\'ll send you more information!' :\n      'What\\'s your email for more details?';\n}\n\nreturn {\n  json: {\n    success: true,\n    response: {\n      message: aiResponse,\n      audio_url: null,\n      type: 'text',\n      timestamp: new Date().toISOString(),\n      session_id: contextData.session_id,\n      cta: ctaMessage\n    },\n    metadata: {\n      input_type: contextData.input_type,\n      intent: contextData.intent,\n      priority: contextData.priority,\n      lead_score: contextData.lead_score,\n      email_captured: contextData.has_email,\n      knowledge_used: contextData.has_knowledge\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 400],
+      "id": "format-response",
+      "name": "Format Response",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1600, 400],
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Text Webhook": {
+      "main": [
+        [
+          {
+            "node": "Text Preprocessing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Preprocessing": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Search": {
+      "main": [
+        [
+          {
+            "node": "Build Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Context": {
+      "main": [
+        [
+          {
+            "node": "AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Response": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "test-version-id",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "text-chatbot-test"
+  },
+  "id": "alpine-peak-text-test",
+  "tags": [
+    {
+      "id": "test-tag",
+      "name": "TEXT-TEST"
+    }
+  ]
+}

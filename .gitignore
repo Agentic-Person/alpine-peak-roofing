@@ -53,3 +53,28 @@ next-env.d.ts
 .vercel
 scripts/vector-db-setup/node_modules/
 .env*.local
+
+# Debug/test/temp scripts (one-off debugging artifacts)
+debug-*.js
+fix-*.js
+check-*.js
+bypass-*.js
+get-*.js
+implement-*.js
+investigate-*.js
+test-*.json
+temp_*.json
+email_*.json
+email-*.json
+# Local Claude settings
+.claude/settings.local.json
+workflow_*.json
+n8n_*.json
+single_*.json
+fixed_*.json
+improved_*.json
+emergency-*.json
+markdown_fix_payload.json
+current_workflow_check.json
+*.sql
+lib/n8n-api.js
