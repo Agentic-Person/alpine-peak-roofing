@@ -339,14 +339,13 @@ export class ChatService {
       setTimeout(() => reject(new Error('n8n workflow timeout')), this.REQUEST_TIMEOUT)
     })
 
-    const n8nPromise = fetch('/api/chat', {
+    const n8nPromise = fetch('/api/agent/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         session_id: sessionId,
         message,
-        page_context: context.page || 'website',
-        user_data: context.user_info || {},
+        channel: 'web',
         conversation_history: context.conversation_history || []
       })
     }).then(async (res) => {

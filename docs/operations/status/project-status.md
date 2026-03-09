@@ -2,7 +2,142 @@
 
 ---
 
-## Last Activity — 2026-03-08
+## Last Activity — 2026-03-08 (session 3)
+
+### Session Summary
+Twilio compliance documentation drafted for Agentic Personnel LLC. Privacy Policy and Terms & Conditions written to satisfy Twilio's 10DLC carrier registration requirements, covering SMS consent, opt-out procedures, AI disclosure, data handling, and third-party processor disclosure. Project status updated, changes committed and pushed to GitHub.
+
+### Work Done
+
+**Twilio Compliance — Privacy Policy (`https://agenticpersonnel.com/privacy`)**
+- Drafted full Privacy Policy for Agentic Personnel LLC (separate site, not APR repo — text provided for copy/paste)
+- Section 2: Itemized data collection (name, email, phone, message content, IP, timestamps, request details)
+- Section 3: Explicit use cases + "We do not sell, rent, or share your personal information with third parties for marketing purposes"
+- Section 4: AI/automated communications disclosure (required for AI agent deployments)
+- Section 5: Named third-party processors: Twilio, ElevenLabs, OpenAI/Anthropic, Supabase — each contractually prohibited from marketing use
+- Section 7: Data retention (24 months)
+- Section 8: Data security
+- Section 9: Children's privacy (COPPA)
+- Section 10: User rights + CCPA disclosure for California residents
+- Effective date included
+
+**Twilio Compliance — Terms & Conditions (`https://agenticpersonnel.com/terms`)**
+- Drafted full Terms & Conditions for Agentic Personnel LLC (text provided for copy/paste)
+- Section 3: Explicit SMS consent language, message types listed, opt-in/opt-out (STOP/HELP), message frequency, rates disclosure, "not a condition of purchase" statement
+- Section 4: AI interaction disclosure — accuracy disclaimer, logging notice
+- Section 5: User responsibilities
+- Section 6: Third-party providers named
+- Section 7–8: Warranty disclaimer + liability limitation
+- Section 10: Privacy Policy incorporated by reference
+- Section 12: Governing law (two blanks left for user to fill: state + county)
+- Both URLs confirmed for 10DLC registration submission
+
+**Twilio compliance checklist confirmed:**
+- ✅ What data is collected — detailed in Privacy Policy Section 2
+- ✅ How it's used — Privacy Policy Section 3
+- ✅ Will not be shared with third parties for marketing — Privacy Policy Section 3 + T&C Section 6
+- ✅ SMS consent mechanism — T&C Section 3
+- ✅ STOP/HELP opt-out — both documents
+- ✅ Message frequency + rates disclosure — both documents
+- ✅ AI disclosure — both documents
+
+### Git & Deployment
+- All session 2 + session 3 changes committed and pushed to `manus-redesign` branch
+
+### Current Blockers / Next Steps
+- [ ] Publish Privacy Policy at `https://agenticpersonnel.com/privacy`
+- [ ] Publish Terms & Conditions at `https://agenticpersonnel.com/terms` — fill in state + county in Section 12 before publishing
+- [ ] Submit both URLs to Twilio during 10DLC campaign registration
+- [ ] Enable OpenClaw gateway in `openclaw.json`: `gateway.http.endpoints.chatCompletions.enabled: true`
+- [ ] Add env vars to VPS `.env.local`: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`, `ELEVENLABS_LLM_SECRET`, `ADMIN_SECRET`
+- [ ] Run knowledge base ingestion: `POST /api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}`
+- [ ] Configure ElevenLabs dashboard: Agent → Model → Custom LLM → URL + `x-elevenlabs-secret` header
+- [ ] Test voice call end-to-end: Twilio → ElevenLabs → `/api/voice/llm` → OpenClaw Emily → RAG → caller
+- [ ] Test web chat: confirm `source: "openclaw:emily"` in response JSON
+
+---
+
+## Previous Activity — 2026-03-08 (session 2)
+
+### Session Summary
+Unified AI agent architecture built from scratch. Emily chat agent wired into OpenClaw (the user's existing agent framework), Supabase RAG connected to both web chat and voice, ElevenLabs Custom LLM endpoint created for phone integration, knowledge base ingestion endpoint built for new website content, security hardened with shared secrets and rate limiting.
+
+### Work Done
+
+**New file: `lib/agent.ts` — Single source of truth for Emily agent**
+- `searchKnowledgeBase()` — embeds user query → semantic search of Supabase `knowledge_base` table → returns top 5 context chunks
+- `getAgentClient()` — auto-detects OpenClaw via env vars; falls back to direct OpenAI if unreachable
+- `buildOpenClawMessages()` — injects RAG context + voice channel hint (no persona — lives in OpenClaw)
+- `buildFallbackMessages()` — full Emily persona + RAG for OpenAI fallback path
+- `runEmilyAgent()` — complete pipeline: RAG → OpenClaw/OpenAI → lead scoring → quick actions; includes automatic OpenAI fallback if OpenClaw unreachable
+- `scoreLead()` — intent detection for emergency / estimate / inspection / insurance / materials
+
+**New file: `lib/rateLimit.ts` — In-memory rate limiter**
+- Sliding window rate limit, 20 req/min per IP
+- Auto-cleanup of expired windows every 5 min
+- `getClientIp()` respects `x-forwarded-for` proxy headers
+
+**New file: `app/api/agent/chat/route.ts` — Unified web chat endpoint**
+- Rate limited (20 req/IP/min), message length capped at 2,000 chars
+- Normalizes widget conversation history format → agent format
+- Returns JSON with response, lead_score, is_hot_lead, next_action, quick_actions, rag_context_used, source
+
+**New file: `app/api/voice/llm/route.ts` — ElevenLabs Custom LLM endpoint**
+- Receives OpenAI-compatible messages from ElevenLabs Conversational AI
+- Verifies `x-elevenlabs-secret` header (shared secret auth)
+- RAG searches Supabase, injects context + voice channel hint to OpenClaw Emily
+- Streams response as SSE (`data: <json>\n\n` ... `data: [DONE]`) — OpenAI format, ElevenLabs compatible
+- Voice responses capped at 120 tokens; no markdown/bullets injected via channel hint
+
+**New file: `app/api/admin/ingest-knowledge/route.ts` — Knowledge base ingestion**
+- Protected by `Authorization: Bearer {ADMIN_SECRET}` header
+- Imports `lib/materials.ts` and `lib/locations.ts` directly; FAQ and service content inlined
+- Generates embeddings via OpenAI `text-embedding-ada-002`
+- Upserts to Supabase `knowledge_base` table (safe to re-run; uses `onConflict: 'id'`)
+- Covers: all roofing materials (full specs, pricing, pros/cons, Colorado considerations), all service area locations (challenges, services, seasonal guide), FAQ (17 Q&As across company/altitude/weather/materials/emergency/pricing/sustainability), services (residential, commercial, emergency, insurance, about, process, financing)
+- GET endpoint shows current row count for health check
+
+**Modified: `app/api/chat/route.ts`**
+- Replaced n8n-first / OpenAI-fallback logic (100+ lines) with simple delegation to `runEmilyAgent()` from `lib/agent.ts`
+- n8n dependency fully removed
+
+**Modified: `lib/chatbot/chatService.ts`**
+- `callN8nWithTimeout()` updated to call `/api/agent/chat` instead of `/api/chat`
+- Passes `channel: 'web'` explicitly
+
+**Modified: `.env.local.example`**
+- Added: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`
+- Added: `ELEVENLABS_LLM_SECRET` (shared secret for voice endpoint auth)
+- Added: `OPENAI_AGENT_MODEL`, `ADMIN_SECRET`
+- Annotated with setup instructions for ElevenLabs dashboard header config
+
+### OpenClaw Integration Details
+- Emily's persona/rules/behavior managed inside OpenClaw — not duplicated in code
+- OpenClaw endpoint: `http://100.124.20.121:18790/v1` (Tailscale IP, VPN-only reachable)
+- OpenAI-compatible API; model name: `openclaw:emily`
+- Session persistence: `user: sessionId` passed in request; OpenClaw routes repeat visitors to same Emily session
+- Emily active on: Telegram (existing), website chat (new), phone/voice (new)
+- All three channels share one agent, one persona, one place to update
+
+### Security Model
+- **OpenClaw ← VPS**: Tailscale VPN only; Bearer token; not publicly reachable
+- **ElevenLabs → `/api/voice/llm`**: `x-elevenlabs-secret` header verification; 401 if missing/wrong
+- **Public → `/api/agent/chat`**: Rate limited 20 req/IP/min; message length cap 2,000 chars
+- **Public → `/api/admin/ingest-knowledge`**: Bearer token (`ADMIN_SECRET`) required
+- Secret generation: `openssl rand -hex 32`
+
+### Current Blockers / Next Steps
+- [ ] Enable OpenClaw gateway in `openclaw.json`: `gateway.http.endpoints.chatCompletions.enabled: true`
+- [ ] Add env vars to VPS `.env.local`: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`, `ELEVENLABS_LLM_SECRET`, `ADMIN_SECRET`
+- [ ] Run knowledge base ingestion: `POST /api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}` — adds all new website content to Supabase RAG
+- [ ] Configure ElevenLabs dashboard: Agent → Model → Custom LLM → URL: `https://yoursite.com/api/voice/llm`; Custom headers: `x-elevenlabs-secret: <value>`
+- [ ] Test voice call end-to-end: Twilio → ElevenLabs → `/api/voice/llm` → OpenClaw Emily → RAG context → response → ElevenLabs TTS → caller
+- [ ] Test web chat: confirm widget hits `/api/agent/chat`, confirm `source: "openclaw:emily"` in response
+- [ ] Confirm `search_knowledge_base` Postgres function exists in Supabase (from `scripts/vector-db-setup/supabase-setup.sql`)
+
+---
+
+## Previous Activity — 2026-03-08 (session 1)
 
 ### Session Summary
 Header/footer polish pass + site-wide phone number correction after Manus redesign went live on Vercel preview.
