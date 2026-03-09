@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Supabase configuration - using environment variables for security
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  throw new Error('Missing Supabase configuration. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
+// Clients are initialized lazily at request time to avoid build-time failures
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Missing Supabase configuration. Check NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
+  }
+  return createClient(url, key)
 }
 
-const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
-
-// Mock OpenAI API key (user needs to provide real one)
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'placeholder_openai_api_key_here'
 
 async function generateQueryEmbedding(text: string): Promise<number[] | null> {
@@ -48,7 +47,7 @@ async function generateQueryEmbedding(text: string): Promise<number[] | null> {
 
 async function searchKnowledgeBase(embedding: number[], limit: number = 3) {
   try {
-    const { data, error } = await supabase.rpc('search_knowledge_content', {
+    const { data, error } = await getSupabase().rpc('search_knowledge_content', {
       query_embedding: embedding,
       similarity_threshold: 0.1, // Low threshold for demo with mock embeddings
       match_count: limit
@@ -132,7 +131,7 @@ export async function POST(request: NextRequest) {
     // Store conversation in database (simplified)
     if (session_id) {
       try {
-        await supabase.from('chat_messages').insert([
+        await getSupabase().from('chat_messages').insert([
           {
             conversation_id: session_id,
             role: 'user',

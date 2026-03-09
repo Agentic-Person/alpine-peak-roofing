@@ -1,1013 +1,621 @@
-import React from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import SiteImage, { HeroImage, PortfolioImagePair } from '@/components/SiteImage'
+"use client";
+/*
+ * DESIGN: Mountain Modernism — Alpine Luxury Editorial
+ * Deep navy + gold accents, Playfair Display headlines, Source Sans 3 body
+ * Magazine-style editorial layout with diagonal dividers and cinematic imagery
+ */
+import Link from "next/link";
+import { images } from "@/lib/images";
+import { materials as materialsData } from "@/lib/materials";
+import { portfolioProjects } from "@/lib/portfolioProjects";
+import { motion } from "framer-motion";
 import {
-  Shield,
-  ArrowRight,
-  Phone,
-  Star,
-  Home,
-  Building,
-  Zap,
-  Award,
-  Clock,
-  Users,
-  MapPin,
-  CheckCircle,
-  ChevronRight,
-  Hammer,
-  Eye
-} from 'lucide-react'
+  ChevronRight, Shield, Award, Clock, Star, Phone,
+  Home as HomeIcon, Building2, Wrench, CheckCircle2,
+  ArrowRight, Users, ThumbsUp, Hammer
+} from "lucide-react";
 
-/* ──────────────────────────────────────────────────────────────────────
-   INLINE FONT IMPORT — loaded once at page level
-   ────────────────────────────────────────────────────────────────────── */
-const GoogleFonts = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&family=Lato:wght@300;400;700;900&display=swap');
-  `}</style>
-)
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0, 0, 0.2, 1] as const }
+  })
+};
 
-/* ──────────────────────────────────────────────────────────────────────
-   STAT CARD
-   ────────────────────────────────────────────────────────────────────── */
-function StatCard({ value, label, icon: Icon }: { value: string; label: string; icon: React.ElementType }) {
+const stats = [
+  { number: "35+", label: "Years of Excellence", icon: Award },
+  { number: "4,200+", label: "Projects Completed", icon: Hammer },
+  { number: "100%", label: "Satisfaction Rate", icon: ThumbsUp },
+  { number: "24/7", label: "Emergency Service", icon: Clock },
+];
+
+const services = [
+  {
+    title: "Residential Roofing",
+    description: "Complete roof replacement, repairs, and new construction for Colorado homes. From architectural shingles to premium metal roofing systems.",
+    icon: HomeIcon,
+    image: images.heroResidential,
+  },
+  {
+    title: "Commercial Roofing",
+    description: "Full-service commercial solutions including TPO, EPDM, modified bitumen, and standing seam metal for businesses across the Rockies.",
+    icon: Building2,
+    image: images.heroCommercial,
+  },
+  {
+    title: "Emergency Repairs",
+    description: "24/7 storm damage response, emergency leak repair, and temporary weatherproofing. We're there when you need us most.",
+    icon: Wrench,
+    image: images.emergencyRepair,
+  },
+];
+
+const testimonials = [
+  {
+    text: "Alpine Peak replaced our entire roof after a hailstorm. Their team was professional, fast, and the quality of work exceeded our expectations. The new roof looks incredible against the mountain backdrop.",
+    author: "Sarah & Michael Thompson",
+    location: "Vail, CO",
+    rating: 5,
+  },
+  {
+    text: "We've used Alpine Peak for three commercial properties now. Their attention to detail and project management is unmatched. They understand the unique challenges of mountain construction.",
+    author: "Robert Chen",
+    location: "Aspen, CO",
+    rating: 5,
+  },
+  {
+    text: "From the initial inspection to the final walkthrough, every step was explained clearly. The financing options made it easy, and the crew left our property spotless. Highly recommend.",
+    author: "Jennifer & David Martinez",
+    location: "Telluride, CO",
+    rating: 5,
+  },
+];
+
+const serviceAreas = [
+  { name: "Aspen", tagline: "Luxury mountain living at 7,908 ft", elevation: "7,908 ft", description: "World-class skiing, Victorian architecture, and celebrity estates. We protect Aspen's most prestigious properties.", image: images.townAspen },
+  { name: "Vail", tagline: "Colorado's premier alpine village", elevation: "8,150 ft", description: "Bavarian-style village with the state's largest ski resort. Expert roofing for luxury chalets and lodges.", image: images.townVail },
+  { name: "Telluride", tagline: "Historic mining town at 8,750 ft", elevation: "8,750 ft", description: "Box canyon setting with dramatic San Juan peaks. Preserving historic roofs and protecting modern mountain homes.", image: images.townTelluride },
+  { name: "Crested Butte", tagline: "Wildflower capital of Colorado", elevation: "8,885 ft", description: "Colorful Victorian storefronts beneath Mt. Crested Butte. Roofing that matches the town's vibrant character.", image: images.townCrestedButte },
+  { name: "Steamboat Springs", tagline: "Home of Champagne Powder", elevation: "6,732 ft", description: "Ranching heritage meets world-class skiing. Durable roofing built for Steamboat's legendary snowfall.", image: images.townSteamboat },
+  { name: "Breckenridge", tagline: "Victorian charm at 9,600 ft", elevation: "9,600 ft", description: "Colorado's highest incorporated city with gold mining roots. Roofing engineered for extreme alpine conditions.", image: images.townBreckenridge },
+  { name: "Winter Park", tagline: "Denver's mountain playground", elevation: "9,040 ft", description: "Gateway to the Continental Divide and Fraser Valley. Protecting homes from heavy snow loads and UV exposure.", image: images.townWinterPark },
+  { name: "Durango", tagline: "Where the Old West lives on", elevation: "6,512 ft", description: "Historic narrow gauge railroad town near Mesa Verde. Roofing that honors Old West character with modern performance.", image: images.townDurango },
+  { name: "Glenwood Springs", tagline: "World's largest hot springs", elevation: "5,761 ft", description: "Home of the iconic Hotel Colorado and Glenwood Canyon. Protecting properties in this natural wonderland.", image: images.townGlenwood },
+  { name: "Frisco", tagline: "Gateway to Summit County", elevation: "9,097 ft", description: "Charming lakeside town on Dillon Reservoir. Hub for five ski resorts with roofing built for mountain living.", image: images.townFrisco },
+  { name: "Silverthorne", tagline: "Summit County's outdoor hub", elevation: "8,790 ft", description: "Blue River fly fishing and Gore Range views. Premium roofing for mountain homes and commercial properties.", image: images.townSilverthorne },
+  { name: "Central Mountains", tagline: "The heart of the Rockies", elevation: "Varies", description: "From mountain passes to alpine valleys, we serve the broader central mountain communities across Colorado.", image: images.townCentralMountains },
+];
+
+export default function Home() {
   return (
-    <div
-      className="flex flex-col items-center text-center p-6 rounded-xl"
-      style={{ background: 'rgba(0,64,128,0.06)', border: '1px solid rgba(229,168,0,0.18)' }}
-    >
-      <div
-        className="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-        style={{ background: 'var(--cedar)', color: 'var(--gold)' }}
-      >
-        <Icon size={20} />
-      </div>
-      <div
-        className="text-3xl font-black mb-1"
-        style={{ fontFamily: "'Playfair Display', serif", color: 'var(--forest-deep)' }}
-      >
-        {value}
-      </div>
-      <div
-        className="text-xs uppercase tracking-widest"
-        style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', letterSpacing: '0.12em' }}
-      >
-        {label}
-      </div>
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────────────────────────────
-   SERVICE FEATURE ROW (alternating left/right)
-   ────────────────────────────────────────────────────────────────────── */
-interface ServiceRowProps {
-  title: string
-  subtitle: string
-  description: string
-  features: string[]
-  href: string
-  imageId: string
-  reverse?: boolean
-  accentColor?: string
-}
-
-function ServiceRow({
-  title, subtitle, description, features, href, imageId, reverse = false, accentColor = 'var(--cedar)'
-}: ServiceRowProps) {
-  const imageBlock = (
-    <div className="relative rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(0,64,128,0.18)]" style={{ aspectRatio: '4/3' }}>
-      <SiteImage id={imageId} fill className="object-cover" />
-      {/* Corner accent */}
-      <div
-        className="absolute bottom-0 left-0 right-0 p-5"
-        style={{ background: 'linear-gradient(to top, rgba(0,45,90,0.85) 0%, transparent 100%)' }}
-      >
-        <Link
-          href={href}
-          className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider transition-colors"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'var(--gold)', letterSpacing: '0.1em' }}
-        >
-          View Our Work <ArrowRight size={14} />
-        </Link>
-      </div>
-    </div>
-  )
-
-  const textBlock = (
-    <div className="flex flex-col justify-center">
-      <div
-        className="text-xs uppercase tracking-widest font-bold mb-3"
-        style={{ fontFamily: "'Lato', sans-serif", color: accentColor, letterSpacing: '0.16em' }}
-      >
-        {subtitle}
-      </div>
-
-      <h2
-        className="text-4xl lg:text-5xl font-black mb-5 leading-tight"
-        style={{ fontFamily: "'Playfair Display', serif", color: 'var(--charcoal)' }}
-      >
-        {title}
-      </h2>
-
-      <div className="w-12 h-0.5 mb-6" style={{ background: 'var(--gold)' }} />
-
-      <p
-        className="text-lg leading-relaxed mb-7"
-        style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', lineHeight: 1.8 }}
-      >
-        {description}
-      </p>
-
-      <ul className="space-y-3 mb-8">
-        {features.map((f, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <CheckCircle size={16} style={{ color: 'var(--forest-mid)', marginTop: 3, flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Lato', sans-serif", color: 'var(--charcoal-mid)', fontSize: '0.9rem' }}>
-              {f}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <Link href={href} className="service-row-cta self-start">
-        Learn More <ArrowRight size={14} />
-      </Link>
-    </div>
-  )
-
-  return (
-    <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center ${reverse ? 'lg:flex lg:flex-row-reverse' : ''}`}>
-      {reverse ? <>{textBlock}{imageBlock}</> : <>{imageBlock}{textBlock}</>}
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────────────────────────────
-   TESTIMONIAL CARD
-   ────────────────────────────────────────────────────────────────────── */
-function TestimonialCard({ text, author, location, project }: {
-  text: string; author: string; location: string; project?: string
-}) {
-  return (
-    <div
-      className="flex flex-col p-8 rounded-2xl"
-      style={{
-        background: '#FFFFFF',
-        border: '1px solid var(--sandstone-light)',
-        boxShadow: '0 4px 24px rgba(0,64,128,0.08)',
-      }}
-    >
-      <div className="flex gap-0.5 mb-5">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} size={16} style={{ color: 'var(--gold)', fill: 'var(--gold)' }} />
-        ))}
-      </div>
-      <blockquote
-        className="flex-1 text-base leading-relaxed mb-6 italic"
-        style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)' }}
-      >
-        &ldquo;{text}&rdquo;
-      </blockquote>
-      <div>
-        <div
-          className="font-bold text-sm"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'var(--charcoal)' }}
-        >
-          {author}
-        </div>
-        {project && (
-          <div
-            className="text-xs mt-0.5 font-semibold uppercase tracking-wide"
-            style={{ fontFamily: "'Lato', sans-serif", color: 'var(--forest-mid)', letterSpacing: '0.08em' }}
-          >
-            {project}
-          </div>
-        )}
-        <div
-          className="flex items-center gap-1 text-xs mt-1"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'var(--text-muted)' }}
-        >
-          <MapPin size={10} />
-          {location}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ──────────────────────────────────────────────────────────────────────
-   HOMEPAGE
-   ────────────────────────────────────────────────────────────────────── */
-export default function HomePage() {
-  return (
-    <div style={{ fontFamily: "'Lato', sans-serif", background: 'var(--cream)' }}>
-      <GoogleFonts />
-
-      {/* ══════════════════════════════════════════════════════════════
-          HERO — full-bleed with deep forest overlay
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[88vh] flex flex-col justify-center overflow-hidden">
-        {/* Background image */}
+    <div>
+      {/* ==================== HERO SECTION ==================== */}
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <SiteImage id="hero_home" fill priority className="object-cover" />
+          <img
+            src={images.heroHome}
+            alt="Luxury mountain home with premium roofing"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.75)] to-[oklch(0.12_0.03_260/0.4)]" />
         </div>
 
-        {/* Gradient overlay — heavy left (text legibility) → light right (image breathes) */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to right, rgba(0,45,90,0.88) 0%, rgba(0,45,90,0.68) 45%, rgba(0,45,90,0.22) 100%)'
-          }}
-        />
-
-        {/* Decorative gold diagonal stripe */}
-        <div
-          className="absolute right-0 top-0 bottom-0 hidden xl:block"
-          style={{
-            width: '1px',
-            background: 'linear-gradient(to bottom, transparent, rgba(229,168,0,0.4), transparent)',
-            right: '12%',
-          }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12 py-24">
+        <div className="relative container py-32 lg:py-40">
           <div className="max-w-3xl">
-            {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest"
-              style={{
-                background: 'rgba(229,168,0,0.15)',
-                border: '1px solid rgba(229,168,0,0.35)',
-                color: 'var(--gold)',
-                letterSpacing: '0.14em',
-                fontFamily: "'Lato', sans-serif",
-              }}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 px-4 py-1.5 mb-6"
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: 'var(--gold)' }}
-              />
-              Colorado&apos;s Premier Roofing Specialists
-            </div>
+              <Shield size={14} className="text-gold" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Licensed &amp; Insured — Serving Colorado Since 1989
+              </span>
+            </motion.div>
 
-            {/* Headline */}
-            <h1
-              className="font-bold leading-none mb-6"
-              style={{
-                fontFamily: "'Oswald', sans-serif",
-                fontSize: 'clamp(3rem, 7vw, 6.5rem)',
-                color: '#FFFFFF',
-                lineHeight: 1.0,
-                letterSpacing: '0.01em',
-                textTransform: 'uppercase',
-              }}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6"
+              style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Pinnacle of{' '}
-              <em
-                className="not-italic"
-                style={{ color: 'var(--gold)' }}
-              >
-                Protection.
-              </em>
-              <br />
-              Peak of{' '}
-              <em className="not-italic" style={{ color: 'rgba(255,255,255,0.70)' }}>
-                Performance.
-              </em>
-            </h1>
+              Colorado&apos;s Premier{" "}
+              <span className="text-gold">Roofing</span>{" "}
+              Specialists
+            </motion.h1>
 
-            {/* Subheadline */}
-            <p
-              className="text-xl leading-relaxed mb-10 max-w-xl"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.80)', fontWeight: 300 }}
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/70 mb-10 max-w-xl leading-relaxed"
+              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
             >
-              Licensed, insured, and trusted by thousands of Colorado homeowners.
-              Expert craftsmanship from consultation to final inspection.
-            </p>
+              Expert craftsmanship meets mountain-grade durability. From Aspen to Telluride, we deliver roofing solutions built to withstand Colorado&apos;s most demanding conditions.
+            </motion.p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
               <Link
-                href="/estimator"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  background: 'var(--gold)',
-                  color: 'var(--charcoal)',
-                  letterSpacing: '0.1em',
-                  boxShadow: '0 8px 24px rgba(229,168,0,0.45)',
-                }}
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20"
+                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
               >
-                Free Satellite Estimate <ArrowRight size={15} />
+                GET YOUR FREE ESTIMATE
+                <ChevronRight size={16} />
               </Link>
               <a
-                href="tel:9704468995"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  background: 'transparent',
-                  color: '#FFFFFF',
-                  border: '2px solid rgba(255,255,255,0.45)',
-                  letterSpacing: '0.1em',
-                }}
+                href="tel:9704561176"
+                className="inline-flex items-center justify-center gap-2 border-2 border-white/20 hover:border-gold/50 text-white hover:text-gold px-8 py-4 text-sm font-bold tracking-wide transition-all"
+                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
               >
-                <Phone size={15} /> (970) 446-8995
+                <Phone size={16} />
+                (970) 456-1176
               </a>
-            </div>
+            </motion.div>
           </div>
         </div>
 
-
-        {/* Bottom fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-32"
-          style={{ background: 'linear-gradient(to top, var(--cream) 0%, transparent 100%)' }}
-        />
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          TRUST STRIP — 4 stats on cream
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--cream)' }} className="py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard value="25+" label="Years of Experience" icon={Award} />
-            <StatCard value="1,200+" label="Projects Completed" icon={Hammer} />
-            <StatCard value="24/7" label="Emergency Service" icon={Clock} />
-            <StatCard value="5★" label="Google Rating" icon={Star} />
-          </div>
+        {/* Diagonal bottom edge */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full" preserveAspectRatio="none">
+            <path d="M0 80L1440 30V80H0Z" fill="oklch(0.12 0.03 260)" />
+          </svg>
         </div>
       </section>
 
-      {/* Gold divider */}
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="h-px" style={{ background: 'linear-gradient(to right, transparent, var(--sandstone), transparent)' }} />
-      </div>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SERVICES — alternating left/right layout
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--cream)' }} className="py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          {/* Section heading */}
-          <div className="text-center mb-20">
-            <p
-              className="text-xs uppercase font-bold tracking-widest mb-3"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'var(--forest-mid)', letterSpacing: '0.2em' }}
-            >
-              What We Do Best
-            </p>
-            <h2
-              className="text-5xl font-black mb-4"
-              style={{ fontFamily: "'Playfair Display', serif", color: 'var(--charcoal)' }}
-            >
-              Our Services
-            </h2>
-            <div className="w-16 h-0.5 mx-auto" style={{ background: 'var(--gold)' }} />
-          </div>
-
-          <div className="space-y-28">
-            {/* 1 — Residential */}
-            <ServiceRow
-              title="Residential Roofing"
-              subtitle="Homes & Estates"
-              description="Your home deserves the finest protection. We handle complete roof replacements, targeted repairs, and seasonal maintenance for homes of every style across the Denver metro — from craftsman bungalows to modern mountain retreats."
-              features={[
-                'Architectural & premium shingle installation',
-                'Full structural assessment with drone imaging',
-                'Storm damage & hail repair specialists',
-                'Lifetime transferable warranty available',
-                'Insurance claim guidance from day one',
-              ]}
-              href="/services/residential"
-              imageId="service_residential"
-              reverse={false}
-              accentColor="var(--cedar)"
-            />
-
-            {/* 2 — Commercial */}
-            <ServiceRow
-              title="Commercial Roofing"
-              subtitle="Business & Industry"
-              description="Minimize downtime and protect your investment with our commercial roofing systems. TPO, EPDM, and modified bitumen installations for flat and low-slope roofs — completed efficiently to keep your business running."
-              features={[
-                'TPO, EPDM & modified bitumen systems',
-                'Flat & low-slope specialty installation',
-                'Scheduled maintenance programs',
-                '20-year commercial warranty',
-                'Minimal business disruption protocols',
-              ]}
-              href="/services/commercial"
-              imageId="service_commercial"
-              reverse={true}
-              accentColor="var(--forest-mid)"
-            />
-
-            {/* 3 — Emergency */}
-            <ServiceRow
-              title="Emergency Repairs"
-              subtitle="24/7 Storm Response"
-              description="When disaster strikes, every minute counts. Our rapid-response team is on call around the clock to stop leaks, secure your structure, and begin repairs before additional damage occurs — protecting your home and your peace of mind."
-              features={[
-                '2-hour emergency response guarantee',
-                'Temporary protective covering installed immediately',
-                'Insurance adjuster coordination',
-                'Full documentation for claims',
-                'Complete repair follow-through',
-              ]}
-              href="/services/emergency"
-              imageId="service_emergency"
-              reverse={false}
-              accentColor="var(--gold-dark)"
-            />
-          </div>
-
-          <div className="text-center mt-20">
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-              style={{
-                fontFamily: "'Lato', sans-serif",
-                background: 'transparent',
-                color: 'var(--forest-deep)',
-                border: '2px solid var(--forest-deep)',
-                letterSpacing: '0.1em',
-              }}
-            >
-              View All Services <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          BEFORE / AFTER SHOWCASE — timber home background
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="relative py-24 overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/heroes/hero-home-001.png"
-            alt="Alpine Peak Roofing — luxury mountain home with dark metal roof at dusk"
-            fill
-            className="object-cover object-center"
-            priority={false}
-          />
-        </div>
-        {/* Dark overlay — preserves text legibility while image shows through */}
-        <div
-          className="absolute inset-0"
-          style={{ background: 'rgba(0,32,64,0.82)' }}
-        />
-        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-16">
-            <p
-              className="text-xs uppercase font-bold tracking-widest mb-3"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'var(--gold)', letterSpacing: '0.2em' }}
-            >
-              Our Portfolio
-            </p>
-            <h2
-              className="text-5xl font-black mb-4"
-              style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
-            >
-              Before & After
-            </h2>
-            <div className="w-16 h-0.5 mx-auto" style={{ background: 'var(--gold)' }} />
-            <p
-              className="mt-6 text-lg max-w-xl mx-auto"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}
-            >
-              Real projects. Real results. See what a complete Alpine Peak transformation looks like.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Project card 1 */}
-            {[
-              {
-                title: 'Victorian Home — Highlands Ranch',
-                material: 'Premium Architectural Shingles',
-                area: '2,800 sq ft',
-                id: 'portfolio_victorian'
-              },
-              {
-                title: 'Commercial Office — Denver CBD',
-                material: 'TPO Membrane System',
-                area: '8,400 sq ft',
-                id: 'portfolio_modern_metal'
-              }
-            ].map((project, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl overflow-hidden"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(229,168,0,0.2)' }}
+      {/* ==================== STATS BAR ==================== */}
+      <section className="bg-navy-dark py-12 relative z-10">
+        <div className="container">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x divide-white/10">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={fadeUp}
+                className="text-center px-6"
               >
-                {/* Before / After image pair */}
-                <div className="relative" style={{ aspectRatio: '16/9' }}>
-                  <SiteImage id={project.id} fill className="object-cover" />
-                  {/* Before/after label */}
-                  <div
-                    className="absolute inset-0 flex"
-                    style={{ pointerEvents: 'none' }}
-                  >
-                    <div
-                      className="flex-1 flex items-start p-4"
-                      style={{ background: 'linear-gradient(to bottom right, rgba(0,64,128,0.7), transparent)' }}
-                    >
-                      <span
-                        className="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded"
-                        style={{
-                          fontFamily: "'Lato', sans-serif",
-                          background: 'rgba(0,64,128,0.85)',
-                          color: '#fff',
-                          letterSpacing: '0.12em'
-                        }}
-                      >
-                        Before
-                      </span>
-                    </div>
-                    <div
-                      className="flex-1 flex items-start justify-end p-4"
-                      style={{ background: 'linear-gradient(to bottom left, rgba(0,64,128,0.7), transparent)' }}
-                    >
-                      <span
-                        className="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded"
-                        style={{
-                          fontFamily: "'Lato', sans-serif",
-                          background: 'rgba(0,64,128,0.85)',
-                          color: 'var(--gold)',
-                          letterSpacing: '0.12em'
-                        }}
-                      >
-                        After
-                      </span>
-                    </div>
-                  </div>
+                <stat.icon size={24} className="text-gold mx-auto mb-3" />
+                <div className="text-3xl md:text-4xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  {stat.number}
                 </div>
-                <div className="p-6">
-                  <h3
-                    className="text-xl font-bold mb-2"
-                    style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
-                  >
-                    {project.title}
-                  </h3>
-                  <div className="flex items-center gap-4">
-                    <span
-                      className="text-xs uppercase tracking-wider"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'var(--sandstone)', letterSpacing: '0.1em' }}
-                    >
-                      {project.material}
-                    </span>
-                    <span style={{ color: 'rgba(229,168,0,0.4)' }}>·</span>
-                    <span
-                      className="text-xs"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.5)' }}
-                    >
-                      {project.area}
-                    </span>
-                  </div>
+                <div className="text-xs uppercase tracking-[0.15em] text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  {stat.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-
-          <div className="text-center mt-12">
-            <Link
-              href="/portfolio"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-              style={{
-                fontFamily: "'Lato', sans-serif",
-                background: 'var(--gold)',
-                color: 'var(--charcoal)',
-                letterSpacing: '0.1em',
-                boxShadow: '0 8px 24px rgba(229,168,0,0.35)',
-              }}
-            >
-              View Full Portfolio <ArrowRight size={14} />
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          AI ESTIMATOR TEASER — sandstone section
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--sandstone-light)' }} className="py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Text */}
-            <div>
-              <p
-                className="text-xs uppercase font-bold tracking-widest mb-3"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'var(--cedar)', letterSpacing: '0.2em' }}
-              >
-                Powered by AI
-              </p>
-              <h2
-                className="text-5xl font-black mb-5 leading-tight"
-                style={{ fontFamily: "'Playfair Display', serif", color: 'var(--charcoal)' }}
-              >
-                Your Roof Estimate <em className="italic" style={{ color: 'var(--forest-mid)' }}>in 30 Seconds</em>
-              </h2>
-              <div className="w-12 h-0.5 mb-6" style={{ background: 'var(--gold)' }} />
-              <p
-                className="text-lg leading-relaxed mb-8"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', lineHeight: 1.8 }}
-              >
-                Enter your address and our satellite imagery AI maps your exact roof dimensions, pitch,
-                and complexity — giving you an accurate estimate before we even set foot on your property.
-              </p>
-
-              {/* Steps preview */}
-              <div className="space-y-3 mb-10">
-                {[
-                  { n: '01', label: 'Enter your address' },
-                  { n: '02', label: 'AI maps your roof via satellite' },
-                  { n: '03', label: 'Select your materials' },
-                  { n: '04', label: 'Receive itemized estimate' },
-                  { n: '05', label: 'Schedule free site visit' },
-                ].map(step => (
-                  <div key={step.n} className="flex items-center gap-4">
-                    <span
-                      className="text-xs font-black"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'var(--gold-dark)', minWidth: 24 }}
-                    >
-                      {step.n}
-                    </span>
-                    <div className="flex-1 h-px" style={{ background: 'var(--border-primary)' }} />
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'var(--charcoal-mid)' }}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="/estimator"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  background: 'var(--forest-deep)',
-                  color: 'var(--cream)',
-                  letterSpacing: '0.1em',
-                  boxShadow: '0 8px 24px rgba(0,64,128,0.3)',
-                }}
-              >
-                Get My Free Estimate <ArrowRight size={14} />
-              </Link>
-            </div>
-
-            {/* Estimator UI mockup card */}
-            <div
-              className="rounded-2xl p-8 shadow-[0_20px_60px_rgba(0,64,128,0.2)]"
-              style={{
-                background: 'var(--forest-deep)',
-                border: '2px solid rgba(229,168,0,0.3)',
-              }}
-            >
-              {/* Step indicator */}
-              <div className="flex items-center justify-between mb-8">
-                {[1,2,3,4,5].map(n => (
-                  <div key={n} className="flex flex-col items-center gap-1.5">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                      style={{
-                        background: n === 2 ? 'var(--gold)' : n < 2 ? 'var(--forest-mid)' : 'rgba(255,255,255,0.1)',
-                        color: n === 2 ? 'var(--charcoal)' : n < 2 ? 'var(--gold)' : 'rgba(255,255,255,0.4)',
-                        fontFamily: "'Lato', sans-serif",
-                        border: n === 2 ? 'none' : '1px solid rgba(229,168,0,0.2)',
-                      }}
-                    >
-                      {n < 2 ? '✓' : n}
-                    </div>
-                    {n < 5 && (
-                      <div
-                        className="h-0.5"
-                        style={{
-                          width: '100%',
-                          background: n < 2 ? 'var(--gold)' : 'rgba(229,168,0,0.15)',
-                          position: 'absolute',
-                        }}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Mock content */}
-              <div className="text-center mb-6">
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4"
-                  style={{ background: 'rgba(229,168,0,0.15)', border: '2px solid rgba(229,168,0,0.4)' }}
-                >
-                  <Eye size={22} style={{ color: 'var(--gold)' }} />
-                </div>
-                <h3
-                  className="text-xl font-bold mb-1"
-                  style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
-                >
-                  Property Analysis Complete
-                </h3>
-                <p style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
-                  Satellite imagery analyzed — 92% confidence
-                </p>
-              </div>
-
-              {/* Mock stats */}
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: 'Total Area', value: '2,450 sq ft' },
-                  { label: 'Roof Pitch', value: '6/12' },
-                  { label: 'Ridge Lines', value: '120 ft' },
-                  { label: 'Complexity', value: 'Moderate' },
-                ].map(stat => (
-                  <div
-                    key={stat.label}
-                    className="rounded-lg p-3"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(229,168,0,0.15)' }}
-                  >
-                    <div
-                      className="text-xs mb-1"
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.5)', letterSpacing: '0.08em' }}
-                    >
-                      {stat.label}
-                    </div>
-                    <div
-                      className="font-bold"
-                      style={{ fontFamily: "'Playfair Display', serif", color: 'var(--gold)', fontSize: '1rem' }}
-                    >
-                      {stat.value}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          TESTIMONIALS — cream section
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--cream)' }} className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-16">
-            <p
-              className="text-xs uppercase font-bold tracking-widest mb-3"
-              style={{ fontFamily: "'Lato', sans-serif", color: 'var(--forest-mid)', letterSpacing: '0.2em' }}
-            >
-              Customer Stories
-            </p>
-            <h2
-              className="text-5xl font-black mb-4"
-              style={{ fontFamily: "'Playfair Display', serif", color: 'var(--charcoal)' }}
-            >
-              What Colorado Homeowners Say
+      {/* ==================== SERVICES SECTION ==================== */}
+      <section className="bg-navy py-24 relative">
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp}
+            custom={0}
+            className="max-w-2xl mb-16"
+          >
+            <div className="gold-line mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Our Expertise
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Comprehensive Roofing Solutions
             </h2>
-            <div className="w-16 h-0.5 mx-auto" style={{ background: 'var(--gold)' }} />
-          </div>
+            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              From residential homes to commercial properties, we provide the full spectrum of roofing services with unmatched quality and professionalism.
+            </p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <TestimonialCard
-              text="Alpine Peak did an incredible job on our roof replacement. Professional, on time, and the quality is outstanding. Best contractor experience I've ever had."
-              author="Sarah Johnson"
-              location="Denver, CO"
-              project="Full Roof Replacement"
-            />
-            <TestimonialCard
-              text="Fast response for our emergency leak repair. They had our roof fixed within hours and prevented major water damage to our home. Truly life savers."
-              author="Mike Rodriguez"
-              location="Lakewood, CO"
-              project="Emergency Storm Repair"
-            />
-            <TestimonialCard
-              text="Great communication throughout the entire process. Fair pricing, excellent workmanship, and they cleaned up perfectly when finished. Couldn't be happier."
-              author="Jennifer Chen"
-              location="Aurora, CO"
-              project="Commercial TPO System"
-            />
+          <div className="grid md:grid-cols-3 gap-6">
+            {services.map((service, i) => (
+              <motion.div
+                key={service.title}
+                custom={i + 1}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={fadeUp}
+              >
+                <Link href="/services" className="group block relative overflow-hidden h-[420px]">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.95)] via-[oklch(0.10_0.03_260/0.5)] to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <service.icon size={28} className="text-gold mb-3" />
+                    <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-white/60 mb-4 line-clamp-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      {service.description}
+                    </p>
+                    <span className="inline-flex items-center gap-1 text-gold text-sm font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      Learn More <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          PHILOSOPHY — cedar / dark section with left-right split
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--cedar)' }} className="py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: text */}
-            <div>
-              <p
-                className="text-xs uppercase font-bold tracking-widest mb-3"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'var(--gold)', letterSpacing: '0.2em' }}
-              >
-                Our Philosophy
-              </p>
-              <h2
-                className="text-5xl font-black mb-5 leading-tight"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
-              >
-                Built on Trust,<br />
-                <em className="italic" style={{ color: 'var(--gold)' }}>Sealed with Craft</em>
+      {/* ==================== WHY CHOOSE US ==================== */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={images.inspection} alt="Professional roof inspection" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.95)] via-[oklch(0.12_0.03_260/0.85)] to-[oklch(0.12_0.03_260/0.7)]" />
+        </div>
+        <div className="relative container">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={fadeUp}
+              custom={0}
+            >
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Why Alpine Peak
+              </span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Built Different. <br />
+                <span className="text-gold">Built to Last.</span>
               </h2>
-              <div className="w-12 h-0.5 mb-8" style={{ background: 'var(--gold)' }} />
-              <p
-                className="text-lg leading-relaxed mb-6"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.80)', lineHeight: 1.85 }}
-              >
-                At Alpine Peak Roofing, we believe your roof is more than protection — it&apos;s peace of mind.
-                Every shingle, every seam, every seal is a commitment to the families we serve.
+              <p className="text-lg text-white/60 mb-8" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                For over three decades, Alpine Peak Roofing has set the standard for roofing excellence in Colorado. Our commitment to quality craftsmanship, premium materials, and exceptional customer service has earned us the trust of thousands of homeowners and businesses across the Rocky Mountains.
               </p>
-              <p
-                className="text-lg leading-relaxed mb-10"
-                style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', lineHeight: 1.85 }}
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide"
+                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
               >
-                25 years of Colorado roofing has taught us one thing: the pinnacle of this craft is the moment
-                a homeowner walks inside knowing their family is protected for decades to come.
-              </p>
-              <div className="flex gap-4">
-                <Link
-                  href="/about"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    background: 'var(--gold)',
-                    color: 'var(--charcoal)',
-                    letterSpacing: '0.1em',
-                  }}
-                >
-                  Our Story <ArrowRight size={14} />
-                </Link>
-                <Link
-                  href="/process"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    background: 'transparent',
-                    color: 'rgba(255,255,255,0.85)',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    letterSpacing: '0.1em',
-                  }}
-                >
-                  Our Process <ChevronRight size={14} />
-                </Link>
-              </div>
-            </div>
+                LEARN OUR STORY <ArrowRight size={16} />
+              </Link>
+            </motion.div>
 
-            {/* Right: value pillars */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { icon: Shield, title: 'Integrity First', desc: 'Transparent quotes, no hidden fees, no pressure — ever.' },
-                { icon: Award, title: 'Unmatched Quality', desc: 'Premium materials and meticulous craftsmanship on every project.' },
-                { icon: Users, title: 'Community Rooted', desc: 'Colorado-based, family-owned, and proud of the communities we serve.' },
-                { icon: Clock, title: 'Always Available', desc: 'Emergency response 24/7, 365 days a year — because roofs don\'t wait.' },
-              ].map((pillar, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-5 p-5 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(229,168,0,0.15)' }}
+                { icon: Shield, title: "Fully Licensed & Insured", desc: "Complete peace of mind with comprehensive coverage and state licensing." },
+                { icon: Award, title: "Manufacturer Certified", desc: "Factory-trained installers certified by GAF, Owens Corning, and CertainTeed." },
+                { icon: Users, title: "Expert Team", desc: "Highly skilled craftsmen with an average of 15+ years of experience." },
+                { icon: CheckCircle2, title: "Warranty Protection", desc: "Industry-leading warranties on both materials and workmanship." },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  custom={i + 1}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={fadeUp}
+                  className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 hover:border-gold/30 transition-colors"
                 >
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(229,168,0,0.15)' }}
-                  >
-                    <pillar.icon size={18} style={{ color: 'var(--gold)' }} />
-                  </div>
-                  <div>
-                    <div
-                      className="font-bold mb-1"
-                      style={{ fontFamily: "'Lato', sans-serif", color: '#FFFFFF', fontSize: '0.95rem' }}
-                    >
-                      {pillar.title}
-                    </div>
-                    <div
-                      style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.60)', fontSize: '0.875rem', lineHeight: 1.6 }}
-                    >
-                      {pillar.desc}
-                    </div>
-                  </div>
-                </div>
+                  <item.icon size={24} className="text-gold mb-3" />
+                  <h3 className="text-base font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    {item.desc}
+                  </p>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          SERVICE AREAS — cream section
-          ══════════════════════════════════════════════════════════════ */}
-      <section style={{ background: 'var(--cream-dark)' }} className="py-20">
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <p
-            className="text-xs uppercase font-bold tracking-widest mb-3"
-            style={{ fontFamily: "'Lato', sans-serif", color: 'var(--forest-mid)', letterSpacing: '0.2em' }}
+      {/* ==================== PORTFOLIO PREVIEW ==================== */}
+      <section className="bg-navy-dark py-24">
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp}
+            custom={0}
+            className="flex flex-col md:flex-row md:items-end justify-between mb-12"
           >
-            We Come to You
-          </p>
-          <h2
-            className="text-4xl font-black mb-4"
-            style={{ fontFamily: "'Playfair Display', serif", color: 'var(--charcoal)' }}
-          >
-            Serving All of Colorado
-          </h2>
-          <div className="w-12 h-0.5 mx-auto mb-8" style={{ background: 'var(--gold)' }} />
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
-            {[
-              'Denver', 'Aurora', 'Lakewood', 'Highlands Ranch', 'Littleton',
-              'Englewood', 'Vail', 'Aspen', 'Steamboat Springs', 'Telluride',
-              'Crested Butte', 'Winter Park'
-            ].map((city) => (
-              <span
-                key={city}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold"
-                style={{
-                  fontFamily: "'Lato', sans-serif",
-                  background: '#FFFFFF',
-                  border: '1px solid var(--sandstone-light)',
-                  color: 'var(--charcoal-mid)',
-                  boxShadow: '0 2px 8px rgba(0,64,128,0.06)',
-                }}
-              >
-                <MapPin size={11} style={{ color: 'var(--cedar)' }} />
-                {city}
+            <div>
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Our Work
               </span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Featured Projects
+              </h2>
+            </div>
+            <Link
+              href="/portfolio"
+              className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide mt-4 md:mt-0"
+              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            >
+              VIEW ALL PROJECTS <ArrowRight size={16} />
+            </Link>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {portfolioProjects.slice(0, 3).map((project, i) => (
+              <motion.div
+                key={project.id}
+                custom={i + 1}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={fadeUp}
+              >
+                <Link href={`/projects/${project.id}`} className="group block relative overflow-hidden aspect-square">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.95)] via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      {project.roofType.split('—')[0].trim()}
+                    </span>
+                    <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {project.title}
+                    </h3>
+                    <p className="text-white/50 text-sm" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      {project.location}
+                    </p>
+                  </div>
+                  <div className="absolute inset-0 bg-[#C9A84C]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="bg-[#C9A84C] text-[#0B1D3A] px-5 py-2.5 font-semibold text-xs tracking-wider uppercase flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      View Project <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-            style={{
-              fontFamily: "'Lato', sans-serif",
-              background: 'var(--forest-deep)',
-              color: 'var(--cream)',
-              letterSpacing: '0.1em',
-              boxShadow: '0 8px 24px rgba(0,64,128,0.25)',
-            }}
-          >
-            Schedule Free Inspection <ArrowRight size={14} />
-          </Link>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          FINAL CTA STRIP
-          ══════════════════════════════════════════════════════════════ */}
-      <section
-        className="py-20"
-        style={{ background: 'var(--charcoal)', borderTop: '3px solid var(--gold)' }}
-      >
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2
-            className="text-4xl font-black mb-4"
-            style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+      {/* ==================== TESTIMONIALS ==================== */}
+      <section className="bg-navy py-24">
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp}
+            custom={0}
+            className="text-center max-w-2xl mx-auto mb-16"
           >
-            Ready to Protect What Matters Most?
-          </h2>
-          <p
-            className="text-lg mb-10"
-            style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}
+            <div className="gold-line mx-auto mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Client Testimonials
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+              What Our Clients Say
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={t.author}
+                custom={i + 1}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={fadeUp}
+                className="bg-white/5 border border-white/10 p-8 relative"
+              >
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} size={16} className="text-gold fill-gold" />
+                  ))}
+                </div>
+                <p className="text-white/70 mb-6 leading-relaxed italic" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                <div>
+                  <p className="text-white font-semibold text-sm" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    {t.author}
+                  </p>
+                  <p className="text-white/40 text-xs" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    {t.location}
+                  </p>
+                </div>
+                <div className="absolute top-6 right-6 text-6xl text-gold/10 leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  &ldquo;
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== MATERIALS SECTION ==================== */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={images.materialsDisplayBg} alt="Premium roofing materials display" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.10_0.03_260/0.88)] via-[oklch(0.12_0.03_260/0.82)] to-[oklch(0.10_0.03_260/0.92)]" />
+        </div>
+        <div className="relative container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp}
+            custom={0}
+            className="text-center max-w-3xl mx-auto mb-14"
           >
-            Start with a free satellite estimate — no commitment, no pressure.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="gold-line mx-auto mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Premium Materials
+            </span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Only the Finest Materials
+            </h2>
+            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              We partner with the industry&apos;s leading manufacturers to ensure every roof we install meets the highest standards of durability, beauty, and performance. Our material selection is specifically curated for Colorado&apos;s extreme weather conditions.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+            {materialsData.map((m, i) => (
+              <motion.div
+                key={m.slug}
+                custom={i + 1}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={fadeUp}
+              >
+                <Link
+                  href={`/materials/${m.slug}`}
+                  className="group block bg-navy-dark/70 backdrop-blur-sm border border-white/10 hover:border-gold/40 transition-all overflow-hidden"
+                >
+                  <div className="aspect-[3/4] overflow-hidden relative">
+                    <img
+                      src={m.image}
+                      alt={m.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260)] via-transparent to-transparent" />
+                    <div className="absolute top-2 right-2 bg-gold/90 text-navy-dark px-2 py-0.5">
+                      <span className="text-[10px] font-bold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.warranty}</span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-white group-hover:text-gold transition-colors mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {m.shortName}
+                    </h3>
+                    <p className="text-[11px] text-white/40 mb-2" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      From ${m.installedPrice.low.toFixed(2)}/sqft installed
+                    </p>
+                    <span className="text-gold text-[10px] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      LEARN MORE <ChevronRight size={12} />
+                    </span>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
             <Link
-              href="/estimator"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-              style={{
-                fontFamily: "'Lato', sans-serif",
-                background: 'var(--gold)',
-                color: 'var(--charcoal)',
-                letterSpacing: '0.1em',
-                boxShadow: '0 8px 24px rgba(229,168,0,0.4)',
-              }}
+              href="/services"
+              className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide"
+              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
             >
-              Free Satellite Estimate <ArrowRight size={14} />
+              VIEW ALL SERVICES &amp; MATERIALS <ArrowRight size={16} />
             </Link>
-            <a
-              href="tel:9704468995"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-all hover:-translate-y-1"
-              style={{
-                fontFamily: "'Lato', sans-serif",
-                background: 'transparent',
-                color: '#FFFFFF',
-                border: '2px solid rgba(255,255,255,0.3)',
-                letterSpacing: '0.1em',
-              }}
-            >
-              <Phone size={15} /> Call Now
-            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== SERVICE AREAS ==================== */}
+      <section className="bg-navy-dark py-24">
+        <div className="container">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp}
+            custom={0}
+            className="text-center max-w-2xl mx-auto mb-16"
+          >
+            <div className="gold-line mx-auto mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Where We Serve
+            </span>
+            <Link href="/locations" className="group">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 group-hover:text-gold transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Service Areas
+            </h2>
+            </Link>
+            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              From the Front Range to the Western Slope, Alpine Peak Roofing serves communities across the Colorado Rocky Mountains.
+            </p>
+          </motion.div>
+
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {serviceAreas.map((area, i) => {
+              const slugMap: Record<string, string> = {
+                "Aspen": "aspen",
+                "Vail": "vail",
+                "Telluride": "telluride",
+                "Crested Butte": "crested-butte",
+                "Steamboat Springs": "steamboat-springs",
+                "Winter Park": "winter-park",
+                "Glenwood Springs": "glenwood-springs",
+                "Frisco": "frisco",
+                "Silverthorne": "silverthorne",
+                "Central Mountains": "central-mountains",
+                "Breckenridge": "breckenridge",
+                "Durango": "durango",
+              };
+              const slug = slugMap[area.name];
+              return (
+                <Link key={area.name} href={`/locations/${slug}`}>
+                  <motion.div
+                    custom={i}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-50px" }}
+                    variants={fadeUp}
+                    className="group bg-white/5 border border-white/10 hover:border-gold/40 transition-all overflow-hidden cursor-pointer h-full"
+                  >
+                    <div className="aspect-square overflow-hidden relative">
+                      <img
+                        src={area.image}
+                        alt={area.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.85)] via-[oklch(0.10_0.03_260/0.3)] to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-lg font-bold text-white mb-0.5" style={{ fontFamily: "'Playfair Display', serif" }}>
+                          {area.name}
+                        </h3>
+                        <p className="text-gold text-xs font-semibold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                          {area.tagline}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-white/40 text-[10px] uppercase tracking-widest" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                          Elevation
+                        </span>
+                        <span className="text-white text-xs font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                          {area.elevation}
+                        </span>
+                      </div>
+                      <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                        {area.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

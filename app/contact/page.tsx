@@ -1,876 +1,240 @@
-'use client'
+"use client";
+/*
+ * DESIGN: Mountain Modernism — Alpine Luxury Editorial
+ * Contact page: Form, phone, email, map, service areas
+ */
+import { useState } from "react";
+import { images } from "@/lib/images";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import {
+  Phone, Mail, MapPin, Clock, ChevronRight, Send,
+  CheckCircle2, MessageSquare
+} from "lucide-react";
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { 
-  Phone, 
-  Mail,
-  MapPin,
-  Clock,
-  Shield,
-  Zap,
-  ChevronRight,
-  Send,
-  FileText,
-  AlertTriangle,
-  Home,
-  Award,
-  Calendar,
-  Users,
-  Bot,
-  MessageSquare,
-  CheckCircle,
-  Loader2,
-  XCircle
-} from 'lucide-react'
-
-type FormStatus = 'idle' | 'submitting' | 'success' | 'error'
-
-interface FormState {
-  status: FormStatus
-  message: string
-}
-
-export default function ContactPage() {
-  // Estimate form state
-  const [estimateForm, setEstimateForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    projectType: '',
-    details: '',
-    isInsurance: false
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0, 0, 0.2, 1] as const }
   })
-  const [estimateStatus, setEstimateStatus] = useState<FormState>({ status: 'idle', message: '' })
+};
 
-  // Contact form state
-  const [contactForm, setContactForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
-  })
-  const [contactStatus, setContactStatus] = useState<FormState>({ status: 'idle', message: '' })
+export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "", email: "", phone: "", service: "", message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleEstimateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setEstimateStatus({ status: 'submitting', message: '' })
-
-    try {
-      const response = await fetch('/api/leads/capture', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source: 'contact_page_estimate',
-          firstName: estimateForm.firstName,
-          lastName: estimateForm.lastName,
-          email: estimateForm.email,
-          phone: estimateForm.phone,
-          address: estimateForm.address,
-          projectType: estimateForm.projectType,
-          propertyType: estimateForm.isInsurance ? 'insurance_claim' : 'standard'
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setEstimateStatus({ 
-          status: 'success', 
-          message: 'Thank you! We\'ve received your estimate request. Our team will contact you within 24 hours.' 
-        })
-        // Reset form
-        setEstimateForm({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          address: '',
-          projectType: '',
-          details: '',
-          isInsurance: false
-        })
-      } else {
-        throw new Error(data.error || 'Failed to submit form')
-      }
-    } catch (error) {
-      setEstimateStatus({ 
-        status: 'error', 
-        message: error instanceof Error ? error.message : 'Something went wrong. Please try again or call us directly.' 
-      })
-    }
-  }
-
-  const handleContactSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setContactStatus({ status: 'submitting', message: '' })
-
-    try {
-      const response = await fetch('/api/leads/capture', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source: 'contact_page_general',
-          firstName: contactForm.firstName,
-          lastName: contactForm.lastName,
-          email: contactForm.email,
-          phone: contactForm.phone,
-          projectType: contactForm.subject
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setContactStatus({ 
-          status: 'success', 
-          message: 'Message sent! We\'ll get back to you as soon as possible.' 
-        })
-        // Reset form
-        setContactForm({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: ''
-        })
-      } else {
-        throw new Error(data.error || 'Failed to submit form')
-      }
-    } catch (error) {
-      setContactStatus({ 
-        status: 'error', 
-        message: error instanceof Error ? error.message : 'Something went wrong. Please try again or call us directly.' 
-      })
-    }
-  }
-
-  const StatusMessage = ({ status, message }: FormState) => {
-    if (status === 'idle') return null
-    
-    return (
-      <div className={`p-4 rounded-lg flex items-start gap-3 ${
-        status === 'success' ? 'bg-green-50 border border-green-200' :
-        status === 'error' ? 'bg-red-50 border border-red-200' :
-        'bg-blue-50 border border-blue-200'
-      }`}>
-        {status === 'success' && <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />}
-        {status === 'error' && <XCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />}
-        {status === 'submitting' && <Loader2 className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />}
-        <p className={`text-sm ${
-          status === 'success' ? 'text-green-800' :
-          status === 'error' ? 'text-red-800' :
-          'text-blue-800'
-        }`}>
-          {status === 'submitting' ? 'Submitting your request...' : message}
-        </p>
-      </div>
-    )
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    toast.success("Thank you! We'll be in touch within 24 hours.");
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Contact Alpine Peak Roofing
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-              Get in touch for your free estimate, emergency service, or any questions about our roofing services
-            </p>
-            
-            {/* Emergency Banner */}
-            <div className="mt-8 p-4 bg-red-600 rounded-lg">
-              <div className="flex items-center justify-center text-white">
-                <AlertTriangle className="h-5 w-5 mr-2" />
-                <span className="font-bold">EMERGENCY SERVICE:</span>
-                <span className="ml-2 text-yellow-400 font-bold">(303) 555-ROOF</span>
-                <span className="ml-2">- Available 24/7</span>
-              </div>
-            </div>
+    <div>
+      {/* Hero */}
+      <section className="relative py-32 lg:py-40 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={images.heroHome} alt="Contact Alpine Peak Roofing" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
+        </div>
+        <div className="relative container">
+          <div className="max-w-3xl">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Contact Us</span>
+            </motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Let's Start Your{" "}<span className="text-gold">Project</span>
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Get your free, no-obligation estimate. We respond to every inquiry within 24 hours.
+            </motion.p>
           </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full" preserveAspectRatio="none">
+            <path d="M0 80L1440 30V80H0Z" fill="oklch(0.12 0.03 260)" />
+          </svg>
         </div>
       </section>
 
-      {/* Breadcrumb */}
-      <section className="py-4 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center text-sm text-gray-600">
-            <Link href="/" className="hover:text-blue-600">Home</Link>
-            <ChevronRight className="h-4 w-4 mx-2" />
-            <span className="text-gray-900">Contact</span>
-          </div>
-        </div>
-      </section>
+      {/* Contact Form + Info */}
+      <section className="bg-navy-dark py-24">
+        <div className="container">
+          <div className="grid lg:grid-cols-5 gap-12">
+            {/* Form */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
+              className="lg:col-span-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Request Your Free Estimate
+              </h2>
 
-      {/* Contact Options */}
-      <section className="py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            
-            {/* Emergency Contact */}
-            <Card className="border-2 border-red-200 bg-red-50 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 mx-auto mb-4">
-                  <Zap className="h-8 w-8 text-red-600" />
-                </div>
-                <CardTitle className="text-xl text-red-800">Emergency Service</CardTitle>
-                <CardDescription className="text-red-700">
-                  24/7 Emergency Response
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="mb-4">
-                  <a href="tel:3035557663" className="text-2xl font-bold text-red-600 hover:text-red-700">
-                    (303) 555-ROOF
-                  </a>
-                </div>
-                <p className="text-red-700 text-sm mb-4">
-                  Storm damage, leaks, structural issues - we respond immediately
-                </p>
-                <Button className="w-full bg-red-600 hover:bg-red-700" asChild>
-                  <a href="tel:3035557663">
-                    <Phone className="mr-2 h-4 w-4" />
-                    Call Emergency Line
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* General Contact */}
-            <Card className="border-2 border-blue-200 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 mx-auto mb-4">
-                  <Phone className="h-8 w-8 text-blue-600" />
-                </div>
-                <CardTitle className="text-xl">General Inquiries</CardTitle>
-                <CardDescription>
-                  Business hours and general questions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="mb-4">
-                  <a href="tel:3035557663" className="text-2xl font-bold text-blue-600 hover:text-blue-700">
-                    (303) 555-ROOF
-                  </a>
-                </div>
-                <div className="text-gray-600 text-sm mb-4 space-y-1">
-                  <div className="flex items-center justify-center">
-                    <Clock className="h-4 w-4 mr-2" />
-                    Mon-Fri: 7am-7pm
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <Clock className="h-4 w-4 mr-2" />
-                    Sat-Sun: 8am-5pm
-                  </div>
-                </div>
-                <Button className="w-full" asChild>
-                  <a href="tel:3035557663">
-                    <Phone className="mr-2 h-4 w-4" />
-                    Call Main Line
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Email Contact */}
-            <Card className="border-2 border-green-200 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mx-auto mb-4">
-                  <Mail className="h-8 w-8 text-green-600" />
-                </div>
-                <CardTitle className="text-xl">Email Us</CardTitle>
-                <CardDescription>
-                  Detailed project inquiries
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="mb-4">
-                  <a href="mailto:info@alpinepeakroofing.com" className="text-lg font-semibold text-green-600 hover:text-green-700">
-                    info@alpinepeakroofing.com
-                  </a>
-                </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Send photos, project details, or questions for detailed responses
-                </p>
-                <Button className="w-full bg-green-600 hover:bg-green-700" asChild>
-                  <a href="mailto:info@alpinepeakroofing.com">
-                    <Mail className="mr-2 h-4 w-4" />
-                    Send Email
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* AI Chat Assistant Section */}
-          <div className="mb-16">
-            <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 hover:shadow-xl transition-shadow">
-              <CardHeader className="text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-600 mx-auto mb-4">
-                  <Bot className="h-10 w-10 text-white" />
-                </div>
-                <CardTitle className="text-2xl text-purple-800">AI Chat Assistant</CardTitle>
-                <CardDescription className="text-purple-700 text-lg">
-                  Get instant answers about roofing, pricing, and scheduling
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <p className="text-purple-700 mb-6 text-lg">
-                  Our AI assistant can help you with instant estimates, answer common roofing questions, 
-                  schedule appointments, and provide 24/7 support. Try asking about materials, 
-                  costs, timelines, or emergency services!
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="font-semibold text-purple-600">Instant Quotes</div>
-                    <div className="text-gray-600">Quick price estimates</div>
-                  </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="font-semibold text-purple-600">Material Info</div>
-                    <div className="text-gray-600">Shingle types & options</div>
-                  </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="font-semibold text-purple-600">Scheduling</div>
-                    <div className="text-gray-600">Book inspections</div>
-                  </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
-                    <div className="font-semibold text-purple-600">24/7 Support</div>
-                    <div className="text-gray-600">Always available</div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg p-4 mb-6 border border-purple-200">
-                  <div className="text-left text-gray-700">
-                    <div className="font-semibold mb-2 text-purple-600">Try asking:</div>
-                    <div className="space-y-1 text-sm">
-                      <div>• &quot;How much does a roof replacement cost?&quot;</div>
-                      <div>• &quot;What roofing materials do you recommend for Denver?&quot;</div>
-                      <div>• &quot;Can you schedule an inspection this week?&quot;</div>
-                      <div>• &quot;Do you handle insurance claims?&quot;</div>
-                    </div>
-                  </div>
-                </div>
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8">
-                  <MessageSquare className="mr-2 h-5 w-5" />
-                  Start Chat Now
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Contact Forms Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            {/* Request Estimate Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center">
-                  <FileText className="h-6 w-6 text-blue-600 mr-2" />
-                  Request Free Estimate
-                </CardTitle>
-                <CardDescription>
-                  Get a detailed quote for your roofing project
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <StatusMessage {...estimateStatus} />
-                
-                {estimateStatus.status !== 'success' && (
-                  <form onSubmit={handleEstimateSubmit} className="space-y-4 mt-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                        <Input 
-                          placeholder="John" 
-                          required 
-                          value={estimateForm.firstName}
-                          onChange={(e) => setEstimateForm(prev => ({ ...prev, firstName: e.target.value }))}
-                          disabled={estimateStatus.status === 'submitting'}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                        <Input 
-                          placeholder="Doe" 
-                          required 
-                          value={estimateForm.lastName}
-                          onChange={(e) => setEstimateForm(prev => ({ ...prev, lastName: e.target.value }))}
-                          disabled={estimateStatus.status === 'submitting'}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                      <Input 
-                        type="email" 
-                        placeholder="john.doe@email.com" 
-                        required 
-                        value={estimateForm.email}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, email: e.target.value }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
-                      <Input 
-                        type="tel" 
-                        placeholder="(303) 555-1234" 
-                        required 
-                        value={estimateForm.phone}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, phone: e.target.value }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Property Address *</label>
-                      <Input 
-                        placeholder="123 Main St, Denver, CO 80202" 
-                        required 
-                        value={estimateForm.address}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, address: e.target.value }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
-                      <select 
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        value={estimateForm.projectType}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, projectType: e.target.value }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      >
-                        <option value="">Select project type</option>
-                        <option value="residential-replacement">Residential - Full Replacement</option>
-                        <option value="residential-repair">Residential - Repair</option>
-                        <option value="commercial-new">Commercial - New Installation</option>
-                        <option value="commercial-replacement">Commercial - Replacement</option>
-                        <option value="emergency">Emergency Repair</option>
-                        <option value="inspection">Inspection Only</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
-                      <textarea 
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed" 
-                        rows={4}
-                        placeholder="Describe your roofing needs, any issues you've noticed, preferred materials, timeline, etc."
-                        value={estimateForm.details}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, details: e.target.value }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      ></textarea>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        id="insurance" 
-                        className="mr-2" 
-                        checked={estimateForm.isInsurance}
-                        onChange={(e) => setEstimateForm(prev => ({ ...prev, isInsurance: e.target.checked }))}
-                        disabled={estimateStatus.status === 'submitting'}
-                      />
-                      <label htmlFor="insurance" className="text-sm text-gray-600">
-                        This may be an insurance claim
-                      </label>
-                    </div>
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      size="lg"
-                      disabled={estimateStatus.status === 'submitting'}
-                    >
-                      {estimateStatus.status === 'submitting' ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4" />
-                          Request Free Estimate
-                        </>
-                      )}
-                    </Button>
-                    
-                    <p className="text-xs text-gray-500 text-center">
-                      Or get an instant estimate with our{" "}
-                      <Link href="/estimator" className="text-blue-600 hover:underline">
-                        AI-powered estimator tool
-                      </Link>
-                    </p>
-                  </form>
-                )}
-
-                {estimateStatus.status === 'success' && (
-                  <div className="mt-4 text-center">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setEstimateStatus({ status: 'idle', message: '' })}
-                    >
-                      Submit Another Request
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* General Contact Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center">
-                  <Mail className="h-6 w-6 text-green-600 mr-2" />
-                  General Contact
-                </CardTitle>
-                <CardDescription>
-                  Questions, consultations, or other inquiries
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <StatusMessage {...contactStatus} />
-                
-                {contactStatus.status !== 'success' && (
-                  <form onSubmit={handleContactSubmit} className="space-y-4 mt-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-                        <Input 
-                          placeholder="Jane" 
-                          required 
-                          value={contactForm.firstName}
-                          onChange={(e) => setContactForm(prev => ({ ...prev, firstName: e.target.value }))}
-                          disabled={contactStatus.status === 'submitting'}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-                        <Input 
-                          placeholder="Smith" 
-                          required 
-                          value={contactForm.lastName}
-                          onChange={(e) => setContactForm(prev => ({ ...prev, lastName: e.target.value }))}
-                          disabled={contactStatus.status === 'submitting'}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                      <Input 
-                        type="email" 
-                        placeholder="jane.smith@email.com" 
-                        required 
-                        value={contactForm.email}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                        disabled={contactStatus.status === 'submitting'}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                      <Input 
-                        type="tel" 
-                        placeholder="(303) 555-1234" 
-                        value={contactForm.phone}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                        disabled={contactStatus.status === 'submitting'}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                      <select 
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                        value={contactForm.subject}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
-                        disabled={contactStatus.status === 'submitting'}
-                      >
-                        <option value="">Select subject</option>
-                        <option value="general-question">General Question</option>
-                        <option value="consultation">Free Consultation</option>
-                        <option value="warranty">Warranty Question</option>
-                        <option value="maintenance">Maintenance Program</option>
-                        <option value="feedback">Feedback/Review</option>
-                        <option value="partnership">Business Partnership</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
-                      <textarea 
-                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed" 
-                        rows={6}
-                        placeholder="How can we help you? Please provide as much detail as possible."
-                        required
-                        value={contactForm.message}
-                        onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                        disabled={contactStatus.status === 'submitting'}
-                      ></textarea>
-                    </div>
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-green-600 hover:bg-green-700" 
-                      size="lg"
-                      disabled={contactStatus.status === 'submitting'}
-                    >
-                      {contactStatus.status === 'submitting' ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-4 w-4" />
-                          Send Message
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                )}
-
-                {contactStatus.status === 'success' && (
-                  <div className="mt-4 text-center">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setContactStatus({ status: 'idle', message: '' })}
-                    >
-                      Send Another Message
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Office Information */}
-      <section className="py-16 sm:py-24 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Visit Our Office
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Stop by to discuss your project in person or meet with our team
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Office Details */}
-            <div>
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle className="text-xl flex items-center">
-                    <MapPin className="h-6 w-6 text-blue-600 mr-2" />
-                    Alpine Peak Roofing Headquarters
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Address</h3>
-                    <p className="text-gray-600">
-                      1234 Mountain View Drive<br />
-                      Denver, CO 80202
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Business Hours</h3>
-                    <div className="text-gray-600 space-y-1">
-                      <div className="flex justify-between">
-                        <span>Monday - Friday:</span>
-                        <span>7:00 AM - 7:00 PM</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Saturday:</span>
-                        <span>8:00 AM - 5:00 PM</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Sunday:</span>
-                        <span>8:00 AM - 5:00 PM</span>
-                      </div>
-                      <div className="flex justify-between font-semibold text-red-600">
-                        <span>Emergency Service:</span>
-                        <span>24/7</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">What to Expect</h3>
-                    <ul className="text-gray-600 space-y-1">
-                      <li className="flex items-center">
-                        <Shield className="h-4 w-4 text-green-500 mr-2" />
-                        Free consultations and estimates
-                      </li>
-                      <li className="flex items-center">
-                        <Home className="h-4 w-4 text-green-500 mr-2" />
-                        Material samples and displays
-                      </li>
-                      <li className="flex items-center">
-                        <Award className="h-4 w-4 text-green-500 mr-2" />
-                        Licensing and insurance documentation
-                      </li>
-                      <li className="flex items-center">
-                        <FileText className="h-4 w-4 text-green-500 mr-2" />
-                        Portfolio of completed projects
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <Button className="w-full" asChild>
-                      <a href="https://maps.google.com/?q=1234+Mountain+View+Drive+Denver+CO+80202" target="_blank" rel="noopener noreferrer">
-                        <MapPin className="mr-2 h-4 w-4" />
-                        Get Directions
-                      </a>
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      Schedule Office Visit
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Map Placeholder */}
-            <div className="aspect-[4/3] lg:aspect-auto lg:h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <MapPin className="h-16 w-16 mx-auto mb-4" />
-                <p className="text-lg font-semibold">Interactive Map</p>
-                <p className="text-sm">1234 Mountain View Drive, Denver, CO</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Service Area */}
-      <section className="py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Service Area
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-              Proudly serving the Denver metro area and surrounding communities
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {[
-              { city: 'Denver', zip: '80202', popular: true },
-              { city: 'Aurora', zip: '80011', popular: true },
-              { city: 'Lakewood', zip: '80215', popular: true },
-              { city: 'Thornton', zip: '80229', popular: false },
-              { city: 'Arvada', zip: '80002', popular: true },
-              { city: 'Westminster', zip: '80031', popular: false },
-              { city: 'Centennial', zip: '80112', popular: false },
-              { city: 'Boulder', zip: '80301', popular: true },
-              { city: 'Broomfield', zip: '80020', popular: false },
-              { city: 'Commerce City', zip: '80022', popular: false },
-              { city: 'Northglenn', zip: '80233', popular: false },
-              { city: 'Wheat Ridge', zip: '80033', popular: false },
-              { city: 'Englewood', zip: '80110', popular: false },
-              { city: 'Littleton', zip: '80120', popular: false },
-              { city: 'Greenwood Village', zip: '80111', popular: false },
-              { city: 'Parker', zip: '80134', popular: false }
-            ].map((area) => (
-              <div key={area.city} className={`text-center p-4 bg-white rounded-lg shadow-sm border ${area.popular ? 'border-blue-200 bg-blue-50' : ''}`}>
-                <div className="flex items-center justify-center mb-2">
-                  <MapPin className={`h-4 w-4 mr-1 ${area.popular ? 'text-blue-600' : 'text-gray-500'}`} />
-                  <p className={`font-medium ${area.popular ? 'text-blue-900' : 'text-gray-900'}`}>
-                    {area.city}
+              {submitted ? (
+                <div className="bg-white/5 border border-gold/30 p-12 text-center">
+                  <CheckCircle2 size={48} className="text-gold mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Thank You!</h3>
+                  <p className="text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    We've received your request and will be in touch within 24 hours. For immediate assistance, call us at (970) 456-1176.
                   </p>
                 </div>
-                <p className="text-xs text-gray-600">{area.zip}</p>
-                {area.popular && (
-                  <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                    Popular
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-8">
-            <p className="text-gray-600">
-              Don&apos;t see your area listed?{" "}
-              <a href="tel:3035557663" className="text-blue-600 hover:underline font-medium">
-                Call us at (303) 555-ROOF
-              </a>{" "}
-              - we may still be able to help!
-            </p>
-          </div>
-        </div>
-      </section>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 text-sm focus:border-gold focus:outline-none transition-colors placeholder:text-white/30"
+                        placeholder="John Smith"
+                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Email Address *</label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 text-sm focus:border-gold focus:outline-none transition-colors placeholder:text-white/30"
+                        placeholder="john@example.com"
+                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Phone Number</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 text-sm focus:border-gold focus:outline-none transition-colors placeholder:text-white/30"
+                        placeholder="(970) 555-0123"
+                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Service Needed</label>
+                      <select
+                        value={formData.service}
+                        onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 text-sm focus:border-gold focus:outline-none transition-colors appearance-none"
+                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      >
+                        <option value="" className="bg-navy">Select a service...</option>
+                        <option value="residential-replacement" className="bg-navy">Residential Roof Replacement</option>
+                        <option value="residential-repair" className="bg-navy">Residential Roof Repair</option>
+                        <option value="commercial" className="bg-navy">Commercial Roofing</option>
+                        <option value="emergency" className="bg-navy">Emergency Repair</option>
+                        <option value="inspection" className="bg-navy">Roof Inspection</option>
+                        <option value="gutters" className="bg-navy">Gutters & Drainage</option>
+                        <option value="other" className="bg-navy">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Project Details</label>
+                    <textarea
+                      rows={5}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 text-white px-4 py-3 text-sm focus:border-gold focus:outline-none transition-colors resize-none placeholder:text-white/30"
+                      placeholder="Tell us about your project — type of roof, approximate size, any specific concerns..."
+                      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20 w-full md:w-auto justify-center"
+                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  >
+                    <Send size={16} />
+                    SUBMIT REQUEST
+                  </button>
+                </form>
+              )}
+            </motion.div>
 
-      {/* Insurance Claims Help */}
-      <section className="py-16 sm:py-24 bg-blue-600 text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Insurance Claims Assistance
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
-              We work directly with your insurance company to ensure fair settlements and proper documentation
-            </p>
-            
-            <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3">
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <FileText className="h-6 w-6 text-white" />
+            {/* Contact Info */}
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={1}
+              className="lg:col-span-2 space-y-6">
+              <div className="bg-white/5 border border-white/10 p-6">
+                <h3 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>Get In Touch</h3>
+                <div className="space-y-4">
+                  <a href="tel:9704561176" className="flex items-start gap-3 text-white/60 hover:text-gold transition-colors group">
+                    <Phone size={18} className="text-gold mt-0.5 flex-shrink-0" />
+                    <div style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-sm font-medium text-white group-hover:text-gold transition-colors">(970) 456-1176</p>
+                      <p className="text-xs text-white/40">Call or text anytime</p>
+                    </div>
+                  </a>
+                  <a href="mailto:info@alpinepeakroofing.com" className="flex items-start gap-3 text-white/60 hover:text-gold transition-colors group">
+                    <Mail size={18} className="text-gold mt-0.5 flex-shrink-0" />
+                    <div style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-sm font-medium text-white group-hover:text-gold transition-colors">info@alpinepeakroofing.com</p>
+                      <p className="text-xs text-white/40">We respond within 24 hours</p>
+                    </div>
+                  </a>
+                  <div className="flex items-start gap-3 text-white/60">
+                    <MapPin size={18} className="text-gold mt-0.5 flex-shrink-0" />
+                    <div style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-sm font-medium text-white">Serving All of Colorado</p>
+                      <p className="text-xs text-white/40">Aspen, Vail, Telluride, and beyond</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 text-white/60">
+                    <Clock size={18} className="text-gold mt-0.5 flex-shrink-0" />
+                    <div style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-sm font-medium text-white">Business Hours</p>
+                      <p className="text-xs text-white/40">Mon–Fri: 7am–6pm</p>
+                      <p className="text-xs text-white/40">Sat: 8am–2pm</p>
+                      <p className="text-xs text-white/40">24/7 Emergency Service</p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold">Documentation</h3>
-                <p className="mt-2 text-blue-100 text-sm">Complete damage assessment and photo documentation</p>
               </div>
-              
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold">Adjuster Meetings</h3>
-                <p className="mt-2 text-blue-100 text-sm">We meet with your insurance adjuster on your behalf</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 mx-auto mb-4">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold">Claim Advocacy</h3>
-                <p className="mt-2 text-blue-100 text-sm">We advocate for fair settlements and proper repairs</p>
-              </div>
-            </div>
-            
-            <div className="mt-10">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
-                <a href="tel:3035557663">
-                  <Phone className="mr-2 h-5 w-5" />
-                  Insurance Claim Help: (303) 555-ROOF
+
+              <div className="bg-gold/10 border border-gold/30 p-6">
+                <MessageSquare size={24} className="text-gold mb-3" />
+                <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Prefer to Talk?</h3>
+                <p className="text-sm text-white/60 mb-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  Our team is standing by to answer your questions and schedule your free inspection.
+                </p>
+                <a href="tel:9704561176" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all w-full justify-center" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <Phone size={16} />
+                  CALL NOW
                 </a>
-              </Button>
-            </div>
+              </div>
+
+              <div className="bg-white/5 border border-white/10 p-6">
+                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>What to Expect</h3>
+                <ul className="space-y-2">
+                  {[
+                    "Response within 24 hours",
+                    "Free, no-obligation estimate",
+                    "Transparent pricing — no hidden fees",
+                    "Flexible scheduling to fit your needs",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-2 text-sm text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <CheckCircle2 size={14} className="text-gold flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

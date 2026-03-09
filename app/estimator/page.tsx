@@ -90,7 +90,7 @@ export default function EstimatorPage() {
                 Contact
               </h4>
               <div className="space-y-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: "'Lato', sans-serif" }}>
-                <div>(970) 446-8995</div>
+                <div>(970) 456-1176</div>
                 <div>info@alpinepeakroofing.com</div>
                 <div>Denver Metro, CO</div>
               </div>

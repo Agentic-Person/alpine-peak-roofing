@@ -668,3 +668,53 @@ body {
 .nav-link-craftsman.active {
   color: var(--amber-gold);
 }
+
+/* ============================================================
+   MANUS DESIGN SYSTEM — Alpine Peak Roofing
+   Mountain Modernism: navy + gold palette (oklch)
+   ============================================================ */
+
+/* Core color utilities */
+.text-gold        { color: oklch(0.75 0.12 85); }
+.text-gold-light  { color: oklch(0.82 0.10 85); }
+.text-navy        { color: oklch(0.18 0.04 260); }
+.text-alpine-white { color: oklch(0.97 0.005 80); }
+
+.bg-navy          { background-color: oklch(0.18 0.04 260); }
+.bg-navy-dark     { background-color: oklch(0.12 0.03 260); }
+.bg-navy-light    { background-color: oklch(0.25 0.05 260); }
+.bg-gold          { background-color: oklch(0.75 0.12 85); }
+.bg-gold-light    { background-color: oklch(0.82 0.10 85); }
+
+.border-gold      { border-color: oklch(0.75 0.12 85); }
+.text-navy-dark   { color: oklch(0.12 0.03 260); }
+
+/* Gold accent line */
+.gold-line {
+  width: 60px;
+  height: 3px;
+  background: oklch(0.75 0.12 85);
+  display: block;
+}
+
+/* Gradient scrims */
+.scrim-bottom {
+  background: linear-gradient(to top, oklch(0.12 0.03 260 / 0.9) 0%, oklch(0.12 0.03 260 / 0.4) 50%, transparent 100%);
+}
+.scrim-full {
+  background: linear-gradient(135deg, oklch(0.12 0.03 260 / 0.85) 0%, oklch(0.18 0.04 260 / 0.6) 100%);
+}
+
+/* Diagonal section dividers */
+.diagonal-top {
+  clip-path: polygon(0 6%, 100% 0, 100% 100%, 0 100%);
+  margin-top: -4rem;
+  padding-top: 7rem;
+}
+.diagonal-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
+  padding-bottom: 4rem;
+}
+
+/* Google Fonts — Source Sans 3 for Manus pages */
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap');

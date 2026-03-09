@@ -11,7 +11,6 @@ import {
   X,
   ChevronDown,
   Bot,
-  ArrowRight,
   Calculator,
   MessageSquare,
   Zap
@@ -34,6 +33,8 @@ export default function Navigation() {
     { href: '/about',    label: 'About' },
     { href: '/services', label: 'Services' },
     { href: '/portfolio',label: 'Portfolio' },
+    { href: '/locations',label: 'Locations' },
+    { href: '/financing',label: 'Financing' },
     { href: '/process',  label: 'Our Process' },
     { href: '/blog',     label: 'Blog' },
     { href: '/contact',  label: 'Contact' },
@@ -62,35 +63,9 @@ export default function Navigation() {
         {/* Top accent bar */}
         <div style={{ background: 'var(--cedar)', height: '3px' }} />
 
-        {/* Utility bar */}
-        <div
-          className="hidden lg:block border-b"
-          style={{
-            background: 'rgba(0,45,90,0.6)',
-            borderColor: 'rgba(229,168,0,0.15)'
-          }}
-        >
-          <div className="mx-auto max-w-7xl px-6 flex justify-between items-center py-1.5">
-            <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.72rem', letterSpacing: '0.04em' }}>
-              The Rocky Mountains&apos; Premier Roofing Specialist — Serving Colorado Since 1989
-            </p>
-            <div className="flex items-center gap-6">
-              <a
-                href="tel:9704468995"
-                className="flex items-center gap-1.5 font-bold text-xs tracking-wide transition-colors"
-                style={{ color: 'var(--gold)', letterSpacing: '0.06em' }}
-              >
-                <Phone size={11} />
-                (970) 446-8995
-              </a>
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
-
         {/* Main nav */}
         <div className="mx-auto max-w-7xl px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-[74px]">
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 flex-shrink-0">
@@ -238,7 +213,7 @@ export default function Navigation() {
               </div>
             </nav>
 
-            {/* Desktop CTA */}
+            {/* Desktop CTA — phone number */}
             <div className="hidden lg:flex items-center gap-3">
               <Link
                 href="/estimator"
@@ -255,12 +230,20 @@ export default function Navigation() {
                 Analyze My Roof
               </Link>
               <a
-                href="tel:9704468995"
-                className="btn-gold text-xs"
-                style={{ fontFamily: "'Lato', sans-serif", padding: '0.5rem 1.25rem' }}
+                href="tel:9704561176"
+                className="flex items-center gap-1.5 font-bold tracking-wide transition-colors rounded"
+                style={{
+                  color: 'var(--forest-deep)',
+                  background: 'var(--gold)',
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.05em',
+                  padding: '0.4rem 0.9rem',
+                }}
               >
-                Quick Call
-                <Phone size={13} />
+                <Phone size={12} />
+                (970) 456-1176
               </a>
             </div>
 
@@ -292,10 +275,10 @@ export default function Navigation() {
             >
               <Phone size={14} style={{ color: 'var(--gold)' }} />
               <a
-                href="tel:9704468995"
+                href="tel:9704561176"
                 style={{ color: 'var(--gold)', fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: '0.875rem' }}
               >
-                (970) 446-8995
+                (970) 456-1176
               </a>
             </div>
 
@@ -354,13 +337,20 @@ export default function Navigation() {
                 Analyze My Roof
               </Link>
               <a
-                href="tel:9704468995"
+                href="tel:9704561176"
                 onClick={() => setIsOpen(false)}
-                className="btn-gold w-full justify-center"
-                style={{ fontFamily: "'Lato', sans-serif" }}
+                className="flex items-center justify-center gap-2 w-full rounded font-bold"
+                style={{
+                  color: 'var(--forest-deep)',
+                  background: 'var(--gold)',
+                  fontFamily: "'Lato', sans-serif",
+                  fontSize: '0.875rem',
+                  fontWeight: 800,
+                  padding: '0.75rem 1rem',
+                }}
               >
-                Quick Call
                 <Phone size={14} />
+                (970) 456-1176
               </a>
             </div>
           </div>
