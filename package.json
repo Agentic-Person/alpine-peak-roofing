@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "blog:generate": "node scripts/generate-blog-post.mjs",
-    "blog:generate:dry": "node scripts/generate-blog-post.mjs --dry-run"
+    "blog:generate:dry": "node scripts/generate-blog-post.mjs --dry-run",
+    "blog:generate:no-image": "node scripts/generate-blog-post.mjs --no-image"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
