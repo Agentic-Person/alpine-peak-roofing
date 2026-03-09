@@ -2,7 +2,54 @@
 
 ---
 
-## Last Activity — 2026-03-09 (session 4)
+## Last Activity — 2026-03-09 (session 5)
+
+### Session Summary
+Tagged the original blue APR build for preservation, resolved 4 merge conflicts between `manus-redesign` and `main`, and merged PR #1. The Manus mountain modernism redesign is now live on `main` and auto-deploying to Vercel. Navigation updated to include both "Analyze My Roof" CTA and the correct APR phone number.
+
+### Work Done
+
+**Git tag created: `v1.0-original-blue`**
+- Tagged the last commit on `main` before the redesign merge (`c27a3c1`)
+- Pushed to GitHub — permanently preserves the original blue APR build
+- To restore or branch off: `git checkout v1.0-original-blue` or `git checkout -b new-branch v1.0-original-blue`
+
+**Merge conflict resolution (4 files)**
+Main had diverged with 9 new commits. Conflicts resolved keeping Manus design as primary:
+
+- `app/blog/page.tsx` — Kept Manus navy/gold design with framer-motion category filter + static `blogPosts`; removed main's Supabase `EnhancedBlogGrid` variant (different design system — white bg)
+- `app/page.tsx` — Kept Manus stats bar section; removed main's alternate services layout that had crept in
+- `app/services/page.tsx` — Kept Manus lucide icon set (`Building2, Layers, Droplets, Wind, Sun, Thermometer, Leaf, DollarSign`); kept `images.heroResidential` hero image
+- `components/layout/Navigation.tsx` — Merged best of both: kept Manus phone `(970) 456-1176` / `9704561176`; added "Analyze My Roof" CTA button from main (links to `/estimator`) for both desktop and mobile nav
+
+**PR #1 merged**
+- PR: `manus-redesign` → `main`
+- Merged at: `2026-03-09T19:20:15Z`
+- State: `MERGED`
+- Vercel auto-deploy triggered on `main`
+
+### Commits This Session
+- `f10395c` merge: bring main into manus-redesign, resolve 4 conflicts
+- Tag: `v1.0-original-blue` → commit `c27a3c1` (original blue build preserved)
+
+### Current Blockers / Next Steps
+- [ ] Confirm Vercel build succeeded — check Vercel dashboard for `main` deploy status
+- [ ] Set env vars in Vercel dashboard if not already done: `OPENAI_API_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] Wire contact form to `/api/leads/capture` (currently shows toast only)
+- [ ] Publish Privacy Policy at `https://agenticpersonnel.com/privacy` (MN / Mille Lacs County)
+- [ ] Publish Terms & Conditions at `https://agenticpersonnel.com/terms`
+- [ ] Submit both URLs to Twilio during 10DLC campaign registration
+- [ ] Enable OpenClaw gateway in `openclaw.json`: `gateway.http.endpoints.chatCompletions.enabled: true`
+- [ ] Add env vars to VPS `.env.local`: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`, `ELEVENLABS_LLM_SECRET`, `ADMIN_SECRET`
+- [ ] Run knowledge base ingestion: `POST /api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}`
+- [ ] Configure ElevenLabs dashboard: Agent → Model → Custom LLM → URL: `https://yoursite.com/api/voice/llm`; Custom headers: `x-elevenlabs-secret: <value>`
+- [ ] Test voice call end-to-end: Twilio → ElevenLabs → `/api/voice/llm` → OpenClaw Emily → RAG → caller
+- [ ] Test web chat: confirm `source: "openclaw:emily"` in response JSON
+- [ ] Confirm `search_knowledge_base` Postgres function exists in Supabase
+
+---
+
+## Previous Activity — 2026-03-09 (session 4)
 
 ### Session Summary
 Repo and branch confirmed. APR site `/privacy` and `/terms` pages updated with full Twilio 10DLC compliance content (SMS consent, AI disclosure, opt-out, data handling). Separate Twilio compliance docs drafted for Agentic Personnel LLC (agenticpersonnel.com) — state/county left as MN / Mille Lacs County per Dave's direction. Project status updated and changes committed and pushed.
