@@ -1,0 +1,341 @@
+{
+  "name": "Automated Blog Generation Workflow - Alpine Peak Roofing",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weekDay",
+              "daysOfWeek": [1, 3, 5]
+            },
+            {
+              "field": "hour",
+              "hourValue": 9
+            }
+          ]
+        }
+      },
+      "id": "1a1a1a1a-1a1a-1a1a-1a1a-1a1a1a1a1a1a",
+      "name": "Schedule Trigger (Mon, Wed, Fri 9AM)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "blog-generation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2b2b2b2b-2b2b-2b2b-2b2b-2b2b2b2b2b2b",
+      "name": "Manual Trigger Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 500]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Generate blog topic based on season, trends, and Denver market\nconst currentDate = new Date();\nconst month = currentDate.getMonth() + 1;\nconst season = getSeason(month);\n\n// Manual trigger data or auto-generated\nconst manualData = items[0].json || {};\n\n// Denver-specific seasonal topics\nconst seasonalTopics = {\n  winter: [\n    'Winter Roof Maintenance Tips for Denver Homes',\n    'How to Prevent Ice Dams in Colorado',\n    'Snow Load Considerations for Denver Roofs',\n    'Winter Storm Damage: When to Call for Emergency Roof Repair',\n    'Preparing Your Roof for Denver\\'s Heavy Snow Season'\n  ],\n  spring: [\n    'Spring Roof Inspection Checklist for Colorado Homeowners',\n    'Hail Damage Assessment After Denver Spring Storms',\n    'Spring Cleaning: Don\\'t Forget Your Gutters and Roof',\n    'Why Spring is the Best Time for Roof Replacement in Denver',\n    'Post-Winter Roof Repairs: What Denver Homeowners Need to Know'\n  ],\n  summer: [\n    'Beat the Heat: Cool Roofing Options for Denver Homes',\n    'Summer Roofing Projects: Planning Your Denver Home Upgrade',\n    'UV Protection: How Quality Shingles Protect Your Denver Home',\n    'Ventilation Solutions for Hot Denver Summers',\n    'Energy-Efficient Roofing Materials for Colorado Climate'\n  ],\n  fall: [\n    'Fall Roof Preparation: Getting Ready for Denver Winter',\n    'Gutter Cleaning and Maintenance Before Colorado Snow',\n    'Why Fall is Prime Time for Roof Replacement in Denver',\n    'Leaf Management: Protecting Your Roof and Gutters',\n    'Pre-Winter Roof Inspection: A Denver Homeowner\\'s Guide'\n  ]\n};\n\n// Select topic\nlet selectedTopic;\nif (manualData.topic) {\n  selectedTopic = manualData.topic;\n} else {\n  const topicsForSeason = seasonalTopics[season] || seasonalTopics.spring;\n  selectedTopic = topicsForSeason[Math.floor(Math.random() * topicsForSeason.length)];\n}\n\n// Generate content parameters\nconst contentParams = {\n  topic: selectedTopic,\n  target_audience: manualData.target_audience || 'Denver homeowners',\n  content_type: manualData.content_type || 'educational',\n  seo_keywords: manualData.seo_keywords || generateSEOKeywords(selectedTopic),\n  publish_immediately: manualData.publish_immediately || false,\n  word_count: 1200,\n  include_cta: true,\n  denver_focused: true,\n  requested_at: currentDate.toISOString(),\n  season: season,\n  month: month\n};\n\nfunction getSeason(month) {\n  if (month >= 12 || month <= 2) return 'winter';\n  if (month >= 3 && month <= 5) return 'spring';\n  if (month >= 6 && month <= 8) return 'summer';\n  return 'fall';\n}\n\nfunction generateSEOKeywords(topic) {\n  const baseKeywords = ['denver roofing', 'colorado roofing', 'roof repair denver'];\n  const topicKeywords = topic.toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, '')\n    .split(' ')\n    .filter(word => word.length > 3)\n    .slice(0, 3);\n  \n  return [...baseKeywords, ...topicKeywords];\n}\n\nreturn [{ json: contentParams }];"
+      },
+      "id": "3c3c3c3c-3c3c-3c3c-3c3c-3c3c3c3c3c3c",
+      "name": "Topic Generation & SEO Planning",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "chatInput": "=You are a professional content writer for Alpine Peak Roofing, a premium roofing contractor in Denver, Colorado.\n\nCOMPANY DETAILS:\n- Location: Denver, Colorado (mention local weather, regulations, building codes)\n- Services: Residential & Commercial Roofing, Emergency Repairs, Inspections\n- Specialties: Asphalt shingles, Metal roofing, Tile roofing, Flat roofing, Solar installation\n- Coverage Area: Denver Metro Area, Front Range\n- Years in Business: Over 15 years serving Colorado\n- License: Fully licensed and insured in Colorado\n\nWRITE A COMPREHENSIVE BLOG POST:\n\nTopic: {{ $json.topic }}\nTarget Audience: {{ $json.target_audience }}\nWord Count: {{ $json.word_count }} words\nSEO Keywords to Include: {{ $json.seo_keywords.join(', ') }}\nSeason: {{ $json.season }}\n\nREQUIREMENTS:\n1. Write an engaging, informative blog post\n2. Include Denver/Colorado-specific information and examples\n3. Naturally incorporate the SEO keywords\n4. Use a professional but friendly tone\n5. Include practical tips and actionable advice\n6. Reference local weather patterns, building codes, or regulations when relevant\n7. Add a compelling introduction and conclusion\n8. Structure with clear headings (H2, H3)\n9. Include a strong call-to-action at the end\n10. Mention our services naturally within the content\n\nFORMAT:\n- Title (H1)\n- Introduction paragraph\n- 4-6 main sections with H2 headings\n- Subsections with H3 headings where appropriate\n- Conclusion with call-to-action\n- Meta description (150 characters max)\n\nMake it valuable, SEO-friendly, and locally relevant to Denver homeowners."
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 2500
+        }
+      },
+      "id": "4d4d4d4d-4d4d-4d4d-4d4d-4d4d4d4d4d4d",
+      "name": "OpenAI Blog Content Generation",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract and format the blog content\nconst aiContent = items[0].json.choices[0].message.content;\nconst originalParams = items[0].json;\n\n// Parse the content to extract different sections\nconst lines = aiContent.split('\\n').filter(line => line.trim());\nlet title = '';\nlet metaDescription = '';\nlet content = aiContent;\n\n// Extract title (first H1 or line starting with #)\nconst titleMatch = aiContent.match(/^#\\s*(.+)$/m);\nif (titleMatch) {\n  title = titleMatch[1].trim();\n}\n\n// Extract meta description if present\nconst metaMatch = aiContent.match(/Meta [Dd]escription:?\\s*(.+)$/m);\nif (metaMatch) {\n  metaDescription = metaMatch[1].trim();\n  // Remove meta description from content\n  content = content.replace(/Meta [Dd]escription:?\\s*.+$/m, '').trim();\n}\n\n// Generate slug\nconst slug = title.toLowerCase()\n  .replace(/[^a-z0-9\\s-]/g, '')\n  .replace(/\\s+/g, '-')\n  .replace(/-+/g, '-')\n  .replace(/^-|-$/g, '');\n\n// Ensure meta description\nif (!metaDescription) {\n  metaDescription = `${title}. Expert roofing advice from Denver's trusted contractors. Free estimates available.`;\n  if (metaDescription.length > 150) {\n    metaDescription = metaDescription.substring(0, 147) + '...';\n  }\n}\n\n// Structure the final blog post\nconst blogPost = {\n  title: title || originalParams.topic,\n  slug: slug,\n  content: content,\n  meta_description: metaDescription,\n  keywords: originalParams.seo_keywords,\n  author: 'Alpine Peak Roofing Team',\n  status: originalParams.publish_immediately ? 'published' : 'draft',\n  category: 'Roofing Tips',\n  tags: [\n    'Denver Roofing',\n    'Colorado',\n    originalParams.season,\n    originalParams.content_type\n  ],\n  featured_image_alt: `${title} - Alpine Peak Roofing Denver`,\n  schema_data: {\n    '@type': 'BlogPosting',\n    headline: title,\n    description: metaDescription,\n    author: {\n      '@type': 'Organization',\n      name: 'Alpine Peak Roofing'\n    },\n    publisher: {\n      '@type': 'Organization',\n      name: 'Alpine Peak Roofing'\n    }\n  },\n  created_at: new Date().toISOString(),\n  word_count: content.split(' ').length,\n  readability_score: calculateReadabilityScore(content)\n};\n\nfunction calculateReadabilityScore(text) {\n  // Simple readability estimation\n  const words = text.split(' ').length;\n  const sentences = text.split(/[.!?]+/).length;\n  const avgWordsPerSentence = words / sentences;\n  \n  if (avgWordsPerSentence <= 15) return 'Easy';\n  if (avgWordsPerSentence <= 20) return 'Medium';\n  return 'Hard';\n}\n\nreturn [{ json: blogPost }];"
+      },
+      "id": "5e5e5e5e-5e5e-5e5e-5e5e-5e5e5e5e5e5e",
+      "name": "Content Formatting & SEO Optimization",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "table": "blog_posts",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "slug": "={{ $json.slug }}",
+            "content": "={{ $json.content }}",
+            "meta_description": "={{ $json.meta_description }}",
+            "keywords": "={{ $json.keywords }}",
+            "status": "={{ $json.status }}",
+            "category": "={{ $json.category }}",
+            "tags": "={{ JSON.stringify($json.tags) }}",
+            "author": "={{ $json.author }}",
+            "word_count": "={{ $json.word_count }}",
+            "readability_score": "={{ $json.readability_score }}",
+            "schema_data": "={{ JSON.stringify($json.schema_data) }}",
+            "created_at": "={{ $json.created_at }}"
+          }
+        }
+      },
+      "id": "6f6f6f6f-6f6f-6f6f-6f6f-6f6f6f6f6f6f",
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "published",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "7g7g7g7g-7g7g-7g7g-7g7g-7g7g7g7g7g7g",
+      "name": "Check Publish Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1340, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "title": "={{ $json.title }}",
+        "content": "={{ $json.content }}",
+        "status": "publish",
+        "excerpt": "={{ $json.meta_description }}",
+        "categories": "={{ $json.category }}",
+        "tags": "={{ $json.tags.join(', ') }}",
+        "metaFields": {
+          "metaFieldsValues": [
+            {
+              "key": "meta_description",
+              "value": "={{ $json.meta_description }}"
+            },
+            {
+              "key": "keywords",
+              "value": "={{ $json.keywords.join(', ') }}"
+            },
+            {
+              "key": "schema_data",
+              "value": "={{ JSON.stringify($json.schema_data) }}"
+            }
+          ]
+        }
+      },
+      "id": "8h8h8h8h-8h8h-8h8h-8h8h-8h8h8h8h8h8h",
+      "name": "Publish to WordPress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "text": "📝 New Blog Post Published!\n\n✅ {{ $json.title }}\n📊 Word Count: {{ $json.word_count }}\n📖 Readability: {{ $json.readability_score }}\n🎯 Keywords: {{ $json.keywords.join(', ') }}\n\n🔗 Live on website now!\n\n#ContentMarketing #DenverRoofing #SEO",
+        "additionalFields": {
+          "attachments": "[]"
+        }
+      },
+      "id": "9i9i9i9i-9i9i-9i9i-9i9i-9i9i9i9i9i9i",
+      "name": "Social Media Post",
+      "type": "n8n-nodes-base.facebook",
+      "typeVersion": 1,
+      "position": [1560, 500]
+    },
+    {
+      "parameters": {
+        "channel": "#marketing",
+        "text": "📝 Blog Generation Complete!\n\n📄 Title: {{ $('Content Formatting & SEO Optimization').item.json.title }}\n📊 Status: {{ $('Content Formatting & SEO Optimization').item.json.status }}\n📈 Word Count: {{ $('Content Formatting & SEO Optimization').item.json.word_count }}\n🎯 SEO Keywords: {{ $('Content Formatting & SEO Optimization').item.json.keywords.join(', ') }}\n📖 Readability: {{ $('Content Formatting & SEO Optimization').item.json.readability_score }}\n\n{{ $('Content Formatting & SEO Optimization').item.json.status === 'published' ? '✅ Published live on website' : '📝 Saved as draft for review' }}"
+      },
+      "id": "aj0j0j0j-0j0j-0j0j-0j0j-0j0j0j0j0j0j",
+      "name": "Team Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1780, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \n  success: true, \n  blog_post: $json,\n  message: $json.status === 'published' ? 'Blog post published successfully' : 'Blog post saved as draft'\n} }}"
+      },
+      "id": "bk1k1k1k-1k1k-1k1k-1k1k-1k1k1k1k1k1k",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1780, 200]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Mon, Wed, Fri 9AM)": {
+      "main": [
+        [
+          {
+            "node": "Topic Generation & SEO Planning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger Webhook": {
+      "main": [
+        [
+          {
+            "node": "Topic Generation & SEO Planning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Generation & SEO Planning": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Blog Content Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Blog Content Generation": {
+      "main": [
+        [
+          {
+            "node": "Content Formatting & SEO Optimization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Formatting & SEO Optimization": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Database": {
+      "main": [
+        [
+          {
+            "node": "Check Publish Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Publish Status": {
+      "main": [
+        [
+          {
+            "node": "Publish to WordPress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Social Media Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Team Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to WordPress": {
+      "main": [
+        [
+          {
+            "node": "Team Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Social Media Post": {
+      "main": [
+        [
+          {
+            "node": "Team Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Team Notification": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "blog-generation-alpine-peak",
+  "tags": [
+    {
+      "createdAt": "2025-01-07T00:00:00.000Z",
+      "updatedAt": "2025-01-07T00:00:00.000Z",
+      "id": "alpine-peak",
+      "name": "Alpine Peak Roofing"
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{
+  "name": "Email Formatter Tool",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "id": "execute-workflow-trigger",
+      "name": "Execute Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "email_address",
+              "name": "email_address",
+              "value": "={{ $json.email || $json.user_email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "message_content",
+              "name": "message_content",
+              "value": "={{ $json.message || $json.content || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "format_type",
+              "name": "format_type",
+              "value": "={{ $json.format || 'html' }}",
+              "type": "string"
+            },
+            {
+              "id": "subject",
+              "name": "subject",
+              "value": "={{ $json.subject || 'Alpine Peak Roofing - Information About Your Inquiry' }}",
+              "type": "string"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $json.session_id || 'default_session' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300],
+      "id": "extract-email-params",
+      "name": "Extract Email Parameters"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email_address }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [720, 300],
+      "id": "check-email-provided",
+      "name": "Check Email Provided"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.format_type }}",
+              "rightValue": "html",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [960, 200],
+      "id": "check-format-type",
+      "name": "Check Format Type"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Format content as HTML email\nconst content = $json.message_content || '';\n\n// Convert markdown-like formatting to HTML\nlet htmlContent = content\n  .replace(/\\*\\*([^*]+)\\*\\*/g, '<strong>$1</strong>')  // Bold\n  .replace(/\\*([^*]+)\\*/g, '<em>$1</em>')             // Italic\n  .replace(/^# (.+)$/gm, '<h1>$1</h1>')              // H1\n  .replace(/^## (.+)$/gm, '<h2>$1</h2>')             // H2\n  .replace(/^### (.+)$/gm, '<h3>$1</h3>')            // H3\n  .replace(/^- (.+)$/gm, '<li>$1</li>')              // List items\n  .replace(/\\n\\n/g, '</p><p>')                        // Paragraphs\n  .replace(/\\n/g, '<br>')                            // Line breaks\n  .replace(/(<li>.*<\\/li>)/gs, '<ul>$1</ul>')        // Wrap lists\n  .replace(/(https?:\\/\\/[^\\s]+)/g, '<a href=\"$1\">$1</a>'); // Links\n\n// Wrap in paragraph tags if not already wrapped\nif (!htmlContent.includes('<p>') && !htmlContent.includes('<h1>')) {\n  htmlContent = '<p>' + htmlContent + '</p>';\n}\n\nconst emailTemplate = `\n<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>Alpine Peak Roofing</title>\n    <style>\n        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }\n        .header { background: linear-gradient(135deg, #2c5aa0, #1e4080); color: white; padding: 20px; text-align: center; margin-bottom: 20px; }\n        .content { background: #f8f9fa; padding: 20px; border-radius: 5px; }\n        .footer { margin-top: 20px; padding: 15px; background: #e9ecef; text-align: center; font-size: 12px; }\n        a { color: #2c5aa0; }\n        h1, h2, h3 { color: #2c5aa0; }\n        .cta { background: #2c5aa0; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 10px 0; }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <h1>🏔️ Alpine Peak Roofing</h1>\n        <p>Pinnacle of Protection, Peak of Performance</p>\n    </div>\n    <div class=\"content\">\n        ${htmlContent}\n        \n        <div style=\"margin-top: 20px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2c5aa0;\">\n            <strong>📞 Emergency Contact:</strong> (970) 446-8995<br>\n            <strong>📅 Schedule Consultation:</strong> <a href=\"https://calendly.com/jimmy-agenticpersonnel/30min\" class=\"cta\">Book Now</a>\n        </div>\n    </div>\n    <div class=\"footer\">\n        <p>© 2025 Alpine Peak Roofing | Denver, Colorado<br>\n        Professional roofing services for residential and commercial properties</p>\n    </div>\n</body>\n</html>\n`;\n\nreturn {\n  json: {\n    formatted_content: emailTemplate,\n    format: 'html',\n    subject: $json.subject,\n    email_address: $json.email_address,\n    session_id: $json.session_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 100],
+      "id": "format-html-email",
+      "name": "Format HTML Email"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Format content as plain text for markdown/text format\nconst content = $json.message_content || '';\n\n// Clean up any HTML and format as plain text\nlet textContent = content\n  .replace(/<[^>]*>/g, '')                           // Remove HTML tags\n  .replace(/\\*\\*([^*]+)\\*\\*/g, '$1')                 // Remove bold formatting\n  .replace(/\\*([^*]+)\\*/g, '$1')                     // Remove italic formatting\n  .replace(/#{1,6}\\s+/g, '')                         // Remove headers\n  .replace(/\\n{3,}/g, '\\n\\n')                        // Clean excessive newlines\n  .trim();\n\nconst emailTemplate = `\n🏔️ ALPINE PEAK ROOFING\nPinnacle of Protection, Peak of Performance\n\n=====================================\n\n${textContent}\n\n=====================================\n\n📞 EMERGENCY CONTACT: (970) 446-8995\n📅 SCHEDULE CONSULTATION: https://calendly.com/jimmy-agenticpersonnel/30min\n\n© 2025 Alpine Peak Roofing | Denver, Colorado\nProfessional roofing services for residential and commercial properties\n`;\n\nreturn {\n  json: {\n    formatted_content: emailTemplate,\n    format: $json.format_type,\n    subject: $json.subject,\n    email_address: $json.email_address,\n    session_id: $json.session_id\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300],
+      "id": "format-text-email",
+      "name": "Format Text/MD Email"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email_address }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "={{ $json.format === 'html' ? 'html' : 'text' }}",
+        "message": "={{ $json.formatted_content }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1440, 200],
+      "id": "send-email",
+      "name": "Send Email",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "8hbFbajUg7gLFAaq",
+          "name": "Gmail_APS_account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success",
+              "name": "success",
+              "value": "=true",
+              "type": "boolean"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "={{ 'Email sent successfully to ' + $json.email_address + ' in ' + $json.format + ' format' }}",
+              "type": "string"
+            },
+            {
+              "id": "email_sent",
+              "name": "email_sent",
+              "value": "=true",
+              "type": "boolean"
+            },
+            {
+              "id": "format_used",
+              "name": "format_used",
+              "value": "={{ $json.format }}",
+              "type": "string"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1680, 200],
+      "id": "format-success-response",
+      "name": "Format Success Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success",
+              "name": "success",
+              "value": "=false",
+              "type": "boolean"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "Email address is required to send email responses",
+              "type": "string"
+            },
+            {
+              "id": "email_sent",
+              "name": "email_sent",
+              "value": "=false",
+              "type": "boolean"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $json.session_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [960, 400],
+      "id": "format-error-response",
+      "name": "Format Error Response"
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [[{"node": "Extract Email Parameters", "type": "main", "index": 0}]]
+    },
+    "Extract Email Parameters": {
+      "main": [[{"node": "Check Email Provided", "type": "main", "index": 0}]]
+    },
+    "Check Email Provided": {
+      "main": [
+        [{"node": "Check Format Type", "type": "main", "index": 0}],
+        [{"node": "Format Error Response", "type": "main", "index": 0}]
+      ]
+    },
+    "Check Format Type": {
+      "main": [
+        [{"node": "Format HTML Email", "type": "main", "index": 0}],
+        [{"node": "Format Text/MD Email", "type": "main", "index": 0}]
+      ]
+    },
+    "Format HTML Email": {
+      "main": [[{"node": "Send Email", "type": "main", "index": 0}]]
+    },
+    "Format Text/MD Email": {
+      "main": [[{"node": "Send Email", "type": "main", "index": 0}]]
+    },
+    "Send Email": {
+      "main": [[{"node": "Format Success Response", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

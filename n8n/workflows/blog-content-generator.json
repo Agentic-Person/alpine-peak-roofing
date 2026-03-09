@@ -12,7 +12,7 @@
       "id": "webhook-trigger-001",
       "name": "Webhook Trigger - Content Generator",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1.1,
+      "typeVersion": 2.1,
       "position": [
         220,
         300
@@ -21,14 +21,14 @@
     },
     {
       "parameters": {
-        "operation": "select",
-        "table": "blog_content_plans",
-        "options": {
-          "queryFilters": [
+        "resource": "row",
+        "operation": "get",
+        "tableId": "blog_content_plans",
+        "filters": {
+          "conditions": [
             {
-              "key": "id",
-              "operator": "=",
-              "value": "={{ $json.body.content_plan_id }}"
+              "keyName": "id",
+              "keyValue": "={{ $json.body.content_plan_id }}"
             }
           ]
         }
@@ -44,14 +44,16 @@
     },
     {
       "parameters": {
-        "operation": "select",
-        "table": "blog_content_templates",
-        "options": {
-          "queryFilters": [
+        "resource": "row",
+        "operation": "getAll",
+        "tableId": "blog_content_templates",
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
             {
-              "key": "template_type",
-              "operator": "=",
-              "value": "={{ $('Supabase - Get Content Plan').first().json.content_type }}"
+              "keyName": "template_type",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase - Get Content Plan').first().json.content_type }}"
             }
           ]
         }
@@ -67,20 +69,27 @@
     },
     {
       "parameters": {
+        "resource": "row",
         "operation": "update",
-        "table": "blog_content_plans",
-        "where": {
-          "values": [
+        "tableId": "blog_content_plans",
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
             {
-              "key": "id",
-              "value": "={{ $('Supabase - Get Content Plan').first().json.id }}"
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Supabase - Get Content Plan').first().json.id }}"
             }
           ]
         },
-        "columns": {
-          "values": {
-            "status": "in_progress"
-          }
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "in_progress"
+            }
+          ]
         }
       },
       "id": "supabase-update-status-001",
@@ -94,7 +103,12 @@
     },
     {
       "parameters": {
-        "model": "gpt-3.5-turbo",
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "mode": "id",
+          "value": "gpt-3.5-turbo"
+        },
         "messages": {
           "values": [
             {
@@ -115,7 +129,7 @@
       "id": "openai-outline-001",
       "name": "OpenAI - Create Outline (GPT-3.5)",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         1020,
         200
@@ -123,7 +137,12 @@
     },
     {
       "parameters": {
-        "model": "gpt-3.5-turbo",
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "mode": "id",
+          "value": "gpt-3.5-turbo"
+        },
         "messages": {
           "values": [
             {
@@ -144,7 +163,7 @@
       "id": "openai-draft-001",
       "name": "OpenAI - Write Draft (GPT-3.5)",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         1020,
         350
@@ -152,41 +171,17 @@
     },
     {
       "parameters": {
-        "model": "gpt-4",
-        "messages": {
-          "values": [
-            {
-              "role": "system",
-              "content": "You are an expert content editor optimizing roofing content for SEO, readability, and conversion. Enhance content while maintaining authenticity and helpfulness."
-            },
-            {
-              "role": "user",
-              "content": "Enhance this blog post for better SEO, readability, and conversion:\n\n{{ $('OpenAI - Write Draft (GPT-3.5)').first().json.choices[0].message.content }}\n\nTarget Keywords: {{ $('Supabase - Get Content Plan').first().json.keywords.join(', ') }}\n\nImprove:\n- Flow and readability\n- SEO optimization (natural keyword placement)\n- More compelling headlines and subheadings\n- Stronger call-to-action\n- Grammar and style\n- Local Denver relevance\n- Lead generation potential\n\nMaintain:\n- Conversational tone\n- Helpful, actionable advice\n- Safety focus\n- Professional credibility"
-            }
-          ]
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "mode": "id",
+          "value": "gpt-3.5-turbo"
         },
-        "options": {
-          "temperature": 0.3,
-          "maxTokens": 1500
-        }
-      },
-      "id": "openai-polish-001",
-      "name": "OpenAI - Polish Content (GPT-4)",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
-      "position": [
-        1020,
-        500
-      ]
-    },
-    {
-      "parameters": {
-        "model": "gpt-3.5-turbo",
         "messages": {
           "values": [
             {
               "role": "user",
-              "content": "Create SEO elements for this blog post:\n\nTitle: {{ JSON.parse($('OpenAI - Create Outline (GPT-3.5)').first().json.choices[0].message.content).title }}\nContent: {{ $('OpenAI - Polish Content (GPT-4)').first().json.choices[0].message.content.substring(0, 1000) }}...\n\nCreate:\n1. Meta title (50-60 chars) - include primary keyword\n2. Meta description (150-160 chars) - compelling, includes CTA\n3. 3 internal link suggestions (existing Alpine Peak pages)\n4. Alt text for featured image\n5. URL slug (SEO-friendly)\n6. Focus keyphrases (primary + 2 secondary)\n\nFormat as JSON:\n{\n  \"meta_title\": \"title\",\n  \"meta_description\": \"description\",\n  \"slug\": \"url-friendly-slug\",\n  \"internal_links\": [{\"anchor\": \"text\", \"url\": \"/page\"}],\n  \"featured_image_alt\": \"alt text\",\n  \"focus_keyphrases\": [\"primary\", \"secondary1\", \"secondary2\"]\n}"
+              "content": "Create SEO elements for this blog post:\n\nTitle: {{ JSON.parse($('OpenAI - Create Outline (GPT-3.5)').first().json.choices[0].message.content).title }}\nContent: {{ $('OpenAI - Write Draft (GPT-3.5)').first().json.choices[0].message.content.substring(0, 1000) }}...\n\nCreate:\n1. Meta title (50-60 chars) - include primary keyword\n2. Meta description (150-160 chars) - compelling, includes CTA\n3. 3 internal link suggestions (existing Alpine Peak pages)\n4. Alt text for featured image\n5. URL slug (SEO-friendly)\n6. Focus keyphrases (primary + 2 secondary)\n\nFormat as JSON:\n{\n  \"meta_title\": \"title\",\n  \"meta_description\": \"description\",\n  \"slug\": \"url-friendly-slug\",\n  \"internal_links\": [{\"anchor\": \"text\", \"url\": \"/page\"}],\n  \"featured_image_alt\": \"alt text\",\n  \"focus_keyphrases\": [\"primary\", \"secondary1\", \"secondary2\"]\n}"
             }
           ]
         },
@@ -198,7 +193,7 @@
       "id": "openai-seo-001",
       "name": "OpenAI - SEO Optimization (GPT-3.5)",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         1220,
         300
@@ -206,15 +201,19 @@
     },
     {
       "parameters": {
+        "resource": "image",
+        "operation": "generate",
         "model": "dall-e-3",
-        "size": "1792x1024",
         "prompt": "Professional photograph of {{ JSON.parse($('OpenAI - Create Outline (GPT-3.5)').first().json.choices[0].message.content).title.toLowerCase().includes('roof') ? 'modern residential roof' : 'roofing maintenance work' }} on a Denver home, bright natural lighting, high quality, realistic, suitable for blog header, professional roofing, Colorado architecture",
-        "quality": "standard"
+        "options": {
+          "size": "1792x1024",
+          "dalleQuality": "standard"
+        }
       },
       "id": "openai-image-001",
       "name": "OpenAI - Generate Featured Image (DALL-E 3)",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         1220,
         450
@@ -222,7 +221,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Process all content and prepare for database\nconst outline = JSON.parse($('OpenAI - Create Outline (GPT-3.5)').first().json.choices[0].message.content);\nconst finalContent = $('OpenAI - Polish Content (GPT-4)').first().json.choices[0].message.content;\nconst seoData = JSON.parse($('OpenAI - SEO Optimization (GPT-3.5)').first().json.choices[0].message.content);\nconst imageData = $('OpenAI - Generate Featured Image (DALL-E 3)').first().json;\nconst contentPlan = $('Supabase - Get Content Plan').first().json;\n\n// Calculate total cost\nconst outlineTokens = $('OpenAI - Create Outline (GPT-3.5)').first().json.usage.total_tokens;\nconst draftTokens = $('OpenAI - Write Draft (GPT-3.5)').first().json.usage.total_tokens;\nconst polishTokens = $('OpenAI - Polish Content (GPT-4)').first().json.usage.total_tokens;\nconst seoTokens = $('OpenAI - SEO Optimization (GPT-3.5)').first().json.usage.total_tokens;\n\n// Cost calculation (approximate)\nconst gpt35Cost = (outlineTokens + draftTokens + seoTokens) * 0.0015 / 1000; // GPT-3.5 cost\nconst gpt4Cost = polishTokens * 0.03 / 1000; // GPT-4 cost\nconst imageCost = 0.080; // DALL-E 3 cost\nconst totalCost = gpt35Cost + gpt4Cost + imageCost;\n\n// Generate excerpt (first 160 characters of content)\nconst excerpt = finalContent.substring(0, 160).replace(/\\s+$/, '') + '...';\n\n// Create slug from title\nconst slug = seoData.slug || outline.title.toLowerCase()\n  .replace(/[^a-z0-9\\s-]/g, '')\n  .replace(/\\s+/g, '-')\n  .substring(0, 60);\n\nreturn {\n  json: {\n    title: outline.title,\n    slug: slug,\n    content: finalContent,\n    excerpt: excerpt,\n    meta_title: seoData.meta_title,\n    meta_description: seoData.meta_description,\n    featured_image_url: imageData.data[0].url,\n    featured_image_alt: seoData.featured_image_alt,\n    status: 'draft',\n    category: contentPlan.content_type,\n    tags: contentPlan.keywords || [],\n    seo_keywords: seoData.focus_keyphrases || contentPlan.keywords,\n    internal_links: seoData.internal_links || [],\n    ai_generation_cost: Math.round(totalCost * 100) / 100,\n    content_plan_id: contentPlan.id,\n    outline_data: outline,\n    token_usage: {\n      outline: outlineTokens,\n      draft: draftTokens,\n      polish: polishTokens,\n      seo: seoTokens,\n      total: outlineTokens + draftTokens + polishTokens + seoTokens\n    }\n  }\n};"
+        "jsCode": "// Process all content and prepare for database\nconst outline = JSON.parse($('OpenAI - Create Outline (GPT-3.5)').first().json.content);\nconst finalContent = $('OpenAI - Write Draft (GPT-3.5)').first().json.content;\nconst seoData = JSON.parse($('OpenAI - SEO Optimization (GPT-3.5)').first().json.content);\nconst imageData = $('OpenAI - Generate Featured Image (DALL-E 3)').first().json;\nconst contentPlan = $('Supabase - Get Content Plan').first().json;\n\n// Calculate total cost (no more GPT-4 polish!)\nconst outlineTokens = $('OpenAI - Create Outline (GPT-3.5)').first().json.usage?.total_tokens || 800;\nconst draftTokens = $('OpenAI - Write Draft (GPT-3.5)').first().json.usage?.total_tokens || 2000;\nconst seoTokens = $('OpenAI - SEO Optimization (GPT-3.5)').first().json.usage?.total_tokens || 400;\n\n// Cost calculation (much cheaper now!)\nconst gpt35Cost = (outlineTokens + draftTokens + seoTokens) * 0.0015 / 1000; // GPT-3.5 cost only\nconst imageCost = 0.080; // DALL-E 3 cost\nconst totalCost = gpt35Cost + imageCost;\n\n// Generate excerpt (first 160 characters of content)\nconst excerpt = finalContent.substring(0, 160).replace(/\\s+$/, '') + '...';\n\n// Create slug from title\nconst slug = seoData.slug || outline.title.toLowerCase()\n  .replace(/[^a-z0-9\\s-]/g, '')\n  .replace(/\\s+/g, '-')\n  .substring(0, 60);\n\nreturn {\n  json: {\n    title: outline.title,\n    slug: slug,\n    content: finalContent,\n    excerpt: excerpt,\n    meta_title: seoData.meta_title,\n    meta_description: seoData.meta_description,\n    featured_image_url: imageData.data?.[0]?.url || 'placeholder-image-url',\n    featured_image_alt: seoData.featured_image_alt,\n    status: 'draft',\n    category: contentPlan.content_type,\n    tags: contentPlan.keywords || [],\n    seo_keywords: seoData.focus_keyphrases || contentPlan.keywords,\n    internal_links: seoData.internal_links || [],\n    ai_generation_cost: Math.round(totalCost * 100) / 100,\n    content_plan_id: contentPlan.id,\n    outline_data: outline,\n    token_usage: {\n      outline: outlineTokens,\n      draft: draftTokens,\n      seo: seoTokens,\n      total: outlineTokens + draftTokens + seoTokens\n    }\n  }\n};"
       },
       "id": "code-process-001",
       "name": "Code - Process Content Data",
@@ -235,25 +234,27 @@
     },
     {
       "parameters": {
-        "operation": "insert",
-        "table": "blog_posts",
-        "columns": {
-          "values": {
-            "title": "={{ $json.title }}",
-            "slug": "={{ $json.slug }}",
-            "content": "={{ $json.content }}",
-            "excerpt": "={{ $json.excerpt }}",
-            "meta_title": "={{ $json.meta_title }}",
-            "meta_description": "={{ $json.meta_description }}",
-            "featured_image_url": "={{ $json.featured_image_url }}",
-            "featured_image_alt": "={{ $json.featured_image_alt }}",
-            "status": "={{ $json.status }}",
-            "category": "={{ $json.category }}",
-            "tags": "={{ $json.tags }}",
-            "seo_keywords": "={{ $json.seo_keywords }}",
-            "internal_links": "={{ $json.internal_links }}",
-            "ai_generation_cost": "={{ $json.ai_generation_cost }}"
-          }
+        "resource": "row",
+        "operation": "create",
+        "tableId": "blog_posts",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {"fieldId": "title", "fieldValue": "={{ $json.title }}"},
+            {"fieldId": "slug", "fieldValue": "={{ $json.slug }}"},
+            {"fieldId": "content", "fieldValue": "={{ $json.content }}"},
+            {"fieldId": "excerpt", "fieldValue": "={{ $json.excerpt }}"},
+            {"fieldId": "meta_title", "fieldValue": "={{ $json.meta_title }}"},
+            {"fieldId": "meta_description", "fieldValue": "={{ $json.meta_description }}"},
+            {"fieldId": "featured_image_url", "fieldValue": "={{ $json.featured_image_url }}"},
+            {"fieldId": "featured_image_alt", "fieldValue": "={{ $json.featured_image_alt }}"},
+            {"fieldId": "status", "fieldValue": "={{ $json.status }}"},
+            {"fieldId": "category", "fieldValue": "={{ $json.category }}"},
+            {"fieldId": "tags", "fieldValue": "={{ $json.tags }}"},
+            {"fieldId": "seo_keywords", "fieldValue": "={{ $json.seo_keywords }}"},
+            {"fieldId": "internal_links", "fieldValue": "={{ $json.internal_links }}"},
+            {"fieldId": "ai_generation_cost", "fieldValue": "={{ $json.ai_generation_cost }}"}
+          ]
         }
       },
       "id": "supabase-insert-post-001",
@@ -267,22 +268,26 @@
     },
     {
       "parameters": {
+        "resource": "row",
         "operation": "update",
-        "table": "blog_content_plans",
-        "where": {
-          "values": [
+        "tableId": "blog_content_plans",
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
             {
-              "key": "id",
-              "value": "={{ $('Code - Process Content Data').first().json.content_plan_id }}"
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Code - Process Content Data').first().json.content_plan_id }}"
             }
           ]
         },
-        "columns": {
-          "values": {
-            "status": "completed",
-            "blog_post_id": "={{ $('Supabase - Insert Blog Post').first().json.id }}",
-            "outline": "={{ $('Code - Process Content Data').first().json.outline_data }}"
-          }
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {"fieldId": "status", "fieldValue": "completed"},
+            {"fieldId": "blog_post_id", "fieldValue": "={{ $('Supabase - Insert Blog Post').first().json.id }}"},
+            {"fieldId": "outline", "fieldValue": "={{ $('Code - Process Content Data').first().json.outline_data }}"}
+          ]
         }
       },
       "id": "supabase-update-plan-001",
@@ -296,24 +301,22 @@
     },
     {
       "parameters": {
-        "operation": "insert",
-        "table": "blog_automation_logs",
-        "columns": {
-          "values": {
-            "workflow_name": "blog-content-generator",
-            "workflow_execution_id": "={{ $workflow.id }}",
-            "blog_post_id": "={{ $('Supabase - Insert Blog Post').first().json.id }}",
-            "content_plan_id": "={{ $('Code - Process Content Data').first().json.content_plan_id }}",
-            "status": "completed",
-            "cost_incurred": "={{ $('Code - Process Content Data').first().json.ai_generation_cost }}",
-            "tokens_used": "={{ $('Code - Process Content Data').first().json.token_usage.total }}",
-            "execution_time_ms": "={{ $workflow.executionTime }}",
-            "metadata": {
-              "title": "={{ $('Code - Process Content Data').first().json.title }}",
-              "word_count": "={{ $('Code - Process Content Data').first().json.content.length }}",
-              "token_breakdown": "={{ $('Code - Process Content Data').first().json.token_usage }}"
-            }
-          }
+        "resource": "row",
+        "operation": "create",
+        "tableId": "blog_automation_logs",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {"fieldId": "workflow_name", "fieldValue": "blog-content-generator"},
+            {"fieldId": "workflow_execution_id", "fieldValue": "={{ $workflow.id }}"},
+            {"fieldId": "blog_post_id", "fieldValue": "={{ $('Supabase - Insert Blog Post').first().json.id }}"},
+            {"fieldId": "content_plan_id", "fieldValue": "={{ $('Code - Process Content Data').first().json.content_plan_id }}"},
+            {"fieldId": "status", "fieldValue": "completed"},
+            {"fieldId": "cost_incurred", "fieldValue": "={{ $('Code - Process Content Data').first().json.ai_generation_cost }}"},
+            {"fieldId": "tokens_used", "fieldValue": "={{ $('Code - Process Content Data').first().json.token_usage.total }}"},
+            {"fieldId": "execution_time_ms", "fieldValue": "={{ $workflow.executionTime }}"},
+            {"fieldId": "metadata", "fieldValue": "={{ {title: $('Code - Process Content Data').first().json.title, word_count: $('Code - Process Content Data').first().json.content.length, token_breakdown: $('Code - Process Content Data').first().json.token_usage} }}"}
+          ]
         }
       },
       "id": "supabase-log-001",
@@ -327,7 +330,7 @@
     },
     {
       "parameters": {
-        "url": "http://your-n8n-instance.com/webhook/blog-publisher",
+        "url": "https://agenticpersonnel.app.n8n.cloud/webhook/blog-publisher",
         "options": {
           "bodyParameters": {
             "parameters": [
@@ -410,17 +413,6 @@
       ]
     },
     "OpenAI - Write Draft (GPT-3.5)": {
-      "main": [
-        [
-          {
-            "node": "OpenAI - Polish Content (GPT-4)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI - Polish Content (GPT-4)": {
       "main": [
         [
           {

@@ -235,7 +235,8 @@ export const blogPosts: BlogPost[] = [
 
 export const categories = [
   "All Posts",
-  "Safety & Maintenance", 
+  "Safety & Maintenance",
+  "Maintenance",
   "Storm Damage",
   "Metal Roofing",
   "Winter Protection",

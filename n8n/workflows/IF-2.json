@@ -1,0 +1,9 @@
+{
+                         "id": "has_knowledge",
+                         "name": "has_knowledge",
+        
+                        "value": "={{ ($json.pageContent && $json.pageContent.length > 0) || (
+            $json.content && $json.content.length > 0) || ($json && Object.keys($json).length > 1) 
+             ? true : false }}",
+                         "type": "boolean"
+                       }

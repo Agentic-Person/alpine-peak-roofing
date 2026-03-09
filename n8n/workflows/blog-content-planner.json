@@ -36,7 +36,7 @@
       "id": "2b1c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
       "name": "RSS Read - Roofing Industry",
       "type": "n8n-nodes-base.rssFeedRead",
-      "typeVersion": 1,
+      "typeVersion": 1.2,
       "position": [
         420,
         200
@@ -52,7 +52,7 @@
       "id": "3c2d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
       "name": "RSS Read - Pro Roofer",
       "type": "n8n-nodes-base.rssFeedRead",
-      "typeVersion": 1,
+      "typeVersion": 1.2,
       "position": [
         420,
         300
@@ -113,7 +113,7 @@
       "id": "5e4f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b",
       "name": "Supabase - Recent Customer FAQs",
       "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "typeVersion": 1.2,
       "position": [
         420,
         500
@@ -142,7 +142,7 @@
       "id": "6f5a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c",
       "name": "OpenAI - Topic Selection",
       "type": "@n8n/n8n-nodes-langchain.openAi",
-      "typeVersion": 1.4,
+      "typeVersion": 1.8,
       "position": [
         620,
         350
@@ -181,7 +181,7 @@
       "id": "8b7c9d0e-1f2a-3b4c-5d6e-7f8a9b0c1d2e",
       "name": "Supabase - Insert Content Plan",
       "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "typeVersion": 1.2,
       "position": [
         1020,
         350
@@ -210,7 +210,7 @@
       "id": "9c8d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
       "name": "Supabase - Log Execution",
       "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "typeVersion": 1.2,
       "position": [
         1220,
         350
@@ -218,7 +218,7 @@
     },
     {
       "parameters": {
-        "url": "http://your-n8n-instance.com/webhook/blog-content-generator",
+        "url": "https://agenticpersonnel.app.n8n.cloud/webhook/blog-content-generator",
         "options": {
           "bodyParameters": {
             "parameters": [

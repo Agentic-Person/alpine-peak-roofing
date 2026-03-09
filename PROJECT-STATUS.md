@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-05 (Session 8)
+**Last Updated:** 2026-03-05 (Session 9)
 **Branch:** `feature/blog-automation-and-workflow-optimization`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
@@ -24,7 +24,7 @@
 | `/contact` | ✅ Exists | Contact form |
 | `/blog` | ✅ Exists | Blog listing (AI-generated content) |
 | `/blog/[slug]` | ✅ Exists | Individual blog posts |
-| `/estimator` | ✅ Done | Redesigned — Denver Blue + 5-step How It Works (E1–E5) |
+| `/estimator` | ✅ Done | Carousel redesign — 6-slide auto-playing fade carousel (E1–E6 webp), "Analyze My Roof" → Calendly CTA |
 | `/ai-tools` | ✅ Done | Top-of-funnel — "The Labor Equation Solved" |
 | `/ai-tools/solutions` | ✅ Done | Deep-dive — "Intelligent Roofing Automations" |
 | `/ai-chat` | ✅ Exists | Live chatbot interface |
@@ -80,7 +80,8 @@
 - **Utility bar** (desktop only) — gold phone number, ThemeToggle
 - **Nav links** — Lato 700, uppercase, amber-gold when active, white underline hover
 - **AI Tools dropdown** — 3 items: AI Platform, Instant Estimator, Chat with AI
-- **CTA button** — amber-gold "Free Estimate" → `/estimator`
+- **CTA buttons** — "Analyze My Roof" → Calendly (outline), "Free Estimate" → `/estimator` (gold)
+- **Mobile menu** — "Analyze My Roof" full-width outline + "Get Free Estimate" gold
 - **Scroll-aware** — adds navy shadow when scrolled
 
 ---
@@ -98,13 +99,16 @@
 ```
 heroes/         H1_homepage_hero.jpg, H2_homepage_hero_alt.jpg, H3_services_hero.jpg,
                 H4_about_hero.jpg, H5_emergency_hero.jpg + legacy .png files
-portfolio/      BA1-BA5 before/after pairs (10 files), P1-P5 showcase (5 files)
+portfolio/      BA1-BA5 before/after pairs (10 files), P1-P5 showcase (5 files),
+                timber_home_brown_roof.jpg (homepage portfolio section background)
 services/       S1_residential.jpg, S2_commercial.jpg, S3_emergency.jpg,
                 S4_metal_roofing.jpg, S5_drone_inspection.jpg
 team/           T1_lead_roofer.jpg, T2_project_coordinator.jpg, T3_senior_technician.jpg,
                 T4_sales_estimator.jpg, T5_female_ceo.jpg
 backgrounds/    BG1_shingle_texture.jpg, BG2_mountain_panorama.jpg, BG3_cedar_texture.jpg
-estimator/      E1_address_entry.jpg through E5_estimate_delivered.jpg
+estimator/      E1_v3_address_entry.webp, E2_v4_satellite_confirmation.webp,
+                E3_v4_ai_analysis.webp, E4_v2_material_selection.webp,
+                E5_v2_estimate_delivered.webp, timber_home_brown_roof.jpg (slide 6)
 M1/             Original AI-generated placeholder images (kept for pages not yet updated)
 blog/           blog_1 through blog_18 .jpg
 logo/           APR-LOGO-solo.png, APR-favicon.png
@@ -135,11 +139,11 @@ ai-tools/       chatbot-card, autoblog-card, roofestimator-card, crm-card .png
 | `team_project_manager` | T2_project_coordinator.jpg | About — Sarah Mitchell |
 | `team_safety` | T3_senior_technician.jpg | About — David Chen |
 | `team_customer_service` | T4_sales_estimator.jpg | About — Jennifer Park |
-| `estimator_address` | E1_address_entry.jpg | Estimator How It Works |
-| `estimator_satellite` | E2_satellite_confirmation.jpg | Estimator How It Works |
-| `estimator_analysis` | E3_ai_analysis_v2.jpg | Estimator How It Works |
-| `estimator_materials` | E4_material_selection.jpg | Estimator How It Works |
-| `estimator_delivered` | E5_estimate_delivered.jpg | Estimator How It Works |
+| `estimator_address` | E1_v3_address_entry.webp | Estimator carousel slide 1 |
+| `estimator_satellite` | E2_v4_satellite_confirmation.webp | Estimator carousel slide 2 |
+| `estimator_analysis` | E3_v4_ai_analysis.webp | Estimator carousel slide 3 |
+| `estimator_materials` | E4_v2_material_selection.webp | Estimator carousel slide 4 |
+| `estimator_delivered` | E5_v2_estimate_delivered.webp | Estimator carousel slide 5 |
 
 ---
 
@@ -198,4 +202,6 @@ ai-tools/       chatbot-card, autoblog-card, roofestimator-card, crm-card .png
 | `9081b17` | Process page redesign + CSS system expansion + image prompts |
 | `b17d904` | Denver Blue color system + 40 AI-rendered images implemented |
 | `fb35f86` | Homepage hero — fix invisible image (HeroImage → SiteImage), gradient 0.88→0.22 |
-| `latest` | Hero polish — Oswald font, Colorado branding, chat widget moved to top-right |
+| `87f879f` | Hero polish — Oswald font, Colorado branding, chat widget moved to top-right |
+| `c6f4b8b` | Estimator carousel redesign — 6-slide fade carousel, Analyze My Roof CTA globally |
+| `fb8edf6` | Homepage portfolio section — timber mountain home background image |
