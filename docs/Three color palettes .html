@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Palette Demo – Unified Site Systems</title>
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.10);
+      --stroke: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius2: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 18% 10%, rgba(51,204,255,.16), transparent 55%),
+        radial-gradient(1000px 700px at 80% 22%, rgba(212,175,55,.10), transparent 55%),
+        radial-gradient(900px 700px at 55% 90%, rgba(0,85,179,.10), transparent 55%),
+        linear-gradient(180deg, #070a12, var(--bg));
+      min-height:100vh;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(7,10,18,.65);
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 20px; }
+
+    .topbar{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content: space-between;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .dot{
+      width:14px; height:14px; border-radius:999px;
+      background: linear-gradient(135deg, #33CCFF, #FFCC00);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.06);
+    }
+    h1{ font-size: 18px; margin:0; letter-spacing:.2px; }
+    .sub{ font-size: 12.5px; color: var(--muted); margin-top:2px; }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    select, input[type="range"], button{
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    select{ min-width: 250px; }
+    button{
+      cursor:pointer;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+    button:hover{ background: rgba(255,255,255,.10); }
+    button:active{ transform: translateY(1px); }
+
+    .rangeWrap{
+      display:flex; gap:10px; align-items:center;
+      padding: 8px 10px;
+      border:1px solid var(--stroke);
+      border-radius: 12px;
+      background: rgba(255,255,255,.05);
+    }
+    .rangeWrap label{
+      font-size: 12px; color: var(--muted);
+      white-space: nowrap;
+    }
+    input[type="range"]{
+      padding: 0;
+      border: none;
+      background: transparent;
+      width: 180px;
+    }
+
+    main{ padding: 22px 0 60px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      select{ min-width: 220px; }
+      input[type="range"]{ width: 160px; }
+    }
+
+    .card{
+      border: 1px solid var(--stroke);
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+    }
+    .cardHeader h2{ margin:0; font-size: 15px; }
+    .pill{
+      font-size: 11px;
+      color: rgba(255,255,255,.86);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      white-space: nowrap;
+    }
+    .cardBody{ padding: 16px; }
+
+    /* Palette Swatches */
+    .swatches{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 560px){
+      .swatches{ grid-template-columns: repeat(2, 1fr); }
+    }
+    .swatch{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      overflow:hidden;
+      background: rgba(255,255,255,.03);
+    }
+    .swatchTop{
+      height: 62px;
+      position: relative;
+    }
+    .swatchTop::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.18), transparent 55%);
+      mix-blend-mode: overlay;
+      pointer-events:none;
+    }
+    .swatchMeta{
+      padding: 10px 10px 12px;
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .swatchRole{
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,.92);
+    }
+    .swatchHex{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .copy{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.88);
+      cursor:pointer;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .copy:hover{ background: rgba(255,255,255,.10); }
+
+    /* Mini Site Preview */
+    .preview{
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.02);
+    }
+    .nav{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .navLeft{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .navLinks{
+      display:flex; gap: 10px; flex-wrap:wrap; justify-content:flex-end;
+      font-size: 12px;
+      opacity: .92;
+    }
+    .navLinks span{
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+
+    .hero{
+      padding: 18px 16px 16px;
+      display:grid;
+      gap: 12px;
+    }
+    .hero h3{
+      margin:0;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      margin:0;
+      font-size: 13px;
+      color: rgba(255,255,255,.80);
+      line-height: 1.45;
+      max-width: 60ch;
+    }
+    .heroActions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .btn{
+      border: none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 800;
+      font-size: 12.5px;
+      cursor:pointer;
+      transition: transform .08s ease, filter .15s ease, opacity .15s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .section{
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:grid;
+      gap: 12px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 560px){
+      .cards{ grid-template-columns: 1fr; }
+    }
+    .miniCard{
+      border-radius: 16px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      gap: 8px;
+      min-height: 108px;
+    }
+    .miniTitle{
+      font-weight: 900;
+      font-size: 12.5px;
+      letter-spacing:.2px;
+    }
+    .miniText{
+      font-size: 12px;
+      color: rgba(255,255,255,.80);
+      line-height: 1.35;
+    }
+    .chipRow{ display:flex; gap: 8px; flex-wrap:wrap; }
+    .chip{
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+
+    .footer{
+      padding: 14px 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,.74);
+      flex-wrap:wrap;
+    }
+
+    /* Legend / Notes */
+    .kv{
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px 14px;
+      align-items: start;
+    }
+    .k{ color: var(--muted); font-size: 12.5px; }
+    .v{ color: rgba(255,255,255,.90); font-size: 12.5px; line-height: 1.45; }
+    .codebox{
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255,255,255,.86);
+      overflow:auto;
+      white-space: pre;
+    }
+
+    .toast{
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 50;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(7,10,18,.75);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.92);
+      font-size: 12.5px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show{ opacity: 1; transform: translateY(0); }
+
+    /* Palette variables (set by JS) */
+    .preview{
+      --p1: #003366; /* primary / nav */
+      --p2: #0055B3; /* secondary */
+      --p3: #33CCFF; /* highlight */
+      --p4: #D4AF37; /* gold */
+      --p5: #4A6080; /* neutral */
+      --w:  #F8FAFF;
+      --b:  #0A1628;
+
+      --intensity: 1; /* user slider */
+    }
+
+    /* Applying palette to preview */
+    .preview .nav{
+      background: color-mix(in oklab, var(--p1) calc(84% * var(--intensity)), black);
+      color: var(--w);
+    }
+    .preview .navLinks span{
+      background: color-mix(in oklab, white 8%, var(--p2));
+      border-color: color-mix(in oklab, white 10%, var(--p2));
+      color: var(--w);
+    }
+    .preview .hero{
+      background:
+        radial-gradient(900px 420px at 20% 5%, color-mix(in oklab, var(--p3) calc(35% * var(--intensity)), transparent), transparent 60%),
+        radial-gradient(850px 420px at 85% 15%, color-mix(in oklab, var(--p4) calc(25% * var(--intensity)), transparent), transparent 55%),
+        linear-gradient(180deg,
+          color-mix(in oklab, var(--p1) calc(78% * var(--intensity)), black),
+          color-mix(in oklab, var(--p2) calc(40% * var(--intensity)), black));
+      color: var(--w);
+    }
+    .preview .btn.primary{
+      background: var(--p4);
+      color: color-mix(in oklab, var(--b) 92%, black);
+      box-shadow: 0 10px 30px color-mix(in oklab, var(--p4) 22%, transparent);
+    }
+    .preview .btn.secondary{
+      background: color-mix(in oklab, var(--p3) 36%, var(--p2));
+      color: var(--w);
+      border: 1px solid color-mix(in oklab, white 10%, var(--p3));
+    }
+    .preview .btn.ghost{
+      background: rgba(255,255,255,.10);
+      color: var(--w);
+      border: 1px solid rgba(255,255,255,.20);
+    }
+    .preview .section{
+      background: color-mix(in oklab, var(--p5) calc(18% * var(--intensity)), black);
+    }
+    .preview .miniCard{
+      background: color-mix(in oklab, white 6%, var(--p2));
+      border-color: color-mix(in oklab, white 10%, var(--p2));
+    }
+    .preview .chip{
+      background: color-mix(in oklab, white 8%, var(--p5));
+      border-color: color-mix(in oklab, white 10%, var(--p5));
+      color: var(--w);
+    }
+    .preview .footer{
+      background: color-mix(in oklab, var(--p1) calc(72% * var(--intensity)), black);
+      color: rgba(255,255,255,.80);
+    }
+
+    /* Helper */
+    .muted{ color: var(--muted); }
+    .tiny{ font-size: 12px; }
+    a{ color: inherit; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="dot" aria-hidden="true"></div>
+        <div>
+          <h1>Color System Demo</h1>
+          <div class="sub">Pick a palette → preview a mini-site → copy hex codes (all in-range, clearly labeled)</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <select id="paletteSelect" aria-label="Select palette"></select>
+
+        <div class="rangeWrap" title="Adjust how strong the colors feel in the preview">
+          <label for="intensity">Intensity</label>
+          <input id="intensity" type="range" min="0.75" max="1.35" step="0.01" value="1" />
+          <span id="intensityVal" class="tiny muted" style="min-width:44px; text-align:right;">1.00</span>
+        </div>
+
+        <button id="copyAll">Copy palette JSON</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+
+    <!-- Left: Swatches + notes -->
+    <section class="card" aria-label="Palette details">
+      <div class="cardHeader">
+        <div>
+          <h2 id="paletteName">—</h2>
+          <div id="paletteTag" class="sub">—</div>
+        </div>
+        <div id="paletteUsedOn" class="pill">Used On: —</div>
+      </div>
+
+      <div class="cardBody">
+        <div class="swatches" id="swatches"></div>
+
+        <div style="height:14px"></div>
+
+        <div class="kv">
+          <div class="k">Why this works</div>
+          <div class="v" id="whyText">—</div>
+
+          <div class="k">Anchor blues</div>
+          <div class="v"><span style="font-family:var(--mono)">#33CCFF</span> (sky) + <span style="font-family:var(--mono)">#003399</span> (exec navy) as your consistent base.</div>
+
+          <div class="k">Status colors</div>
+          <div class="v">Kept separate (forms only): success green, warning amber, error red (not part of brand palette).</div>
+        </div>
+
+        <div class="codebox" id="codebox"></div>
+      </div>
+    </section>
+
+    <!-- Right: Mini-site preview -->
+    <section class="card" aria-label="Mini site preview">
+      <div class="cardHeader">
+        <div>
+          <h2>Mini-Site Preview</h2>
+          <div class="sub">Nav + hero + cards + buttons + footer using the selected 5-color system</div>
+        </div>
+        <div class="pill"><span id="previewLabel">Palette: —</span></div>
+      </div>
+
+      <div class="cardBody">
+        <div class="preview" id="preview">
+          <div class="nav">
+            <div class="navLeft">
+              <span style="width:10px;height:10px;border-radius:999px;background:var(--p4);display:inline-block;"></span>
+              Big Dogs Tool Belt
+            </div>
+            <div class="navLinks" aria-hidden="true">
+              <span>Services</span><span>Tools</span><span>Process</span><span>Contact</span>
+            </div>
+          </div>
+
+          <div class="hero">
+            <h3>Automations & AI Tools that feel like <span id="heroEmph">one brand</span>.</h3>
+            <p>Stop the “every page is a different website” problem. Use a single 5-color system across marketing, tools pages, and UI components.</p>
+            <div class="heroActions">
+              <button class="btn primary">Primary CTA</button>
+              <button class="btn secondary">Secondary</button>
+              <button class="btn ghost">Ghost</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="cards">
+              <div class="miniCard">
+                <div class="miniTitle">Card / Feature</div>
+                <div class="miniText">Secondary surface + readable text blocks.</div>
+                <div class="chipRow">
+                  <div class="chip">RAG</div><div class="chip">Scheduling</div><div class="chip">CRM</div>
+                </div>
+              </div>
+              <div class="miniCard">
+                <div class="miniTitle">Highlight / Icons</div>
+                <div class="miniText">Use the bright sky color for icons, hovers, and borders.</div>
+                <div class="chipRow">
+                  <div class="chip">Hover</div><div class="chip">Active</div><div class="chip">Links</div>
+                </div>
+              </div>
+              <div class="miniCard">
+                <div class="miniTitle">Trust / Accents</div>
+                <div class="miniText">Gold stays consistent for CTAs, badges, and “proof” elements.</div>
+                <div class="chipRow">
+                  <div class="chip">Badges</div><div class="chip">Stars</div><div class="chip">Metrics</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            <div>© <span id="year"></span> Agentic Personnel</div>
+            <div class="muted">Built from a unified palette system</div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="card" style="box-shadow:none;">
+          <div class="cardBody" style="padding:14px;">
+            <div class="kv">
+              <div class="k">Quick tip</div>
+              <div class="v">If you want maximum consistency: pick <b>one</b> option (most likely “Summit Pro”) and apply it site-wide. Keep other “systems” only for specific brand lines.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+  // --- Data: Your systems + the 5-color options (clearly labeled) ---
+  const PALETTES = [
+    {
+      id: "mountain-craftsman",
+      name: "Mountain Craftsman",
+      tag: "Original system (greens/browns/gold) – good theme, but clashes with your blues",
+      usedOn: "Homepage, nav, services, process",
+      why: "Works for a rugged craftsman vibe, but it diverges hard from your AI blues. If used, keep it as its own brand line, not mixed page-to-page.",
+      colors: [
+        { role: "Forest Green", hex: "#1E4D2B" },
+        { role: "Pine Green",   hex: "#2F6B3A" },
+        { role: "Cedar Brown",  hex: "#7A4E2D" },
+        { role: "Sandstone",    hex: "#CBBBA0" },
+        { role: "Mountain Gold",hex: "#D4AF37" },
+      ],
+      extras: { white:"#F8FAFF", black:"#0A1628" }
+    },
+    {
+      id: "ai-brand",
+      name: "AI Brand",
+      tag: "Original AI tools palette (navy/blue/sky/gold) – already working",
+      usedOn: "AI tools, chat widget",
+      why: "This is your strongest existing system. If you extend this across the whole site, you solve the “different website per page” problem fast.",
+      colors: [
+        { role: "Navy",     hex: "#003399" },
+        { role: "Royal",    hex: "#0066CC" },
+        { role: "Sky",      hex: "#33CCFF" },
+        { role: "Gold",     hex: "#FFCC00" },
+        { role: "Graphite", hex: "#2D3A4A" },
+      ],
+      extras: { white:"#FFFFFF", black:"#1A202C" }
+    },
+    {
+      id: "alpine-leftovers",
+      name: "Alpine leftovers",
+      tag: "10+ blues/teals/purples (too many) – causes inconsistency",
+      usedOn: "Scattered",
+      why: "Great colors, but too many. When every section picks a different blue, the brand identity gets diluted.",
+      colors: [
+        { role: "Deep Blue",   hex: "#0B2B6B" },
+        { role: "Blue",        hex: "#1E5AA8" },
+        { role: "Teal",        hex: "#1DA7A5" },
+        { role: "Purple",      hex: "#5A4FCF" },
+        { role: "Light Sky",   hex: "#7AE0FF" },
+      ],
+      extras: { white:"#FFFFFF", black:"#0D1626" }
+    },
+    {
+      id: "status",
+      name: "Status (Forms Only)",
+      tag: "UI status colors – keep separate from brand palette",
+      usedOn: "Forms",
+      why: "These should not drive branding. Use them only for success/warn/error messaging to keep UI predictable.",
+      colors: [
+        { role: "Success", hex: "#22C55E" },
+        { role: "Warning", hex: "#F59E0B" },
+        { role: "Error",   hex: "#EF4444" },
+        { role: "Info",    hex: "#3B82F6" },
+        { role: "Neutral", hex: "#64748B" },
+      ],
+      extras: { white:"#FFFFFF", black:"#0B1220" }
+    },
+
+    // --- The Fix Options (one 5-color system) ---
+    {
+      id: "alpine-executive",
+      name: "Option 1 — Alpine Executive",
+      tag: "Clean, corporate, modern",
+      usedOn: "Recommended site-wide brand system",
+      why: "Professional and consistent. Strong hierarchy: deep navy + royal for structure, sky for highlights, gold for CTAs, slate as neutral.",
+      colors: [
+        { role: "1. Deep Navy",     hex: "#003366" },
+        { role: "2. Royal Blue",    hex: "#0055B3" },
+        { role: "3. Sky Blue",      hex: "#33CCFF" },
+        { role: "4. Mountain Gold", hex: "#D4AF37" },
+        { role: "5. Slate Grey",    hex: "#4A6080" },
+      ],
+      extras: { white:"#F8FAFF", black:"#0A1628" }
+    },
+    {
+      id: "colorado-summit",
+      name: "Option 2 — Colorado Summit",
+      tag: "Bold, energetic, contractor",
+      usedOn: "Recommended for high-energy marketing pages",
+      why: "Feels like a trades brand: punchy sky/ice + solar gold. Strong contrast and good for CTAs, badges, and headlines.",
+      colors: [
+        { role: "1. Midnight Navy", hex: "#001F5B" },
+        { role: "2. Bright Sky",    hex: "#3399FF" },
+        { role: "3. Ice Blue",      hex: "#66C7FF" },
+        { role: "4. Solar Gold",    hex: "#FFB800" },
+        { role: "5. Storm Slate",   hex: "#3D5166" },
+      ],
+      extras: { white:"#FFFFFF", black:"#0D1626" }
+    },
+    {
+      id: "summit-pro",
+      name: "Option 3 — Summit Pro",
+      tag: "Your exact AI tools palette — proven winner",
+      usedOn: "Best default (extend to whole site)",
+      why: "Already working on your AI tools page. Extending it site-wide is the fastest path to consistent branding.",
+      colors: [
+        { role: "1. Navy",     hex: "#003399" },
+        { role: "2. Royal",    hex: "#0066CC" },
+        { role: "3. Sky",      hex: "#33CCFF" },
+        { role: "4. Gold",     hex: "#FFCC00" },
+        { role: "5. Graphite", hex: "#2D3A4A" },
+      ],
+      extras: { white:"#FFFFFF", black:"#1A202C" }
+    },
+    {
+      id: "glacier-peak",
+      name: "Option 4 — Glacier Peak",
+      tag: "Sophisticated, premium, high-end",
+      usedOn: "Premium landing pages, high-ticket offers",
+      why: "Less flashy gold + deeper obsidian gives you a premium feel. Great for “executive” or luxury-grade positioning.",
+      colors: [
+        { role: "1. Obsidian",     hex: "#0D1F35" },
+        { role: "2. Cobalt",       hex: "#0052A5" },
+        { role: "3. Electric Sky", hex: "#00AADD" },
+        { role: "4. Champagne",    hex: "#C9A84C" },
+        { role: "5. Steel",        hex: "#5B7590" },
+      ],
+      extras: { white:"#F7F9FC", black:"#0A111C" }
+    },
+    {
+      id: "denver-blue",
+      name: "Option 5 — Denver Blue",
+      tag: "Approachable, trustworthy, local",
+      usedOn: "General marketing pages, local trust positioning",
+      why: "Friendly blues + amber gold. Great for “down-to-earth but pro” vibe without feeling too techy.",
+      colors: [
+        { role: "1. Sky Captain",  hex: "#004080" },
+        { role: "2. Azure",        hex: "#0077CC" },
+        { role: "3. Cornflower",   hex: "#5599FF" },
+        { role: "4. Amber Gold",   hex: "#E5A800" },
+        { role: "5. Warm Slate",   hex: "#4A5C6A" },
+      ],
+      extras: { white:"#FFFFFF", black:"#1A2332" }
+    }
+  ];
+
+  const el = (id) => document.getElementById(id);
+  const paletteSelect = el("paletteSelect");
+  const swatchesEl = el("swatches");
+  const codebox = el("codebox");
+  const toast = el("toast");
+  const preview = el("preview");
+  const intensity = el("intensity");
+  const intensityVal = el("intensityVal");
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 1000);
+  }
+
+  async function copyText(txt){
+    try{
+      await navigator.clipboard.writeText(txt);
+      showToast("Copied ✔");
+    }catch(e){
+      // Fallback
+      const ta = document.createElement("textarea");
+      ta.value = txt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      showToast("Copied ✔");
+    }
+  }
+
+  function normalizeForPreview(palette){
+    // Map the chosen palette to preview variables:
+    // p1 = darkest/primary (nav/hero/footer)
+    // p2 = mid/secondary (cards/sections)
+    // p3 = bright highlight
+    // p4 = gold accent
+    // p5 = neutral
+    const roles = palette.colors.map(c => c.role.toLowerCase());
+
+    // Try to detect by role names:
+    const pick = (includesAny) => {
+      const idx = roles.findIndex(r => includesAny.some(k => r.includes(k)));
+      return idx >= 0 ? palette.colors[idx].hex : null;
+    };
+
+    const gold = pick(["gold","champagne","amber","solar"]);
+    const highlight = pick(["sky","electric","ice","cornflower","bright"]);
+    const primary = pick(["navy","obsidian","midnight","deep","sky captain"]);
+    const secondary = pick(["royal","cobalt","azure","blue"]);
+    const neutral = pick(["slate","steel","graphite","neutral","sandstone"]);
+
+    // Fallbacks in order
+    const c = palette.colors.map(x => x.hex);
+    const p1 = primary   || c[0];
+    const p2 = secondary || c[1] || c[0];
+    const p3 = highlight || c[2] || c[1] || c[0];
+    const p4 = gold      || c[3] || c[0];
+    const p5 = neutral   || c[4] || c[2] || c[1];
+
+    return { p1,p2,p3,p4,p5, w: palette.extras?.white || "#FFFFFF", b: palette.extras?.black || "#0B1220" };
+  }
+
+  function renderSwatches(palette){
+    swatchesEl.innerHTML = "";
+    palette.colors.forEach((c) => {
+      const sw = document.createElement("div");
+      sw.className = "swatch";
+
+      const top = document.createElement("div");
+      top.className = "swatchTop";
+      top.style.background = c.hex;
+
+      const meta = document.createElement("div");
+      meta.className = "swatchMeta";
+
+      const role = document.createElement("div");
+      role.className = "swatchRole";
+      role.textContent = c.role;
+
+      const hex = document.createElement("div");
+      hex.className = "swatchHex";
+
+      const code = document.createElement("span");
+      code.textContent = c.hex.toUpperCase();
+
+      const btn = document.createElement("span");
+      btn.className = "copy";
+      btn.textContent = "COPY";
+      btn.addEventListener("click", () => copyText(c.hex.toUpperCase()));
+
+      hex.appendChild(code);
+      hex.appendChild(btn);
+
+      meta.appendChild(role);
+      meta.appendChild(hex);
+
+      sw.appendChild(top);
+      sw.appendChild(meta);
+      swatchesEl.appendChild(sw);
+    });
+  }
+
+  function renderCodebox(palette){
+    const obj = {
+      name: palette.name,
+      usedOn: palette.usedOn,
+      colors: palette.colors.reduce((acc, c) => (acc[c.role] = c.hex.toUpperCase(), acc), {}),
+      extras: Object.fromEntries(Object.entries(palette.extras || {}).map(([k,v]) => [k, v.toUpperCase()])),
+      status_colors_note: "Keep status colors separate from brand (success/warn/error)."
+    };
+    codebox.textContent = JSON.stringify(obj, null, 2);
+  }
+
+  function applyPreview(palette){
+    const map = normalizeForPreview(palette);
+    preview.style.setProperty("--p1", map.p1);
+    preview.style.setProperty("--p2", map.p2);
+    preview.style.setProperty("--p3", map.p3);
+    preview.style.setProperty("--p4", map.p4);
+    preview.style.setProperty("--p5", map.p5);
+    preview.style.setProperty("--w",  map.w);
+    preview.style.setProperty("--b",  map.b);
+
+    el("paletteName").textContent = palette.name;
+    el("paletteTag").textContent = palette.tag || "";
+    el("paletteUsedOn").textContent = "Used On: " + (palette.usedOn || "—");
+    el("whyText").textContent = palette.why || "—";
+    el("previewLabel").textContent = "Palette: " + palette.name;
+    el("heroEmph").textContent = palette.name.includes("Option 3") ? "your proven palette" : "one system";
+  }
+
+  function setPaletteById(id){
+    const p = PALETTES.find(x => x.id === id) || PALETTES[0];
+    paletteSelect.value = p.id;
+    renderSwatches(p);
+    renderCodebox(p);
+    applyPreview(p);
+  }
+
+  // Populate dropdown (grouped visually by ordering)
+  function init(){
+    PALETTES.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.name;
+      paletteSelect.appendChild(opt);
+    });
+
+    // Default to Summit Pro (the proven winner)
+    setPaletteById("summit-pro");
+
+    paletteSelect.addEventListener("change", (e) => setPaletteById(e.target.value));
+
+    el("copyAll").addEventListener("click", () => {
+      const current = PALETTES.find(x => x.id === paletteSelect.value);
+      copyText(codebox.textContent);
+    });
+
+    intensity.addEventListener("input", () => {
+      const val = Number(intensity.value);
+      preview.style.setProperty("--intensity", val.toFixed(2));
+      intensityVal.textContent = val.toFixed(2);
+    });
+
+    el("year").textContent = new Date().getFullYear();
+  }
+
+  init();
+</script>
+</body>
+</html>

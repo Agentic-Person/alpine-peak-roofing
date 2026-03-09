@@ -1,0 +1,118 @@
+{
+  "name": "Knowledge Search Tool",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "id": "execute-workflow-trigger",
+      "name": "Execute Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "query",
+              "name": "query",
+              "value": "={{ $json.query || $json.message || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $json.session_id || 'default_session' }}",
+              "type": "string"
+            },
+            {
+              "id": "enhanced_query",
+              "name": "enhanced_query",
+              "value": "={{ $json.query + ' Denver Colorado roofing contractor services Alpine Peak' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300],
+      "id": "prepare-search-query",
+      "name": "Prepare Search Query"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-ada-002",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [720, 300],
+      "id": "embeddings-openai",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "tableName": {
+          "__rl": true,
+          "value": "knowledge_base",
+          "mode": "list"
+        },
+        "prompt": "={{ $json.enhanced_query }}",
+        "topK": 3,
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [960, 300],
+      "id": "vector-search",
+      "name": "Vector Search",
+      "credentials": {
+        "supabaseApi": {
+          "id": "o7zyeZA5I055ehin",
+          "name": "Supabase jimiHacks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Process search results and format for AI Agent response\nconst results = $input.all();\n\nif (!results || results.length === 0) {\n  return {\n    json: {\n      found_knowledge: false,\n      content: '',\n      sources: [],\n      message: 'I don\\'t have information about that in my knowledge base. Please contact our team at (970) 446-8995 for assistance.'\n    }\n  };\n}\n\n// Extract and combine relevant content\nlet combinedContent = '';\nlet sources = [];\n\nfor (const item of results) {\n  if (item.json.pageContent || item.json.content) {\n    const content = item.json.pageContent || item.json.content;\n    const title = item.json.metadata?.title || 'Knowledge Item';\n    \n    combinedContent += content + '\\n\\n';\n    sources.push({\n      title: title,\n      content: content.substring(0, 200) + '...',\n      similarity: item.json.metadata?.similarity || 0\n    });\n  }\n}\n\nreturn {\n  json: {\n    found_knowledge: combinedContent.length > 0,\n    content: combinedContent.trim(),\n    sources: sources,\n    query: $('Prepare Search Query').first().json.query,\n    session_id: $('Prepare Search Query').first().json.session_id,\n    message: combinedContent.length > 0 ? 'Found relevant information' : 'No relevant information found'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300],
+      "id": "format-results",
+      "name": "Format Results"
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [[{"node": "Prepare Search Query", "type": "main", "index": 0}]]
+    },
+    "Prepare Search Query": {
+      "main": [[{"node": "Embeddings OpenAI", "type": "main", "index": 0}]]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [[{"node": "Vector Search", "type": "ai_embedding", "index": 0}]]
+    },
+    "Vector Search": {
+      "main": [[{"node": "Format Results", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

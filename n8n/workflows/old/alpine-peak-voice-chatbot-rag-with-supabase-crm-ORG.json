@@ -1,0 +1,763 @@
+{
+  "name": "alpine-peak-voice-chatbot-rag-with-supabase-crm",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# 🎤 VOICE-ENABLED RAG CHATBOT WITH SUPABASE CRM\n\n## Voice Integration Overview\n🎙️ **Voice Input**: Whisper STT transcription  \n🔊 **Voice Output**: OpenAI TTS (Nova voice)  \n📱 **Dual Mode**: Text + Voice responses  \n💰 **Cost**: ~$2.70/month for 200 interactions  \n\n## Webhook Endpoints\n**Text Chat**: `/alpine-peak-chatbot-rag`  \n**Voice Chat**: `/alpine-peak-voice-chat`  \n\n## Key Features\n✅ Whisper for roofing terminology  \n✅ Professional Nova TTS voice  \n✅ Supabase CRM integration (leads, conversations, email queue)\n✅ Voice interaction lead scoring bonus (+15 points)\n✅ Automated follow-up email system\n✅ Complete conversation logging\n✅ Error handling & fallbacks\n\n## Workflow Flow\n1. Dual webhook entry points\n2. Input preprocessing (text/voice)\n3. Voice transcription (if needed)\n4. Unified intent analysis\n5. RAG knowledge search\n6. AI response generation\n7. TTS generation (voice users)\n8. Supabase CRM data capture\n9. Final response formatting",
+        "height": 792,
+        "width": 564,
+        "color": 7
+      },
+      "id": "d970d744-1f4e-4eb1-b2b8-fa6b1c311d74",
+      "name": "🎤 Voice Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🚀 Text Webhook Entry Point\n\n## Webhook Configuration\n**Path:** `/alpine-peak-chatbot-rag`  \n**Method:** POST  \n**Content-Type:** application/json  \n**Response Mode:** responseNode (requires response)\n\n## Expected JSON Payload\n```json\n{\n  \"message\": \"user question\",\n  \"session_id\": \"unique-id\",\n  \"page_context\": \"website\",\n  \"user_data\": {}\n}\n```\n\n## Testing Command\n```bash\ncurl -X POST https://n8n.com/webhook/alpine-peak-chatbot-rag \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"message\": \"Need roof estimate\"}'\n```\n\n## Error Handling\n✅ `onError: continueRegularOutput`\n✅ Always returns JSON response\n✅ Graceful failure handling",
+        "height": 900,
+        "width": 636
+      },
+      "id": "4d6f89c5-4fd5-4eca-9eae-6447a46fb7ea",
+      "name": "🚀 Text Webhook Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🎙️ Voice Webhook Entry Point\n\n## Webhook Configuration\n**Path:** `/alpine-peak-voice-chat`  \n**Method:** POST  \n**Content-Type:** multipart/form-data  \n**Response Mode:** responseNode\n\n## Expected FormData Fields\n```javascript\nformData.append('audio', audioBlob, 'voice.webm');\nformData.append('session_id', 'session-123');\nformData.append('page_context', 'website');\nformData.append('user_data', JSON.stringify({}));\n```\n\n## Audio Format Support\n- **WebM/Opus** (Browser MediaRecorder default)\n- **MP3, M4A, WAV** (Alternative formats)\n- **Max Size**: 25MB (OpenAI Whisper limit)\n- **Max Duration**: 60 seconds (recommended)\n\n## Frontend Integration\n```javascript\nconst mediaRecorder = new MediaRecorder(stream);\nmediaRecorder.start();\n// Send audioBlob to this webhook\n```",
+        "height": 760,
+        "width": 544,
+        "color": 7
+      },
+      "id": "226101db-9cbe-47b8-ab86-2e2666d388e5",
+      "name": "🎙️ Voice Webhook Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        1952
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 📊 Supabase CRM Integration\n\n## Supabase Lead Capture Node\n**Type**: n8n-nodes-base.supabase\n**Operation**: create\n**Resource**: row (leads table)\n**Credentials**: Supabase APS\n\n## Lead Data Captured\n- **email**: User email or placeholder\n- **name**: From user_data or 'Chatbot Lead'\n- **session_id**: Unique session tracking\n- **lead_score**: 0-100 buying intent strength\n- **intent**: emergency, estimation, scheduling, etc.\n- **priority**: urgent, high, normal\n- **lead_source**: 'voice_chatbot' or 'text_chatbot'\n- **created_at/updated_at**: Timestamps\n\n## Conversation Logging\n**Table**: conversations\n- **session_id**: Links to lead\n- **message**: User input\n- **response**: AI response\n- **input_type**: voice or text\n- **knowledge_used**: RAG utilization flag\n- **timestamp**: Interaction time\n\n## Email Queue System\n**Trigger**: When email captured AND knowledge used\n**Table**: email_queue\n- **lead_id**: Reference to lead\n- **email_type**: 'knowledge_followup'\n- **knowledge_articles**: JSON of relevant articles\n- **scheduled_at**: 5 minutes after capture\n- **status**: 'pending', 'sent', 'failed'\n\n## Benefits vs HubSpot\n- ✅ Unified infrastructure with knowledge base\n- ✅ Real-time updates and subscriptions\n- ✅ No per-contact charges\n- ✅ Custom schema for exact needs\n- ✅ Full data control and privacy\n- ✅ Direct SQL queries when needed",
+        "height": 1140,
+        "width": 360,
+        "color": 4
+      },
+      "id": "05e53948-fa6d-4a47-91c0-bbf0dcfe6318",
+      "name": "📊 CRM Lead Capture Node",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5584,
+        2144
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "create",
+        "tableId": "leads",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $('Build Context1').item.json.user_email || 'chatbot-lead@alpine-peak.com' }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('Build Context1').item.json.user_data.name || 'Chatbot Lead' }}"
+            },
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $('Build Context1').item.json.session_id }}"
+            },
+            {
+              "fieldId": "lead_score",
+              "fieldValue": "={{ $('Build Context1').item.json.lead_score }}"
+            },
+            {
+              "fieldId": "intent",
+              "fieldValue": "={{ $('Build Context1').item.json.intent }}"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $('Build Context1').item.json.priority }}"
+            },
+            {
+              "fieldId": "lead_source",
+              "fieldValue": "={{ $('Build Context1').item.json.input_type === 'voice' ? 'voice_chatbot' : 'text_chatbot' }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            },
+            {
+              "fieldId": "updated_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7328,
+        1856
+      ],
+      "id": "530bc65c-15b3-4394-a903-44545a2c9c49",
+      "name": "Supabase Lead Capture",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase APS"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "create",
+        "tableId": "conversations",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $('Build Context1').item.json.session_id }}"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{ $('Build Context1').item.json.message }}"
+            },
+            {
+              "fieldId": "response",
+              "fieldValue": "={{ $('AI Response1').item.json.message || $('AI Response1').item.json.choices[0].message.content }}"
+            },
+            {
+              "fieldId": "input_type",
+              "fieldValue": "={{ $('Build Context1').item.json.input_type }}"
+            },
+            {
+              "fieldId": "knowledge_used",
+              "fieldValue": "={{ $('Build Context1').item.json.has_knowledge }}"
+            },
+            {
+              "fieldId": "timestamp",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7328,
+        2200
+      ],
+      "id": "conversation-logger-001",
+      "name": "Log Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase APS"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Build Context1').item.json.has_email }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            },
+            {
+              "leftValue": "={{ $('Build Context1').item.json.has_knowledge }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ]
+        },
+        "combineOperation": "all",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7700,
+        2200
+      ],
+      "id": "email-queue-decision-001",
+      "name": "Should Queue Email?",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "create",
+        "tableId": "email_queue",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "lead_id",
+              "fieldValue": "={{ $('Supabase Lead Capture').item.json.id }}"
+            },
+            {
+              "fieldId": "email_type",
+              "fieldValue": "knowledge_followup"
+            },
+            {
+              "fieldId": "email_content",
+              "fieldValue": "Thank you for contacting Alpine Peak Roofing! Based on your inquiry, I've prepared some detailed information about our services that might be helpful."
+            },
+            {
+              "fieldId": "knowledge_articles",
+              "fieldValue": "={{ JSON.stringify($('Build Context1').item.json.knowledge_sources) }}"
+            },
+            {
+              "fieldId": "scheduled_at",
+              "fieldValue": "={{ new Date(Date.now() + 5 * 60 * 1000).toISOString() }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "pending"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        8100,
+        2200
+      ],
+      "id": "email-queue-001",
+      "name": "Queue Follow-up Email",
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase APS"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chatbot-rag",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        2752,
+        1200
+      ],
+      "id": "6b38aa15-f07c-4328-8a2b-f1dbd75d1172",
+      "name": "Text Webhook1",
+      "webhookId": "alpine-peak-chatbot-rag",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-voice-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        2384,
+        1648
+      ],
+      "id": "bc98e787-5842-47a7-baf4-88c119366c60",
+      "name": "Voice Webhook1",
+      "webhookId": "alpine-peak-voice-chat",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Text input preprocessing\nconst inputData = $input.item.json;\n\nif (!inputData.message || inputData.message.trim() === '') {\n  throw new Error('Message is required for text input');\n}\n\nreturn {\n  json: {\n    message: inputData.message.trim(),\n    session_id: inputData.session_id || 'text_session_' + Date.now(),\n    page_context: inputData.page_context || 'website',\n    user_data: inputData.user_data || {},\n    timestamp: new Date().toISOString(),\n    input_type: 'text'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3952,
+        1200
+      ],
+      "id": "f8d63299-8238-4996-8425-7239c80fcc2e",
+      "name": "Text Preprocessing1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Voice input preprocessing\nconst inputData = $input.item.json;\nconst binaryData = $input.item.binary;\n\nif (!binaryData || !binaryData.audio) {\n  throw new Error('No audio file provided');\n}\n\nconst sessionId = inputData.session_id || 'voice_session_' + Date.now();\nconst pageContext = inputData.page_context || 'website';\nconst userData = inputData.user_data ? JSON.parse(inputData.user_data) : {};\n\nreturn {\n  json: {\n    session_id: sessionId,\n    page_context: pageContext,\n    user_data: userData,\n    timestamp: new Date().toISOString(),\n    input_type: 'voice',\n    message: null // Will be set after transcription\n  },\n  binary: {\n    audio: binaryData.audio\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2928,
+        1648
+      ],
+      "id": "e7c4e580-19cd-4f06-8a72-1160a38bf859",
+      "name": "Voice Preprocessing1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "audio",
+        "options": {
+          "language": "en",
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        3520,
+        1648
+      ],
+      "id": "31f549ff-4075-4615-baae-851a987ca721",
+      "name": "Whisper Transcription1",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process transcription and merge voice data\nconst voiceData = $('Voice Preprocessing1').item.json;\nconst transcriptionResult = $input.item.json;\n\nlet transcribedText = '';\nif (transcriptionResult && transcriptionResult.text) {\n  transcribedText = transcriptionResult.text.trim();\n} else {\n  transcribedText = '[unclear audio - please try again]';\n}\n\nreturn {\n  json: {\n    message: transcribedText,\n    session_id: voiceData.session_id,\n    page_context: voiceData.page_context,\n    user_data: voiceData.user_data,\n    timestamp: voiceData.timestamp,\n    input_type: 'voice'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4000,
+        1648
+      ],
+      "id": "0025a57e-e070-4202-b045-677b96c865df",
+      "name": "Transcription Processing1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Enhanced intent analysis with voice support\nconst inputData = $input.item.json;\n\nif (!inputData.message) {\n  throw new Error('Message is required');\n}\n\nconst message = inputData.message.toLowerCase();\nconst isVoiceInput = inputData.input_type === 'voice';\n\n// Email detection\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst emailMatch = inputData.message.match(emailPattern);\nconst hasEmail = emailMatch !== null;\nconst userEmail = hasEmail ? emailMatch[0].toLowerCase().trim() : null;\n\n// Intent detection\nlet intent = 'general';\nlet priority = 'normal';\nlet searchCategory = null;\nlet leadScore = 10;\n\n// Voice interaction bonus\nif (isVoiceInput) {\n  leadScore += 15;\n}\n\nif (hasEmail || message.includes('email me')) {\n  intent = 'contact_sharing';\n  priority = 'high';\n  leadScore += 25;\n} else if (message.includes('emergency') || message.includes('leak')) {\n  intent = 'emergency';\n  priority = 'urgent';\n  searchCategory = 'emergency';\n  leadScore += 50;\n} else if (message.includes('estimate') || message.includes('quote')) {\n  intent = 'estimation_request';\n  priority = 'high';\n  searchCategory = 'pricing';\n  leadScore += 40;\n} else if (message.includes('schedule') || message.includes('inspection')) {\n  intent = 'scheduling';\n  priority = 'high';\n  leadScore += 35;\n}\n\nif (hasEmail) leadScore += 25;\nif (inputData.message.length > 100) leadScore += 5;\n\nreturn {\n  json: {\n    message: inputData.message,\n    session_id: inputData.session_id,\n    page_context: inputData.page_context,\n    user_data: inputData.user_data,\n    timestamp: inputData.timestamp,\n    input_type: inputData.input_type,\n    intent: intent,\n    priority: priority,\n    search_category: searchCategory,\n    needs_rag: searchCategory !== null,\n    has_email: hasEmail,\n    user_email: userEmail,\n    lead_score: leadScore\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4608,
+        1392
+      ],
+      "id": "671023fa-a00d-451a-8a07-63958fed85d0",
+      "name": "Intent Analysis1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-ada-002",
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        4992,
+        1392
+      ],
+      "id": "8cde3eb5-80b5-49ec-a3f4-ef7592f66d42",
+      "name": "Generate Embedding1",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, title, content, (1 - (embedding <=> $1::vector)) AS similarity, metadata FROM knowledge_base WHERE (1 - (embedding <=> $1::vector)) > 0.78 AND ($2::text IS NULL OR metadata->>'category' = $2::text) ORDER BY embedding <=> $1::vector LIMIT 5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5408,
+        1392
+      ],
+      "id": "f3330ae3-ea2e-491e-a4c5-dc54bfcc2792",
+      "name": "Knowledge Search1",
+      "credentials": {
+        "postgres": {
+          "id": "OYphI3uul5xfR5wF",
+          "name": "Postgres APS"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build RAG context with voice optimization\nconst originalData = $('Intent Analysis1').item.json;\nconst searchResults = $input.all();\nconst isVoiceInput = originalData.input_type === 'voice';\n\nlet ragContext = '';\nlet knowledgeSources = [];\nlet hasRelevantKnowledge = false;\n\nif (searchResults && searchResults.length > 0) {\n  const validResults = searchResults.filter(r => r.json && r.json.similarity > 0.78);\n  \n  if (validResults.length > 0) {\n    hasRelevantKnowledge = true;\n    ragContext += '\\n=== ALPINE PEAK ROOFING KNOWLEDGE BASE ===\\n';\n    \n    validResults.slice(0, 3).forEach((result, index) => {\n      const data = result.json;\n      ragContext += '\\n' + (index + 1) + '. ' + (data.title || 'Knowledge') + '\\n';\n      ragContext += '   Content: ' + data.content + '\\n';\n      \n      knowledgeSources.push({\n        title: data.title,\n        similarity: data.similarity\n      });\n    });\n    \n    ragContext += '\\n=== END KNOWLEDGE BASE ===\\n';\n  }\n}\n\nif (isVoiceInput) {\n  ragContext += '\\n🎙️ VOICE USER: Respond conversationally with shorter sentences.\\n';\n}\n\nif (originalData.intent === 'emergency') {\n  ragContext += '\\n🚨 EMERGENCY: Urgent response needed!\\n';\n}\n\nreturn [{\n  json: {\n    ...originalData,\n    rag_context: ragContext,\n    knowledge_sources: knowledgeSources,\n    has_knowledge: hasRelevantKnowledge\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5792,
+        1440
+      ],
+      "id": "0f0ed9cc-3d33-4106-bb72-f3c5e1c0e7c0",
+      "name": "Build Context1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        6368,
+        1440
+      ],
+      "id": "64007663-0b0d-4a89-84ec-448b5a862f97",
+      "name": "AI Response1",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Build Context1').item.json.input_type }}",
+              "rightValue": "voice",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6080,
+        1904
+      ],
+      "id": "c6dc04f0-8c38-4ff6-9b36-0cfc8a13cb33",
+      "name": "Voice Output?1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $('AI Response1').item.json.message || $('AI Response1').item.json.choices[0].message.content }}",
+        "voice": "nova",
+        "options": {
+          "response_format": "mp3",
+          "speed": 1,
+          "binaryPropertyOutput": "audio_response"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        6656,
+        1888
+      ],
+      "id": "4fb3d8da-a9be-43fa-b0b5-5f97ff782f1b",
+      "name": "TTS Generation1",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format final response\nconst aiData = $('AI Response1').item.json;\nconst contextData = $('Build Context1').item.json;\nconst isVoiceInput = contextData.input_type === 'voice';\n\nlet aiResponse = 'Thank you for your message.';\nif (aiData.message) {\n  aiResponse = aiData.message;\n} else if (aiData.choices && aiData.choices[0]) {\n  aiResponse = aiData.choices[0].message.content;\n}\n\nlet audioUrl = null;\nif (isVoiceInput) {\n  try {\n    const ttsData = $('TTS Generation1').item;\n    if (ttsData && ttsData.binary && ttsData.binary.audio_response) {\n      audioUrl = `data:audio/mp3;base64,${ttsData.binary.audio_response.data}`;\n    }\n  } catch (error) {\n    console.warn('TTS failed:', error.message);\n  }\n}\n\nlet ctaMessage = '';\nswitch (contextData.intent) {\n  case 'emergency':\n    ctaMessage = '🚨 Call (970) 446-8995 immediately!';\n    break;\n  case 'estimation_request':\n    ctaMessage = contextData.has_email ? \n      `📞 I'll send details to ${contextData.user_email}` :\n      '📞 What email should I send the estimate to?';\n    break;\n  case 'scheduling':\n    ctaMessage = 'Book at https://calendly.com/alpinepeakroofing/inspection';\n    break;\n  default:\n    ctaMessage = contextData.has_email ? \n      'I\\'ll send you more information!' :\n      'What\\'s your email for more details?';\n}\n\nreturn {\n  json: {\n    success: true,\n    response: {\n      message: aiResponse,\n      audio_url: audioUrl,\n      type: isVoiceInput ? 'voice' : 'text',\n      timestamp: new Date().toISOString(),\n      session_id: contextData.session_id,\n      cta: ctaMessage\n    },\n    metadata: {\n      input_type: contextData.input_type,\n      intent: contextData.intent,\n      priority: contextData.priority,\n      lead_score: contextData.lead_score,\n      email_captured: contextData.has_email,\n      knowledge_used: contextData.has_knowledge\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7008,
+        1440
+      ],
+      "id": "c19ebfef-2c4c-495f-a361-d58429b28715",
+      "name": "Format Response1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        7600,
+        1440
+      ],
+      "id": "29fe6b71-07c1-400d-9d56-95b83a0b0a25",
+      "name": "Webhook Response1",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Text Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Text Preprocessing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Voice Preprocessing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Preprocessing1": {
+      "main": [
+        [
+          {
+            "node": "Intent Analysis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Preprocessing1": {
+      "main": [
+        [
+          {
+            "node": "Whisper Transcription1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whisper Transcription1": {
+      "main": [
+        [
+          {
+            "node": "Transcription Processing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcription Processing1": {
+      "main": [
+        [
+          {
+            "node": "Intent Analysis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Analysis1": {
+      "main": [
+        [
+          {
+            "node": "Generate Embedding1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Embedding1": {
+      "main": [
+        [
+          {
+            "node": "Knowledge Search1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Search1": {
+      "main": [
+        [
+          {
+            "node": "Build Context1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Context1": {
+      "main": [
+        [
+          {
+            "node": "AI Response1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Voice Output?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Response1": {
+      "main": [
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Output?1": {
+      "main": [
+        [
+          {
+            "node": "TTS Generation1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TTS Generation1": {
+      "main": [
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response1": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase Lead Capture",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Lead Capture": {
+      "main": [
+        [
+          {
+            "node": "Should Queue Email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Queue Email?": {
+      "main": [
+        [
+          {
+            "node": "Queue Follow-up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "35c88f77-9804-40c4-88b9-a0b93a6c395d",
+  "meta": {
+    "instanceId": "62eb072701814b1a1a9c022b7a751c5f8dac0a37a5a414c436048bc8706d2f6f"
+  },
+  "id": "Xiluh9INld6o5ZdQ",
+  "tags": []
+}

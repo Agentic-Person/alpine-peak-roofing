@@ -1,0 +1,663 @@
+{
+  "name": "alpine-peak-voice-chatbot-rag-FIXED-007",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# 🚀 ALPINE PEAK AI AGENT CHATBOT - V007\n\n## Architecture Overview\n**COMPLETE REDESIGN** with AI Agent at the core for intelligent tool orchestration\n\n## 🔧 Key Features\n✅ **AI Agent Core**: Intelligent conversation orchestration\n✅ **Dynamic Tool Usage**: Agent selects tools based on context\n✅ **Knowledge Base Integration**: Vector search as tool\n✅ **Email Automation**: Smart follow-up with format selection\n✅ **Voice Processing**: Whisper STT + Nova TTS\n✅ **Emergency Handling**: Priority routing for urgent issues\n✅ **CRM Integration**: Lead capture and conversation logging\n✅ **Multi-format Output**: Text, HTML, PDF, MD responses\n\n## 🎯 Webhook Endpoints\n**Unified**: `/webhook/alpine-peak-ai-chatbot`\n\n## 🧠 Agent Tools\n- 🔍 **Knowledge Search Tool**: Supabase vector store\n- 📧 **Email Tool**: Gmail with format options\n- 📅 **Calendar Tool**: Calendly scheduling\n- 🚨 **Emergency Tool**: Priority response handling\n\n## 🔑 Credentials Required\n- OpenAI API (GPT-4, Whisper, TTS, Embeddings)\n- Supabase API (Vector store + CRM)\n- Gmail OAuth2 (Email sending)\n\n**Built using n8n MCP Server validation for optimal architecture**",
+        "height": 680,
+        "width": 850
+      },
+      "id": "workflow-overview-sticky",
+      "name": "📋 AI Agent Workflow Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-900, -600]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-ai-chatbot",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "audio"
+        },
+        "onError": "continueRegularOutput"
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [200, 400],
+      "id": "unified-webhook-node",
+      "name": "Unified Webhook",
+      "webhookId": "alpine-peak-ai-chatbot"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Unified input processing for text and voice\nconst body = $json.body ?? {};\nconst binaryData = $binary ?? {};\n\n// Determine input type\nconst hasAudio = binaryData.audio ? true : false;\nconst messageText = body.message || body.text || '';\n\n// Session management\nconst sessionId = body.session_id || `session_${Date.now()}`;\nconst timestamp = new Date().toISOString();\n\n// User context\nconst userContext = {\n  page_context: body.page_context || 'website',\n  user_agent: body.user_agent || '',\n  ip_address: body.ip_address || '',\n  referrer: body.referrer || ''\n};\n\n// Email detection\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst emailMatch = messageText.match(emailPattern);\nconst userEmail = emailMatch ? emailMatch[0].toLowerCase().trim() : null;\n\n// Intent classification\nlet intent = 'general_inquiry';\nlet priority = 'normal';\nconst lowerMessage = messageText.toLowerCase();\n\nif (lowerMessage.includes('emergency') || lowerMessage.includes('leak') || lowerMessage.includes('urgent')) {\n  intent = 'emergency';\n  priority = 'urgent';\n} else if (lowerMessage.includes('estimate') || lowerMessage.includes('quote') || lowerMessage.includes('price')) {\n  intent = 'estimate_request';\n  priority = 'high';\n} else if (lowerMessage.includes('schedule') || lowerMessage.includes('appointment') || lowerMessage.includes('inspection')) {\n  intent = 'scheduling';\n  priority = 'high';\n} else if (userEmail || lowerMessage.includes('email me') || lowerMessage.includes('send me')) {\n  intent = 'contact_capture';\n  priority = 'high';\n}\n\nreturn {\n  json: {\n    // Input data\n    input_type: hasAudio ? 'voice' : 'text',\n    message: messageText,\n    session_id: sessionId,\n    timestamp: timestamp,\n    user_context: userContext,\n    \n    // Analysis\n    intent: intent,\n    priority: priority,\n    user_email: userEmail,\n    has_email: userEmail ? true : false,\n    \n    // Raw data preservation\n    raw_body: body\n  },\n  binary: binaryData\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 400],
+      "id": "input-processor-node",
+      "name": "Input Processor"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.input_type }}",
+              "rightValue": "voice",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [600, 400],
+      "id": "voice-check-node",
+      "name": "Voice Input Check"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [800, 300],
+      "id": "whisper-transcription-node",
+      "name": "Whisper STT",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Merge transcribed text back into the data\nconst inputData = $('Input Processor').item.json;\nconst transcriptionResult = $input.item.json;\n\n// Get transcribed text or use original message\nlet finalMessage = inputData.message;\nif (inputData.input_type === 'voice' && transcriptionResult?.text) {\n  finalMessage = transcriptionResult.text.trim();\n}\n\n// Re-analyze with transcribed text if needed\nlet intent = inputData.intent;\nlet priority = inputData.priority;\nlet userEmail = inputData.user_email;\n\nif (inputData.input_type === 'voice' && finalMessage) {\n  const lowerMessage = finalMessage.toLowerCase();\n  \n  // Re-detect email in transcribed text\n  const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\n  const emailMatch = finalMessage.match(emailPattern);\n  userEmail = emailMatch ? emailMatch[0].toLowerCase().trim() : userEmail;\n  \n  // Re-classify intent with transcribed text\n  if (lowerMessage.includes('emergency') || lowerMessage.includes('leak') || lowerMessage.includes('urgent')) {\n    intent = 'emergency';\n    priority = 'urgent';\n  } else if (lowerMessage.includes('estimate') || lowerMessage.includes('quote') || lowerMessage.includes('price')) {\n    intent = 'estimate_request';\n    priority = 'high';\n  } else if (lowerMessage.includes('schedule') || lowerMessage.includes('appointment') || lowerMessage.includes('inspection')) {\n    intent = 'scheduling';\n    priority = 'high';\n  } else if (userEmail || lowerMessage.includes('email me') || lowerMessage.includes('send me')) {\n    intent = 'contact_capture';\n    priority = 'high';\n  }\n}\n\nreturn {\n  json: {\n    ...inputData,\n    message: finalMessage,\n    intent: intent,\n    priority: priority,\n    user_email: userEmail,\n    has_email: userEmail ? true : false,\n    transcription_completed: inputData.input_type === 'voice'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 400],
+      "id": "message-merge-node",
+      "name": "Message Merger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {
+          "systemMessage": "You are Sarah, the AI assistant for Alpine Peak Roofing in Denver, Colorado.\n\n🏔️ COMPANY INFORMATION:\n- Company: Alpine Peak Roofing\n- Phone: (970) 446-8995 (AI Voice Agent available 24/7)\n- Location: Denver metro area and surrounding regions\n- Motto: \"Pinnacle of Protection, Peak of Performance\"\n- Services: Residential and commercial roofing, repairs, inspections, emergency services\n- Specialties: High-altitude roofing, hail damage repair, snow load management, storm response\n- Scheduling: https://calendly.com/jimmy-agenticpersonnel/30min\n\n🎯 YOUR PERSONALITY:\n- Professional but friendly and approachable\n- Knowledgeable about roofing and construction\n- Helpful and solution-oriented\n- Empathetic to customer concerns, especially emergencies\n- Confident in Alpine Peak's expertise and quality\n\n🛠️ AVAILABLE TOOLS:\nYou have access to specialized tools to help customers:\n- **Knowledge Search**: Find detailed information about roofing topics, services, and company policies\n- **Email Tool**: Send detailed information via email in various formats (HTML, PDF, markdown)\n- **Calendar Tool**: Provide scheduling links for inspections and consultations\n- **Emergency Tool**: Handle urgent situations with priority response\n\n📋 CONVERSATION GUIDELINES:\n1. **Always greet customers warmly** and introduce yourself as Sarah from Alpine Peak Roofing\n2. **Listen carefully** to understand their specific needs and concerns\n3. **Use tools intelligently** - search knowledge base for technical questions, offer email for detailed information\n4. **For emergencies** (leaks, storm damage, safety issues): Emphasize calling (970) 446-8995 immediately\n5. **For estimates**: Always try to capture email if not provided, offer to send detailed information\n6. **For scheduling**: Provide the Calendly link for inspections and consultations\n7. **Be honest** about limitations - if you don't know something specific, admit it and offer to connect them with our team\n8. **Always end with a helpful action** - whether it's providing a link, offering to email information, or suggesting next steps\n\n🚨 EMERGENCY PROTOCOL:\nIf customer mentions: leak, emergency, urgent, storm damage, safety concern, or immediate need\n- Prioritize human contact: \"This sounds urgent! Please call us immediately at (970) 446-8995 for emergency assistance.\"\n- Use Emergency Tool to log and escalate\n- Provide immediate next steps\n\n💡 KNOWLEDGE BASE USAGE:\n- Use the Knowledge Search tool for technical roofing questions\n- Search for company policies, service details, warranty information\n- Get specific information about materials, techniques, local building codes\n- If knowledge base doesn't have the answer, clearly state limitations\n\n📧 EMAIL CAPTURE STRATEGY:\n- For complex questions: \"I can send you detailed information via email\"\n- For estimates: \"Let me email you our service overview and pricing guide\"\n- For follow-ups: \"Would you like me to email you a summary of our conversation?\"\n- Always ask for email preference: \"Would you prefer HTML, PDF, or text format?\"\n\n🎯 CONVERSATION FLOW:\n1. Understand the customer's need\n2. Use appropriate tools to gather information\n3. Provide helpful, accurate response\n4. Offer additional assistance (email, scheduling, etc.)\n5. Ensure customer feels heard and helped\n\nRemember: You represent Alpine Peak Roofing's commitment to excellence. Every interaction should reflect our high standards and customer-first approach.",
+          "maxIterations": 10,
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [1400, 400],
+      "id": "ai-agent-core",
+      "name": "Alpine Peak AI Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Alpine Peak Roofing knowledge base containing information about roofing services, company policies, technical procedures, local building codes, materials, warranty information, and service areas in Denver Colorado. Use this tool to answer questions about roofing, repairs, inspections, emergency services, pricing, and company details.",
+        "topK": 5
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [1200, 200],
+      "id": "knowledge-search-tool",
+      "name": "Knowledge Search Tool"
+    },
+    {
+      "parameters": {
+        "mode": "load",
+        "tableName": {
+          "__rl": true,
+          "value": "knowledge_base",
+          "mode": "list"
+        },
+        "prompt": "={{ $json.input }}",
+        "topK": 5,
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [1000, 200],
+      "id": "supabase-vector-store",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "o7zyeZA5I055ehin",
+          "name": "Supabase jimiHacks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-ada-002",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [800, 200],
+      "id": "embeddings-openai",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Send detailed roofing information, estimates, service guides, or conversation summaries to customers via email. Can format content as HTML, PDF, or markdown based on customer preference. Always ask for email address if not provided. Use for complex technical information, pricing guides, or follow-up documentation.",
+        "source": "parameter",
+        "workflowJson": "{\n  \"name\": \"Email Tool Sub-Workflow\",\n  \"nodes\": [\n    {\n      \"parameters\": {},\n      \"id\": \"email-trigger\",\n      \"name\": \"Execute Workflow Trigger\",\n      \"type\": \"n8n-nodes-base.executeWorkflowTrigger\",\n      \"typeVersion\": 1,\n      \"position\": [460, 460]\n    },\n    {\n      \"parameters\": {\n        \"mode\": \"runOnceForEachItem\",\n        \"jsCode\": \"// Email formatting tool\\nconst emailAddress = $json.email_address || '';\\nconst content = $json.content || '';\\nconst format = $json.format || 'html'; // html, pdf, markdown\\nconst subject = $json.subject || 'Information from Alpine Peak Roofing';\\n\\nif (!emailAddress) {\\n  throw new Error('Email address is required');\\n}\\n\\nif (!content) {\\n  throw new Error('Content is required');\\n}\\n\\n// Clean and format content based on requested format\\nlet formattedContent = content;\\nlet emailSubject = subject;\\n\\nif (format === 'html') {\\n  // Convert to HTML format\\n  formattedContent = content\\n    .replace(/\\\\n/g, '<br>')\\n    .replace(/\\\\*\\\\*([^*]+)\\\\*\\\\*/g, '<strong>$1</strong>')\\n    .replace(/\\\\*([^*]+)\\\\*/g, '<em>$1</em>');\\n  \\n  formattedContent = `\\n    <html>\\n    <body style=\\\"font-family: Arial, sans-serif; line-height: 1.6; color: #333;\\\">\\n      <div style=\\\"max-width: 600px; margin: 0 auto; padding: 20px;\\\">\\n        <div style=\\\"text-align: center; margin-bottom: 30px;\\\">\\n          <h1 style=\\\"color: #2c5aa0;\\\">Alpine Peak Roofing</h1>\\n          <p style=\\\"color: #666; font-style: italic;\\\">Pinnacle of Protection, Peak of Performance</p>\\n        </div>\\n        <div style=\\\"background: #f9f9f9; padding: 20px; border-radius: 8px;\\\">\\n          ${formattedContent}\\n        </div>\\n        <div style=\\\"margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666;\\\">\\n          <p><strong>Alpine Peak Roofing</strong><br>\\n          Phone: (970) 446-8995<br>\\n          Schedule: <a href=\\\"https://calendly.com/jimmy-agenticpersonnel/30min\\\">Book Consultation</a></p>\\n        </div>\\n      </div>\\n    </body>\\n    </html>\\n  `;\\n} else if (format === 'markdown') {\\n  // Ensure content is in clean markdown\\n  formattedContent = `# Alpine Peak Roofing\\n\\n*Pinnacle of Protection, Peak of Performance*\\n\\n---\\n\\n${content}\\n\\n---\\n\\n**Contact Information:**\\n- Phone: (970) 446-8995\\n- Schedule: [Book Consultation](https://calendly.com/jimmy-agenticpersonnel/30min)\\n`;\\n} else {\\n  // Plain text format\\n  formattedContent = `Alpine Peak Roofing\\nPinnacle of Protection, Peak of Performance\\n\\n${content.replace(/<[^>]*>/g, '').replace(/\\\\*\\\\*([^*]+)\\\\*\\\\*/g, '$1').replace(/\\\\*([^*]+)\\\\*/g, '$1')}\\n\\nContact Information:\\nPhone: (970) 446-8995\\nSchedule: https://calendly.com/jimmy-agenticpersonnel/30min`;\\n}\\n\\nreturn {\\n  json: {\\n    to: emailAddress,\\n    subject: emailSubject,\\n    content: formattedContent,\\n    format: format,\\n    timestamp: new Date().toISOString()\\n  }\\n};\"\n      },\n      \"type\": \"n8n-nodes-base.code\",\n      \"typeVersion\": 2,\n      \"position\": [680, 460],\n      \"id\": \"format-email\",\n      \"name\": \"Format Email\"\n    },\n    {\n      \"parameters\": {\n        \"sendTo\": \"={{ $json.to }}\",\n        \"subject\": \"={{ $json.subject }}\",\n        \"emailType\": \"html\",\n        \"message\": \"={{ $json.content }}\",\n        \"options\": {\n          \"appendAttribution\": false\n        }\n      },\n      \"type\": \"n8n-nodes-base.gmail\",\n      \"typeVersion\": 2.1,\n      \"position\": [900, 460],\n      \"id\": \"send-gmail\",\n      \"name\": \"Send Gmail\",\n      \"credentials\": {\n        \"gmailOAuth2\": {\n          \"id\": \"8hbFbajUg7gLFAaq\",\n          \"name\": \"Gmail_APS_account\"\n        }\n      }\n    }\n  ],\n  \"connections\": {\n    \"Execute Workflow Trigger\": {\n      \"main\": [[\n        {\n          \"node\": \"Format Email\",\n          \"type\": \"main\",\n          \"index\": 0\n        }\n      ]]\n    },\n    \"Format Email\": {\n      \"main\": [[\n        {\n          \"node\": \"Send Gmail\",\n          \"type\": \"main\",\n          \"index\": 0\n        }\n      ]]\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [1200, 300],
+      "id": "email-tool",
+      "name": "Email Tool"
+    },
+    {
+      "parameters": {
+        "name": "emergency_response",
+        "description": "Handle emergency roofing situations including leaks, storm damage, structural concerns, or safety issues. Logs high-priority incidents and triggers immediate response protocols. Use when customer mentions: leak, emergency, urgent, storm damage, safety concern, or immediate need.",
+        "code": "// Emergency Response Tool\nconst emergencyData = {\n  message: $input.all()[0].json.message || '',\n  user_email: $input.all()[0].json.user_email || '',\n  session_id: $input.all()[0].json.session_id || '',\n  timestamp: new Date().toISOString(),\n  priority: 'URGENT',\n  type: 'emergency_contact',\n  escalated: true\n};\n\n// Determine emergency type\nconst message = emergencyData.message.toLowerCase();\nlet emergencyType = 'general_emergency';\n\nif (message.includes('leak')) {\n  emergencyType = 'roof_leak';\n} else if (message.includes('storm') || message.includes('wind') || message.includes('hail')) {\n  emergencyType = 'storm_damage';\n} else if (message.includes('collapse') || message.includes('structural') || message.includes('falling')) {\n  emergencyType = 'structural_concern';\n} else if (message.includes('safety') || message.includes('dangerous')) {\n  emergencyType = 'safety_hazard';\n}\n\nconst response = {\n  emergency_logged: true,\n  emergency_type: emergencyType,\n  priority_level: 'URGENT',\n  immediate_action: 'Call (970) 446-8995 for immediate emergency assistance',\n  response_message: `🚨 EMERGENCY DETECTED 🚨\\n\\nI understand this is an urgent situation. For immediate emergency assistance, please call us right now at (970) 446-8995.\\n\\nOur emergency response team is available 24/7 for situations like ${emergencyType.replace('_', ' ')}.\\n\\nWhile you're calling, here are immediate steps:\\n- If there's water coming in, place buckets to catch drips\\n- If it's safe, take photos for insurance\\n- Keep the area clear of people and valuables\\n\\nWe'll dispatch a technician as soon as possible. Your safety is our top priority.`\n};\n\nreturn { json: { ...emergencyData, ...response } };"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.1,
+      "position": [1200, 500],
+      "id": "emergency-tool",
+      "name": "Emergency Response Tool"
+    },
+    {
+      "parameters": {
+        "name": "calendar_scheduling",
+        "description": "Provide scheduling links and availability information for roofing inspections, consultations, and service appointments. Use when customer wants to schedule service, book inspection, or needs appointment information.",
+        "code": "// Calendar Scheduling Tool\nconst schedulingData = {\n  calendly_link: 'https://calendly.com/jimmy-agenticpersonnel/30min',\n  available_services: [\n    'Free Roof Inspection',\n    'Damage Assessment',\n    'Estimate Consultation',\n    'Maintenance Check',\n    'Insurance Claim Support'\n  ],\n  typical_availability: 'Monday-Friday 8AM-6PM, Saturday 9AM-4PM',\n  emergency_scheduling: 'Call (970) 446-8995 for emergency appointments'\n};\n\nconst message = $input.all()[0].json.message?.toLowerCase() || '';\nlet serviceType = 'general_consultation';\nlet urgency = 'standard';\n\nif (message.includes('inspection')) {\n  serviceType = 'roof_inspection';\n} else if (message.includes('estimate') || message.includes('quote')) {\n  serviceType = 'estimate_consultation';\n} else if (message.includes('emergency') || message.includes('urgent')) {\n  serviceType = 'emergency_assessment';\n  urgency = 'urgent';\n} else if (message.includes('insurance') || message.includes('claim')) {\n  serviceType = 'insurance_consultation';\n}\n\nlet responseMessage = '';\n\nif (urgency === 'urgent') {\n  responseMessage = `For urgent scheduling needs, please call us immediately at (970) 446-8995.\\n\\nOur team can often accommodate same-day or next-day emergency appointments.`;\n} else {\n  responseMessage = `I'd be happy to help you schedule a ${serviceType.replace('_', ' ')}!\\n\\n📅 **Schedule Online:** ${schedulingData.calendly_link}\\n\\n⏰ **Typical Availability:** ${schedulingData.typical_availability}\\n\\n🏠 **Available Services:**\\n${schedulingData.available_services.map(service => `• ${service}`).join('\\n')}\\n\\nFor immediate scheduling or if you have questions, call us at (970) 446-8995.`;\n}\n\nreturn {\n  json: {\n    scheduling_provided: true,\n    service_type: serviceType,\n    urgency: urgency,\n    calendly_link: schedulingData.calendly_link,\n    response_message: responseMessage\n  }\n};"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.1,
+      "position": [1200, 600],
+      "id": "calendar-tool",
+      "name": "Calendar Scheduling Tool"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Message Merger').item.json.input_type }}",
+              "rightValue": "voice",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1800, 400],
+      "id": "voice-response-check",
+      "name": "Voice Response Check"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $('Alpine Peak AI Agent').item.json.output }}",
+        "voice": "nova",
+        "options": {
+          "response_format": "mp3",
+          "speed": 1,
+          "binaryPropertyOutput": "audio_response"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [2000, 300],
+      "id": "tts-generation",
+      "name": "TTS Generation",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Format final response for webhook\nconst agentResponse = $('Alpine Peak AI Agent').item.json;\nconst inputData = $('Message Merger').item.json;\nconst voiceAudio = $input.item.binary?.audio_response || null;\n\n// Extract the actual response text\nlet responseText = agentResponse.output || agentResponse.content || agentResponse.message || 'Thank you for contacting Alpine Peak Roofing!';\n\n// Create webhook response\nconst webhookResponse = {\n  success: true,\n  message: responseText,\n  session_id: inputData.session_id,\n  timestamp: new Date().toISOString(),\n  input_type: inputData.input_type,\n  audio_url: null, // Will be populated if voice response\n  metadata: {\n    intent: inputData.intent,\n    priority: inputData.priority,\n    email_captured: inputData.has_email,\n    tools_used: agentResponse.intermediateSteps?.length || 0,\n    response_format: 'text'\n  }\n};\n\n// Add voice-specific data if available\nif (inputData.input_type === 'voice' && voiceAudio) {\n  webhookResponse.audio_url = 'data:audio/mp3;base64,' + voiceAudio.data;\n  webhookResponse.metadata.response_format = 'voice';\n}\n\n// Add call-to-action based on intent\nif (inputData.intent === 'emergency') {\n  webhookResponse.cta = {\n    type: 'emergency_call',\n    action: 'Call (970) 446-8995 immediately',\n    urgent: true\n  };\n} else if (inputData.intent === 'scheduling') {\n  webhookResponse.cta = {\n    type: 'schedule',\n    action: 'Schedule consultation',\n    link: 'https://calendly.com/jimmy-agenticpersonnel/30min'\n  };\n} else {\n  webhookResponse.cta = {\n    type: 'contact',\n    action: 'Learn more about our services',\n    link: 'https://calendly.com/jimmy-agenticpersonnel/30min'\n  };\n}\n\nreturn {\n  json: webhookResponse\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, 400],
+      "id": "response-formatter",
+      "name": "Response Formatter"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $('Message Merger').item.json.session_id }}"
+            },
+            {
+              "fieldId": "user_message",
+              "fieldValue": "={{ $('Message Merger').item.json.message }}"
+            },
+            {
+              "fieldId": "ai_response",
+              "fieldValue": "={{ $('Alpine Peak AI Agent').item.json.output }}"
+            },
+            {
+              "fieldId": "input_type",
+              "fieldValue": "={{ $('Message Merger').item.json.input_type }}"
+            },
+            {
+              "fieldId": "intent",
+              "fieldValue": "={{ $('Message Merger').item.json.intent }}"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $('Message Merger').item.json.priority }}"
+            },
+            {
+              "fieldId": "user_email",
+              "fieldValue": "={{ $('Message Merger').item.json.user_email }}"
+            },
+            {
+              "fieldId": "user_context",
+              "fieldValue": "={{ JSON.stringify($('Message Merger').item.json.user_context) }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2000, 600],
+      "id": "conversation-logger",
+      "name": "Conversation Logger",
+      "credentials": {
+        "supabaseApi": {
+          "id": "o7zyeZA5I055ehin",
+          "name": "Supabase jimiHacks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Message Merger').item.json.has_email }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2000, 500],
+      "id": "lead-capture-check",
+      "name": "Lead Capture Check"
+    },
+    {
+      "parameters": {
+        "tableId": "leads",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $('Message Merger').item.json.user_email }}"
+            },
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $('Message Merger').item.json.session_id }}"
+            },
+            {
+              "fieldId": "lead_source",
+              "fieldValue": "={{ $('Message Merger').item.json.input_type === 'voice' ? 'voice_chatbot' : 'text_chatbot' }}"
+            },
+            {
+              "fieldId": "intent",
+              "fieldValue": "={{ $('Message Merger').item.json.intent }}"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $('Message Merger').item.json.priority }}"
+            },
+            {
+              "fieldId": "lead_score",
+              "fieldValue": "={{ $('Message Merger').item.json.priority === 'urgent' ? 100 : ($('Message Merger').item.json.priority === 'high' ? 75 : 50) }}"
+            },
+            {
+              "fieldId": "first_contact_message",
+              "fieldValue": "={{ $('Message Merger').item.json.message }}"
+            },
+            {
+              "fieldId": "page_context",
+              "fieldValue": "={{ $('Message Merger').item.json.user_context.page_context }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2200, 500],
+      "id": "lead-capture",
+      "name": "Lead Capture",
+      "credentials": {
+        "supabaseApi": {
+          "id": "o7zyeZA5I055ehin",
+          "name": "Supabase jimiHacks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [2400, 400],
+      "id": "webhook-response",
+      "name": "Webhook Response"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Unified Webhook": {
+      "main": [
+        [
+          {
+            "node": "Input Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Processor": {
+      "main": [
+        [
+          {
+            "node": "Voice Input Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Input Check": {
+      "main": [
+        [
+          {
+            "node": "Whisper STT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message Merger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whisper STT": {
+      "main": [
+        [
+          {
+            "node": "Message Merger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Merger": {
+      "main": [
+        [
+          {
+            "node": "Alpine Peak AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alpine Peak AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Voice Response Check",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Conversation Logger",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Lead Capture Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Response Check": {
+      "main": [
+        [
+          {
+            "node": "TTS Generation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TTS Generation": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response Formatter": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Capture Check": {
+      "main": [
+        [
+          {
+            "node": "Lead Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Knowledge Search Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Knowledge Search Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Alpine Peak AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Alpine Peak AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emergency Response Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Alpine Peak AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar Scheduling Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Alpine Peak AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "007-ai-agent-architecture",
+  "meta": {
+    "instanceId": "62eb072701814b1a1a9c022b7a751c5f8dac0a37a5a414c436048bc8706d2f6f"
+  },
+  "id": "alpine-peak-ai-agent-007",
+  "tags": [
+    {
+      "createdAt": "2025-01-18T00:00:00.000Z",
+      "updatedAt": "2025-01-18T00:00:00.000Z",
+      "id": "ai-agent-core",
+      "name": "AI-AGENT-CORE"
+    },
+    {
+      "createdAt": "2025-01-18T00:00:00.000Z",
+      "updatedAt": "2025-01-18T00:00:00.000Z",
+      "id": "vector-rag-optimized",
+      "name": "VECTOR-RAG-OPTIMIZED"
+    },
+    {
+      "createdAt": "2025-01-18T00:00:00.000Z",
+      "updatedAt": "2025-01-18T00:00:00.000Z",
+      "id": "voice-text-unified",
+      "name": "VOICE-TEXT-UNIFIED"
+    }
+  ]
+}

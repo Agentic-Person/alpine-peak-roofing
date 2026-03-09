@@ -1,0 +1,85 @@
+{
+  "name": "Alpine Peak Simple Test",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chatbot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-400, 300],
+      "id": "text-webhook",
+      "name": "Text Webhook",
+      "webhookId": "alpine-peak-chatbot",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const message = $json.message || $json.body?.message || 'Hello from Alpine Peak Roofing!';\nconst userMessage = String(message).trim();\n\nconst response = {\n  success: true,\n  chatbot_response: {\n    message: `Thanks for contacting Alpine Peak Roofing! You said: \"${userMessage}\". For emergencies, call (970) 446-8995.`,\n    type: 'text',\n    timestamp: new Date().toISOString(),\n    session_id: 'test_session_' + Date.now()\n  },\n  metadata: {\n    input_received: userMessage,\n    intent: 'general',\n    lead_score: 10\n  }\n};\n\nreturn { json: response };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "id": "simple-processor",
+      "name": "Simple Processor",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [400, 300],
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Text Webhook": {
+      "main": [
+        [
+          {
+            "node": "Simple Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Processor": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "simple-test-version",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "simple-test"
+  },
+  "id": "alpine-peak-simple",
+  "tags": [
+    {
+      "id": "simple-tag",
+      "name": "SIMPLE-TEST"
+    }
+  ]
+}

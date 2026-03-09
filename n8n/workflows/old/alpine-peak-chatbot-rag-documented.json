@@ -1,0 +1,334 @@
+{
+  "name": "alpine-peak-chatbot-rag-production",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# 🚀 RAG Webhook Entry Point\n\n## Endpoint Details\n**Path:** `/alpine-peak-chatbot-rag`  \n**Method:** POST  \n**Response:** JSON  \n\n## Expected Payload\n```json\n{\n  \"message\": \"user question\",\n  \"session_id\": \"unique-id\",\n  \"page_context\": \"website\",\n  \"user_data\": {}\n}\n```\n\n## Testing Command\n```bash\ncurl -X POST https://your-n8n.com/webhook/alpine-peak-chatbot-rag \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"message\": \"I need a roof estimate\"}'  \n```\n\n## Error Handling\n✅ Has `onError: continueRegularOutput`  \n✅ Always returns response even on failure",
+        "height": 380,
+        "width": 280,
+        "color": 1
+      },
+      "id": "sticky-webhook",
+      "name": "Webhook Documentation",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [50, 150]
+    },
+    {
+      "parameters": {
+        "content": "# 🧠 Intent Analysis & RAG Routing\n\n## Intent Categories\n- **emergency** → 'urgent' priority → searchCategory: 'emergency'\n- **estimation_request** → 'high' priority → searchCategory: 'pricing'  \n- **product_inquiry** → 'normal' priority → searchCategory: 'materials'\n- **installation_inquiry** → 'normal' priority → searchCategory: 'installation'\n- **commercial_inquiry** → 'normal' priority → searchCategory: 'commercial'\n- **climate_inquiry** → 'normal' priority → searchCategory: 'climate'\n- **scheduling** → 'high' priority → No RAG search\n\n## Keyword Detection\n- Looks for: leak, emergency, estimate, price, shingle, repair, hail, etc.\n- Adds search_category for vector filtering\n- Sets needs_rag flag when knowledge base search required\n\n## Output Fields\n- `intent`: Classified intent type\n- `priority`: urgent/high/normal  \n- `search_category`: For vector DB filtering\n- `needs_rag`: Boolean flag",
+        "height": 420,
+        "width": 320,
+        "color": 2
+      },
+      "id": "sticky-intent",
+      "name": "Intent Analysis Logic",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [350, 100]
+    },
+    {
+      "parameters": {
+        "content": "# 🔤 OpenAI Embedding Generation\n\n## Model Specs\n**Model:** `text-embedding-ada-002`  \n**Dimensions:** 1536  \n**Cost:** ~$0.0001 per query  \n\n## Query Enhancement\nAppends: `\" Denver Colorado roofing contractor services\"`  \nThis improves relevance for local searches\n\n## Performance\n- Average time: 200-300ms\n- Rate limit: 3000 RPM\n- Max input: 8191 tokens\n\n## Error Handling\n✅ Has `onError: continueRegularOutput`  \n⚠️ Will use general knowledge if embedding fails",
+        "height": 320,
+        "width": 280,
+        "color": 3
+      },
+      "id": "sticky-embedding",
+      "name": "Embedding Details",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [550, 450]
+    },
+    {
+      "parameters": {
+        "content": "# 🔍 Vector Knowledge Search\n\n## Database Details\n**Extension:** pgvector  \n**Knowledge Chunks:** 566 available  \n**Similarity Method:** Cosine distance `<=>`  \n**Threshold:** 0.78 (78% similarity minimum)  \n**Results Limit:** 5 chunks  \n\n## SQL Query\n```sql\nSELECT id, title, content, \n  (1 - (embedding <=> $1::vector)) AS similarity\nWHERE similarity > 0.78\nAND category matches (if provided)\nORDER BY similarity DESC\nLIMIT 5\n```\n\n## Categories in DB\n- materials (roofing types)\n- climate (Colorado weather)  \n- installation (techniques)\n- emergency (urgent issues)\n- commercial (TPO/EPDM)\n- pricing (costs/estimates)\n\n## Performance\n- Query time: ~100-150ms\n- 45,000+ words indexed",
+        "height": 420,
+        "width": 300,
+        "color": 4
+      },
+      "id": "sticky-vector",
+      "name": "Vector Search Specs",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [750, 100]
+    },
+    {
+      "parameters": {
+        "content": "# 🏗️ RAG Context Building\n\n## Context Assembly Process\n1. Filters results > 78% similarity\n2. Takes top 3 matches\n3. Formats as structured context\n4. Adds emergency/seasonal modifiers\n\n## Context Structure\n```\n=== ALPINE PEAK KNOWLEDGE BASE ===\n1. [Title]\n   Relevance: XX%\n   Category: [category]\n   Content: [chunk content]\n=== END KNOWLEDGE BASE ===\n```\n\n## Special Context Injection\n- **Emergency:** Adds safety alert\n- **Climate queries:** Adds current season\n- **No matches:** Uses general knowledge\n\n## Metadata Tracking\n- `knowledge_sources`: Array of sources used\n- `knowledge_confidence`: Average similarity\n- `has_knowledge`: Boolean flag",
+        "height": 420,
+        "width": 320,
+        "color": 5
+      },
+      "id": "sticky-context",
+      "name": "Context Building Logic",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [950, 450]
+    },
+    {
+      "parameters": {
+        "content": "# 🤖 AI Response Generation\n\n## Model Configuration\n**Model:** `gpt-4o-mini`  \n**Temperature:** 0.7 (balanced creativity)  \n**Max Tokens:** 600  \n**Cost:** ~$0.002 per response  \n\n## System Prompt Structure\n1. Company identity (Alpine Peak)\n2. RAG context injection point\n3. Response guidelines\n4. Lead qualification priorities\n5. Colorado-specific expertise\n\n## Dynamic Elements\n- Intent: `{{ $json.intent }}`\n- Priority: `{{ $json.priority }}`\n- Knowledge: Yes/No\n- Confidence: 0-100%\n\n## Response Priorities\n1. 🚨 Emergency → Call immediately\n2. 💰 Estimates → Schedule inspection\n3. 📅 Scheduling → Book appointment\n4. ℹ️ General → Provide expertise",
+        "height": 420,
+        "width": 300,
+        "color": 6
+      },
+      "id": "sticky-ai",
+      "name": "AI Configuration",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1150, 100]
+    },
+    {
+      "parameters": {
+        "content": "# 📦 Response Formatting\n\n## JSON Structure\n```json\n{\n  \"success\": true,\n  \"response\": {\n    \"message\": \"AI response\",\n    \"type\": \"text\",\n    \"timestamp\": \"ISO-8601\",\n    \"session_id\": \"xxx\",\n    \"cta\": \"Call to action\"\n  },\n  \"metadata\": {\n    \"intent\": \"emergency\",\n    \"priority\": \"urgent\",\n    \"knowledge_used\": true,\n    \"knowledge_confidence\": 92,\n    \"sources_count\": 3,\n    \"rag_enabled\": true,\n    \"requires_followup\": true\n  },\n  \"structured_data\": {\n    \"suggested_actions\": [],\n    \"knowledge_sources\": [],\n    \"next_steps\": []\n  }\n}\n```\n\n## CTA by Intent\n- Emergency: \"🚨 Call (970) 446-8995 now!\"\n- Estimate: \"📞 Schedule free estimate!\"\n- Scheduling: \"📅 Book inspection!\"\n- General: \"💬 We're here to help!\"",
+        "height": 460,
+        "width": 320,
+        "color": 2
+      },
+      "id": "sticky-format",
+      "name": "Response Format Spec",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1350, 450]
+    },
+    {
+      "parameters": {
+        "content": "# ⚡ Performance & Debugging\n\n## Expected Latency\n- Intent Analysis: ~5ms\n- Embedding Generation: ~250ms\n- Vector Search: ~150ms  \n- Context Building: ~10ms\n- AI Response: ~400ms\n- **Total: <1 second**\n\n## Monitoring Points\n1. Check `has_knowledge` flag\n2. Monitor `knowledge_confidence`\n3. Track `sources_count`\n4. Watch for empty responses\n\n## Common Issues\n- **No results:** Check similarity threshold\n- **Slow response:** Check OpenAI rate limits\n- **Wrong category:** Review intent keywords\n- **Missing context:** Verify vector DB connection\n\n## Testing Queries\n- \"My roof is leaking\" → Emergency\n- \"How much for new shingles?\" → Estimate\n- \"Best material for Colorado?\" → Materials\n- \"Schedule inspection\" → Scheduling",
+        "height": 420,
+        "width": 320,
+        "color": 1
+      },
+      "id": "sticky-performance",
+      "name": "Performance Guide",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1550, 100]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chatbot-rag",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [200, 300],
+      "id": "webhook-trigger",
+      "name": "RAG Webhook Trigger",
+      "webhookId": "alpine-peak-chatbot-rag",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract and validate chat message data\nfor (const item of $input.all()) {\n  const inputData = item.json;\n  \n  if (!inputData.message) {\n    throw new Error('Message is required');\n  }\n  \n  // Extract context and user data\n  const chatData = {\n    message: inputData.message,\n    session_id: inputData.session_id || 'session_' + Date.now(),\n    page_context: inputData.page_context || 'website',\n    user_data: inputData.user_data || {},\n    timestamp: new Date().toISOString(),\n    ip_address: 'unknown'\n  };\n  \n  // Enhanced intent detection with search categories\n  const message = inputData.message.toLowerCase();\n  let intent = 'general';\n  let priority = 'normal';\n  let searchCategory = null;\n  \n  // Emergency detection (highest priority)\n  if (message.includes('leak') || message.includes('emergency') || message.includes('urgent') || message.includes('storm damage')) {\n    intent = 'emergency';\n    priority = 'urgent';\n    searchCategory = 'emergency';\n  }\n  // Estimation requests (high priority)\n  else if (message.includes('estimate') || message.includes('quote') || message.includes('price') || message.includes('cost')) {\n    intent = 'estimation_request';\n    priority = 'high';\n    searchCategory = 'pricing';\n  }\n  // Material inquiries\n  else if (message.includes('shingle') || message.includes('material') || message.includes('warranty') || message.includes('type')) {\n    intent = 'product_inquiry';\n    priority = 'normal';\n    searchCategory = 'materials';\n  }\n  // Installation/repair questions\n  else if (message.includes('install') || message.includes('repair') || message.includes('replace') || message.includes('fix')) {\n    intent = 'installation_inquiry';\n    priority = 'normal';\n    searchCategory = 'installation';\n  }\n  // Commercial inquiries\n  else if (message.includes('commercial') || message.includes('tpo') || message.includes('epdm')) {\n    intent = 'commercial_inquiry';\n    priority = 'normal';\n    searchCategory = 'commercial';\n  }\n  // Climate/weather related\n  else if (message.includes('hail') || message.includes('snow') || message.includes('winter') || message.includes('colorado')) {\n    intent = 'climate_inquiry';\n    priority = 'normal';\n    searchCategory = 'climate';\n  }\n  // Scheduling requests\n  else if (message.includes('schedule') || message.includes('appointment') || message.includes('inspection')) {\n    intent = 'scheduling';\n    priority = 'high';\n  }\n  \n  // Add classification to data\n  chatData.intent = intent;\n  chatData.priority = priority;\n  chatData.search_category = searchCategory;\n  chatData.needs_rag = searchCategory !== null;\n  \n  return { json: chatData };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300],
+      "id": "enhanced-intent-analysis",
+      "name": "Enhanced Intent Analysis",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-ada-002",
+        "input": "={{ $json.message + ' Denver Colorado roofing contractor services' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [600, 300],
+      "id": "generate-query-embedding",
+      "name": "Generate Query Embedding",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, title, content, (1 - (embedding <=> $1::vector)) AS similarity, metadata FROM knowledge_base WHERE (1 - (embedding <=> $1::vector)) > 0.78 AND ($2::text IS NULL OR metadata->>'category' = $2::text) ORDER BY embedding <=> $1::vector LIMIT 5",
+        "values": "={{ [JSON.stringify($('Generate Query Embedding').item.json.data[0].embedding), $('Enhanced Intent Analysis').item.json.search_category] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [800, 300],
+      "id": "vector-knowledge-search",
+      "name": "Vector Knowledge Search",
+      "credentials": {
+        "postgres": {
+          "id": "OYphI3uul5xfR5wF",
+          "name": "Postgres APS"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build enhanced RAG context from search results\nconst originalData = $('Enhanced Intent Analysis').item.json;\nconst searchResults = $input.all();\n\nlet ragContext = '';\nlet knowledgeSources = [];\nlet hasRelevantKnowledge = false;\nlet totalSimilarity = 0;\nlet validResults = [];\n\nif (searchResults && searchResults.length > 0) {\n  validResults = searchResults.filter(r => r.json && r.json.similarity > 0.78);\n  \n  if (validResults.length > 0) {\n    hasRelevantKnowledge = true;\n    ragContext += '\\n\\n=== ALPINE PEAK ROOFING KNOWLEDGE BASE ===\\n';\n    \n    validResults.slice(0, 3).forEach((result, index) => {\n      const data = result.json;\n      const similarity = Math.round(data.similarity * 100);\n      \n      ragContext += '\\n' + (index + 1) + '. ' + (data.title || 'Technical Knowledge') + '\\n';\n      ragContext += '   Relevance: ' + similarity + '% match\\n';\n      ragContext += '   Category: ' + (data.metadata?.category || 'General') + '\\n';\n      ragContext += '   Content: ' + data.content + '\\n';\n      \n      knowledgeSources.push({\n        title: data.title,\n        similarity: data.similarity,\n        category: data.metadata?.category\n      });\n      \n      totalSimilarity += data.similarity;\n    });\n    \n    ragContext += '\\n=== END KNOWLEDGE BASE ===\\n\\n';\n    ragContext += 'INSTRUCTION: Use the above Alpine Peak knowledge base information to provide accurate, detailed responses. Reference specific technical details when relevant.\\n\\n';\n  }\n}\n\n// Add emergency context\nif (originalData.intent === 'emergency') {\n  ragContext += '\\n🚨 EMERGENCY ALERT: This is an urgent roofing issue requiring immediate attention. Prioritize safety and emergency response procedures.\\n\\n';\n}\n\n// Add seasonal context\nconst currentMonth = new Date().getMonth() + 1;\nlet season = '';\nif (currentMonth >= 12 || currentMonth <= 2) season = 'winter';\nelse if (currentMonth >= 3 && currentMonth <= 5) season = 'spring';\nelse if (currentMonth >= 6 && currentMonth <= 8) season = 'summer';\nelse season = 'fall';\n\nif (originalData.search_category === 'climate') {\n  ragContext += '\\n🌤️ SEASONAL CONTEXT: Current season is ' + season + '. Consider seasonal roofing challenges and maintenance needs for Colorado climate.\\n\\n';\n}\n\nreturn {\n  json: {\n    ...originalData,\n    rag_context: ragContext,\n    knowledge_sources: knowledgeSources,\n    has_knowledge: hasRelevantKnowledge,\n    knowledge_confidence: validResults.length > 0 ? totalSimilarity / validResults.length : 0,\n    enhanced_system_prompt: ragContext + '\\n\\nUser Query: ' + originalData.message + '\\nIntent: ' + originalData.intent + '\\nPriority: ' + originalData.priority\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300],
+      "id": "build-rag-context",
+      "name": "Build RAG Context",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "complete",
+        "model": "gpt-4o-mini",
+        "messages": {
+          "messageType": "multipleMessages",
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Sarah, the AI assistant for Alpine Peak Roofing, Denver's premier roofing contractor with 25+ years of experience.\n\nCOMPANY DETAILS:\n- Location: Denver, Colorado  \n- Phone: (970) 446-8995\n- Emergency: 24/7 availability\n- Services: Residential & Commercial Roofing, Emergency Repairs, Inspections\n- Specialties: Asphalt shingles, Metal roofing, Tile systems, Flat roofing\n- Technology: AI-powered estimator, RAG knowledge system, drone inspections\n\n🧠 ENHANCED WITH RAG KNOWLEDGE:\nYou have access to Alpine Peak's complete 45,000+ word knowledge base through the RAG context provided below.\n\n{{ $json.rag_context }}\n\nRESPONSE GUIDELINES:\n✅ ALWAYS prioritize the RAG knowledge context when provided\n✅ Reference specific technical details from the knowledge base\n✅ Professional, knowledgeable, solution-focused tone\n✅ Always prioritize safety for emergencies\n✅ End with appropriate call-to-action\n\nLEAD QUALIFICATION PRIORITY:\n1. 🚨 EMERGENCIES: \"Call (970) 446-8995 IMMEDIATELY\"\n2. 💰 ESTIMATES: \"Schedule free inspection or get instant estimate\"  \n3. 📅 SCHEDULING: \"Book your free roof inspection today\"\n4. ℹ️ GENERAL: Provide detailed knowledge, suggest inspection\n\nCOLORADO EXPERTISE:\n- High altitude effects (5,000+ feet)\n- Hail resistance ratings\n- Snow load requirements  \n- Temperature cycling (-20°F to 100°F+)\n- UV degradation at altitude\n- Chinook wind resistance\n\nIntent: {{ $json.intent }}\nPriority: {{ $json.priority }}\nKnowledge Available: {{ $json.has_knowledge ? 'Yes' : 'No' }}\nConfidence: {{ Math.round(($json.knowledge_confidence || 0) * 100) }}%"
+            },
+            {
+              "role": "user",
+              "content": "{{ $json.message }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 600
+        }
+      },
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [1200, 300],
+      "id": "enhanced-ai-response",
+      "name": "Enhanced AI Response",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format comprehensive RAG response\nconst aiResponseData = $input.item.json;\nconst contextData = $('Build RAG Context').item.json;\n\nlet aiResponse = 'Thank you for your message. We will get back to you soon.';\n\nif (aiResponseData.choices && aiResponseData.choices[0]) {\n  aiResponse = aiResponseData.choices[0].message.content;\n}\n\n// Determine next actions based on intent\nlet suggestedActions = [];\nlet ctaMessage = '';\n\nswitch (contextData.intent) {\n  case 'emergency':\n    suggestedActions = ['Call (970) 446-8995 immediately', 'Document damage with photos', 'Ensure safety first'];\n    ctaMessage = '🚨 For immediate emergency assistance, call (970) 446-8995 now!';\n    break;\n  case 'estimation_request':\n    suggestedActions = ['Schedule free inspection', 'Get instant online estimate', 'Upload roof photos'];\n    ctaMessage = '📞 Ready for your free estimate? Call (970) 446-8995 or schedule online!';\n    break;\n  case 'scheduling':\n    suggestedActions = ['Schedule inspection online', 'Choose preferred time slot', 'Confirm contact details'];\n    ctaMessage = '📅 Schedule your free inspection at your convenience!';\n    break;\n  default:\n    suggestedActions = ['Schedule consultation', 'Get more information', 'Ask follow-up questions'];\n    ctaMessage = '💬 Have more questions? We are here to help!';\n}\n\nreturn {\n  json: {\n    success: true,\n    response: {\n      message: aiResponse,\n      type: 'text',\n      timestamp: new Date().toISOString(),\n      session_id: contextData.session_id,\n      cta: ctaMessage\n    },\n    metadata: {\n      intent: contextData.intent,\n      priority: contextData.priority,\n      knowledge_used: contextData.has_knowledge,\n      knowledge_confidence: Math.round((contextData.knowledge_confidence || 0) * 100),\n      sources_count: contextData.knowledge_sources?.length || 0,\n      rag_enabled: true,\n      requires_followup: ['emergency', 'estimation_request', 'scheduling'].includes(contextData.intent)\n    },\n    structured_data: {\n      suggested_actions: suggestedActions,\n      knowledge_sources: contextData.knowledge_sources || [],\n      next_steps: suggestedActions\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 300],
+      "id": "format-rag-response",
+      "name": "Format RAG Response",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1600, 300],
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "RAG Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Enhanced Intent Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced Intent Analysis": {
+      "main": [
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Vector Knowledge Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Knowledge Search": {
+      "main": [
+        [
+          {
+            "node": "Build RAG Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build RAG Context": {
+      "main": [
+        [
+          {
+            "node": "Enhanced AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced AI Response": {
+      "main": [
+        [
+          {
+            "node": "Format RAG Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format RAG Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "rag-production-v1.1-documented",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "alpine-peak-rag-production"
+  },
+  "tags": ["production", "rag", "chatbot", "alpine-peak", "vector-search", "documented"]
+}

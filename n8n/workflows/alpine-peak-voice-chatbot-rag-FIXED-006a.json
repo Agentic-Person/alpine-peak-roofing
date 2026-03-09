@@ -1,22 +1,6 @@
 {
-  "name": "alpine-peak-voice-chatbot-rag-FIXED-004",
+  "name": "alpine-peak-voice-chatbot-rag-FIXED-005",
   "nodes": [
-    {
-      "parameters": {
-        "content": "## 🎙️ Voice Preprocessing Code Node\n\n**Purpose:** Initial processing of voice webhook input\n\n**Key Functions:**\n• Validates incoming audio binary data\n• Extracts session metadata from voice webhook\n• Prepares audio data for Whisper transcription\n• Sets up voice-specific data structure\n• Handles missing audio with error messages\n\n**Connections:**\n• **IN:** Voice Webhook → audio binary + metadata\n• **OUT:** → Whisper STT (audio transcription)\n\n**Output:** Voice metadata + audio binary ready for transcription",
-        "height": 620,
-        "width": 400,
-        "color": 4
-      },
-      "id": "63a0febe-4778-4ca9-9ad1-37fac2f352fa",
-      "name": "🎙️ Voice Preprocessing Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        928,
-        288
-      ]
-    },
     {
       "parameters": {
         "content": "# 🌟 ALPINE PEAK VOICE CHATBOT WORKFLOW - FIXED RAG\n\n## Overview\nComplete RAG-powered chatbot with FIXED embedding integration\n\n## KEY FIX APPLIED\n✅ **Embeddings OpenAI node now properly connected**\n✅ **Text flows through embeddings BEFORE vector search**\n✅ **Using latest n8n v1.112.0 compatible nodes**\n\n## Key Features\n✅ **Dual Input**: Text + Voice webhooks\n✅ **RAG Knowledge Base**: Supabase vector store with embeddings\n✅ **Voice Processing**: Whisper STT + Nova TTS\n✅ **CRM Integration**: Lead capture + conversation logging\n✅ **Email Follow-up**: Automated knowledge sharing\n✅ **Emergency Handling**: Priority routing\n\n## Webhook Endpoints\n**Text**: `/webhook/alpine-peak-chatbot`\n**Voice**: `/webhook/alpine-peak-voice-chat`\n\n## Credentials Required\n- OpenAI API (GPT-4, Whisper, TTS, Embeddings)\n- Supabase API (Vector store + CRM)\n- Gmail OAuth2 (Email sending)\n\n## Architecture Flow\n1. Webhook Entry → 2. Preprocessing → 3. EMBEDDINGS → 4. RAG Search → 5. AI Response → 6. TTS (voice) → 7. CRM Logging → 8. Email Follow-up\n\n**Fixed using n8n MCP Server validation for n8n v1.112.0**",
@@ -34,118 +18,6 @@
     },
     {
       "parameters": {
-        "content": "## 📥 Text Webhook Node\n\n**Purpose:** Entry point for text-based chatbot interactions\n\n**Key Configuration:**\n• **Endpoint:** `/webhook/alpine-peak-chatbot`\n• **Method:** POST requests only\n• **Response Mode:** responseNode (requires separate response node)\n• **Data Flow:** Receives JSON with message, session_id, page_context\n\n**Expected Input Format:**\n```json\n{\n  \"message\": \"User's text message\",\n  \"session_id\": \"unique_session_identifier\", \n  \"page_context\": \"website_contact_form\"\n}\n```\n\n**Connections:**\n• **OUT:** → Text Preprocessing (message validation & analysis)\n\n**Security:** External webhook - validate all inputs in preprocessing",
-        "height": 580,
-        "width": 400,
-        "color": 1
-      },
-      "id": "webhook-text-info-sticky",
-      "name": "📥 Text Webhook Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        288,
-        960
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🎤 Voice Webhook Node\n\n**Purpose:** Entry point for voice-based chatbot interactions\n\n**Key Configuration:**\n• **Endpoint:** `/webhook/alpine-peak-voice-chat`\n• **Method:** POST requests with audio binary data\n• **Response Mode:** responseNode (requires separate response node)\n• **Binary Property:** 'audio' for voice file handling\n• **Data Flow:** Receives audio file + optional metadata\n\n**Expected Input Format:**\n- **Binary:** Audio file (WAV, MP3, M4A, etc.)\n- **JSON:** Optional session_id, page_context, user_data\n\n**Connections:**\n• **OUT:** → Voice Preprocessing (audio validation & metadata setup)\n\n**Audio Formats:** Supports all Whisper-compatible formats\n**Security:** Validate audio size limits and file types",
-        "height": 620,
-        "width": 400,
-        "color": 1
-      },
-      "id": "webhook-voice-info-sticky",
-      "name": "🎤 Voice Webhook Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -160,
-        768
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🗣️ Whisper Transcription Node\n\n**Purpose:** Converts voice audio to text using OpenAI's Whisper STT\n\n**Key Configuration:**\n• **Model:** Whisper (OpenAI's speech-to-text)\n• **Resource:** Audio transcription\n• **Operation:** Transcribe audio to text\n• **Input:** Binary audio data from Voice Preprocessing\n• **Output:** Transcribed text + confidence metadata\n\n**Technical Details:**\n• **Supported Formats:** MP3, MP4, MPEG, MPGA, M4A, WAV, WEBM\n• **Max File Size:** 25 MB per audio file\n• **Languages:** Auto-detection of 50+ languages\n• **Accuracy:** High accuracy for clear speech\n\n**Connections:**\n• **IN:** Voice Preprocessing → audio binary data\n• **OUT:** → Voice Processing (text + voice metadata merge)\n\n**Error Handling:** Returns '[unclear audio]' for failed transcriptions",
-        "height": 700,
-        "width": 400,
-        "color": 2
-      },
-      "id": "whisper-info-sticky",
-      "name": "🗣️ Whisper STT Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        288,
-        768
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🧠 Extract Knowledge Build Prompt Node\n\n**Purpose:** Combines RAG search results with user data to create comprehensive AI context\n\n**Key Functions:**\n• **Knowledge Integration:** Processes vector search results from Supabase\n• **Context Building:** Combines knowledge content with user intent and metadata\n• **Prompt Engineering:** Creates system prompt with company information and guidelines\n• **Data Consolidation:** Merges text/voice preprocessing data into unified structure\n• **Session Management:** Maintains session continuity across text and voice inputs\n• **Intent Preservation:** Carries forward user intent, priority, and lead scoring\n\n**System Prompt Components:**\n• **Company Details:** Phone, services, specialties, scheduling links\n• **Knowledge Context:** RAG-retrieved content relevant to user query\n• **Instructions:** Behavioral guidelines for AI assistant \"Sarah\"\n• **Emergency Protocols:** Special handling for urgent roofing issues\n• **Contact Workflows:** Email capture and scheduling guidance\n\n**Data Consolidation:**\n```json\n{\n  \"system_prompt\": \"Complete AI instructions...\",\n  \"user_message\": \"User's question\",\n  \"input_type\": \"text|voice\",\n  \"user_email\": \"if_provided\",\n  \"session_id\": \"session_123\",\n  \"intent\": \"emergency|estimation|general\",\n  \"priority\": \"urgent|high|normal\",\n  \"lead_score\": 45,\n  \"has_email\": true,\n  \"timestamp\": \"2025-01-01T12:00:00Z\"\n}\n```\n\n**Connections:**\n• **IN:** Extract Knowledge → RAG results + Text/Voice Processing → user data\n• **OUT:** → Is Voice Input? (routing decision)",
-        "height": 980,
-        "width": 400,
-        "color": 5
-      },
-      "id": "extract-knowledge-build-prompt-info-sticky",
-      "name": "🧠 Extract Knowledge Build Prompt Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1920,
-        832
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🔄 Extract AI Response Node\n\n**Purpose:** Processes and standardizes AI response data for webhook delivery\n\n**Key Functions:**\n• **Response Extraction:** Gets AI message from multiple possible formats\n• **Content Formatting:** Handles both message.content and direct content fields\n• **Success Indicators:** Adds success flags and timestamps\n• **Data Standardization:** Creates consistent response structure\n• **Fallback Handling:** Provides default messages if AI response is empty\n\n**Input Sources:**\n• AI Response1 → GPT-4 chat completion\n• TTS Generation1 → Audio synthesis results (for voice responses)\n\n**Output Structure:**\n```json\n{\n  \"message\": \"AI response text\",\n  \"success\": true,\n  \"timestamp\": \"2025-01-01T12:00:00Z\"\n}\n```\n\n**Connections:**\n• **IN:** AI Response OR TTS Generation\n• **OUT:** → Build Response Metadata (final packaging)",
-        "height": 720,
-        "width": 400,
-        "color": 6
-      },
-      "id": "extract-ai-response-info-sticky",
-      "name": "🔄 Extract AI Response Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2720,
-        832
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 📦 Build Response Metadata Node\n\n**Purpose:** Creates comprehensive response package with metadata for webhooks and downstream processing\n\n**Key Functions:**\n• **Response Packaging:** Combines AI message with metadata\n• **Audio URL Handling:** Includes TTS audio URLs for voice responses\n• **CTA Integration:** Adds contextual call-to-action messages\n• **Knowledge Tracking:** Records which knowledge sources were used\n• **Email Data:** Prepares user email and knowledge data for email pipeline\n• **Session Management:** Maintains session continuity\n\n**Response Structure:**\n```json\n{\n  \"response\": {\n    \"message\": \"AI response\",\n    \"audio_url\": \"https://...\", \n    \"type\": \"text|voice\",\n    \"session_id\": \"session_123\",\n    \"cta\": \"Schedule at calendly.com/...\"\n  },\n  \"metadata\": {\n    \"input_type\": \"text|voice\",\n    \"intent\": \"emergency|estimation|etc\",\n    \"email_captured\": true,\n    \"knowledge_used\": true,\n    \"knowledge_sources\": [...],\n    \"user_email\": \"user@email.com\"\n  }\n}\n```\n\n**Connections:**\n• **IN:** Extract AI Response → formatted AI message\n• **OUT:** → Lead Capture + Webhook Response + Email Pipeline",
-        "height": 920,
-        "width": 400,
-        "color": 6
-      },
-      "id": "build-response-metadata-info-sticky",
-      "name": "📦 Build Response Metadata Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2944,
-        832
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## ✉️ Format Email For Gmail Node\n\n**Purpose:** Prepares personalized email content with knowledge base information for Gmail delivery\n\n**Key Functions:**\n• **Email Personalization:** Extracts user email from metadata\n• **Subject Generation:** Creates dynamic subjects based on user intent\n• **Content Packaging:** Formats HTML email content for Gmail\n• **Knowledge Integration:** Includes relevant knowledge base articles\n• **Fallback Handling:** Uses default email if user email not provided\n\n**Email Template Features:**\n• **Company Branding:** Alpine Peak Roofing colors and styling\n• **Knowledge Sections:** Formatted knowledge base content\n• **Clear CTAs:** Emergency phone + Calendly scheduling links\n• **Professional Layout:** HTML email with responsive design\n• **Contact Information:** Phone, website, company tagline\n\n**Data Processing:**\n```json\n{\n  \"user_email\": \"customer@email.com\",\n  \"subject\": \"Alpine Peak Roofing - Information About [Intent]\",\n  \"email_content\": \"<html>formatted email</html>\"\n}\n```\n\n**Connections:**\n• **IN:** Generate Email HTML → formatted HTML content\n• **OUT:** → Send Email (Gmail delivery)\n\n**Email Triggers:** Only sends when user provided email + knowledge available",
-        "height": 880,
-        "width": 400,
-        "color": 3
-      },
-      "id": "format-email-gmail-info-sticky",
-      "name": "✉️ Format Email For Gmail Info",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        3888,
-        768
-      ]
-    },
-    {
-      "parameters": {
         "httpMethod": "POST",
         "path": "alpine-peak-chatbot",
         "responseMode": "responseNode",
@@ -154,7 +26,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        688,
+        672,
         960
       ],
       "id": "18ab196d-fd8f-437e-ac9d-3642599315f1",
@@ -272,7 +144,7 @@
           "mode": "list"
         },
         "prompt": "={{ $json.message + ' Denver Colorado roofing contractor services' }}",
-        "topK": 5,
+        "topK": 1,
         "options": {
           "queryName": "match_documents"
         }
@@ -311,7 +183,7 @@
             {
               "id": "has_knowledge",
               "name": "has_knowledge",
-              "value": "={{ ($json.pageContent && $json.pageContent.length > 0) || ($json.content && $json.content.length > 0) || ($json && Object.keys($json).length > 1) ? true : false }}",
+              "value": "={{ $json.pageContent || $json.content ? true : false }}",
               "type": "boolean"
             }
           ]
@@ -322,8 +194,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1920,
-        848
+        2000,
+        832
       ],
       "id": "ca808646-96c1-4539-a18b-e16075bd4ad6",
       "name": "Extract Knowledge1"
@@ -629,12 +501,13 @@
           },
           "conditions": [
             {
-              "leftValue": "={{ $('Build Prompt1').first()?.json?.has_email }}",
+              "leftValue": "={{ $('Build Prompt1').item.json.has_email }}",
               "rightValue": true,
               "operator": {
                 "type": "boolean",
                 "operation": "true"
-              }
+              },
+              "id": "a1b23a82-bc9e-4df2-b6eb-523c760f5123"
             }
           ],
           "combinator": "and"
@@ -652,7 +525,7 @@
     },
     {
       "parameters": {
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    h2 { color: #2c5aa0; }\n    h3 { color: #333; border-bottom: 2px solid #2c5aa0; padding-bottom: 10px; }\n    .cta { background: #2c5aa0; color: white; padding: 15px; text-align: center; margin: 20px 0; }\n    .cta a { color: white; text-decoration: none; font-weight: bold; }\n    .footer { margin-top: 30px; font-size: 14px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>Thank you for contacting Alpine Peak Roofing!</h2>\n    \n    <p>Based on your inquiry, here's relevant information from our knowledge base:</p>\n    \n    <h3>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.title || 'Roofing Information' }}</h3>\n    <p>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.content || 'Our team will provide detailed information about your roofing needs.' }}</p>\n    \n    <div class=\"cta\">\n      <p><strong>Ready to get started?</strong></p>\n      <p>Emergency: Call (970) 446-8995 immediately</p>\n      <p><a href=\"https://calendly.com/jimmy-agenticpersonnel/30min\">Schedule Your Free Inspection</a></p>\n    </div>\n    \n    <div class=\"footer\">\n      <p><strong>Alpine Peak Roofing</strong><br>\n      Phone: (970) 446-8995<br>\n      Website: https://alpinepeakroofing.com</p>\n      \n      <p><em>\"Pinnacle of Protection, Peak of Performance\"</em></p>\n    </div>\n  </div>\n</body>\n</html>"
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <style>\n    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f7fa; }\n    .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }\n    .header { background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); color: white; padding: 30px 20px; text-align: center; }\n    .header h1 { margin: 0; font-size: 28px; font-weight: 600; }\n    .header .subtitle { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }\n    .content { padding: 30px 20px; }\n    .intro { font-size: 16px; margin-bottom: 25px; color: #4a5568; }\n    .response-content { background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 4px solid #2c5aa0; margin: 25px 0; line-height: 1.8; }\n    .response-content strong { color: #1a202c; }\n    .emergency { background: #dc2626; color: white; padding: 15px; border-radius: 6px; margin: 15px 0; text-align: center; font-weight: bold; }\n    .cta { background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%); color: white; padding: 25px; text-align: center; margin: 30px 0; border-radius: 8px; }\n    .cta h3 { margin: 0 0 15px 0; font-size: 20px; }\n    .cta p { margin: 8px 0; font-size: 16px; }\n    .cta a { color: #fbbf24; text-decoration: none; font-weight: bold; background: rgba(251, 191, 36, 0.2); padding: 12px 20px; border-radius: 6px; margin: 8px; display: inline-block; }\n    .footer { background: #f8fafc; padding: 25px 20px; text-align: center; border-top: 1px solid #e2e8f0; }\n    .footer .company { font-size: 18px; font-weight: 600; color: #2c5aa0; margin-bottom: 10px; }\n    .footer .contact { margin: 5px 0; color: #4a5568; }\n    .footer .tagline { font-style: italic; color: #6b7280; margin-top: 15px; font-size: 14px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🏔️ Alpine Peak Roofing</h1>\n      <div class=\"subtitle\">Your Roofing Experts in Denver</div>\n    </div>\n    \n    <div class=\"content\">\n      <div class=\"intro\">\n        <strong>Thank you for contacting Alpine Peak Roofing!</strong> 👋<br>\n        Based on your inquiry, here's personalized information from our roofing experts:\n      </div>\n      \n      <div class=\"response-content\">\n        {{ $('Build Response Metadata1').first()?.json?.response?.message?.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')?.replace(/\\n/g, '<br>') || 'Our team will provide detailed information about your roofing needs.' }}\n      </div>\n      \n      <div class=\"emergency\">\n        🚨 Emergency Roofing Issues? Call (970) 446-8995 NOW!\n      </div>\n      \n      <div class=\"cta\">\n        <h3>🎯 Ready to Get Started?</h3>\n        <p>📞 <strong>Phone:</strong> (970) 446-8995</p>\n        <p>📅 <a href=\"https://calendly.com/jimmy-agenticpersonnel/30min\">Schedule Your Free Inspection</a></p>\n        <p>💬 <strong>Available 24/7 for emergencies</strong></p>\n      </div>\n    </div>\n    \n    <div class=\"footer\">\n      <div class=\"company\">🏔️ Alpine Peak Roofing</div>\n      <div class=\"contact\">📞 Phone: (970) 446-8995</div>\n      <div class=\"contact\">🌐 Website: https://alpinepeakroofing.com</div>\n      <div class=\"contact\">📍 Serving Denver Metro & Surrounding Areas</div>\n      <div class=\"tagline\">\"Pinnacle of Protection, Peak of Performance\" ⛰️</div>\n    </div>\n  </div>\n</body>\n</html>"
       },
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
@@ -702,8 +575,11 @@
       "parameters": {
         "sendTo": "={{ $json.user_email }}",
         "subject": "={{ $json.subject }}",
+        "emailType": "html",
         "message": "={{ $json.email_content }}",
-        "options": {}
+        "options": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -735,142 +611,9 @@
       ],
       "id": "8188fcb4-635b-499f-97b8-25eae89257f1",
       "name": "Webhook Response1"
-    },
-    {
-      "parameters": {
-        "content": "## 📝 Text Preprocessing Code Node\n\n**Purpose:** Processes incoming text webhook messages\n\n**Key Functions:**\n• Extracts and validates message text from webhook body\n• Detects email addresses using regex pattern\n• Analyzes user intent (emergency, estimation, scheduling, etc.)\n• Calculates lead scoring based on content and email presence\n• Sets priority levels (urgent, high, normal)\n• Prepares structured data for RAG pipeline\n\n**Connections:**\n• **IN:** Text Webhook → message + session data\n• **OUT:** → Embeddings OpenAI (text vectorization)\n\n**Output:** Clean message data with intent analysis and lead scoring",
-        "height": 492,
-        "width": 400,
-        "color": 4
-      },
-      "id": "badaad9e-7039-42d6-8104-a865734f2761",
-      "name": "💬 Text Preprocessing Info1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1600,
-        1216
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🎤 Voice Processing Code Node\n\n**Purpose:** Processes voice transcription and enriches voice data\n\n**Key Functions:**\n• Extracts transcribed text from Whisper STT output\n• Handles unclear audio with fallback messages\n• Detects email addresses in voice transcriptions\n• Performs intent analysis on spoken content\n• Applies voice interaction bonus to lead scoring\n• Merges voice metadata with transcription results\n\n**Connections:**\n• **IN:** Whisper STT → transcribed text + Voice Preprocessing → metadata\n• **OUT:** → Embeddings OpenAI (text vectorization)\n\n**Output:** Structured voice data ready for RAG pipeline with enhanced scoring",
-        "height": 636,
-        "width": 400,
-        "color": 4
-      },
-      "id": "b63404a8-65b1-425b-8f75-22ddc8004849",
-      "name": "🗣️ Voice Processing Info1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1376,
-        272
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 🧠 Build Context Code Node\n\n**Purpose:** Creates comprehensive AI context from RAG search results\n\n**Key Functions:**\n• Processes vector search results from Supabase\n• Extracts knowledge sources (title + content)\n• Builds formatted RAG context for AI prompt\n• Creates dynamic system prompt with company info\n• Adds voice-specific or emergency-specific instructions\n• Combines original data with knowledge context\n\n**Connections:**\n• **IN:** Knowledge Search → RAG results + Text/Voice Processing → user data\n• **OUT:** → AI Response (GPT-4 chat completion)\n\n**Output:** Complete context package for AI with RAG knowledge and system prompt",
-        "height": 716,
-        "width": 400,
-        "color": 5
-      },
-      "id": "48828a57-7061-4db9-b577-dbaf82c870a0",
-      "name": "🔧 Build Context Info1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1952,
-        288
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 📤 Format Response Code Node\n\n**Purpose:** Formats AI response for webhook delivery and downstream processing\n\n**Key Functions:**\n• Extracts AI response from multiple possible formats\n• Applies markdown formatting for text responses\n• Handles TTS audio URL generation for voice\n• Creates context-aware call-to-action messages\n• Builds comprehensive metadata including knowledge sources\n• Passes user email and knowledge data to email pipeline\n\n**Connections:**\n• **IN:** AI Response → GPT response + TTS Generation → audio + Build Context → user data\n• **OUT:** → Webhook Response + Should Send Email? + Log Conversation\n\n**Output:** Complete response object with text/audio + metadata for webhooks and emails",
-        "height": 972,
-        "width": 400,
-        "color": 5
-      },
-      "id": "4aff4db8-9df3-4743-9368-e2189e40a3e5",
-      "name": "📋 Format Response Info1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2976,
-        32
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## 📧 Prepare Email Code Node\n\n**Purpose:** Builds personalized email content with RAG knowledge\n\n**Key Functions:**\n• Retrieves knowledge sources from Format Response metadata\n• Creates HTML email template with company branding\n• Includes relevant knowledge base articles in email\n• Adds proper call-to-action with correct Calendly links\n• Handles cases with no knowledge gracefully\n• Generates dynamic subject lines based on intent\n\n**Connections:**\n• **IN:** Should Send Email? → Format Response metadata\n• **OUT:** → Send Email (Gmail)\n\n**Output:** Complete email package (content, subject, recipient) ready for Gmail sending",
-        "height": 716,
-        "width": 400,
-        "color": 3
-      },
-      "id": "8e681316-928d-4a01-8c28-3c74560b70e5",
-      "name": "✉️ Prepare Email Info1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        3872,
-        288
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "  // Get AI response data from input\n  const aiData = $input.item.json;\n\n  // Get user email from the original webhook data (passed through the workflow)\n  let userEmail = null;\n  try {\n    // Try to get email from various possible sources\n    if (aiData.user_email) {\n      userEmail = aiData.user_email;\n    } else if (aiData.email) {\n      userEmail = aiData.email;\n    }\n  } catch (error) {\n    console.log('Could not find user email');\n  }\n\n  // Extract the actual response\n  let message = 'Thank you for contacting Alpine Peak Roofing!';\n  if (aiData.message && aiData.message.content) {\n    message = String(aiData.message.content);\n  }\n\n  return {\n    json: {\n      success: true,\n      response: {\n        message: message,\n        audio_url: null,\n        type: 'text',\n        timestamp: new Date().toISOString(),\n        session_id: 'session_' + Date.now(),\n        cta: \"📅 Schedule at https://calendly.com/jimmy-agenticpersonnel/30min\"\n      },\n      metadata: {\n        input_type: 'text',\n        intent: 'general',\n        email_captured: userEmail ? true : false,\n        knowledge_used: true,\n        knowledge_sources: [],\n        user_email: userEmail\n      }\n    }\n  }"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2400,
-        1264
-      ],
-      "id": "33baf1d1-15b3-4225-8999-e3c39fbc95ad",
-      "name": "Format Response",
-      "disabled": true
     }
   ],
-  "pinData": {
-    "Text Webhook1": [
-      {
-        "json": {
-          "headers": {
-            "host": "agenticpersonnel.app.n8n.cloud",
-            "user-agent": "curl/8.14.1",
-            "content-length": "608",
-            "accept": "*/*",
-            "accept-encoding": "gzip, br",
-            "cdn-loop": "cloudflare; loops=1; subreqs=1",
-            "cf-connecting-ip": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3",
-            "cf-ew-via": "15",
-            "cf-ipcountry": "US",
-            "cf-ray": "98062f0a3032a20c-MSP",
-            "cf-visitor": "{\"scheme\":\"https\"}",
-            "cf-worker": "n8n.cloud",
-            "content-type": "application/json",
-            "x-forwarded-for": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3, 104.23.201.35",
-            "x-forwarded-host": "agenticpersonnel.app.n8n.cloud",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "traefik-prod-users-gwc-1-8749c5b8f-9jfvg",
-            "x-is-trusted": "yes",
-            "x-real-ip": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "message": "Hi there! I am Jimmy and my email is jimmydavidson@gmail.com. I am located in Gunnison, Colorado and interested in getting information about metal roofing for my home. My roof is approximately 2500 square feet and I would love to know about the different types of metal roofing options available and get a rough estimate on costs. Are there significant differences between the various metal roof materials? I have heard metal roofs are great for Colorado weather but want to understand my options better.",
-            "session_id": "test_session_metal_roof_inquiry",
-            "page_context": "website_contact_form"
-          },
-          "webhookUrl": "https://agenticpersonnel.app.n8n.cloud/webhook/alpine-peak-chatbot",
-          "executionMode": "production"
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Text Webhook1": {
       "main": [
@@ -1068,8 +811,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Generate Email HTML1": {
@@ -1099,7 +841,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2b881ed4-227c-45cc-bfaa-a8387a729e85",
+  "versionId": "ae663c1f-e786-4acf-becd-35af3c0bed3a",
   "meta": {
     "instanceId": "62eb072701814b1a1a9c022b7a751c5f8dac0a37a5a414c436048bc8706d2f6f"
   },
