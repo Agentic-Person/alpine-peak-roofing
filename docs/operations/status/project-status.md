@@ -2,7 +2,61 @@
 
 ---
 
-## Last Activity — 2026-03-08 (session 3)
+## Last Activity — 2026-03-09 (session 4)
+
+### Session Summary
+Repo and branch confirmed. APR site `/privacy` and `/terms` pages updated with full Twilio 10DLC compliance content (SMS consent, AI disclosure, opt-out, data handling). Separate Twilio compliance docs drafted for Agentic Personnel LLC (agenticpersonnel.com) — state/county left as MN / Mille Lacs County per Dave's direction. Project status updated and changes committed and pushed.
+
+### Work Done
+
+**Repository & Branch Confirmed**
+- Repo: `https://github.com/Agentic-Person/alpine-peak-roofing.git`
+- Active branch: `manus-redesign` (all work committed here; PR #1 open → `main`)
+- Other remote branches: `main`, `backup/pre-manus-main`, `emily-voice-chat-integration`, `feature/blog-automation-and-workflow-optimization`, `feature/blog-page`, `feature/complete-redesign`, `feature/llm-seo-optimization`
+
+**Updated: `app/privacy/page.tsx` — Full Twilio compliance**
+- Added Section 4: SMS consent + STOP/HELP opt-out; message frequency + rates disclosure
+- Added Section 5: AI-powered communications disclosure (chat + voice agent)
+- Added Section 7: Named third-party processors (contractually prohibited from marketing use)
+- Added Section 8: Data retention (24 months)
+- Added Section 11: Children's privacy (COPPA — under 13)
+- Added CCPA disclosure for California residents
+- Effective date: 2026-03-08
+
+**Updated: `app/terms/page.tsx` — Full Twilio compliance**
+- Added Section 3: SMS consent — explicit opt-in, message types listed, STOP/HELP, frequency + rates, "not a condition of purchase" statement
+- Added Section 4: AI-powered services — accuracy disclaimer, logging notice, emergency phone fallback
+- Governing law: Colorado / Denver County (Alpine Peak Roofing)
+- Effective date: 2026-03-08
+
+**Agentic Personnel LLC — Twilio compliance docs (separate site, text provided for copy/paste)**
+- Privacy Policy for `https://agenticpersonnel.com/privacy`
+- Terms & Conditions for `https://agenticpersonnel.com/terms`
+- Jurisdiction: Minnesota / Mille Lacs County (confirmed by Dave)
+- Both documents cover all Twilio 10DLC carrier registration requirements
+
+### Commits This Session
+- `18f6166` feat: update APR privacy and terms pages for Twilio 10DLC compliance
+- `71199bf` feat: unified Emily agent (lib/agent.ts, voice/llm, agent/chat, admin/ingest-knowledge)
+- `6f9c5c7` docs: update project status with session 3 work
+
+### Current Blockers / Next Steps
+- [ ] Publish Privacy Policy at `https://agenticpersonnel.com/privacy` (MN / Mille Lacs County already set in Section 12)
+- [ ] Publish Terms & Conditions at `https://agenticpersonnel.com/terms`
+- [ ] Submit both URLs to Twilio during 10DLC campaign registration
+- [ ] Enable OpenClaw gateway in `openclaw.json`: `gateway.http.endpoints.chatCompletions.enabled: true`
+- [ ] Add env vars to VPS `.env.local`: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`, `ELEVENLABS_LLM_SECRET`, `ADMIN_SECRET`
+- [ ] Run knowledge base ingestion: `POST /api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}`
+- [ ] Configure ElevenLabs dashboard: Agent → Model → Custom LLM → URL: `https://yoursite.com/api/voice/llm`; Custom headers: `x-elevenlabs-secret: <value>`
+- [ ] Test voice call end-to-end: Twilio → ElevenLabs → `/api/voice/llm` → OpenClaw Emily → RAG → caller
+- [ ] Test web chat: confirm `source: "openclaw:emily"` in response JSON
+- [ ] Confirm `search_knowledge_base` Postgres function exists in Supabase
+- [ ] Review preview URL and approve PR #1 to merge `manus-redesign` → `main`
+- [ ] Wire contact form to `/api/leads/capture` (currently shows toast only)
+
+---
+
+## Previous Activity — 2026-03-08 (session 3)
 
 ### Session Summary
 Twilio compliance documentation drafted for Agentic Personnel LLC. Privacy Policy and Terms & Conditions written to satisfy Twilio's 10DLC carrier registration requirements, covering SMS consent, opt-out procedures, AI disclosure, data handling, and third-party processor disclosure. Project status updated, changes committed and pushed to GitHub.
