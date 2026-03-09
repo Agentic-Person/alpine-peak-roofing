@@ -29,15 +29,12 @@ export default function Navigation() {
   }, [])
 
   const navItems = [
-    { href: '/',         label: 'Home' },
-    { href: '/about',    label: 'About' },
     { href: '/services', label: 'Services' },
     { href: '/portfolio',label: 'Portfolio' },
+    { href: '/about',    label: 'About' },
     { href: '/locations',label: 'Locations' },
     { href: '/financing',label: 'Financing' },
     { href: '/process',  label: 'Our Process' },
-    { href: '/blog',     label: 'Blog' },
-    { href: '/contact',  label: 'Contact' },
   ]
 
   const isActive = (href: string) => {
@@ -231,7 +228,7 @@ export default function Navigation() {
               </Link>
               <a
                 href="tel:9704561176"
-                className="flex items-center gap-1.5 font-bold tracking-wide transition-colors rounded"
+                className="flex items-center gap-1.5 font-bold tracking-wide transition-colors rounded whitespace-nowrap"
                 style={{
                   color: 'var(--forest-deep)',
                   background: 'var(--gold)',
