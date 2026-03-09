@@ -8,6 +8,10 @@ const config: Config = {
   ],
   darkMode: 'class',
   theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+    },
     extend: {
       colors: {
         // ── Denver Blue Core Palette ──────────────────────────────────────

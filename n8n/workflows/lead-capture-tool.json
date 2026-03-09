@@ -1,0 +1,231 @@
+{
+  "name": "Lead Capture Tool",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "id": "execute-workflow-trigger",
+      "name": "Execute Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $json.email || $json.user_email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $json.session_id || 'default_session' }}",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "={{ $json.message || $json.user_message || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "intent",
+              "name": "intent",
+              "value": "={{ $json.intent || 'general' }}",
+              "type": "string"
+            },
+            {
+              "id": "priority",
+              "name": "priority",
+              "value": "={{ $json.priority || 'normal' }}",
+              "type": "string"
+            },
+            {
+              "id": "lead_source",
+              "name": "lead_source",
+              "value": "={{ $json.input_type === 'voice' ? 'voice_chatbot' : 'text_chatbot' }}",
+              "type": "string"
+            },
+            {
+              "id": "lead_score",
+              "name": "lead_score",
+              "value": "={{ $json.lead_score || 10 }}",
+              "type": "number"
+            },
+            {
+              "id": "phone",
+              "name": "phone",
+              "value": "={{ $json.phone || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "name": "name",
+              "value": "={{ $json.name || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300],
+      "id": "prepare-lead-data",
+      "name": "Prepare Lead Data"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Extract additional lead scoring factors\nconst message = $json.message || '';\nconst email = $json.email || '';\nlet leadScore = parseInt($json.lead_score) || 10;\n\n// Email detection and scoring\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst hasEmail = email || message.match(emailPattern);\nif (hasEmail) leadScore += 25;\n\n// Phone number detection\nconst phonePattern = /\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})/;\nconst hasPhone = $json.phone || message.match(phonePattern);\nif (hasPhone) leadScore += 15;\n\n// Intent-based scoring\nconst lowerMessage = message.toLowerCase();\nif (lowerMessage.includes('emergency') || lowerMessage.includes('leak')) {\n  leadScore += 50;\n} else if (lowerMessage.includes('estimate') || lowerMessage.includes('quote')) {\n  leadScore += 40;\n} else if (lowerMessage.includes('schedule') || lowerMessage.includes('inspection')) {\n  leadScore += 35;\n} else if (lowerMessage.includes('repair') || lowerMessage.includes('damage')) {\n  leadScore += 30;\n}\n\n// Message length and detail scoring\nif (message.length > 100) leadScore += 5;\nif (message.length > 200) leadScore += 5;\n\n// Determine lead quality\nlet leadQuality = 'cold';\nif (leadScore >= 70) leadQuality = 'hot';\nelse if (leadScore >= 40) leadQuality = 'warm';\n\nreturn {\n  json: {\n    ...($json),\n    lead_score: leadScore,\n    lead_quality: leadQuality,\n    has_email: !!hasEmail,\n    has_phone: !!hasPhone,\n    created_at: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300],
+      "id": "calculate-lead-score",
+      "name": "Calculate Lead Score"
+    },
+    {
+      "parameters": {
+        "tableId": "leads",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "fieldId": "session_id",
+              "fieldValue": "={{ $json.session_id }}"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{ $json.message }}"
+            },
+            {
+              "fieldId": "intent",
+              "fieldValue": "={{ $json.intent }}"
+            },
+            {
+              "fieldId": "priority",
+              "fieldValue": "={{ $json.priority }}"
+            },
+            {
+              "fieldId": "lead_source",
+              "fieldValue": "={{ $json.lead_source }}"
+            },
+            {
+              "fieldId": "lead_score",
+              "fieldValue": "={{ $json.lead_score }}"
+            },
+            {
+              "fieldId": "lead_quality",
+              "fieldValue": "={{ $json.lead_quality }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $json.phone }}"
+            },
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $json.name }}"
+            },
+            {
+              "fieldId": "created_at",
+              "fieldValue": "={{ $json.created_at }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [960, 300],
+      "id": "save-lead",
+      "name": "Save Lead",
+      "credentials": {
+        "supabaseApi": {
+          "id": "o7zyeZA5I055ehin",
+          "name": "Supabase jimiHacks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success",
+              "name": "success",
+              "value": "=true",
+              "type": "boolean"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "={{ 'Lead captured successfully with score: ' + $json.lead_score + ' (' + $json.lead_quality + ')' }}",
+              "type": "string"
+            },
+            {
+              "id": "lead_captured",
+              "name": "lead_captured",
+              "value": "=true",
+              "type": "boolean"
+            },
+            {
+              "id": "lead_id",
+              "name": "lead_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "lead_score",
+              "name": "lead_score",
+              "value": "={{ $('Calculate Lead Score').first().json.lead_score }}",
+              "type": "number"
+            },
+            {
+              "id": "lead_quality",
+              "name": "lead_quality",
+              "value": "={{ $('Calculate Lead Score').first().json.lead_quality }}",
+              "type": "string"
+            },
+            {
+              "id": "session_id",
+              "name": "session_id",
+              "value": "={{ $('Calculate Lead Score').first().json.session_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1200, 300],
+      "id": "format-response",
+      "name": "Format Response"
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [[{"node": "Prepare Lead Data", "type": "main", "index": 0}]]
+    },
+    "Prepare Lead Data": {
+      "main": [[{"node": "Calculate Lead Score", "type": "main", "index": 0}]]
+    },
+    "Calculate Lead Score": {
+      "main": [[{"node": "Save Lead", "type": "main", "index": 0}]]
+    },
+    "Save Lead": {
+      "main": [[{"node": "Format Response", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

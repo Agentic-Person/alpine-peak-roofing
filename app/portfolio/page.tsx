@@ -1,487 +1,207 @@
-import React from 'react'
-import Link from 'next/link'
-import {
-  MapPin,
-  Calendar,
-  Star,
-  Phone,
-  ArrowRight,
-  Clock,
-} from 'lucide-react'
-import SiteImage from '@/components/SiteImage'
+"use client"
+/*
+ * DESIGN: Mountain Modernism — Alpine Luxury Editorial
+ * Portfolio page: 12 showcase projects in 3-col x 4-row grid, clickable to detail pages
+ * Kept: Before/After section, lightbox for quick preview
+ */
+import { useState } from "react";
+import Link from "next/link";
+import { images } from "@/lib/images";
+import { portfolioProjects } from "@/lib/portfolioProjects";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight, ArrowRight, X, ChevronLeft, MapPin, Ruler, Calendar } from "lucide-react";
 
-const projects = [
-  {
-    id: 1,
-    title: 'Victorian Home Roof Replacement',
-    location: 'Denver, CO',
-    category: 'Residential',
-    material: 'Architectural Shingles',
-    duration: '3 days',
-    season: 'Fall 2024',
-    description:
-      'Complete tear-off and replacement of a historic Victorian home with premium architectural shingles, preserving original character.',
-    testimonial:
-      'Alpine Peak did an incredible job restoring our 1890s Victorian home. The attention to detail was outstanding.',
-    customerName: 'Sarah & Michael Johnson',
-    beforeId: 'residential_victorian_before',
-    afterId: 'residential_victorian_after',
-    features: ['Historic Preservation', 'Custom Color Match', 'Premium Materials'],
-  },
-  {
-    id: 2,
-    title: 'Office Complex TPO Installation',
-    location: 'Lakewood, CO',
-    category: 'Commercial',
-    material: 'TPO Membrane',
-    duration: '1 week',
-    season: 'Summer 2024',
-    description:
-      'New TPO membrane installation on a 15,000 sq ft office building with energy-efficient white membrane and 20-year warranty.',
-    testimonial:
-      'Professional installation with minimal disruption to our business operations. The energy savings are already noticeable.',
-    customerName: 'Denver Business Park',
-    beforeId: 'commercial_office_before',
-    afterId: 'commercial_office_after',
-    features: ['Energy Efficient', 'Business Continuity', 'Warranty Included'],
-  },
-  {
-    id: 3,
-    title: 'Hail Storm Damage Restoration',
-    location: 'Aurora, CO',
-    category: 'Emergency',
-    material: 'Impact-Resistant Shingles',
-    duration: '2 days',
-    season: 'Spring 2024',
-    description:
-      'Emergency hail damage repair and complete roof replacement with Class 4 impact-resistant materials for lasting protection.',
-    testimonial:
-      'They responded within hours and had our roof completely restored in just two days. Insurance process was seamless.',
-    customerName: 'Mark & Lisa Rodriguez',
-    beforeId: 'residential_ranch_before',
-    afterId: 'residential_ranch_after',
-    features: ['Emergency Response', 'Insurance Coordination', 'Impact Resistant'],
-  },
-  {
-    id: 4,
-    title: 'Standing Seam Metal Roof',
-    location: 'Boulder, CO',
-    category: 'Residential',
-    material: 'Standing Seam Steel',
-    duration: '4 days',
-    season: 'Fall 2024',
-    description:
-      'Premium standing seam metal roof installation on a contemporary mountain home — built for Colorado\'s demanding climate.',
-    testimonial:
-      'The metal roof looks stunning and we love knowing it will last for decades. The team was professional and clean.',
-    customerName: 'Jennifer & David Chen',
-    beforeId: 'residential_modern_before',
-    afterId: 'residential_modern_after',
-    features: ['50+ Year Lifespan', 'Mountain Weather Resistant', 'Modern Design'],
-  },
-  {
-    id: 5,
-    title: 'Warehouse Built-Up Roofing',
-    location: 'Commerce City, CO',
-    category: 'Commercial',
-    material: 'Modified Bitumen',
-    duration: '5 days',
-    season: 'Summer 2024',
-    description:
-      'Complete built-up roofing system replacement on a 25,000 sq ft industrial warehouse with puncture-resistant membrane.',
-    testimonial:
-      'Excellent work on our warehouse roof. They worked efficiently and the quality is top-notch.',
-    customerName: 'Rocky Mountain Industrial',
-    beforeId: 'commercial_warehouse_before',
-    afterId: 'commercial_warehouse_after',
-    features: ['Industrial Grade', 'Puncture Resistant', 'Long-Term Durability'],
-  },
-  {
-    id: 6,
-    title: 'Historic Church Restoration',
-    location: 'Westminster, CO',
-    category: 'Specialty',
-    material: 'Slate Tiles',
-    duration: '2 weeks',
-    season: 'Spring 2024',
-    description:
-      'Careful restoration of a 1920s church roof using authentic slate materials and traditional hand-laid techniques.',
-    testimonial:
-      'Their expertise in historic restoration is unmatched. The church looks exactly as it did 100 years ago.',
-    customerName: 'Westminster Community Church',
-    beforeId: 'residential_colonial_before',
-    afterId: 'residential_colonial_after',
-    features: ['Historic Preservation', 'Authentic Materials', 'Craftsmanship Excellence'],
-  },
-]
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.08, duration: 0.6, ease: [0, 0, 0.2, 1] as const }
+  })
+};
 
-const serviceAreas = [
-  { city: 'Denver', count: 125 },
-  { city: 'Aurora', count: 89 },
-  { city: 'Lakewood', count: 67 },
-  { city: 'Thornton', count: 54 },
-  { city: 'Arvada', count: 43 },
-  { city: 'Westminster', count: 38 },
-  { city: 'Centennial', count: 32 },
-  { city: 'Boulder', count: 29 },
-]
+const categories = ["All", "Residential", "Metal", "Slate"];
 
-const categoryColors: Record<string, string> = {
-  Residential: 'var(--forest-mid)',
-  Commercial:  'var(--cedar)',
-  Emergency:   '#B91C1C',
-  Specialty:   'var(--gold-dark)',
-}
+export default function Portfolio() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-export default function PortfolioPage() {
+  const filtered = activeCategory === "All"
+    ? portfolioProjects
+    : portfolioProjects.filter((p) => p.category === activeCategory);
+
   return (
-    <div style={{ background: 'var(--cream)' }}>
-
-      {/* ── Hero ── */}
-      <section className="relative" style={{ minHeight: '50vh' }}>
+    <div>
+      {/* Hero */}
+      <section className="relative py-32 lg:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <SiteImage id="hero_portfolio" fill className="object-cover" priority />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.88) 0%, rgba(0,45,90,0.80) 100%)' }}
-          />
+          <img src={images.gallery1} alt="Portfolio" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>
-        <div
-          className="relative z-10 flex flex-col items-center justify-center text-center px-6"
-          style={{ minHeight: '50vh', paddingTop: '5rem', paddingBottom: '5rem' }}
-        >
-          <hr className="divider-gold" style={{ marginBottom: '1.5rem' }} />
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-              fontWeight: 800,
-              color: 'var(--cream)',
-              lineHeight: 1.15,
-              marginBottom: '1rem',
-            }}
-          >
-            Our Portfolio
-          </h1>
-          <p
-            style={{
-              fontFamily: "'Lato', sans-serif",
-              color: 'var(--sandstone)',
-              fontSize: '1.125rem',
-              letterSpacing: '0.06em',
-            }}
-          >
-            Showcasing quality craftsmanship across the Denver metro area
-          </p>
+        <div className="relative container">
+          <div className="max-w-3xl">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Portfolio</span>
+            </motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Our Finest{" "}<span className="text-gold">Work</span>
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Browse our collection of 12 showcase projects across Colorado's most beautiful mountain communities. Click any project to explore the full story.
+            </motion.p>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full" preserveAspectRatio="none">
+            <path d="M0 80L1440 30V80H0Z" fill="oklch(0.12 0.03 260)" />
+          </svg>
         </div>
       </section>
 
-      {/* ── Stats Strip ── */}
-      <div style={{ background: 'var(--forest-deep)', borderBottom: '3px solid var(--gold)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4">
-            {[
-              { stat: '1,200+', label: 'Projects Completed' },
-              { stat: '98%', label: 'Customer Satisfaction' },
-              { stat: '25+', label: 'Years Experience' },
-              { stat: '24/7', label: 'Emergency Service' },
-            ].map(({ stat, label }) => (
-              <div
-                key={label}
-                className="text-center py-8 px-4"
-                style={{ borderRight: '1px solid rgba(229,168,0,0.15)' }}
+      {/* Filter + Gallery */}
+      <section className="bg-navy-dark py-24">
+        <div className="container">
+          {/* Category filters */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="flex flex-wrap gap-2 mb-12">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2 text-sm font-medium tracking-wide transition-all ${
+                  activeCategory === cat
+                    ? "bg-gold text-navy-dark"
+                    : "bg-white/5 text-white/60 hover:text-gold border border-white/10 hover:border-gold/30"
+                }`}
+                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
               >
-                <div
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: '2.25rem',
-                    fontWeight: 800,
-                    color: 'var(--gold)',
-                    lineHeight: 1,
-                    marginBottom: '0.375rem',
-                  }}
+                {cat}
+              </button>
+            ))}
+          </motion.div>
+
+          {/* Project grid — 3 columns, 4 rows */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence mode="wait">
+              {filtered.map((project, i) => (
+                <motion.div
+                  key={project.id}
+                  custom={i}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  variants={fadeUp}
+                  layout
                 >
-                  {stat}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontSize: '0.8rem',
-                    color: 'rgba(255,255,255,0.65)',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Projects Grid ── */}
-      <section className="py-20 lg:py-28" style={{ background: 'var(--cream)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-16">
-            <hr className="divider-gold" />
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.875rem, 4vw, 2.75rem)',
-                fontWeight: 700,
-                color: 'var(--cedar)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Featured Projects
-            </h2>
-            <p style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', fontSize: '1.0625rem' }}>
-              Real before &amp; after transformations across the Front Range
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
-              <div key={project.id} className="card-craftsman overflow-hidden group">
-
-                {/* Before / After image split */}
-                <div className="relative" style={{ aspectRatio: '4/3' }}>
-                  {/* Before — left half */}
-                  <div className="absolute left-0 top-0 h-full overflow-hidden" style={{ width: '50%' }}>
-                    <SiteImage id={project.beforeId} fill className="object-cover" />
-                    <div
-                      className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-widest"
-                      style={{ background: 'rgba(0,0,0,0.65)', color: '#FCA5A5', fontFamily: "'Lato', sans-serif" }}
-                    >
-                      Before
+                  <Link href={`/projects/${project.id}`}>
+                    <div className="group block relative overflow-hidden aspect-square w-full cursor-pointer">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      {/* Always-visible bottom bar */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.06_0.03_260/0.95)] via-[oklch(0.08_0.03_260/0.7)] to-transparent p-5">
+                        <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                          {project.roofType.split("—")[0].trim()}
+                        </span>
+                        <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                          {project.title}
+                        </h3>
+                        <div className="flex items-center gap-4 text-white/50 text-xs" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {project.location}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Ruler className="w-3 h-3" />
+                            {project.sqft.toLocaleString()} sq ft
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {project.year}
+                          </span>
+                        </div>
+                      </div>
+                      {/* Hover overlay with "View Project" */}
+                      <div className="absolute inset-0 bg-[#C9A84C]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span className="bg-[#C9A84C] text-[#0B1D3A] px-6 py-3 font-semibold text-sm tracking-wider uppercase flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          View Project <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Gold divider line */}
-                  <div
-                    className="absolute top-0 h-full z-10"
-                    style={{ left: '50%', width: 2, background: 'var(--gold)', transform: 'translateX(-50%)' }}
-                  />
-
-                  {/* After — right half */}
-                  <div className="absolute right-0 top-0 h-full overflow-hidden" style={{ width: '50%' }}>
-                    <SiteImage id={project.afterId} fill className="object-cover" />
-                    <div
-                      className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-xs font-bold uppercase tracking-widest"
-                      style={{ background: 'rgba(0,0,0,0.65)', color: '#86EFAC', fontFamily: "'Lato', sans-serif" }}
-                    >
-                      After
-                    </div>
-                  </div>
-
-                  {/* Category badge */}
-                  <div className="absolute top-3 left-3 z-10">
-                    <span
-                      className="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide"
-                      style={{
-                        background: categoryColors[project.category] ?? 'var(--forest-deep)',
-                        color: 'var(--cream)',
-                        fontFamily: "'Lato', sans-serif",
-                      }}
-                    >
-                      {project.category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Card body */}
-                <div className="p-6">
-                  <h3
-                    style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontSize: '1.1875rem',
-                      fontWeight: 700,
-                      color: 'var(--cedar)',
-                      marginBottom: '0.5rem',
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {project.title}
-                  </h3>
-
-                  {/* Meta row */}
-                  <div className="flex items-center gap-4 mb-3" style={{ color: 'var(--stone)', fontSize: '0.8rem' }}>
-                    <span className="flex items-center gap-1">
-                      <MapPin size={12} />
-                      {project.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar size={12} />
-                      {project.season}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock size={12} />
-                      {project.duration}
-                    </span>
-                  </div>
-
-                  {/* Stars */}
-                  <div className="flex gap-0.5 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={13} fill="var(--gold)" style={{ color: 'var(--gold)' }} />
-                    ))}
-                  </div>
-
-                  <p
-                    style={{
-                      fontFamily: "'Lato', sans-serif",
-                      fontSize: '0.875rem',
-                      color: 'var(--stone)',
-                      lineHeight: 1.65,
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    {project.description}
-                  </p>
-
-                  {/* Feature tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {project.features.map((f) => (
-                      <span
-                        key={f}
-                        className="px-2 py-0.5 rounded text-xs"
-                        style={{
-                          background: 'var(--cream-dark)',
-                          color: 'var(--cedar)',
-                          fontFamily: "'Lato', sans-serif",
-                          fontWeight: 600,
-                          border: '1px solid var(--sandstone-light)',
-                        }}
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Testimonial */}
-                  <blockquote
-                    className="mb-1"
-                    style={{
-                      fontFamily: "'Lato', sans-serif",
-                      fontSize: '0.8125rem',
-                      color: 'var(--stone)',
-                      fontStyle: 'italic',
-                      lineHeight: 1.6,
-                      borderLeft: '3px solid var(--gold)',
-                      paddingLeft: '0.75rem',
-                    }}
-                  >
-                    &ldquo;{project.testimonial}&rdquo;
-                  </blockquote>
-                  <p
-                    style={{
-                      fontFamily: "'Lato', sans-serif",
-                      fontSize: '0.75rem',
-                      color: 'var(--text-muted)',
-                      marginTop: '0.25rem',
-                      paddingLeft: '0.75rem',
-                    }}
-                  >
-                    — {project.customerName}
-                  </p>
-                </div>
-              </div>
-            ))}
+                  </Link>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         </div>
       </section>
 
-      {/* ── Service Areas ── */}
-      <section className="py-20 lg:py-24" style={{ background: 'var(--cream-dark)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-12">
-            <hr className="divider-gold" />
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.875rem, 4vw, 2.5rem)',
-                fontWeight: 700,
-                color: 'var(--cedar)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Serving the Denver Metro Area
+      {/* Before/After */}
+      <section className="bg-navy py-24">
+        <div className="container">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
+            className="text-center max-w-2xl mx-auto mb-16">
+            <div className="gold-line mx-auto mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Transformations</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Before &amp; After
             </h2>
-            <p style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', fontSize: '1.0625rem' }}>
-              Quality roofing projects across Colorado&apos;s Front Range
+            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              See the dramatic difference a new roof makes. These transformations showcase the quality of our craftsmanship.
             </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {serviceAreas.map(({ city, count }) => (
-              <div
-                key={city}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full"
-                style={{
-                  background: 'var(--cream)',
-                  border: '1px solid var(--border-primary)',
-                  fontFamily: "'Lato', sans-serif",
-                }}
-              >
-                <MapPin size={12} style={{ color: 'var(--gold)' }} />
-                <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--cedar)' }}>{city}</span>
-                <span style={{ fontSize: '0.75rem', color: 'var(--stone)' }}>{count} projects</span>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={1}
+              className="relative">
+              <img src={images.portfolioBefore} alt="Before" className="w-full aspect-[4/3] object-cover" />
+              <div className="absolute top-4 left-4 bg-red-600/90 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Before
               </div>
-            ))}
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={2}
+              className="relative">
+              <img src={images.portfolioAfter} alt="After" className="w-full aspect-[4/3] object-cover" />
+              <div className="absolute top-4 left-4 bg-gold/90 text-navy-dark text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                After
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section
-        className="py-20 lg:py-24"
-        style={{ background: 'var(--charcoal)', borderTop: '3px solid var(--gold)' }}
-      >
-        <div className="mx-auto max-w-7xl px-6 lg:px-12 text-center">
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(1.875rem, 4vw, 2.75rem)',
-              fontWeight: 700,
-              color: 'var(--cream)',
-              marginBottom: '1rem',
-            }}
+      {/* CTA */}
+      <section className="bg-navy-dark py-20 text-center">
+        <div className="container">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            Ready to Add Your Project to Our Portfolio?
-          </h2>
-          <p
-            style={{
-              fontFamily: "'Lato', sans-serif",
-              fontSize: '1.0625rem',
-              color: 'var(--sandstone)',
-              maxWidth: 540,
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            Join hundreds of satisfied Colorado homeowners who trust Alpine Peak Roofing with their most
-            important investment.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="tel:9704468995"
-              className="btn-gold"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              <Phone size={15} />
-              (970) 446-8995
-            </a>
-            <Link
-              href="/estimator"
-              className="btn-outline-cream"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              Get Free Estimate
-              <ArrowRight size={14} />
-            </Link>
-          </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Ready to Start Your Project?
+            </h2>
+            <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              Every project in our portfolio started with a conversation. Let's start yours.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact">
+                <span className="inline-flex items-center gap-2 bg-gold text-navy-dark px-8 py-4 font-semibold text-sm tracking-wider uppercase hover:bg-[#d4b65c] transition-colors">
+                  Get a Free Estimate <ChevronRight className="w-4 h-4" />
+                </span>
+              </Link>
+              <a href="tel:+19705551234" className="inline-flex items-center gap-2 border border-white/20 text-white px-8 py-4 font-semibold text-sm tracking-wider uppercase hover:border-gold/50 hover:text-gold transition-colors">
+                Call Us Today
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
-
     </div>
-  )
+  );
 }

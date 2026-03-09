@@ -1,413 +1,273 @@
-import React from 'react'
-import Link from 'next/link'
+"use client";
+/*
+ * DESIGN: Mountain Modernism — Alpine Luxury Editorial
+ * Services page: Residential, Commercial, Emergency, Materials
+ */
+import Link from "next/link";
+import { images } from "@/lib/images";
+import { materials as materialsData } from "@/lib/materials";
+import { motion } from "framer-motion";
 import {
-  Home,
-  Building,
-  Zap,
-  ArrowRight,
-  Check,
-  Phone,
-  Wrench,
-  Shield,
-  Clock,
-  Award,
-  Hammer,
-  Settings,
-  AlertTriangle,
-  MapPin,
-} from 'lucide-react'
-import SiteImage from '@/components/SiteImage'
+  Home, Building2, Wrench, Layers, Shield, CheckCircle2,
+  ArrowRight, ChevronRight, Zap, Droplets, Wind, Sun,
+  Thermometer, Leaf, DollarSign, Clock
+} from "lucide-react";
 
-const mainServices = [
-  {
-    href:    '/services/residential',
-    icon:    Home,
-    title:   'Residential Roofing',
-    imageId: 'service_residential',
-    tagline: 'Complete home roofing solutions for homeowners across Denver',
-    desc:    'Protect your most valuable investment with our comprehensive residential roofing services. From minor repairs to complete roof replacements, we handle every aspect with meticulous care.',
-    items: [
-      { label: 'Roof Replacement',    sub: 'Complete tear-off and new installation' },
-      { label: 'Roof Repair',         sub: 'Leak repairs, shingle replacement, damage fixes' },
-      { label: 'Shingle Installation',sub: 'Asphalt, architectural, and premium shingles' },
-      { label: 'Metal Roofing',       sub: 'Standing seam, metal shingles, steel panels' },
-    ],
-    ctaLabel: 'View Residential Services',
-    accent:   'var(--forest-mid)',
-  },
-  {
-    href:    '/services/commercial',
-    icon:    Building,
-    title:   'Commercial Roofing',
-    imageId: 'service_commercial',
-    tagline: 'Professional roofing for businesses and property managers',
-    desc:    'Keep your business protected with our commercial roofing expertise. We specialize in flat roof systems, maintenance programs, and emergency repairs for commercial properties of every scale.',
-    items: [
-      { label: 'TPO & EPDM Systems',  sub: 'Single-ply membrane roofing systems' },
-      { label: 'Built-Up Roofing',    sub: 'Multi-layer flat roof systems' },
-      { label: 'Maintenance Programs',sub: 'Preventative care and inspection services' },
-      { label: 'Roof Coatings',       sub: 'Protective coatings and restoration' },
-    ],
-    ctaLabel: 'View Commercial Services',
-    accent:   'var(--cedar)',
-  },
-  {
-    href:    '/services/emergency',
-    icon:    Zap,
-    title:   'Emergency Repairs',
-    imageId: 'service_emergency',
-    tagline: '24/7 emergency roofing — fast response when it matters most',
-    desc:    "Don't let roof damage worsen! Our emergency repair team is available around the clock to handle storm damage, active leaks, and other urgent roofing situations — protecting your home right now.",
-    items: [
-      { label: '24/7 Availability',  sub: 'Emergency response any time, day or night', icon: Clock },
-      { label: 'Storm Damage',       sub: 'Hail, wind, and weather damage repair',     icon: AlertTriangle },
-      { label: 'Leak Repairs',       sub: 'Fast leak detection and emergency patching', icon: Wrench },
-      { label: 'Insurance Help',     sub: 'Insurance claim assistance and documentation', icon: Shield },
-    ],
-    ctaLabel: 'Emergency Service',
-    accent:   '#B91C1C',
-    isEmergency: true,
-  },
-]
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0, 0, 0.2, 1] as const }
+  })
+};
 
-const additionalServices = [
-  { icon: Settings,      label: 'Roof Inspections',   desc: 'Professional assessments and detailed condition reports' },
-  { icon: Hammer,        label: 'Gutter Services',     desc: 'Installation, repair, and maintenance of gutter systems' },
-  { icon: Shield,        label: 'Warranties',          desc: 'Comprehensive material and workmanship warranties' },
-  { icon: Award,         label: 'Insurance Claims',    desc: 'Expert assistance navigating the insurance claim process' },
-]
+const residentialServices = [
+  { icon: Layers, title: "Complete Roof Replacement", desc: "Full tear-off and replacement with premium materials. We handle everything from permits to final inspection." },
+  { icon: Wrench, title: "Roof Repairs", desc: "Expert repair services for leaks, missing shingles, flashing issues, and storm damage." },
+  { icon: Shield, title: "New Construction", desc: "Custom roofing solutions for new home builds, working closely with builders and architects." },
+  { icon: Droplets, title: "Gutter Systems", desc: "Seamless gutter installation, guards, and drainage solutions to protect your foundation." },
+  { icon: Wind, title: "Ventilation", desc: "Proper attic ventilation systems to extend roof life and improve energy efficiency." },
+  { icon: Sun, title: "Skylights & Solar", desc: "Skylight installation and solar panel integration with proper waterproofing." },
+];
 
-const serviceAreas = [
-  'Denver', 'Aurora', 'Lakewood', 'Thornton', 'Arvada', 'Westminster',
-  'Centennial', 'Boulder', 'Broomfield', 'Commerce City', 'Northglenn',
-  'Wheat Ridge', 'Englewood', 'Littleton', 'Greenwood Village', 'Parker',
-]
+const commercialServices = [
+  { icon: Layers, title: "TPO & PVC Systems", desc: "Single-ply membrane roofing for flat and low-slope commercial buildings." },
+  { icon: Shield, title: "EPDM Rubber Roofing", desc: "Durable rubber membrane systems for warehouses, offices, and retail spaces." },
+  { icon: Building2, title: "Modified Bitumen", desc: "Multi-layer asphalt systems for superior waterproofing and durability." },
+  { icon: Thermometer, title: "Standing Seam Metal", desc: "Premium metal roofing for commercial properties requiring longevity and aesthetics." },
+  { icon: Wrench, title: "Roof Coatings", desc: "Reflective coatings to extend roof life, improve energy efficiency, and reduce costs." },
+  { icon: Leaf, title: "Green Roofing", desc: "Sustainable roofing solutions including cool roofs and vegetative systems." },
+];
 
-export default function ServicesPage() {
+
+
+export default function Services() {
   return (
-    <div style={{ background: 'var(--cream)' }}>
-
-      {/* ── Hero ── */}
-      <section className="relative" style={{ minHeight: '50vh' }}>
+    <div>
+      {/* Hero */}
+      <section className="relative py-32 lg:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <SiteImage id="hero_services" fill className="object-cover" priority />
-          <div
-            className="absolute inset-0"
-            style={{ background: 'linear-gradient(135deg, rgba(0,64,128,0.88) 0%, rgba(0,45,90,0.80) 100%)' }}
-          />
+          <img src={images.heroResidential} alt="Residential roofing" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>
-        <div
-          className="relative z-10 flex flex-col items-center justify-center text-center px-6"
-          style={{ minHeight: '50vh', paddingTop: '5rem', paddingBottom: '5rem' }}
-        >
-          <hr className="divider-gold" style={{ marginBottom: '1.5rem' }} />
-          <h1
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-              fontWeight: 800,
-              color: 'var(--cream)',
-              lineHeight: 1.15,
-              marginBottom: '1rem',
-            }}
-          >
-            Our Roofing Services
-          </h1>
-          <p
-            style={{
-              fontFamily: "'Lato', sans-serif",
-              color: 'var(--sandstone)',
-              fontSize: '1.125rem',
-              letterSpacing: '0.06em',
-            }}
-          >
-            Comprehensive roofing solutions for every need across the Denver metro area
-          </p>
+        <div className="relative container">
+          <div className="max-w-3xl">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Services</span>
+            </motion.div>
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Complete Roofing{" "}<span className="text-gold">Solutions</span>
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              From residential repairs to large-scale commercial installations, we deliver expert craftsmanship for every project.
+            </motion.p>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full" preserveAspectRatio="none">
+            <path d="M0 80L1440 30V80H0Z" fill="oklch(0.12 0.03 260)" />
+          </svg>
         </div>
       </section>
 
-      {/* ── Main Services ── */}
-      <section className="py-20 lg:py-28" style={{ background: 'var(--cream)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-16">
-            <hr className="divider-gold" />
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.875rem, 4vw, 2.75rem)',
-                fontWeight: 700,
-                color: 'var(--cedar)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              What We Do
-            </h2>
-            <p style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', fontSize: '1.0625rem' }}>
-              From single-family homes to large commercial properties — built to last
-            </p>
+      {/* Residential */}
+      <section className="bg-navy-dark py-24">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}>
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Residential</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Residential Roofing Services
+              </h2>
+              <p className="text-white/60 mb-8 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Your home is your most valuable asset. We protect it with premium materials, expert installation, and comprehensive warranties. Whether you need a complete replacement or a simple repair, our residential team delivers exceptional results every time.
+              </p>
+              <div className="relative overflow-hidden mb-6">
+                <img src={images.residentialWork} alt="Residential roofing work" className="w-full aspect-video object-cover" />
+              </div>
+              <Link href="/contact" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                GET A FREE ESTIMATE <ChevronRight size={16} />
+              </Link>
+            </motion.div>
+            <div className="grid gap-4">
+              {residentialServices.map((s, i) => (
+                <motion.div key={s.title} custom={i + 1} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp}
+                  className="bg-white/5 border border-white/10 p-6 flex gap-4 hover:border-gold/30 transition-colors">
+                  <div className="w-10 h-10 bg-gold/10 flex items-center justify-center flex-shrink-0">
+                    <s.icon size={20} className="text-gold" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{s.title}</h3>
+                    <p className="text-sm text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {mainServices.map((svc) => (
-              <div
-                key={svc.href}
-                className="card-craftsman overflow-hidden flex flex-col"
-                style={svc.isEmergency ? { borderTop: `3px solid #B91C1C` } : {}}
-              >
-                {/* Service image */}
-                <div className="relative flex-shrink-0" style={{ aspectRatio: '16/9' }}>
-                  <SiteImage id={svc.imageId} fill className="object-cover" />
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: `linear-gradient(to top, rgba(0,45,90,0.7) 0%, transparent 55%)` }}
-                  />
-                  {/* Icon badge */}
-                  <div
-                    className="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded"
-                    style={{ background: svc.accent, color: 'var(--cream)' }}
-                  >
-                    <svc.icon size={14} />
-                    <span
-                      style={{
-                        fontFamily: "'Lato', sans-serif",
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {svc.title}
+      {/* Commercial */}
+      <section className="bg-navy py-24">
+        <div className="container">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            <div className="order-2 lg:order-1 grid gap-4">
+              {commercialServices.map((s, i) => (
+                <motion.div key={s.title} custom={i + 1} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp}
+                  className="bg-white/5 border border-white/10 p-6 flex gap-4 hover:border-gold/30 transition-colors">
+                  <div className="w-10 h-10 bg-gold/10 flex items-center justify-center flex-shrink-0">
+                    <s.icon size={20} className="text-gold" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{s.title}</h3>
+                    <p className="text-sm text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{s.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
+              className="order-1 lg:order-2">
+              <div className="gold-line mb-4" />
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Commercial</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Commercial Roofing Services
+              </h2>
+              <p className="text-white/60 mb-8 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Protect your business with commercial roofing solutions engineered for performance. We work with property managers, business owners, and general contractors to deliver projects on time and on budget.
+              </p>
+              <div className="relative overflow-hidden mb-6">
+                <img src={images.commercialWork} alt="Commercial roofing work" className="w-full aspect-video object-cover" />
+              </div>
+              <Link href="/contact" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                REQUEST COMMERCIAL QUOTE <ChevronRight size={16} />
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Emergency */}
+      <section className="relative py-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={images.emergencyRepair} alt="Emergency roof repair" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.95)] via-[oklch(0.12_0.03_260/0.85)] to-[oklch(0.12_0.03_260/0.6)]" />
+        </div>
+        <div className="relative container">
+          <div className="max-w-2xl">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}>
+              <div className="flex items-center gap-3 mb-4">
+                <Zap size={20} className="text-gold" />
+                <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>24/7 Emergency Service</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Storm Damage?{" "}<span className="text-gold">We're Here.</span>
+              </h2>
+              <p className="text-lg text-white/60 mb-8" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                Colorado's weather doesn't wait, and neither do we. Our emergency response team is available 24/7 to address storm damage, leaks, and urgent repairs. We'll have a crew on-site within hours, not days.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  "Rapid response within 2-4 hours",
+                  "Emergency tarping and weatherproofing",
+                  "Complete storm damage assessment",
+                  "Insurance claim assistance",
+                  "Temporary and permanent repair solutions",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-white/70" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <CheckCircle2 size={16} className="text-gold flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a href="tel:9704561176" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                CALL EMERGENCY LINE: (970) 456-1176
+              </a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Materials — Redesigned with images, pricing, and click-through */}
+      <section className="relative py-24 overflow-hidden">
+        {/* Background image from user */}
+        <div className="absolute inset-0">
+          <img src={images.materialsDisplayBg} alt="Roofing materials" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.85)] to-[oklch(0.12_0.03_260/0.95)]" />
+        </div>
+        <div className="relative container">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
+            className="text-center max-w-3xl mx-auto mb-16">
+            <div className="gold-line mx-auto mb-4" />
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Primary Product Line</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              Premium Roofing Materials
+            </h2>
+            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              We only install materials that meet our rigorous standards for durability, beauty, and performance in Colorado's demanding climate. Click any material to explore full details, pricing, and specifications.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {materialsData.map((m, i) => (
+              <motion.div key={m.slug} custom={i + 1} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp}>
+                <Link
+                  href={`/materials/${m.slug}`}
+                  className="group block bg-navy-dark/80 backdrop-blur-sm border border-white/10 hover:border-gold/40 transition-all overflow-hidden h-full"
+                >
+                  {/* Tall product image */}
+                  <div className="aspect-[3/4] overflow-hidden relative">
+                    <img
+                      src={m.image}
+                      alt={m.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260)] via-transparent to-transparent" />
+                    {/* Warranty badge */}
+                    <div className="absolute top-3 right-3 bg-gold/90 text-navy-dark px-3 py-1">
+                      <span className="text-xs font-bold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.warranty}</span>
+                    </div>
+                    {/* Price overlay */}
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <div className="bg-navy-dark/80 backdrop-blur-sm border border-white/10 px-3 py-2 flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <DollarSign size={14} className="text-gold" />
+                          <span className="text-sm font-bold text-gold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                            ${m.installedPrice.low.toFixed(2)}–${m.installedPrice.high.toFixed(2)}
+                          </span>
+                          <span className="text-[10px] text-white/40" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>/sqft</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock size={12} className="text-white/40" />
+                          <span className="text-[10px] text-white/40" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.lifespan}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Card content */}
+                  <div className="p-5">
+                    <h3 className="text-base font-bold text-white group-hover:text-gold transition-colors mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                      {m.shortName}
+                    </h3>
+                    <p className="text-xs text-gold/70 font-medium mb-2" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      {m.manufacturer}
+                    </p>
+                    <p className="text-sm text-white/50 leading-relaxed mb-4 line-clamp-2" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      {m.description}
+                    </p>
+                    <span className="text-gold text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      VIEW FULL DETAILS <ChevronRight size={14} />
                     </span>
                   </div>
-                </div>
-
-                {/* Card body */}
-                <div className="p-7 flex flex-col flex-1">
-                  <p
-                    style={{
-                      fontFamily: "'Lato', sans-serif",
-                      fontSize: '0.9375rem',
-                      color: 'var(--stone)',
-                      lineHeight: 1.7,
-                      marginBottom: '1.25rem',
-                    }}
-                  >
-                    {svc.desc}
-                  </p>
-
-                  {/* Feature list */}
-                  <ul className="space-y-3 mb-6 flex-1">
-                    {svc.items.map((item) => (
-                      <li key={item.label} className="flex items-start gap-3">
-                        <Check
-                          size={15}
-                          className="flex-shrink-0 mt-0.5"
-                          style={{ color: 'var(--forest-mid)' }}
-                        />
-                        <div>
-                          <div
-                            style={{
-                              fontFamily: "'Lato', sans-serif",
-                              fontWeight: 700,
-                              fontSize: '0.9rem',
-                              color: 'var(--cedar)',
-                            }}
-                          >
-                            {item.label}
-                          </div>
-                          <div style={{ fontFamily: "'Lato', sans-serif", fontSize: '0.8125rem', color: 'var(--stone)' }}>
-                            {item.sub}
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* CTAs */}
-                  <div className="flex flex-col gap-2">
-                    {svc.isEmergency ? (
-                      <a
-                        href="tel:9704468995"
-                        className="btn-primary w-full justify-center"
-                        style={{
-                          fontFamily: "'Lato', sans-serif",
-                          background: '#B91C1C',
-                          borderColor: '#B91C1C',
-                        }}
-                      >
-                        <Phone size={14} />
-                        (970) 446-8995
-                      </a>
-                    ) : (
-                      <Link
-                        href={svc.href}
-                        className="btn-forest w-full justify-center"
-                        style={{ fontFamily: "'Lato', sans-serif" }}
-                      >
-                        {svc.ctaLabel}
-                        <ArrowRight size={14} />
-                      </Link>
-                    )}
-                    <Link
-                      href="/estimator"
-                      className="btn-outline-cream w-full justify-center"
-                      style={{
-                        fontFamily: "'Lato', sans-serif",
-                        color: 'var(--cedar)',
-                        borderColor: 'var(--border-primary)',
-                      }}
-                    >
-                      Get Free Estimate
-                    </Link>
-                  </div>
-                </div>
-              </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* ── Additional Services ── */}
-      <section className="py-20 lg:py-24" style={{ background: 'var(--cream-dark)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-14">
-            <hr className="divider-gold" />
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.875rem, 4vw, 2.5rem)',
-                fontWeight: 700,
-                color: 'var(--cedar)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Additional Services
-            </h2>
-            <p style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', fontSize: '1.0625rem' }}>
-              Complete roofing solutions to protect and enhance your property
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {additionalServices.map(({ icon: Icon, label, desc }) => (
-              <div key={label} className="text-center">
-                <div
-                  className="flex items-center justify-center rounded-full mx-auto mb-4"
-                  style={{ width: 64, height: 64, background: 'var(--forest-deep)' }}
-                >
-                  <Icon size={26} style={{ color: 'var(--gold)' }} />
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "'Lato', sans-serif",
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    color: 'var(--cedar)',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  {label}
-                </h3>
-                <p style={{ fontFamily: "'Lato', sans-serif", fontSize: '0.875rem', color: 'var(--stone)', lineHeight: 1.65 }}>
-                  {desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Service Areas ── */}
-      <section className="py-20 lg:py-24" style={{ background: 'var(--cream)' }}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <div className="text-center mb-12">
-            <hr className="divider-gold" />
-            <h2
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 'clamp(1.875rem, 4vw, 2.5rem)',
-                fontWeight: 700,
-                color: 'var(--cedar)',
-                marginBottom: '0.75rem',
-              }}
-            >
-              Service Area
-            </h2>
-            <p style={{ fontFamily: "'Lato', sans-serif", color: 'var(--stone)', fontSize: '1.0625rem' }}>
-              Proudly serving the Denver metro area and surrounding communities
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {serviceAreas.map((city) => (
-              <div
-                key={city}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full"
-                style={{
-                  background: 'var(--cream-dark)',
-                  border: '1px solid var(--border-primary)',
-                  fontFamily: "'Lato', sans-serif",
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  color: 'var(--cedar)',
-                }}
-              >
-                <MapPin size={11} style={{ color: 'var(--gold)' }} />
-                {city}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section
-        className="py-20 lg:py-24"
-        style={{ background: 'var(--charcoal)', borderTop: '3px solid var(--gold)' }}
-      >
-        <div className="mx-auto max-w-7xl px-6 lg:px-12 text-center">
-          <h2
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 'clamp(1.875rem, 4vw, 2.75rem)',
-              fontWeight: 700,
-              color: 'var(--cream)',
-              marginBottom: '1rem',
-            }}
-          >
-            Ready to Get Started?
-          </h2>
-          <p
-            style={{
-              fontFamily: "'Lato', sans-serif",
-              fontSize: '1.0625rem',
-              color: 'var(--sandstone)',
-              maxWidth: 520,
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            Get your free instant estimate today and experience the Alpine Peak difference.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="tel:9704468995"
-              className="btn-gold"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              <Phone size={15} />
-              (970) 446-8995
-            </a>
-            <Link
-              href="/estimator"
-              className="btn-outline-cream"
-              style={{ fontFamily: "'Lato', sans-serif" }}
-            >
-              Get Free Estimate
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
     </div>
-  )
+  );
 }

@@ -1,0 +1,248 @@
+{
+  "name": "Alpine Peak Chatbot with Vector RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "chatbot-rag",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "alpine-peak-chatbot-rag"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract and validate chat message data\nfor (const item of $input.all()) {\n  const inputData = item.json;\n  \n  if (!inputData.message) {\n    throw new Error('Message is required');\n  }\n  \n  // Extract context and user data\n  const chatData = {\n    message: inputData.message,\n    session_id: inputData.session_id || `session_${Date.now()}`,\n    page_context: inputData.page_context || 'website',\n    user_data: inputData.user_data || {},\n    timestamp: new Date().toISOString(),\n    ip_address: 'unknown'\n  };\n  \n  // Determine message intent\n  const message = inputData.message.toLowerCase();\n  let intent = 'general';\n  let priority = 'normal';\n  \n  if (message.includes('estimate') || message.includes('quote') || message.includes('price')) {\n    intent = 'estimation_request';\n    priority = 'high';\n  } else if (message.includes('emergency') || message.includes('urgent') || message.includes('leak')) {\n    intent = 'emergency';\n    priority = 'urgent';\n  } else if (message.includes('schedule') || message.includes('appointment')) {\n    intent = 'scheduling';\n    priority = 'high';\n  }\n  \n  chatData.intent = intent;\n  chatData.priority = priority;\n  \n  // Enhance query for vector search\n  let searchQuery = inputData.message;\n  if (intent === 'emergency') {\n    searchQuery += ' emergency repair storm damage leak Colorado';\n  } else if (intent === 'estimation_request') {\n    searchQuery += ' cost estimate materials installation Denver';\n  }\n  searchQuery += ' roofing Denver Colorado';\n  \n  chatData.search_query = searchQuery;\n  \n  return { json: chatData };\n}"
+      },
+      "id": "intent-detection",
+      "name": "Intent Detection & Query Enhancement",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-ada-002",
+        "input": "={{ $json.search_query }}"
+      },
+      "id": "generate-embedding",
+      "name": "Generate Query Embedding",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/rpc/get_contextual_knowledge",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpMethod": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"query_embedding\": {{ $json.data[0].embedding }},\n  \"user_intent\": \"{{ $('Intent Detection & Query Enhancement').item.json.intent }}\",\n  \"match_count\": 5\n}"
+      },
+      "id": "vector-search",
+      "name": "Vector Knowledge Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Build context from retrieved knowledge\nfor (const item of $input.all()) {\n  const searchResults = item.json;\n  const originalData = $('Intent Detection & Query Enhancement').item.json;\n  \n  let context = '';\n  let retrievedChunks = [];\n  let avgSimilarity = 0;\n  \n  if (searchResults && searchResults.length > 0) {\n    // Build context from top results\n    searchResults.forEach((result, index) => {\n      if (result.similarity > 0.7) { // Only include highly relevant results\n        context += `\\n\\n=== RELEVANT KNOWLEDGE ${index + 1} ===\\n`;\n        context += `Category: ${result.category}\\n`;\n        context += `Urgency: ${result.urgency}\\n`;\n        context += `Content: ${result.content}\\n`;\n        \n        retrievedChunks.push(result.chunk_id);\n        avgSimilarity += result.similarity;\n      }\n    });\n    \n    avgSimilarity = avgSimilarity / searchResults.length;\n  }\n  \n  // If no relevant context found, use general knowledge\n  if (context === '') {\n    context = 'Use your general roofing knowledge and Alpine Peak Roofing company information.';\n  }\n  \n  const result = {\n    ...originalData,\n    knowledge_context: context,\n    retrieved_chunks: retrievedChunks,\n    avg_similarity: avgSimilarity,\n    has_relevant_context: context !== ''\n  };\n  \n  return { json: result };\n}"
+      },
+      "id": "build-context",
+      "name": "Build Knowledge Context",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "chatInput": "You are the AI assistant for Alpine Peak Roofing, Denver's premier roofing contractor with 25+ years of experience.\n\nCOMPANY INFO:\n- Location: Denver, Colorado  \n- Phone: (970) 446-8995\n- Emergency: 24/7 availability\n- Services: Residential & Commercial Roofing, Emergency Repairs, Inspections\n- Specialties: Asphalt shingles, Metal roofing, Tile systems, Flat roofing\n\nKNOWLEDGE CONTEXT:\n{{ $json.knowledge_context }}\n\nRESPONSE GUIDELINES:\n- Use the provided knowledge context to give accurate, detailed responses\n- Professional, solution-focused tone\n- For emergencies: Direct to immediate help (970) 446-8995\n- For estimates: Ask for address, roof type, issue description\n- Always end with appropriate call-to-action\n\nUser Message: {{ $json.message }}\nIntent: {{ $json.intent }}\nPriority: {{ $json.priority }}\n\nProvide a helpful, professional response using the relevant knowledge context."
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 500
+        }
+      },
+      "id": "enhanced-gpt-response",
+      "name": "Enhanced GPT-4 with Context",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Format final response\nfor (const item of $input.all()) {\n  const aiResponseData = item.json;\n  const originalData = $('Build Knowledge Context').item.json;\n  \n  let aiResponse = 'Thank you for your message. We will get back to you soon.';\n  \n  if (aiResponseData.choices && aiResponseData.choices[0]) {\n    aiResponse = aiResponseData.choices[0].message.content;\n  }\n  \n  const result = {\n    success: true,\n    response: {\n      message: aiResponse,\n      type: 'text',\n      timestamp: new Date().toISOString(),\n      session_id: originalData.session_id\n    },\n    metadata: {\n      intent: originalData.intent,\n      priority: originalData.priority,\n      has_context: originalData.has_relevant_context,\n      avg_similarity: originalData.avg_similarity,\n      retrieved_chunks: originalData.retrieved_chunks\n    }\n  };\n  \n  return { json: result };\n}"
+      },
+      "id": "format-response",
+      "name": "Format Final Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/chat_interactions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "httpMethod": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "{\n  \"session_id\": \"{{ $('Build Knowledge Context').item.json.session_id }}\",\n  \"message\": \"{{ $('Build Knowledge Context').item.json.message }}\",\n  \"response\": \"{{ $json.response.message }}\",\n  \"intent\": \"{{ $json.metadata.intent }}\",\n  \"priority\": \"{{ $json.metadata.priority }}\",\n  \"page_context\": \"{{ $('Build Knowledge Context').item.json.page_context }}\",\n  \"ip_address\": \"{{ $('Build Knowledge Context').item.json.ip_address }}\",\n  \"retrieved_chunks\": {{ JSON.stringify($json.metadata.retrieved_chunks) }},\n  \"search_query\": \"{{ $('Build Knowledge Context').item.json.search_query }}\",\n  \"avg_similarity\": {{ $json.metadata.avg_similarity }}\n}"
+      },
+      "id": "log-interaction",
+      "name": "Log Chat Interaction",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1780, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1780, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Intent Detection & Query Enhancement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Detection & Query Enhancement": {
+      "main": [
+        [
+          {
+            "node": "Generate Query Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Query Embedding": {
+      "main": [
+        [
+          {
+            "node": "Vector Knowledge Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Knowledge Search": {
+      "main": [
+        [
+          {
+            "node": "Build Knowledge Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Knowledge Context": {
+      "main": [
+        [
+          {
+            "node": "Enhanced GPT-4 with Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enhanced GPT-4 with Context": {
+      "main": [
+        [
+          {
+            "node": "Format Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Final Response": {
+      "main": [
+        [
+          {
+            "node": "Log Chat Interaction",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "alpine-peak-chatbot-rag",
+  "tags": []
+}

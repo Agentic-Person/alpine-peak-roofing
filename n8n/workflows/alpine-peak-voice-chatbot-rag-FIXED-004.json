@@ -1,5 +1,5 @@
 {
-  "name": "alpine-peak-voice-chatbot-rag-FIXED-003",
+  "name": "alpine-peak-voice-chatbot-rag-FIXED-004",
   "nodes": [
     {
       "parameters": {
@@ -8,13 +8,13 @@
         "width": 400,
         "color": 4
       },
-      "id": "8ec0ec9b-1acb-4d9d-a6f7-ff234bc19e0e",
+      "id": "63a0febe-4778-4ca9-9ad1-37fac2f352fa",
       "name": "🎙️ Voice Preprocessing Info",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6272,
-        2224
+        928,
+        288
       ]
     },
     {
@@ -23,13 +23,125 @@
         "height": 1156,
         "width": 712
       },
-      "id": "0c69b0d2-3033-4da4-8762-6aa21beddb0c",
+      "id": "463d0514-ee6a-4f1a-92b4-1eff4ba1d4dd",
       "name": "📋 Workflow Overview1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4544,
-        1584
+        -720,
+        -464
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📥 Text Webhook Node\n\n**Purpose:** Entry point for text-based chatbot interactions\n\n**Key Configuration:**\n• **Endpoint:** `/webhook/alpine-peak-chatbot`\n• **Method:** POST requests only\n• **Response Mode:** responseNode (requires separate response node)\n• **Data Flow:** Receives JSON with message, session_id, page_context\n\n**Expected Input Format:**\n```json\n{\n  \"message\": \"User's text message\",\n  \"session_id\": \"unique_session_identifier\", \n  \"page_context\": \"website_contact_form\"\n}\n```\n\n**Connections:**\n• **OUT:** → Text Preprocessing (message validation & analysis)\n\n**Security:** External webhook - validate all inputs in preprocessing",
+        "height": 580,
+        "width": 400,
+        "color": 1
+      },
+      "id": "webhook-text-info-sticky",
+      "name": "📥 Text Webhook Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        288,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🎤 Voice Webhook Node\n\n**Purpose:** Entry point for voice-based chatbot interactions\n\n**Key Configuration:**\n• **Endpoint:** `/webhook/alpine-peak-voice-chat`\n• **Method:** POST requests with audio binary data\n• **Response Mode:** responseNode (requires separate response node)\n• **Binary Property:** 'audio' for voice file handling\n• **Data Flow:** Receives audio file + optional metadata\n\n**Expected Input Format:**\n- **Binary:** Audio file (WAV, MP3, M4A, etc.)\n- **JSON:** Optional session_id, page_context, user_data\n\n**Connections:**\n• **OUT:** → Voice Preprocessing (audio validation & metadata setup)\n\n**Audio Formats:** Supports all Whisper-compatible formats\n**Security:** Validate audio size limits and file types",
+        "height": 620,
+        "width": 400,
+        "color": 1
+      },
+      "id": "webhook-voice-info-sticky",
+      "name": "🎤 Voice Webhook Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🗣️ Whisper Transcription Node\n\n**Purpose:** Converts voice audio to text using OpenAI's Whisper STT\n\n**Key Configuration:**\n• **Model:** Whisper (OpenAI's speech-to-text)\n• **Resource:** Audio transcription\n• **Operation:** Transcribe audio to text\n• **Input:** Binary audio data from Voice Preprocessing\n• **Output:** Transcribed text + confidence metadata\n\n**Technical Details:**\n• **Supported Formats:** MP3, MP4, MPEG, MPGA, M4A, WAV, WEBM\n• **Max File Size:** 25 MB per audio file\n• **Languages:** Auto-detection of 50+ languages\n• **Accuracy:** High accuracy for clear speech\n\n**Connections:**\n• **IN:** Voice Preprocessing → audio binary data\n• **OUT:** → Voice Processing (text + voice metadata merge)\n\n**Error Handling:** Returns '[unclear audio]' for failed transcriptions",
+        "height": 700,
+        "width": 400,
+        "color": 2
+      },
+      "id": "whisper-info-sticky",
+      "name": "🗣️ Whisper STT Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        288,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 Extract Knowledge Build Prompt Node\n\n**Purpose:** Combines RAG search results with user data to create comprehensive AI context\n\n**Key Functions:**\n• **Knowledge Integration:** Processes vector search results from Supabase\n• **Context Building:** Combines knowledge content with user intent and metadata\n• **Prompt Engineering:** Creates system prompt with company information and guidelines\n• **Data Consolidation:** Merges text/voice preprocessing data into unified structure\n• **Session Management:** Maintains session continuity across text and voice inputs\n• **Intent Preservation:** Carries forward user intent, priority, and lead scoring\n\n**System Prompt Components:**\n• **Company Details:** Phone, services, specialties, scheduling links\n• **Knowledge Context:** RAG-retrieved content relevant to user query\n• **Instructions:** Behavioral guidelines for AI assistant \"Sarah\"\n• **Emergency Protocols:** Special handling for urgent roofing issues\n• **Contact Workflows:** Email capture and scheduling guidance\n\n**Data Consolidation:**\n```json\n{\n  \"system_prompt\": \"Complete AI instructions...\",\n  \"user_message\": \"User's question\",\n  \"input_type\": \"text|voice\",\n  \"user_email\": \"if_provided\",\n  \"session_id\": \"session_123\",\n  \"intent\": \"emergency|estimation|general\",\n  \"priority\": \"urgent|high|normal\",\n  \"lead_score\": 45,\n  \"has_email\": true,\n  \"timestamp\": \"2025-01-01T12:00:00Z\"\n}\n```\n\n**Connections:**\n• **IN:** Extract Knowledge → RAG results + Text/Voice Processing → user data\n• **OUT:** → Is Voice Input? (routing decision)",
+        "height": 980,
+        "width": 400,
+        "color": 5
+      },
+      "id": "extract-knowledge-build-prompt-info-sticky",
+      "name": "🧠 Extract Knowledge Build Prompt Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🔄 Extract AI Response Node\n\n**Purpose:** Processes and standardizes AI response data for webhook delivery\n\n**Key Functions:**\n• **Response Extraction:** Gets AI message from multiple possible formats\n• **Content Formatting:** Handles both message.content and direct content fields\n• **Success Indicators:** Adds success flags and timestamps\n• **Data Standardization:** Creates consistent response structure\n• **Fallback Handling:** Provides default messages if AI response is empty\n\n**Input Sources:**\n• AI Response1 → GPT-4 chat completion\n• TTS Generation1 → Audio synthesis results (for voice responses)\n\n**Output Structure:**\n```json\n{\n  \"message\": \"AI response text\",\n  \"success\": true,\n  \"timestamp\": \"2025-01-01T12:00:00Z\"\n}\n```\n\n**Connections:**\n• **IN:** AI Response OR TTS Generation\n• **OUT:** → Build Response Metadata (final packaging)",
+        "height": 720,
+        "width": 400,
+        "color": 6
+      },
+      "id": "extract-ai-response-info-sticky",
+      "name": "🔄 Extract AI Response Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📦 Build Response Metadata Node\n\n**Purpose:** Creates comprehensive response package with metadata for webhooks and downstream processing\n\n**Key Functions:**\n• **Response Packaging:** Combines AI message with metadata\n• **Audio URL Handling:** Includes TTS audio URLs for voice responses\n• **CTA Integration:** Adds contextual call-to-action messages\n• **Knowledge Tracking:** Records which knowledge sources were used\n• **Email Data:** Prepares user email and knowledge data for email pipeline\n• **Session Management:** Maintains session continuity\n\n**Response Structure:**\n```json\n{\n  \"response\": {\n    \"message\": \"AI response\",\n    \"audio_url\": \"https://...\", \n    \"type\": \"text|voice\",\n    \"session_id\": \"session_123\",\n    \"cta\": \"Schedule at calendly.com/...\"\n  },\n  \"metadata\": {\n    \"input_type\": \"text|voice\",\n    \"intent\": \"emergency|estimation|etc\",\n    \"email_captured\": true,\n    \"knowledge_used\": true,\n    \"knowledge_sources\": [...],\n    \"user_email\": \"user@email.com\"\n  }\n}\n```\n\n**Connections:**\n• **IN:** Extract AI Response → formatted AI message\n• **OUT:** → Lead Capture + Webhook Response + Email Pipeline",
+        "height": 920,
+        "width": 400,
+        "color": 6
+      },
+      "id": "build-response-metadata-info-sticky",
+      "name": "📦 Build Response Metadata Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## ✉️ Format Email For Gmail Node\n\n**Purpose:** Prepares personalized email content with knowledge base information for Gmail delivery\n\n**Key Functions:**\n• **Email Personalization:** Extracts user email from metadata\n• **Subject Generation:** Creates dynamic subjects based on user intent\n• **Content Packaging:** Formats HTML email content for Gmail\n• **Knowledge Integration:** Includes relevant knowledge base articles\n• **Fallback Handling:** Uses default email if user email not provided\n\n**Email Template Features:**\n• **Company Branding:** Alpine Peak Roofing colors and styling\n• **Knowledge Sections:** Formatted knowledge base content\n• **Clear CTAs:** Emergency phone + Calendly scheduling links\n• **Professional Layout:** HTML email with responsive design\n• **Contact Information:** Phone, website, company tagline\n\n**Data Processing:**\n```json\n{\n  \"user_email\": \"customer@email.com\",\n  \"subject\": \"Alpine Peak Roofing - Information About [Intent]\",\n  \"email_content\": \"<html>formatted email</html>\"\n}\n```\n\n**Connections:**\n• **IN:** Generate Email HTML → formatted HTML content\n• **OUT:** → Send Email (Gmail delivery)\n\n**Email Triggers:** Only sends when user provided email + knowledge available",
+        "height": 880,
+        "width": 400,
+        "color": 3
+      },
+      "id": "format-email-gmail-info-sticky",
+      "name": "✉️ Format Email For Gmail Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3888,
+        768
       ]
     },
     {
@@ -42,10 +154,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        6528,
-        3120
+        688,
+        960
       ],
-      "id": "f0b71339-114f-46a2-bde2-fafca0e91fb0",
+      "id": "18ab196d-fd8f-437e-ac9d-3642599315f1",
       "name": "Text Webhook1",
       "webhookId": "alpine-peak-chatbot"
     },
@@ -61,10 +173,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        6112,
-        2688
+        240,
+        768
       ],
-      "id": "41bf9aff-35e8-4102-95a6-cb15a97451fe",
+      "id": "e86c7871-a3e2-4fde-81e4-b2f0b7d3dbe0",
       "name": "Voice Webhook1",
       "webhookId": "alpine-peak-voice-chat"
     },
@@ -76,10 +188,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6960,
-        3120
+        1072,
+        960
       ],
-      "id": "560e6c22-81c4-4640-be9a-9e04e817391d",
+      "id": "0620fd77-a627-4252-98b8-7bf18e479a99",
       "name": "Text Preprocessing1"
     },
     {
@@ -90,10 +202,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6416,
-        2688
+        464,
+        768
       ],
-      "id": "6515ad24-1313-4d4d-93d6-b904ea4bbb50",
+      "id": "49dacaed-a156-4415-867f-a47011fd141f",
       "name": "Voice Preprocessing1"
     },
     {
@@ -105,10 +217,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        6736,
-        2688
+        688,
+        768
       ],
-      "id": "274fcf81-2d0e-4cf2-b0f1-70452de70fe8",
+      "id": "f4c27ab7-6931-482f-9aa2-8ee9d6895d24",
       "name": "Whisper Transcription1",
       "credentials": {
         "openAiApi": {
@@ -125,10 +237,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7040,
-        2688
+        1072,
+        768
       ],
-      "id": "f21a45a8-d758-4d79-8c4e-d307c13b8745",
+      "id": "e4404ac8-3314-49f1-82e3-3d390e660bc7",
       "name": "Voice Processing1"
     },
     {
@@ -139,10 +251,10 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        7488,
-        3184
+        1536,
+        1072
       ],
-      "id": "bbff4b4f-3d89-4880-826c-368c32c1b6d3",
+      "id": "33a58bce-0d50-4087-b434-aca1209b06a6",
       "name": "Embeddings OpenAI1",
       "credentials": {
         "openAiApi": {
@@ -168,10 +280,10 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1.3,
       "position": [
-        7520,
-        2912
+        1456,
+        848
       ],
-      "id": "ce3675c8-63ff-426b-bf22-f039c806d0cf",
+      "id": "ad342b73-8d86-4250-bec1-a89eb6790b3d",
       "name": "Knowledge Search1",
       "credentials": {
         "supabaseApi": {
@@ -199,21 +311,21 @@
             {
               "id": "has_knowledge",
               "name": "has_knowledge",
-              "value": "={{ $json.pageContent || $json.content ? true : false }}",
+              "value": "={{ ($json.pageContent && $json.pageContent.length > 0) || ($json.content && $json.content.length > 0) || ($json && Object.keys($json).length > 1) ? true : false }}",
               "type": "boolean"
             }
           ]
         },
         "includeOtherFields": true,
-        "mode": "manual"
+        "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7920,
-        2912
+        1920,
+        848
       ],
-      "id": "550fd7c2-9082-4ff7-9e28-16f694963e82",
+      "id": "ca808646-96c1-4539-a18b-e16075bd4ad6",
       "name": "Extract Knowledge1"
     },
     {
@@ -282,16 +394,15 @@
             }
           ]
         },
-        "includeOtherFields": false,
-        "mode": "manual"
+        "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8280,
-        2912
+        2320,
+        832
       ],
-      "id": "build-prompt-simplified",
+      "id": "e192474d-3818-4cc8-8d49-7d7d288da591",
       "name": "Build Prompt1"
     },
     {
@@ -320,10 +431,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        8496,
-        3136
+        2768,
+        928
       ],
-      "id": "d4607c27-e82a-49dc-b309-773e243529a0",
+      "id": "a5812276-026d-4c09-ad59-ebfd959d4fc7",
       "name": "AI Response1",
       "credentials": {
         "openAiApi": {
@@ -358,10 +469,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8240,
-        2864
+        2544,
+        832
       ],
-      "id": "bbabaa2e-16ee-4772-98cd-df20c3724afe",
+      "id": "c699e70c-762e-4c26-938b-00e61bfd847d",
       "name": "Is Voice Input?1"
     },
     {
@@ -378,10 +489,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        8560,
-        2752
+        2832,
+        736
       ],
-      "id": "1e1d4f17-c9b0-480a-bba8-1525812b0c33",
+      "id": "b967afed-b9b5-455b-a4b4-a29835b4bc81",
       "name": "TTS Generation1",
       "credentials": {
         "openAiApi": {
@@ -415,15 +526,15 @@
           ]
         },
         "includeOtherFields": true,
-        "mode": "manual"
+        "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8992,
-        2992
+        3120,
+        832
       ],
-      "id": "b3fb08d3-0459-4da4-8694-34bb01a8c79f",
+      "id": "3a0c690b-25d2-484e-8711-542d9197930c",
       "name": "Extract AI Response1"
     },
     {
@@ -445,15 +556,15 @@
           ]
         },
         "includeOtherFields": true,
-        "mode": "manual"
+        "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9280,
-        2992
+        3344,
+        832
       ],
-      "id": "build-response-metadata",
+      "id": "316ab4cf-3205-4258-8d26-8153760f2bc8",
       "name": "Build Response Metadata1"
     },
     {
@@ -495,58 +606,11 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        9504,
-        3072
+        3568,
+        832
       ],
-      "id": "4f405fb4-5197-41d8-b46d-854b70057068",
+      "id": "2ab0322c-3c6f-41bb-a71d-568ebe53e637",
       "name": "Lead Capture1",
-      "credentials": {
-        "supabaseApi": {
-          "id": "o7zyeZA5I055ehin",
-          "name": "Supabase jimiHacks"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "tableId": "conversations",
-        "fieldsUi": {
-          "fieldValues": [
-            {
-              "fieldId": "session_id",
-              "fieldValue": "={{ $('Build Prompt1').item.json.session_id }}"
-            },
-            {
-              "fieldId": "message",
-              "fieldValue": "={{ $('Build Prompt1').item.json.message }}"
-            },
-            {
-              "fieldId": "response",
-              "fieldValue": "={{ $('AI Response1').item.json.message || $('AI Response1').item.json.content }}"
-            },
-            {
-              "fieldId": "input_type",
-              "fieldValue": "={{ $('Build Prompt1').item.json.input_type }}"
-            },
-            {
-              "fieldId": "knowledge_used",
-              "fieldValue": "={{ $('Build Prompt1').item.json.has_knowledge }}"
-            },
-            {
-              "fieldId": "timestamp",
-              "fieldValue": "={{ new Date().toISOString() }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [
-        9520,
-        3376
-      ],
-      "id": "58ee8a2a-8560-4a58-8df8-2350bb5c6f14",
-      "name": "Log Conversation1",
       "credentials": {
         "supabaseApi": {
           "id": "o7zyeZA5I055ehin",
@@ -565,15 +629,7 @@
           },
           "conditions": [
             {
-              "leftValue": "={{ $('Build Prompt1').item.json.has_email }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "true"
-              }
-            },
-            {
-              "leftValue": "={{ $('Build Prompt1').item.json.has_knowledge }}",
+              "leftValue": "={{ $('Build Prompt1').first()?.json?.has_email }}",
               "rightValue": true,
               "operator": {
                 "type": "boolean",
@@ -588,25 +644,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9904,
-        3072
+        3792,
+        832
       ],
-      "id": "885db6e9-dcf2-42f6-9c21-84969dda191d",
+      "id": "1a191d63-7afb-4055-8057-e68d236f601a",
       "name": "Should Send Email?1"
     },
     {
       "parameters": {
-        "operation": "generateHtmlTemplate",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    h2 { color: #2c5aa0; }\n    h3 { color: #333; border-bottom: 2px solid #2c5aa0; padding-bottom: 10px; }\n    .cta { background: #2c5aa0; color: white; padding: 15px; text-align: center; margin: 20px 0; }\n    .cta a { color: white; text-decoration: none; font-weight: bold; }\n    .footer { margin-top: 30px; font-size: 14px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>Thank you for contacting Alpine Peak Roofing!</h2>\n    \n    <p>Based on your inquiry, here's relevant information from our knowledge base:</p>\n    \n    <h3>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.title || 'Roofing Information' }}</h3>\n    <p>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.content || 'Our team will provide detailed information about your roofing needs.' }}</p>\n    \n    <div class=\"cta\">\n      <p><strong>Ready to get started?</strong></p>\n      <p>Emergency: Call (970) 446-8995 immediately</p>\n      <p><a href=\"https://calendly.com/jimmy-agenticpersonnel/30min\">Schedule Your Free Inspection</a></p>\n    </div>\n    \n    <div class=\"footer\">\n      <p><strong>Alpine Peak Roofing</strong><br>\n      Phone: (970) 446-8995<br>\n      Website: https://alpinepeakroofing.com</p>\n      \n      <p><em>\"Pinnacle of Protection, Peak of Performance\"</em></p>\n    </div>\n  </div>\n</body>\n</html>",
-        "options": {}
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    h2 { color: #2c5aa0; }\n    h3 { color: #333; border-bottom: 2px solid #2c5aa0; padding-bottom: 10px; }\n    .cta { background: #2c5aa0; color: white; padding: 15px; text-align: center; margin: 20px 0; }\n    .cta a { color: white; text-decoration: none; font-weight: bold; }\n    .footer { margin-top: 30px; font-size: 14px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>Thank you for contacting Alpine Peak Roofing!</h2>\n    \n    <p>Based on your inquiry, here's relevant information from our knowledge base:</p>\n    \n    <h3>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.title || 'Roofing Information' }}</h3>\n    <p>{{ $('Build Response Metadata1').first()?.json?.metadata?.knowledge_sources?.[0]?.content || 'Our team will provide detailed information about your roofing needs.' }}</p>\n    \n    <div class=\"cta\">\n      <p><strong>Ready to get started?</strong></p>\n      <p>Emergency: Call (970) 446-8995 immediately</p>\n      <p><a href=\"https://calendly.com/jimmy-agenticpersonnel/30min\">Schedule Your Free Inspection</a></p>\n    </div>\n    \n    <div class=\"footer\">\n      <p><strong>Alpine Peak Roofing</strong><br>\n      Phone: (970) 446-8995<br>\n      Website: https://alpinepeakroofing.com</p>\n      \n      <p><em>\"Pinnacle of Protection, Peak of Performance\"</em></p>\n    </div>\n  </div>\n</body>\n</html>"
       },
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        10304,
-        3056
+        4064,
+        768
       ],
-      "id": "36dc084e-e083-4e69-9295-a9c9f48c7f02",
+      "id": "8160873c-9008-429d-942e-a7796f6139db",
       "name": "Generate Email HTML1"
     },
     {
@@ -633,16 +687,15 @@
             }
           ]
         },
-        "includeOtherFields": false,
-        "mode": "manual"
+        "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10580,
-        3056
+        4288,
+        768
       ],
-      "id": "format-email-for-gmail",
+      "id": "6bc4d4be-35e3-4afd-8988-4fb7549a9b9f",
       "name": "Format Email For Gmail1"
     },
     {
@@ -655,10 +708,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        10656,
-        3056
+        4512,
+        768
       ],
-      "id": "ca34dcb3-646e-4bd3-81b2-427f6037fe79",
+      "id": "3eee133f-c855-403d-a2cf-b474a213ecc1",
       "name": "Send Email1",
       "webhookId": "95d79007-e829-47a0-a3d2-ad9a23dc41fe",
       "credentials": {
@@ -677,10 +730,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        9520,
-        2752
+        3568,
+        640
       ],
-      "id": "b0c6735c-bc36-4995-840c-fae82aeb480e",
+      "id": "8188fcb4-635b-499f-97b8-25eae89257f1",
       "name": "Webhook Response1"
     },
     {
@@ -690,13 +743,13 @@
         "width": 400,
         "color": 4
       },
-      "id": "f2c1d848-eec5-40ea-9302-2ce8fea1a919",
+      "id": "badaad9e-7039-42d6-8104-a865734f2761",
       "name": "💬 Text Preprocessing Info1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6864,
-        3264
+        1600,
+        1216
       ]
     },
     {
@@ -706,13 +759,13 @@
         "width": 400,
         "color": 4
       },
-      "id": "3801b163-0388-4417-830f-c9965245b850",
+      "id": "b63404a8-65b1-425b-8f75-22ddc8004849",
       "name": "🗣️ Voice Processing Info1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6896,
-        2208
+        1376,
+        272
       ]
     },
     {
@@ -722,13 +775,13 @@
         "width": 400,
         "color": 5
       },
-      "id": "27457a97-69d3-4443-9ecc-b8175d9be90d",
+      "id": "48828a57-7061-4db9-b577-dbaf82c870a0",
       "name": "🔧 Build Context Info1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7776,
-        2400
+        1952,
+        288
       ]
     },
     {
@@ -738,13 +791,13 @@
         "width": 400,
         "color": 5
       },
-      "id": "fc87e162-1bf9-4e6b-a1d5-357e908b5e60",
+      "id": "4aff4db8-9df3-4743-9368-e2189e40a3e5",
       "name": "📋 Format Response Info1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        8832,
-        2272
+        2976,
+        32
       ]
     },
     {
@@ -754,13 +807,13 @@
         "width": 400,
         "color": 3
       },
-      "id": "2a34de97-e79d-4adf-93af-f7e7f139f775",
+      "id": "8e681316-928d-4a01-8c28-3c74560b70e5",
       "name": "✉️ Prepare Email Info1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        10144,
-        2528
+        3872,
+        288
       ]
     },
     {
@@ -771,15 +824,53 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8720,
-        3424
+        2400,
+        1264
       ],
-      "id": "14158386-850e-47a8-a588-803c332c9d93",
+      "id": "33baf1d1-15b3-4225-8999-e3c39fbc95ad",
       "name": "Format Response",
       "disabled": true
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Text Webhook1": [
+      {
+        "json": {
+          "headers": {
+            "host": "agenticpersonnel.app.n8n.cloud",
+            "user-agent": "curl/8.14.1",
+            "content-length": "608",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "US",
+            "cf-ray": "98062f0a3032a20c-MSP",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3, 104.23.201.35",
+            "x-forwarded-host": "agenticpersonnel.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-1-8749c5b8f-9jfvg",
+            "x-is-trusted": "yes",
+            "x-real-ip": "2605:4a80:2000:7ef0:61de:c026:2c37:11a3"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "message": "Hi there! I am Jimmy and my email is jimmydavidson@gmail.com. I am located in Gunnison, Colorado and interested in getting information about metal roofing for my home. My roof is approximately 2500 square feet and I would love to know about the different types of metal roofing options available and get a rough estimate on costs. Are there significant differences between the various metal roof materials? I have heard metal roofs are great for Colorado weather but want to understand my options better.",
+            "session_id": "test_session_metal_roof_inquiry",
+            "page_context": "website_contact_form"
+          },
+          "webhookUrl": "https://agenticpersonnel.app.n8n.cloud/webhook/alpine-peak-chatbot",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
   "connections": {
     "Text Webhook1": {
       "main": [
@@ -922,11 +1013,6 @@
             "index": 0
           },
           {
-            "node": "Log Conversation1",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Webhook Response1",
             "type": "main",
             "index": 0
@@ -982,7 +1068,8 @@
             "type": "main",
             "index": 0
           }
-        ]
+        ],
+        []
       ]
     },
     "Generate Email HTML1": {
@@ -1012,23 +1099,23 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "df0f8209-a633-4325-8380-d8b907824789",
+  "versionId": "2b881ed4-227c-45cc-bfaa-a8387a729e85",
   "meta": {
     "instanceId": "62eb072701814b1a1a9c022b7a751c5f8dac0a37a5a414c436048bc8706d2f6f"
   },
-  "id": "FijwpArBE4sf6O2i",
+  "id": "tBNDwZL1zCEIq9ZK",
   "tags": [
     {
-      "name": "MCP-FIXED",
-      "id": "62mxTJkctqXj7Nk2",
       "createdAt": "2025-09-16T04:46:23.586Z",
-      "updatedAt": "2025-09-16T04:46:23.586Z"
+      "updatedAt": "2025-09-16T04:46:23.586Z",
+      "id": "62mxTJkctqXj7Nk2",
+      "name": "MCP-FIXED"
     },
     {
-      "name": "RAG-WORKING",
-      "id": "aOfcfYfYk7WVj1F7",
       "createdAt": "2025-09-16T04:46:23.614Z",
-      "updatedAt": "2025-09-16T04:46:23.614Z"
+      "updatedAt": "2025-09-16T04:46:23.614Z",
+      "id": "aOfcfYfYk7WVj1F7",
+      "name": "RAG-WORKING"
     }
   ]
 }

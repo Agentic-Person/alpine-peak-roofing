@@ -1,0 +1,379 @@
+{
+  "name": "Alpine Peak AI Agent Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# 🏔️ ALPINE PEAK AI AGENT CHATBOT\n\n## NEW ARCHITECTURE: AI Agent with Tools\n\n### Key Features:\n✅ **AI Agent Pattern** - Intelligent tool selection\n✅ **Conversational Memory** - True back-and-forth dialogue\n✅ **Knowledge-base Only** - No web access, structured responses\n✅ **Multiple Output Formats** - HTML, MD, PDF email options\n✅ **Smart Lead Capture** - Automatic scoring and CRM integration\n✅ **Voice + Text Support** - Dual input processing\n\n### Tool Workflows:\n- **Knowledge Search**: QMTzmbld0H0heeV1\n- **Email Formatter**: fwIR2PbtCpFIhFQ4  \n- **Lead Capture**: KGHJcBXJyAKuhOMW\n\n### Webhook Endpoints:\n- **Text**: `/webhook/alpine-peak-chatbot-agent`\n- **Voice**: `/webhook/alpine-peak-voice-agent`\n\n### System Prompt:\nSarah, Alpine Peak Roofing assistant with strict knowledge-base-only responses.\n\n**Built with n8n AI Agent + MCP validation**",
+        "height": 800,
+        "width": 600
+      },
+      "id": "workflow-overview",
+      "name": "📋 Workflow Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-600, -400]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-chatbot-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [200, 400],
+      "id": "text-webhook",
+      "name": "Text Webhook",
+      "webhookId": "alpine-peak-chatbot-agent"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpine-peak-voice-agent",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "audio"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [200, 600],
+      "id": "voice-webhook",
+      "name": "Voice Webhook",
+      "webhookId": "alpine-peak-voice-agent"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Text input preprocessing\nconst body = $json.body ?? {};\nconst messageRaw = body.message ?? $json.message ?? '';\n\nconst message = String(messageRaw).trim();\nif (!message) {\n  throw new Error('Message is required for text input');\n}\n\n// Extract session and user data\nconst sessionId = body.session_id ?? $json.session_id ?? ('text_session_' + Date.now());\nconst pageContext = body.page_context ?? $json.page_context ?? 'website';\nconst userData = body.user_data ?? $json.user_data ?? {};\n\n// Email detection\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst emailMatch = message.match(emailPattern);\nconst userEmail = emailMatch ? emailMatch[0].toLowerCase().trim() : null;\n\nreturn {\n  json: {\n    chatInput: message,\n    session_id: sessionId,\n    page_context: pageContext,\n    user_data: userData,\n    user_email: userEmail,\n    input_type: 'text',\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 400],
+      "id": "text-preprocessing",
+      "name": "Text Preprocessing"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [400, 600],
+      "id": "whisper-transcription",
+      "name": "Whisper Transcription",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Voice processing after transcription\nconst voiceData = $('Voice Webhook').first().json.body ?? {};\nconst transcriptionResult = $input.item.json;\n\nlet transcribedText = '';\nif (transcriptionResult && transcriptionResult.text) {\n  transcribedText = transcriptionResult.text.trim();\n} else {\n  throw new Error('Audio transcription failed - please try again');\n}\n\n// Extract session and user data from voice webhook\nconst sessionId = voiceData.session_id ?? ('voice_session_' + Date.now());\nconst pageContext = voiceData.page_context ?? 'website';\nconst userData = voiceData.user_data ?? {};\n\n// Email detection in transcribed text\nconst emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/;\nconst emailMatch = transcribedText.match(emailPattern);\nconst userEmail = emailMatch ? emailMatch[0].toLowerCase().trim() : null;\n\nreturn {\n  json: {\n    chatInput: transcribedText,\n    session_id: sessionId,\n    page_context: pageContext,\n    user_data: userData,\n    user_email: userEmail,\n    input_type: 'voice',\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 600],
+      "id": "voice-processing",
+      "name": "Voice Processing"
+    },
+    {
+      "parameters": {
+        "promptType": "auto",
+        "options": {
+          "systemMessage": "You are Sarah, the AI assistant for Alpine Peak Roofing in Denver, Colorado.\n\nCOMPANY DETAILS:\n- Phone: (970) 446-8995 (Emergency & Voice Agent)\n- Services: Residential and commercial roofing, repairs, inspections, emergency services\n- Specialties: High-altitude roofing, hail damage, snow load management, Denver metro area\n- Scheduling: https://calendly.com/jimmy-agenticpersonnel/30min\n\nCRITICAL RULES:\n1. **KNOWLEDGE BASE ONLY**: Only provide answers from the knowledge base search tool\n2. **NO WEB ACCESS**: Never browse the internet or make up information\n3. **STRICT RESPONSES**: If information isn't in knowledge base, say \"I don't have that information in my knowledge base. Please contact our team at (970) 446-8995 for assistance.\"\n4. **EMAIL COLLECTION**: Naturally ask for email addresses during conversation\n5. **TOOL USAGE**: Use available tools intelligently:\n   - Search knowledge base for roofing questions\n   - Capture leads when you get contact information\n   - Send emails when requested (ask for format preference: HTML, text, or markdown)\n\nINSTRUCTIONS:\n- Always be helpful, professional, and knowledgeable about roofing\n- For emergencies (leaks, storm damage), emphasize calling (970) 446-8995 immediately\n- For estimates and scheduling, provide the Calendly link\n- Offer to email responses in different formats (HTML, text, markdown)\n- Maintain conversation context and remember what was discussed\n- If users provide email/phone, capture it as a lead automatically\n\nTOOL PRIORITIES:\n1. Search knowledge base first for any roofing questions\n2. Capture leads when contact info is provided\n3. Send emails when users request information via email",
+          "maxIterations": 10,
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [800, 500],
+      "id": "ai-agent",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "name": "search_knowledge_base",
+        "description": "Search the Alpine Peak Roofing knowledge base for information about roofing services, repairs, materials, processes, and company policies. Use this tool for any roofing-related questions.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "QMTzmbld0H0heeV1",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ $json.chatInput }}",
+            "session_id": "={{ $json.session_id }}"
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [600, 300],
+      "id": "knowledge-search-tool",
+      "name": "Knowledge Search Tool"
+    },
+    {
+      "parameters": {
+        "name": "send_email_response",
+        "description": "Send email responses to users in their preferred format (HTML, text, or markdown). Use when users provide an email address or request information via email.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "fwIR2PbtCpFIhFQ4",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.user_email }}",
+            "message": "={{ $json.chatInput }}",
+            "format": "html",
+            "session_id": "={{ $json.session_id }}"
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [600, 400],
+      "id": "email-formatter-tool",
+      "name": "Email Formatter Tool"
+    },
+    {
+      "parameters": {
+        "name": "capture_lead",
+        "description": "Capture lead information when users provide contact details (email, phone, name) or express interest in services. Use automatically when contact information is detected.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "KGHJcBXJyAKuhOMW",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.user_email }}",
+            "session_id": "={{ $json.session_id }}",
+            "message": "={{ $json.chatInput }}",
+            "input_type": "={{ $json.input_type }}",
+            "intent": "general",
+            "priority": "normal"
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [600, 500],
+      "id": "lead-capture-tool",
+      "name": "Lead Capture Tool"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 1000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.8,
+      "position": [600, 200],
+      "id": "openai-chat-model",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdExpression": "={{ $json.session_id }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.4,
+      "position": [600, 100],
+      "id": "chat-memory",
+      "name": "Chat Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.input_type }}",
+              "rightValue": "voice",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1000, 500],
+      "id": "check-voice-input",
+      "name": "Check Voice Input"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $json.output }}",
+        "voice": "nova",
+        "options": {
+          "response_format": "mp3",
+          "speed": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1200, 400],
+      "id": "tts-generation",
+      "name": "TTS Generation",
+      "credentials": {
+        "openAiApi": {
+          "id": "od3qrZGbVE2RSz7J",
+          "name": "OpenAi APS account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "response",
+              "name": "response",
+              "value": "={{ { \"message\": $json.output, \"audio_url\": null, \"type\": \"text\", \"timestamp\": new Date().toISOString(), \"session_id\": $json.session_id, \"cta\": \"Schedule at https://calendly.com/jimmy-agenticpersonnel/30min\" } }}",
+              "type": "object"
+            },
+            {
+              "id": "metadata",
+              "name": "metadata",
+              "value": "={{ { \"input_type\": $json.input_type, \"tools_used\": $json.intermediateSteps?.length || 0, \"session_id\": $json.session_id, \"agent_version\": \"v2.0\" } }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1200, 600],
+      "id": "format-text-response",
+      "name": "Format Text Response"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "response",
+              "name": "response",
+              "value": "={{ { \"message\": $('AI Agent').item.json.output, \"audio_data\": $json.data, \"type\": \"voice\", \"timestamp\": new Date().toISOString(), \"session_id\": $('AI Agent').item.json.session_id, \"cta\": \"Schedule at https://calendly.com/jimmy-agenticpersonnel/30min\" } }}",
+              "type": "object"
+            },
+            {
+              "id": "metadata",
+              "name": "metadata",
+              "value": "={{ { \"input_type\": \"voice\", \"tools_used\": $('AI Agent').item.json.intermediateSteps?.length || 0, \"session_id\": $('AI Agent').item.json.session_id, \"agent_version\": \"v2.0\" } }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1400, 400],
+      "id": "format-voice-response",
+      "name": "Format Voice Response"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1400, 600],
+      "id": "webhook-response",
+      "name": "Webhook Response"
+    }
+  ],
+  "connections": {
+    "Text Webhook": {
+      "main": [[{"node": "Text Preprocessing", "type": "main", "index": 0}]]
+    },
+    "Voice Webhook": {
+      "main": [[{"node": "Whisper Transcription", "type": "main", "index": 0}]]
+    },
+    "Text Preprocessing": {
+      "main": [[{"node": "AI Agent", "type": "main", "index": 0}]]
+    },
+    "Whisper Transcription": {
+      "main": [[{"node": "Voice Processing", "type": "main", "index": 0}]]
+    },
+    "Voice Processing": {
+      "main": [[{"node": "AI Agent", "type": "main", "index": 0}]]
+    },
+    "AI Agent": {
+      "main": [[{"node": "Check Voice Input", "type": "main", "index": 0}]]
+    },
+    "Knowledge Search Tool": {
+      "ai_tool": [[{"node": "AI Agent", "type": "ai_tool", "index": 0}]]
+    },
+    "Email Formatter Tool": {
+      "ai_tool": [[{"node": "AI Agent", "type": "ai_tool", "index": 0}]]
+    },
+    "Lead Capture Tool": {
+      "ai_tool": [[{"node": "AI Agent", "type": "ai_tool", "index": 0}]]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [[{"node": "AI Agent", "type": "ai_languageModel", "index": 0}]]
+    },
+    "Chat Memory": {
+      "ai_memory": [[{"node": "AI Agent", "type": "ai_memory", "index": 0}]]
+    },
+    "Check Voice Input": {
+      "main": [
+        [{"node": "TTS Generation", "type": "main", "index": 0}],
+        [{"node": "Format Text Response", "type": "main", "index": 0}]
+      ]
+    },
+    "TTS Generation": {
+      "main": [[{"node": "Format Voice Response", "type": "main", "index": 0}]]
+    },
+    "Format Text Response": {
+      "main": [[{"node": "Webhook Response", "type": "main", "index": 0}]]
+    },
+    "Format Voice Response": {
+      "main": [[{"node": "Webhook Response", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

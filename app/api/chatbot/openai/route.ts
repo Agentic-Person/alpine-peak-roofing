@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
 interface ChatRequest {
   session_id: string
   message: string
@@ -50,6 +46,7 @@ RESPONSE GUIDELINES:
 TONE: Professional but approachable, confident in expertise, focused on helping customers protect their homes.`
 
 export async function POST(request: NextRequest) {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   try {
     const body: ChatRequest = await request.json()
     console.log('OpenAI API: Processing message:', body.message)
