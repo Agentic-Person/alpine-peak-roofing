@@ -3,6 +3,14 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import FeaturedPosts from '@/components/blog/FeaturedPosts';
 import EnhancedBlogGrid from '@/components/blog/EnhancedBlogGrid';
+import { BlogService } from '@/lib/blog/blogService';
+import { isSupabaseConfigured } from '@/lib/supabase/client';
+import { sortedBlogPostsForGrid } from '@/lib/blog/blogData';
+import { mergeWithStaticPosts } from '@/lib/blog/supabaseAdapter';
+
+// Re-generate the blog listing every 5 minutes so new AI-generated posts appear
+// without a manual redeploy (Next.js ISR).
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Roofing Blog | Alpine Peak Roofing - Expert Tips & Advice',
@@ -29,14 +37,35 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
+/**
+ * Fetch AI-generated posts from Supabase (up to 50) and merge with static posts.
+ * Gracefully returns static-only if Supabase isn't configured or the fetch fails.
+ */
+async function getMergedBlogPosts() {
+  if (!isSupabaseConfigured()) {
+    return sortedBlogPostsForGrid;
+  }
+
+  try {
+    const { posts: supabasePosts } = await BlogService.getPublishedPosts({ limit: 50, page: 1 });
+    if (!supabasePosts.length) return sortedBlogPostsForGrid;
+    return mergeWithStaticPosts(supabasePosts, sortedBlogPostsForGrid);
+  } catch (err) {
+    console.error('[blog/page] Failed to fetch Supabase posts — falling back to static:', err);
+    return sortedBlogPostsForGrid;
+  }
+}
+
+export default async function BlogPage() {
+  const allPosts = await getMergedBlogPosts();
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Featured Posts Section */}
+      {/* Featured Posts Section — still uses static featured posts */}
       <FeaturedPosts />
 
-      {/* All Posts Grid */}
-      <EnhancedBlogGrid />
+      {/* All Posts Grid — now includes AI-generated posts from Supabase */}
+      <EnhancedBlogGrid posts={allPosts} />
 
       {/* Admin Login Link - Subtle placement */}
       <div className="text-center py-4">
