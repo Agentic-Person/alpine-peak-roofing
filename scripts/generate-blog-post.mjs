@@ -202,8 +202,68 @@ Return ONLY valid JSON with this exact structure:
     meta_description: data.meta_description,
     content: data.content,
     keywords: data.keywords || [keyword],
-    season: season || null
+    season: season || null,
+    alt_text: `${data.title} - Alpine Peak Roofing Colorado`,
   };
+}
+
+// ── Generate featured image with DALL-E 3 ──────────────────────────────────────
+async function generateFeaturedImage(title, topic, slug) {
+  console.log('\n🎨 Generating featured image with DALL-E 3...');
+
+  const imagePrompt = `Professional, photorealistic roofing photograph for a blog post titled "${title}".
+Colorado mountain setting, blue sky with Rocky Mountains in background.
+Subject: ${topic}.
+Style: Clean editorial photography, daylight, sharp detail.
+No text, no people, no watermarks. Suitable for a professional roofing company website.`;
+
+  let imageUrl;
+  try {
+    const imgResponse = await openai.images.generate({
+      model: 'dall-e-3',
+      prompt: imagePrompt,
+      size: '1792x1024',
+      quality: 'standard',
+      n: 1,
+    });
+    imageUrl = imgResponse.data[0].url;
+  } catch (err) {
+    console.warn(`⚠️  DALL-E generation failed: ${err.message} — skipping image`);
+    return null;
+  }
+
+  // Fetch image bytes (native fetch — Node 18+)
+  let imageBuffer;
+  try {
+    const resp = await fetch(imageUrl);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    imageBuffer = Buffer.from(await resp.arrayBuffer());
+  } catch (err) {
+    console.warn(`⚠️  Image download failed: ${err.message} — skipping image`);
+    return null;
+  }
+
+  // Upload to Supabase Storage
+  const storagePath = `blog/${slug}.jpg`;
+  const { error: uploadError } = await supabase.storage
+    .from('company-assets')
+    .upload(storagePath, imageBuffer, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.warn(`⚠️  Storage upload failed: ${uploadError.message} — skipping image`);
+    return null;
+  }
+
+  // Get public URL
+  const { data: urlData } = supabase.storage
+    .from('company-assets')
+    .getPublicUrl(storagePath);
+
+  console.log(`   ✅ Image uploaded: ${urlData.publicUrl}`);
+  return urlData.publicUrl;
 }
 
 // ── Publish to Supabase ─────────────────────────────────────────────────────────
@@ -220,7 +280,9 @@ async function publishToSupabase(post, slug) {
     season: post.season,
     publish_date: new Date().toISOString().split('T')[0],
     published_at: new Date().toISOString(),
-    estimated_cost: 0.05  // approx OpenAI cost in USD
+    featured_image_url: post.featured_image_url || null,
+    alt_text: post.alt_text || null,
+    estimated_cost: post.image_cost ? 0.09 : 0.05  // +$0.04 for DALL-E standard 1792x1024
   };
 
   const { data, error } = await supabase
@@ -275,14 +337,27 @@ async function main() {
     return;
   }
 
+  // Generate featured image (non-fatal — post publishes even if image fails)
+  const noImage = args.includes('--no-image');
+  if (!noImage) {
+    const imageUrl = await generateFeaturedImage(post.title, topicData.topic, slug);
+    if (imageUrl) {
+      post.featured_image_url = imageUrl;
+      post.image_cost = true;
+    }
+  } else {
+    console.log('\n⏭️  Skipping image generation (--no-image flag)');
+  }
+
   // Publish
   console.log('\n📤 Publishing to Supabase...');
   const created = await publishToSupabase(post, slug);
 
   console.log(`\n🚀 Published!`);
-  console.log(`   ID:    ${created.id}`);
-  console.log(`   Title: ${created.title}`);
-  console.log(`   URL:   https://alpinepeakroofing.com/blog/${created.slug}`);
+  console.log(`   ID:       ${created.id}`);
+  console.log(`   Title:    ${created.title}`);
+  console.log(`   Image:    ${created.featured_image_url || '(none)'}`);
+  console.log(`   URL:      https://alpinepeakroofing.com/blog/${created.slug}`);
 }
 
 main().catch(err => {
