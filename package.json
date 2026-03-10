@@ -12,6 +12,7 @@
     "blog:generate:no-image": "node scripts/generate-blog-post.mjs --no-image"
   },
   "dependencies": {
+    "@google-analytics/data": "^5.2.1",
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@supabase/ssr": "^0.7.0",

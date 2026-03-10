@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone, BookOpen, HelpCircle, Brain, Bot, Mountain, Home, Building2, AlertTriangle, Calculator, Leaf, TrendingUp, Building, Users, Briefcase, Settings, FileText, Mail } from 'lucide-react'
+import AnalyticsWidget from '@/components/analytics/AnalyticsWidget'
 
 const serviceAreas = [
   { href: '/locations/aspen',            label: 'Aspen' },
@@ -113,6 +114,11 @@ export default function Footer() {
               <li className="text-yellow-400 font-semibold">24/7 Emergency</li>
             </ul>
           </div>
+        </div>
+
+        {/* Analytics Widget */}
+        <div className="mt-6 max-w-xs">
+          <AnalyticsWidget />
         </div>
 
         {/* Bottom Bar */}
