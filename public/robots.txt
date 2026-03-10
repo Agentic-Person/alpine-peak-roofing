@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /_internal/
+
+Crawl-delay: 1
+
+Sitemap: https://alpinepeakroofing.com/sitemap.xml

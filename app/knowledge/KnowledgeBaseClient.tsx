@@ -249,14 +249,14 @@ const knowledgeResources: KnowledgeResource[] = [
 ]
 
 const categories = [
-  { name: 'Essential Knowledge', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-blue-100 text-blue-800' },
-  { name: 'Technical Reference', icon: <FileText className="h-5 w-5" />, color: 'bg-gray-100 text-gray-800' },
-  { name: 'Expert Guides', icon: <BookOpen className="h-5 w-5" />, color: 'bg-green-100 text-green-800' },
-  { name: 'Premium Services', icon: <Star className="h-5 w-5" />, color: 'bg-purple-100 text-purple-800' },
-  { name: 'Emergency Services', icon: <Clock className="h-5 w-5" />, color: 'bg-red-100 text-red-800' },
-  { name: 'Planning Tools', icon: <Calculator className="h-5 w-5" />, color: 'bg-yellow-100 text-yellow-800' },
-  { name: 'Location Expertise', icon: <MapPin className="h-5 w-5" />, color: 'bg-indigo-100 text-indigo-800' },
-  { name: 'Sustainability', icon: <Leaf className="h-5 w-5" />, color: 'bg-emerald-100 text-emerald-800' },
+  { name: 'Essential Knowledge', icon: <HelpCircle className="h-5 w-5" />, color: 'bg-blue-500/25 text-blue-200' },
+  { name: 'Technical Reference', icon: <FileText className="h-5 w-5" />, color: 'bg-slate-500/25 text-slate-200' },
+  { name: 'Expert Guides', icon: <BookOpen className="h-5 w-5" />, color: 'bg-emerald-500/25 text-emerald-200' },
+  { name: 'Premium Services', icon: <Star className="h-5 w-5" />, color: 'bg-purple-500/25 text-purple-200' },
+  { name: 'Emergency Services', icon: <Clock className="h-5 w-5" />, color: 'bg-red-500/25 text-red-200' },
+  { name: 'Planning Tools', icon: <Calculator className="h-5 w-5" />, color: 'bg-amber-500/25 text-amber-200' },
+  { name: 'Location Expertise', icon: <MapPin className="h-5 w-5" />, color: 'bg-indigo-500/25 text-indigo-200' },
+  { name: 'Sustainability', icon: <Leaf className="h-5 w-5" />, color: 'bg-green-500/25 text-green-200' },
 ]
 
 export function KnowledgeBaseClient() {
@@ -280,11 +280,11 @@ export function KnowledgeBaseClient() {
   const getDifficultyBadge = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return <Badge className="bg-green-100 text-green-800">Beginner</Badge>
+        return <Badge className="bg-emerald-500/25 text-emerald-200">Beginner</Badge>
       case 'intermediate':
-        return <Badge className="bg-yellow-100 text-yellow-800">Intermediate</Badge>
+        return <Badge className="bg-amber-500/25 text-amber-200">Intermediate</Badge>
       case 'advanced':
-        return <Badge className="bg-red-100 text-red-800">Advanced</Badge>
+        return <Badge className="bg-red-500/25 text-red-200">Advanced</Badge>
       default:
         return null
     }
@@ -407,33 +407,33 @@ export function KnowledgeBaseClient() {
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredResources.map((resource) => (
-                <Card key={resource.id} className="border-border-primary hover:shadow-lg transition-shadow">
+                <Card key={resource.id} className="bg-sky-captain border-sky-captain-mid hover:shadow-craftsman-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-interactive-primary/10 rounded-lg">
+                        <div className="p-2 bg-white/15 rounded-lg text-white">
                           {resource.icon}
                         </div>
                         <div>
-                          <CardTitle className="text-lg text-text-primary">
+                          <CardTitle className="text-lg text-white">
                             {resource.title}
                           </CardTitle>
                           <div className="flex items-center gap-2 mt-1">
                             {getDifficultyBadge(resource.difficulty)}
-                            <Badge className="bg-yellow-100 text-yellow-800">Featured</Badge>
+                            <Badge className="bg-amber/25 text-amber-light">Featured</Badge>
                           </div>
                         </div>
                       </div>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent>
-                    <CardDescription className="text-text-secondary mb-4 leading-relaxed">
+                    <CardDescription className="text-white/70 mb-4 leading-relaxed">
                       {resource.description}
                     </CardDescription>
-                    
+
                     <div className="flex items-center justify-between">
-                      <div className="text-sm text-text-secondary">
+                      <div className="text-sm text-white/55">
                         {resource.estimatedReadTime && (
                           <span className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
@@ -441,10 +441,10 @@ export function KnowledgeBaseClient() {
                           </span>
                         )}
                       </div>
-                      
+
                       <Link
                         href={resource.url}
-                        className="inline-flex items-center gap-2 text-interactive-primary hover:text-interactive-primary/80 font-medium"
+                        className="inline-flex items-center gap-2 text-cornflower-light hover:text-white font-medium transition-colors"
                       >
                         Explore
                         <ArrowRight className="h-4 w-4" />
@@ -467,15 +467,15 @@ export function KnowledgeBaseClient() {
               const categoryInfo = categories.find(cat => cat.name === resource.category)
               
               return (
-                <Card key={resource.id} className="border-border-primary hover:shadow-lg transition-shadow">
+                <Card key={resource.id} className="bg-sky-captain border-sky-captain-mid hover:shadow-craftsman-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3 flex-1">
-                        <div className="p-2 bg-interactive-primary/10 rounded-lg">
+                        <div className="p-2 bg-white/15 rounded-lg text-white">
                           {getTypeIcon(resource.type)}
                         </div>
                         <div className="flex-1">
-                          <CardTitle className="text-lg text-text-primary mb-1">
+                          <CardTitle className="text-lg text-white mb-1">
                             {resource.title}
                           </CardTitle>
                           <div className="flex flex-wrap items-center gap-2">
@@ -490,35 +490,35 @@ export function KnowledgeBaseClient() {
                       </div>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent>
-                    <CardDescription className="text-text-secondary mb-4 leading-relaxed">
+                    <CardDescription className="text-white/70 mb-4 leading-relaxed">
                       {resource.description}
                     </CardDescription>
-                    
+
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1 mb-4">
                       {resource.tags.slice(0, 3).map((tag) => (
-                        <Badge 
+                        <Badge
                           key={tag}
                           variant="secondary"
-                          className="text-xs bg-background-accent text-text-secondary"
+                          className="text-xs bg-white/15 text-white/75"
                         >
                           {tag}
                         </Badge>
                       ))}
                       {resource.tags.length > 3 && (
-                        <Badge 
+                        <Badge
                           variant="secondary"
-                          className="text-xs bg-background-accent text-text-secondary"
+                          className="text-xs bg-white/15 text-white/75"
                         >
                           +{resource.tags.length - 3} more
                         </Badge>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
-                      <div className="text-sm text-text-secondary">
+                      <div className="text-sm text-white/55">
                         {resource.estimatedReadTime && (
                           <span className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
@@ -526,10 +526,10 @@ export function KnowledgeBaseClient() {
                           </span>
                         )}
                       </div>
-                      
+
                       <Link
                         href={resource.url}
-                        className="inline-flex items-center gap-2 text-interactive-primary hover:text-interactive-primary/80 font-medium"
+                        className="inline-flex items-center gap-2 text-cornflower-light hover:text-white font-medium transition-colors"
                       >
                         {resource.type === 'tool' ? 'Use Tool' : 'Read More'}
                         <ArrowRight className="h-4 w-4" />
@@ -566,12 +566,12 @@ export function KnowledgeBaseClient() {
         )}
 
         {/* Quick Links Section */}
-        <Card className="mt-12 bg-background-primary border-border-primary">
+        <Card className="mt-12 bg-sky-captain-deep border-sky-captain-mid">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-text-primary">
+            <CardTitle className="text-2xl font-bold text-white">
               Quick Access Links
             </CardTitle>
-            <CardDescription className="text-lg text-text-secondary">
+            <CardDescription className="text-lg text-white/70">
               Direct links to our most popular resources and tools
             </CardDescription>
           </CardHeader>
@@ -579,45 +579,45 @@ export function KnowledgeBaseClient() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link
                 href="/faq"
-                className="flex items-center gap-3 p-4 bg-background-accent rounded-lg hover:bg-background-accent/80 transition-colors group"
+                className="flex items-center gap-3 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
               >
-                <HelpCircle className="h-8 w-8 text-interactive-primary" />
+                <HelpCircle className="h-8 w-8 text-cornflower-light" />
                 <div>
-                  <div className="font-semibold text-text-primary group-hover:text-interactive-primary">FAQ</div>
-                  <div className="text-sm text-text-secondary">50+ Questions</div>
+                  <div className="font-semibold text-white group-hover:text-cornflower-light transition-colors">FAQ</div>
+                  <div className="text-sm text-white/60">50+ Questions</div>
                 </div>
               </Link>
-              
+
               <Link
                 href="/glossary"
-                className="flex items-center gap-3 p-4 bg-background-accent rounded-lg hover:bg-background-accent/80 transition-colors group"
+                className="flex items-center gap-3 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
               >
-                <BookOpen className="h-8 w-8 text-interactive-primary" />
+                <BookOpen className="h-8 w-8 text-cornflower-light" />
                 <div>
-                  <div className="font-semibold text-text-primary group-hover:text-interactive-primary">Glossary</div>
-                  <div className="text-sm text-text-secondary">95+ Terms</div>
+                  <div className="font-semibold text-white group-hover:text-cornflower-light transition-colors">Glossary</div>
+                  <div className="text-sm text-white/60">95+ Terms</div>
                 </div>
               </Link>
-              
+
               <Link
                 href="/estimator"
-                className="flex items-center gap-3 p-4 bg-background-accent rounded-lg hover:bg-background-accent/80 transition-colors group"
+                className="flex items-center gap-3 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
               >
-                <Calculator className="h-8 w-8 text-interactive-primary" />
+                <Calculator className="h-8 w-8 text-cornflower-light" />
                 <div>
-                  <div className="font-semibold text-text-primary group-hover:text-interactive-primary">Estimator</div>
-                  <div className="text-sm text-text-secondary">Get Pricing</div>
+                  <div className="font-semibold text-white group-hover:text-cornflower-light transition-colors">Estimator</div>
+                  <div className="text-sm text-white/60">Get Pricing</div>
                 </div>
               </Link>
-              
+
               <Link
                 href="/contact"
-                className="flex items-center gap-3 p-4 bg-background-accent rounded-lg hover:bg-background-accent/80 transition-colors group"
+                className="flex items-center gap-3 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors group"
               >
-                <Phone className="h-8 w-8 text-interactive-primary" />
+                <Phone className="h-8 w-8 text-cornflower-light" />
                 <div>
-                  <div className="font-semibold text-text-primary group-hover:text-interactive-primary">Contact</div>
-                  <div className="text-sm text-text-secondary">Get Help</div>
+                  <div className="font-semibold text-white group-hover:text-cornflower-light transition-colors">Contact</div>
+                  <div className="text-sm text-white/60">Get Help</div>
                 </div>
               </Link>
             </div>
