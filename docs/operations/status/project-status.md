@@ -2,7 +2,51 @@
 
 ---
 
-## Last Activity — 2026-03-09 (session 5)
+## Last Activity — 2026-03-09 (session 6)
+
+### Session Summary
+Restructured the top navigation bar — removed Home, Blog, and Contact tabs, reordered remaining tabs, added `whitespace-nowrap` to the phone CTA. Merged `manus-redesign` directly into `main` and switched to working off `main` going forward.
+
+### Work Done
+
+**Nav restructure (`components/layout/Navigation.tsx`)**
+- Removed `Home` tab — logo/company name already links to `/`
+- Removed `Blog` and `Contact` tabs — both accessible via footer
+- New desktop nav order: **Services → Portfolio → About → Locations → Financing → Our Process → AI Tools ↓ → Analyze My Roof → (970) 456-1176**
+- Added `whitespace-nowrap` to phone number `<a>` tag so it never wraps to two lines
+- Mobile menu updated to match (Blog and Contact removed, order preserved)
+
+**Branch merge: `manus-redesign` → `main`**
+- Pulled remote `main` (was 9 commits ahead locally) then pushed merge commit `d06cc3b`
+- All work now on `main` — `manus-redesign` branch preserved but no longer active
+- Vercel auto-deploy triggered on `main`
+
+### Commits This Session
+- `7bb7587` feat(nav): restructure nav — remove Home/Blog/Contact, reorder tabs, fix phone wrapping
+- `008be93` merge: manus-redesign → main — nav restructure
+- `d06cc3b` Merge branch 'main' of https://github.com/Agentic-Person/alpine-peak-roofing
+
+### Active Branch Going Forward
+- **`main`** — all future work committed directly here
+
+### Current Blockers / Next Steps
+- [ ] Confirm Vercel build succeeded on `main`
+- [ ] Set env vars in Vercel dashboard if not done: `OPENAI_API_KEY`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] Wire contact form to `/api/leads/capture` (currently shows toast only)
+- [ ] Publish Privacy Policy at `https://agenticpersonnel.com/privacy`
+- [ ] Publish Terms & Conditions at `https://agenticpersonnel.com/terms`
+- [ ] Submit both URLs to Twilio during 10DLC campaign registration
+- [ ] Enable OpenClaw gateway in `openclaw.json`: `gateway.http.endpoints.chatCompletions.enabled: true`
+- [ ] Add env vars to VPS `.env.local`: `OPENCLAW_BASE_URL`, `OPENCLAW_API_KEY`, `OPENCLAW_AGENT_MODEL`, `ELEVENLABS_LLM_SECRET`, `ADMIN_SECRET`
+- [ ] Run knowledge base ingestion: `POST /api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}`
+- [ ] Configure ElevenLabs dashboard: Agent → Model → Custom LLM → URL + `x-elevenlabs-secret` header
+- [ ] Test voice call end-to-end: Twilio → ElevenLabs → `/api/voice/llm` → OpenClaw Emily → RAG → caller
+- [ ] Test web chat: confirm `source: "openclaw:emily"` in response JSON
+- [ ] Confirm `search_knowledge_base` Postgres function exists in Supabase
+
+---
+
+## Previous Activity — 2026-03-09 (session 5)
 
 ### Session Summary
 Tagged the original blue APR build for preservation, resolved 4 merge conflicts between `manus-redesign` and `main`, and merged PR #1. The Manus mountain modernism redesign is now live on `main` and auto-deploying to Vercel. Navigation updated to include both "Analyze My Roof" CTA and the correct APR phone number.
