@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase/client'
 import { n8nClient } from '@/lib/n8n/client'
+import { sendEstimateCompleteEmail, sendLeadNotification } from '@/lib/email'
+import { alertHotLead } from '@/lib/alerts'
 
 interface EstimateRequest {
   sessionId?: string
@@ -13,6 +15,11 @@ interface EstimateRequest {
   stories?: number
   roofComplexity?: string
   specialRequirements?: string
+  // Contact info for email delivery
+  contactEmail?: string
+  contactFirstName?: string
+  contactLastName?: string
+  contactPhone?: string
 }
 
 interface PricingData {
@@ -169,7 +176,58 @@ export async function POST(request: NextRequest) {
       throw new Error(`Database error: ${error.message}`)
     }
 
-    // Trigger n8n roof estimation workflow for PDF generation and follow-up
+    // ── Send estimate email to homeowner (fire-and-forget) ──────────────────
+    if (body.contactEmail) {
+      const materialLabel = body.materialType.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+
+      sendEstimateCompleteEmail({
+        email:              body.contactEmail,
+        firstName:          body.contactFirstName,
+        lastName:           body.contactLastName,
+        address:            body.address,
+        materialType:       body.materialType,
+        materialLabel,
+        roofArea,
+        materialCost:       estimate.materialCost,
+        laborCost:          estimate.laborCost,
+        additionalCosts:    estimate.additionalCosts,
+        subtotal:           estimate.subtotal,
+        taxAmount:          estimate.taxAmount,
+        totalAmount:        estimate.totalAmount,
+        warrantyYears:      estimate.warrantyYears,
+        estimatedDurationDays: estimate.estimatedDurationDays,
+      }).catch(err => console.warn('[email] estimate complete email failed:', err))
+
+      // High-priority lead email notification for completed estimates
+      sendLeadNotification({
+        email:          body.contactEmail,
+        firstName:      body.contactFirstName,
+        lastName:       body.contactLastName,
+        phone:          body.contactPhone,
+        address:        body.address,
+        source:         'estimator_wizard',
+        leadScore:      85,
+        priority:       'high',
+        estimateTotal:  estimate.totalAmount,
+        materialType:   body.materialType,
+      }).catch(err => console.warn('[email] lead notification failed:', err))
+
+      // Multi-channel hot lead alert — SMS + Emily + outbound call
+      alertHotLead({
+        email:          body.contactEmail,
+        firstName:      body.contactFirstName,
+        lastName:       body.contactLastName,
+        phone:          body.contactPhone,
+        address:        body.address,
+        source:         'estimator_wizard',
+        leadScore:      85,
+        priority:       'high',
+        estimateTotal:  estimate.totalAmount,
+        materialType:   body.materialType,
+      }).catch(err => console.warn('[alert] hot lead alert failed:', err))
+    }
+
+    // Trigger n8n roof estimation workflow (if configured)
     try {
       await n8nClient.generateRoofEstimate(body.address, {
         estimateId: savedEstimate?.id,
@@ -177,7 +235,8 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString()
       })
     } catch (n8nError) {
-      console.error('n8n roof estimation workflow failed:', n8nError)
+      // n8n not configured — emails handle follow-up instead
+      console.warn('n8n roof estimation workflow not configured:', n8nError)
     }
 
     return NextResponse.json({

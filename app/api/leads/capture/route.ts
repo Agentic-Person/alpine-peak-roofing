@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendEstimateGateEmail, sendLeadNotification } from '@/lib/email'
+import { alertHotLead } from '@/lib/alerts'
 
 // Use service role for schema-resilient inserts
 function getAdminClient() {
@@ -12,6 +14,7 @@ function getAdminClient() {
 interface LeadData {
   sessionId?: string
   source?: string
+  type?: string
   firstName?: string
   lastName?: string
   email?: string
@@ -150,6 +153,41 @@ export async function POST(request: NextRequest) {
           data: { source: body.source, score: leadScore }
         })
       if (actErr) console.warn('lead_activities insert skipped:', actErr.message)
+    }
+
+    // ── Send emails (fire-and-forget, non-blocking) ──────────────────────────
+    if (body.email) {
+      // Welcome/gate email to the lead
+      if (body.source === 'estimate_modal' || body.type === 'email_gate') {
+        sendEstimateGateEmail(body.email).catch(err =>
+          console.warn('[email] estimate gate email failed:', err)
+        )
+      }
+
+      // Internal team email notification for every lead
+      sendLeadNotification({
+        email:      body.email,
+        firstName:  body.firstName,
+        lastName:   body.lastName,
+        phone:      body.phone,
+        address:    body.address,
+        source:     body.source,
+        leadScore,
+        priority,
+      }).catch(err => console.warn('[email] lead notification failed:', err))
+
+      // Hot lead multi-channel alert (SMS + Emily + outbound call) — fire and forget
+      alertHotLead({
+        email:      body.email,
+        firstName:  body.firstName,
+        lastName:   body.lastName,
+        phone:      body.phone,
+        address:    body.address,
+        source:     body.source,
+        leadScore,
+        priority,
+        leadId:     lead?.id as string | undefined,
+      }).catch(err => console.warn('[alert] hot lead alert failed:', err))
     }
 
     // Trigger n8n lead processing (fire-and-forget)
