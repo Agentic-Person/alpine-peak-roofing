@@ -3,7 +3,7 @@
  * Replace G-XXXXXXXXXX with your actual GA4 Measurement ID
  */
 
-const GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+const GA4_MEASUREMENT_ID = 'G-4KQXFSY1DH';
 
 // Initialize GA4 tracking
 export function initializeGA4() {
