@@ -21,7 +21,7 @@ const serviceAreas = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#003399]">
+    <footer className="bg-[#004080]">
       <div className="mx-auto max-w-7xl px-6 pt-8 pb-4">
 
         {/* Main footer grid */}

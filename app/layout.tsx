@@ -8,6 +8,8 @@ import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { Toaster } from 'sonner';
 import ConditionalChatWidget from '@/components/chatbot/ConditionalChatWidget';
+import { EstimateModalProvider } from '@/components/estimator/EstimateModalContext';
+import RoofEstimateModal from '@/components/estimator/RoofEstimateModal';
 import { 
   PrimaryBusinessSchema,
   ServiceAreaSchema,
@@ -95,13 +97,16 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ThemeProvider>
-          <Navigation />
-          <main>
-            {children}
-          </main>
-          <Footer />
-          <ConditionalChatWidget />
-          <Toaster richColors position="top-right" />
+          <EstimateModalProvider>
+            <Navigation />
+            <main>
+              {children}
+            </main>
+            <Footer />
+            <ConditionalChatWidget />
+            <RoofEstimateModal />
+            <Toaster richColors position="top-right" />
+          </EstimateModalProvider>
         </ThemeProvider>
       </body>
     </html>

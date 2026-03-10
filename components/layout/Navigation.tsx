@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { useEstimateModal } from '@/components/estimator/EstimateModalContext'
 import {
   Phone,
   Menu,
@@ -18,6 +19,7 @@ import {
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const { open: openEstimateModal } = useEstimateModal()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
@@ -66,15 +68,12 @@ export default function Navigation() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-              <div
-                className="relative rounded"
-                style={{ width: 36, height: 36, background: 'rgba(229,168,0,0.12)', border: '1px solid rgba(229,168,0,0.3)' }}
-              >
+              <div className="relative" style={{ width: 52, height: 52 }}>
                 <Image
                   src="/images/logo/APR-LOGO-solo.png"
                   alt="Alpine Peak Roofing"
                   fill
-                  className="object-contain p-1"
+                  className="object-contain"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                 />
               </div>
@@ -212,8 +211,8 @@ export default function Navigation() {
 
             {/* Desktop CTA — phone number */}
             <div className="hidden lg:flex items-center gap-3">
-              <Link
-                href="/estimator"
+              <button
+                onClick={openEstimateModal}
                 className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-bold transition-colors"
                 style={{
                   fontFamily: "'Lato', sans-serif",
@@ -222,16 +221,18 @@ export default function Navigation() {
                   color: 'var(--amber-gold)',
                   border: '1px solid rgba(229,168,0,0.4)',
                   background: 'rgba(229,168,0,0.08)',
+                  cursor: 'pointer',
                 }}
               >
                 Analyze My Roof
-              </Link>
+              </button>
               <a
                 href="tel:9704561176"
                 className="flex items-center gap-1.5 font-bold tracking-wide transition-colors rounded whitespace-nowrap"
                 style={{
-                  color: 'var(--forest-deep)',
-                  background: 'var(--gold)',
+                  color: '#ffffff',
+                  background: 'transparent',
+                  border: '1px solid #ffffff',
                   fontFamily: "'Lato', sans-serif",
                   fontSize: '0.72rem',
                   fontWeight: 800,
@@ -318,9 +319,8 @@ export default function Navigation() {
             </nav>
 
             <div className="px-5 py-4 border-t space-y-2.5" style={{ borderColor: 'rgba(229,168,0,0.15)' }}>
-              <Link
-                href="/estimator"
-                onClick={() => setIsOpen(false)}
+              <button
+                onClick={() => { setIsOpen(false); openEstimateModal() }}
                 className="flex items-center justify-center w-full py-3 rounded-lg font-bold text-sm transition-colors"
                 style={{
                   fontFamily: "'Lato', sans-serif",
@@ -329,10 +329,11 @@ export default function Navigation() {
                   color: 'var(--amber-gold)',
                   border: '1px solid rgba(229,168,0,0.4)',
                   background: 'rgba(229,168,0,0.08)',
+                  cursor: 'pointer',
                 }}
               >
                 Analyze My Roof
-              </Link>
+              </button>
               <a
                 href="tel:9704561176"
                 onClick={() => setIsOpen(false)}

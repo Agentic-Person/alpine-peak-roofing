@@ -28,16 +28,16 @@ const SLIDES = [
   {
     step: 4,
     label: 'Choose Your Materials',
-    desc: 'Select from architectural shingles, standing seam metal, or premium Class 4 impact-resistant options — with live pricing.',
-    src: '/images/estimator/E4_v2_material_selection.webp',
-    alt: 'Choosing from premium roofing material options in the instant estimator',
+    desc: 'Browse architectural shingles, standing seam metal, natural slate, and cedar shake — with live pricing updated in real time.',
+    src: '/images/estimator/E4_v3_material_samples.jpg',
+    alt: 'Premium roofing material samples: asphalt, metal, slate, and cedar options',
   },
   {
     step: 5,
-    label: 'Get Your Estimate',
-    desc: 'Receive a detailed, itemized estimate instantly — no waiting, no pressure, no obligation.',
-    src: '/images/estimator/E5_v2_estimate_delivered.webp',
-    alt: 'Instant detailed roofing estimate delivered to your device',
+    label: 'Estimate Delivered',
+    desc: 'Your fully itemized estimate is ready — materials, labor, and timeline — instantly on your device. No waiting, no pressure.',
+    src: '/images/estimator/E5_v3_estimate_delivered.jpg',
+    alt: 'Homeowners reviewing their instant roofing estimate on a laptop',
   },
   {
     step: 6,
