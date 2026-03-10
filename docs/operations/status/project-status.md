@@ -2,6 +2,26 @@
 
 ---
 
+## Last Activity — 2026-03-10 (session 8)
+
+### Session Summary
+Built email-gate modal for the instant roof estimator CTA flow. All "Analyze My Roof" / "Get Free Estimate" nav buttons now open a premium dark-navy modal instead of navigating directly to /estimator. The modal features a 5-step auto-advancing carousel with the updated E4/E5 images, trust badges, email capture form, and opens the estimator in a new tab after submission. Email stored to localStorage + GA4 event fired on submit.
+
+### Work Done
+- `components/estimator/EstimateModalContext.tsx` — NEW: React context + provider + useEstimateModal hook
+- `components/estimator/RoofEstimateModal.tsx` — NEW: Email-gate modal (dark navy gradient, 5-step carousel, email form, new-window launch)
+- `components/estimator/EstimatorCarousel.tsx` — Updated steps 4 and 5 to new v3 images
+- `app/layout.tsx` — Wrapped app in EstimateModalProvider; added RoofEstimateModal globally
+- `components/layout/Navigation.tsx` — Desktop + mobile CTAs now open modal via useEstimateModal()
+- `components/layout/Footer.tsx` — Corrected footer background color (#003399 → #004080)
+- `public/images/estimator/E4_v3_material_samples.jpg` — NEW: material lineup shot
+- `public/images/estimator/E5_v3_estimate_delivered.jpg` — NEW: couple reviewing estimate on laptop
+
+### Commits
+- `66817eb` feat(estimator): email-gate modal with dark navy design + new carousel images
+
+---
+
 ## Last Activity — 2026-03-09 (session 7)
 
 ### Session Summary
