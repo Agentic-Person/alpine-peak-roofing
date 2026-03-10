@@ -2,7 +2,46 @@
 
 ---
 
-## Last Activity — 2026-03-09 (session 6)
+## Last Activity — 2026-03-09 (session 7)
+
+### Session Summary
+Audited the Manus SEO update delivery (`C:\projects\APR\website\manus-seo-update\`), identified all new content vs. existing repo, and ported everything into the Next.js 14 App Router project. Added 12 dynamic service sub-pages (6 residential + 6 commercial), a storm damage landing page, reusable JSON-LD schema markup, GA4 event tracking, comprehensive service data, 30+ testimonials, 15 service images, and robots.txt. Zero new TypeScript errors.
+
+### Work Done
+
+**New Service Sub-Pages**
+- `app/services/residential/[slug]/page.tsx` — dynamic detail page for all 6 residential services (complete-roof-replacement, roof-repairs, new-construction, gutter-systems, ventilation, skylights-solar); includes hero, overview, what's included, process timeline, benefits, FAQ accordion, related services, testimonials, 12-location service area grid, CTA
+- `app/services/commercial/[slug]/page.tsx` — same structure for 6 commercial services (flat-roof-systems, commercial-metal-roofing, commercial-maintenance, roof-coatings, snow-ice-management, commercial-emergency)
+- `app/services/storm-damage/page.tsx` — dedicated emergency storm damage page with red/navy design, 24/7 CTA, hail/wind/snow damage sections, 6-step insurance claim walkthrough
+
+**Rebuilt Hub Pages**
+- `app/services/residential/page.tsx` — full redesign in navy/gold brand system with 6 animated service cards
+- `app/services/commercial/page.tsx` — full redesign with 6 animated commercial service cards
+
+**New Components & Lib**
+- `components/SchemaMarkup.tsx` — SSR-safe JSON-LD structured data (LocalBusiness, Service, FAQPage, Breadcrumb, Review, Location, BlogPosting, WebSite); renders `<script>` tags server-side
+- `lib/servicesData.ts` — 12 services × full data (slug, title, tagline, description, heroImage, features, process, benefits, FAQs, materials, metaDescription, relatedServices)
+- `lib/testimonials.ts` — 30+ real customer testimonials by service slug with helper functions
+- `lib/ga4.ts` — GA4 event tracking (service views, estimate requests, phone calls, form submissions, scroll depth)
+
+**Assets & SEO**
+- 15 service PNG images added to `public/images/services/`
+- `public/robots.txt` — created with proper Allow/Disallow rules and sitemap pointer
+
+### Commits This Session
+- `ff7da99` feat(seo): integrate Manus SEO update — service sub-pages, schema markup, GA4, 15 images
+
+### Current Blockers / Next Steps
+- [ ] Set GA4 Measurement ID in `lib/ga4.ts` (replace `G-XXXXXXXXXX`)
+- [ ] Confirm Vercel build succeeded on `main`
+- [ ] Wire contact form to `/api/leads/capture` (currently shows toast only)
+- [ ] Add schema markup to homepage (`<LocalBusinessSchema />`, `<WebSiteSchema />`)
+- [ ] Add `<BlogPostSchema />` to blog post pages
+- [ ] Add `<LocationSchema />` to location detail pages
+
+---
+
+## Previous Activity — 2026-03-09 (session 6)
 
 ### Session Summary
 Restructured the top navigation bar — removed Home, Blog, and Contact tabs, reordered remaining tabs, added `whitespace-nowrap` to the phone CTA. Merged `manus-redesign` directly into `main` and switched to working off `main` going forward.
