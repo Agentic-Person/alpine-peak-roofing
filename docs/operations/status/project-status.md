@@ -28,8 +28,17 @@ Audited the Manus SEO update delivery (`C:\projects\APR\website\manus-seo-update
 - 15 service PNG images added to `public/images/services/`
 - `public/robots.txt` — created with proper Allow/Disallow rules and sitemap pointer
 
+**Knowledge Base Card Redesign (`app/knowledge/KnowledgeBaseClient.tsx`)**
+- Featured + all-resource cards: `bg-sky-captain` (#004080) with `border-sky-captain-mid`
+- Quick Links card: deeper `bg-sky-captain-deep` (#002D5A)
+- Titles → `text-white`; descriptions → `text-white/70`; timestamps → `text-white/55`
+- Icon containers → `bg-white/15` frosted glass; category/difficulty badges → tinted semi-transparent variants
+- Tag pills → `bg-white/15 text-white/75`; action links → `text-cornflower-light hover:text-white`
+- Quick link items → `bg-white/10 hover:bg-white/20` with cornflower icons
+
 ### Commits This Session
 - `ff7da99` feat(seo): integrate Manus SEO update — service sub-pages, schema markup, GA4, 15 images
+- `ff7da99` style(knowledge): darken knowledge base cards to executive navy — `sky-captain` (#004080) with white text
 
 ### Current Blockers / Next Steps
 - [ ] Set GA4 Measurement ID in `lib/ga4.ts` (replace `G-XXXXXXXXXX`)
