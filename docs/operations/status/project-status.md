@@ -2,7 +2,54 @@
 
 ---
 
-## Last Activity — 2026-03-10 (session 8)
+## Last Activity — 2026-03-10 (session 9)
+
+### Session Summary
+Integrated Manus SEO update (GA4 tracking), wired GA4 script into layout, built a live Google Analytics Data API footer widget, and began GA4 credentials setup. Widget is built and committed but **not yet working** — credentials in `.env.local` need to be corrected before it will display data.
+
+### Work Done
+
+**GA4 Script — Live on Every Page**
+- `app/layout.tsx` — Google tag (gtag.js) script added via `next/script` with `strategy="afterInteractive"`; Measurement ID `G-4KQXFSY1DH` is active
+- `lib/ga4.ts` — Measurement ID updated from placeholder to `G-4KQXFSY1DH`
+
+**Live Analytics Footer Widget (built, credentials pending)**
+- `app/api/analytics/stats/route.ts` — server-side GA4 Data API route; fetches sessions, users, pageviews (30 days), active users right now, top 5 pages
+- `components/analytics/AnalyticsWidget.tsx` — footer widget displaying live stats; auto-fetches on load, hides gracefully on error
+- `components/layout/Footer.tsx` — AnalyticsWidget imported and rendered above the bottom bar
+
+**Google Cloud Setup (completed by user)**
+- Created Google Cloud project "Alpine Peak Roofing"
+- Enabled Google Analytics Data API
+- Created service account: `alpine-peak-analytics@...iam.gserviceaccount.com`
+- Downloaded JSON key file
+- Added service account as Viewer in GA4 property
+
+### Current Blocker — Widget Not Showing
+Two issues found in `.env.local` that are preventing the widget from working:
+
+1. **`GOOGLE_ANALYTICS_PROPERTY_ID` is wrong** — currently set to a long string, needs to be the numeric property ID (e.g. `329614563`) found in GA4 → Admin → Property Details
+2. **`GA_PRIVATE_KEY` is missing PEM headers** — needs to be the full value from the JSON file including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`, wrapped in double quotes in `.env.local`
+
+**Correct format for `.env.local`:**
+```
+GOOGLE_ANALYTICS_PROPERTY_ID=329614563
+GA_CLIENT_EMAIL=alpine-peak-analytics@your-project.iam.gserviceaccount.com
+GA_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEv...\n-----END PRIVATE KEY-----\n"
+```
+Copy everything between (not including) the outer quotes from the `"private_key"` field in the downloaded JSON file.
+
+**After fixing `.env.local`:**
+- Run `npm run dev` and visit `http://localhost:3000/api/analytics/stats` — should return JSON with real numbers
+- Also add all 3 env vars to Vercel dashboard (Settings → Environment Variables) for production
+
+### Commits This Session
+- `a7825fe` feat(analytics): add GA4 tracking — Measurement ID G-4KQXFSY1DH
+- `ec25480` feat(analytics): live GA4 stats widget in footer via Data API
+
+---
+
+## Previous Activity — 2026-03-10 (session 8)
 
 ### Session Summary
 Built email-gate modal for the instant roof estimator CTA flow. All "Analyze My Roof" / "Get Free Estimate" nav buttons now open a premium dark-navy modal instead of navigating directly to /estimator. The modal features a 5-step auto-advancing carousel with the updated E4/E5 images, trust badges, email capture form, and opens the estimator in a new tab after submission. Email stored to localStorage + GA4 event fired on submit.
