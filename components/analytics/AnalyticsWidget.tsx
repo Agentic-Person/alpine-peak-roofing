@@ -25,10 +25,19 @@ export default function AnalyticsWidget() {
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('[AnalyticsWidget] fetching stats...');
     fetch('/api/analytics/stats')
       .then(r => r.json())
-      .then(d => { setData(d); setLoading(false); })
-      .catch(e => { setFetchError(String(e)); setLoading(false); });
+      .then(d => {
+        console.log('[AnalyticsWidget] response:', d);
+        setData(d);
+        setLoading(false);
+      })
+      .catch(e => {
+        console.error('[AnalyticsWidget] fetch error:', e);
+        setFetchError(String(e));
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -41,15 +50,15 @@ export default function AnalyticsWidget() {
   }
 
   if (fetchError) {
-    return <div className="text-red-400 text-xs">Fetch error: {fetchError}</div>;
+    return <div style={{ color: '#f87171', fontSize: '11px' }}>Fetch error: {fetchError}</div>;
   }
 
   if (!data) {
-    return <div className="text-yellow-400 text-xs">No data returned</div>;
+    return <div style={{ color: '#facc15', fontSize: '11px' }}>No data returned from API</div>;
   }
 
   if (data.error) {
-    return <div className="text-orange-400 text-xs">API error: {data.error}</div>;
+    return <div style={{ color: '#fb923c', fontSize: '11px' }}>API error: {data.error}</div>;
   }
 
   return (
