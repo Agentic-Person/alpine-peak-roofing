@@ -22,12 +22,13 @@ function formatNumber(n: number): string {
 export default function AnalyticsWidget() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/analytics/stats')
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch(e => { setFetchError(String(e)); setLoading(false); });
   }, []);
 
   if (loading) {
@@ -39,7 +40,17 @@ export default function AnalyticsWidget() {
     );
   }
 
-  if (!data || data.error) return null;
+  if (fetchError) {
+    return <div className="text-red-400 text-xs">Fetch error: {fetchError}</div>;
+  }
+
+  if (!data) {
+    return <div className="text-yellow-400 text-xs">No data returned</div>;
+  }
+
+  if (data.error) {
+    return <div className="text-orange-400 text-xs">API error: {data.error}</div>;
+  }
 
   return (
     <div className="border-t border-white/10 pt-6 mt-6">
