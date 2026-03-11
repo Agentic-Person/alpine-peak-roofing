@@ -1,3 +1,7 @@
+// DEPRECATED: This file contains hardcoded blog posts and is no longer used by the website.
+// Blog content is now fetched from Supabase (blog_posts table).
+// Do NOT delete — kept for reference and in case other parts of the codebase depend on it.
+
 export interface BlogPost {
   id: string;
   slug: string;
