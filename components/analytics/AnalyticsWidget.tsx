@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Eye, TrendingUp, Radio } from 'lucide-react';
+import { TrendingUp, Radio } from 'lucide-react';
 
 interface AnalyticsData {
   period: string;
@@ -14,109 +14,77 @@ interface AnalyticsData {
   error?: string;
 }
 
-function formatNumber(n: number): string {
+function fmt(n: number): string {
   if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
   return n.toString();
 }
 
 export default function AnalyticsWidget() {
   const [data, setData] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('[AnalyticsWidget] fetching stats...');
     fetch('/api/analytics/stats')
       .then(r => r.json())
-      .then(d => {
-        console.log('[AnalyticsWidget] response:', d);
-        setData(d);
-        setLoading(false);
-      })
-      .catch(e => {
-        console.error('[AnalyticsWidget] fetch error:', e);
-        setFetchError(String(e));
-        setLoading(false);
-      });
+      .then(d => setData(d))
+      .catch(() => {});
   }, []);
 
-  if (loading) {
+  // Loading skeleton — matches column heading height so layout doesn't shift
+  if (!data) {
     return (
-      <div className="flex items-center gap-2 text-white/40 text-xs">
-        <span className="w-1.5 h-1.5 rounded-full bg-white/30 animate-pulse" />
-        Loading stats…
-      </div>
+      <>
+        <h3 className="text-white font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <TrendingUp className="h-3.5 w-3.5 text-[#c9a84c]" />
+          Live Stats
+        </h3>
+        <div className="w-2 h-2 rounded-full bg-white/20 animate-pulse" />
+      </>
     );
   }
 
-  if (fetchError) {
-    return <div style={{ color: '#f87171', fontSize: '11px' }}>Fetch error: {fetchError}</div>;
-  }
-
-  if (!data) {
-    return <div style={{ color: '#facc15', fontSize: '11px' }}>No data returned from API</div>;
-  }
-
-  if (data.error) {
-    return <div style={{ color: '#fb923c', fontSize: '11px' }}>API error: {data.error}</div>;
-  }
+  if (data.error) return null;
 
   return (
-    <div className="border-t border-white/10 pt-6 mt-6">
-      <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="w-4 h-4 text-[#c9a84c]" />
-        <span className="text-white/60 text-xs font-semibold tracking-widest uppercase">
-          Live Site Stats
-        </span>
+    <>
+      {/* Heading — same style as other footer columns */}
+      <h3 className="text-white font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+        <TrendingUp className="h-3.5 w-3.5 text-[#c9a84c]" />
+        Live Stats
         {data.activeNow > 0 && (
-          <span className="flex items-center gap-1 ml-auto">
-            <Radio className="w-3 h-3 text-green-400 animate-pulse" />
-            <span className="text-green-400 text-xs font-medium">{data.activeNow} online now</span>
+          <span className="ml-auto flex items-center gap-0.5">
+            <Radio className="h-2.5 w-2.5 text-green-400 animate-pulse" />
+            <span className="text-green-400 text-[10px]">{data.activeNow}</span>
           </span>
         )}
+      </h3>
+
+      {/* Compact stat row */}
+      <div className="grid grid-cols-3 gap-1 mb-3">
+        {[
+          { label: 'Visitors',  value: fmt(data.users) },
+          { label: 'Views',     value: fmt(data.pageviews) },
+          { label: 'Sessions',  value: fmt(data.sessions) },
+        ].map(({ label, value }) => (
+          <div key={label} className="text-center">
+            <p className="text-white font-bold text-sm leading-none">{value}</p>
+            <p className="text-white/40 text-[10px] mt-0.5">{label}</p>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 mb-1">
-            <Users className="w-3 h-3 text-[#c9a84c]" />
-          </div>
-          <p className="text-white font-bold text-lg leading-none">{formatNumber(data.users)}</p>
-          <p className="text-white/40 text-xs mt-1">Visitors</p>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 mb-1">
-            <Eye className="w-3 h-3 text-[#c9a84c]" />
-          </div>
-          <p className="text-white font-bold text-lg leading-none">{formatNumber(data.pageviews)}</p>
-          <p className="text-white/40 text-xs mt-1">Page Views</p>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 mb-1">
-            <TrendingUp className="w-3 h-3 text-[#c9a84c]" />
-          </div>
-          <p className="text-white font-bold text-lg leading-none">{formatNumber(data.sessions)}</p>
-          <p className="text-white/40 text-xs mt-1">Sessions</p>
-        </div>
-      </div>
-
+      {/* Top pages */}
       {data.topPages.length > 0 && (
-        <div>
-          <p className="text-white/40 text-xs font-semibold tracking-widest uppercase mb-2">Top Pages (30 days)</p>
-          <ul className="space-y-1">
-            {data.topPages.slice(0, 3).map((page, i) => (
-              <li key={i} className="flex items-center justify-between">
-                <span className="text-white/60 text-xs truncate max-w-[160px]">{page.path}</span>
-                <span className="text-[#c9a84c] text-xs font-medium">{formatNumber(page.views)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="space-y-1">
+          {data.topPages.slice(0, 3).map((page, i) => (
+            <li key={i} className="flex items-center justify-between gap-1">
+              <span className="text-white/60 text-[10px] truncate">{page.path}</span>
+              <span className="text-[#c9a84c] text-[10px] font-medium shrink-0">{fmt(page.views)}</span>
+            </li>
+          ))}
+        </ul>
       )}
 
-      <p className="text-white/25 text-xs mt-3">
-        Powered by Google Analytics · {data.period}
-      </p>
-    </div>
+      <p className="text-white/25 text-[10px] mt-2">Google Analytics · 30d</p>
+    </>
   );
 }

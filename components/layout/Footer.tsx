@@ -25,7 +25,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 pt-8 pb-4">
 
         {/* Main footer grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-x-6 gap-y-6">
 
           {/* Company Info */}
           <div className="col-span-2 md:col-span-1">
@@ -114,11 +114,10 @@ export default function Footer() {
               <li className="text-yellow-400 font-semibold">24/7 Emergency</li>
             </ul>
           </div>
-        </div>
-
-        {/* Analytics Widget */}
-        <div className="mt-6 max-w-xs">
-          <AnalyticsWidget />
+          {/* Live Stats */}
+          <div>
+            <AnalyticsWidget />
+          </div>
         </div>
 
         {/* Bottom Bar */}
