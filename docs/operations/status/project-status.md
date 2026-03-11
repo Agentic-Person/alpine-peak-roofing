@@ -2,7 +2,85 @@
 
 ---
 
-## Last Activity — 2026-03-10 (session 9)
+## Last Activity — 2026-03-11 (session 10)
+
+### Session Summary
+Built the complete lead capture and follow-up pipeline. Every lead that enters the email modal or completes the full estimator wizard now triggers: a branded confirmation email to the homeowner, a team notification email, an SMS alert to the team phone, an Emily (OpenClaw) CRM notification, and an AI outbound call to the lead's phone via ElevenLabs. Zero leads fall through the cracks. **System is built and committed — needs 3 env vars to go live.**
+
+### Files Built
+- `lib/email/templates.ts` — NEW: Branded HTML email templates (welcome, full estimate, team alert)
+- `lib/email/index.ts` — NEW: Resend email sending utility (graceful no-op if key not set)
+- `lib/alerts/index.ts` — NEW: Multi-channel hot lead alert orchestrator (SMS + Emily + outbound call)
+- `app/api/leads/capture/route.ts` — Updated: now sends welcome email + team email + hot lead alert on every capture
+- `app/api/estimator/calculate/route.ts` — Updated: accepts contact info, sends full estimate email + hot alert on completion
+- `resend@6.9.3` — installed
+
+### Lead Flow (once env vars are set)
+```
+Modal email capture → /api/leads/capture → Supabase
+  → Welcome email to lead (Resend)
+  → Team notification email (Resend)
+  → SMS to TEAM_ALERT_PHONE (Twilio)
+  → Emily (OpenClaw) notified with lead data + CRM instructions
+
+Full wizard completion → /api/estimator/calculate → Supabase
+  → Detailed estimate email to lead (Resend) — total, breakdown, material, warranty
+  → High-priority team email
+  → 🔥 SMS to team phone
+  → Emily outbound AI CALL to lead's phone (ElevenLabs) within seconds
+```
+
+### ⚡ TO ACTIVATE — Add These 3 Env Vars to `.env.local`
+
+**1. Resend API Key (email sending)**
+```
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+```
+Setup (5 min):
+1. Create account at resend.com (free tier = 3,000 emails/month)
+2. Domains → Add Domain → `alpinepeakroofing.com` → add their 3 DNS records
+3. API Keys → Create Key → copy it
+
+Sending addresses used: `estimates@alpinepeakroofing.com`, `leads@alpinepeakroofing.com`
+
+---
+
+**2. Team SMS Alert Phone**
+```
+TEAM_ALERT_PHONE=+19704561176
+```
+Replace with the actual mobile number that should receive 🔥 HOT LEAD SMS alerts.
+Twilio credentials are already configured (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER).
+
+---
+
+**3. ElevenLabs Phone Number ID (for Emily's outbound AI calls)**
+```
+ELEVENLABS_PHONE_NUMBER_ID=phnum_xxxxxxxxxxxxxxxxxx
+```
+Where to find it:
+1. Go to ElevenLabs dashboard → **Phone Numbers**
+2. Your Twilio number should already be listed there (it handles inbound calls)
+3. Copy the ID next to it (starts with `phnum_`)
+
+If this var is missing, the system just skips the outbound call — everything else still works.
+
+---
+
+**After adding all 3 vars, also add them to Vercel** (Settings → Environment Variables) for production.
+
+### What Emily Says on the Outbound Call
+Personalized first message:
+> "Hi [FirstName]! This is Emily calling from Alpine Peak Roofing. You just requested a free roof estimate regarding your property at [address] on our website. I wanted to reach out personally to make sure you have everything you need and answer any questions. Is now a good time to chat?"
+
+Then full Emily persona + knowledge base kicks in via OpenClaw.
+
+### Commits
+- `dff1fd9` feat(leads): full lead capture pipeline — email, alerts, Emily, outbound call
+
+---
+
+## Previous Activity — 2026-03-10 (session 9)
 
 ### Session Summary
 Integrated Manus SEO update (GA4 tracking), wired GA4 script into layout, built a live Google Analytics Data API footer widget, and began GA4 credentials setup. Widget is built and committed but **not yet working** — credentials in `.env.local` need to be corrected before it will display data.
