@@ -2,6 +2,29 @@
 
 ---
 
+## Last Activity — 2026-03-11 (session 11)
+
+### Session Summary
+Built and shipped a **live Google Analytics stats widget** in the footer showing real-time visitor data (visitors, page views, sessions, active users, top pages). Overcame three major technical hurdles to get it working on Vercel: wrong Property ID format, malformed private key env var, and an OpenSSL 3.x decoder incompatibility with the gRPC-based `@google-analytics/data` SDK. Final fix: replaced the entire SDK with a custom implementation using `crypto.subtle` (Web Crypto API) for JWT signing + direct GA4 REST API calls via `fetch`. Widget is now live in the footer as a compact 7th grid column on the far right.
+
+### Files Changed
+- `app/api/analytics/stats/route.ts` — Complete rewrite: removed `@google-analytics/data` gRPC SDK, replaced with `crypto.subtle` JWT signing + direct GA4 REST API fetch calls. Also supports `GA_PRIVATE_KEY_B64` (base64-encoded key) to avoid PEM escaping issues.
+- `components/analytics/AnalyticsWidget.tsx` — Redesigned: compact footer-column style, matches heading/spacing of other footer sections, inline active-users pulse, `text-[10px]` sizing throughout, silent failure on error.
+- `components/layout/Footer.tsx` — Grid changed from `lg:grid-cols-6` to `lg:grid-cols-7`; analytics widget moved from standalone block below grid into the grid as 7th column.
+- `package.json` / `package-lock.json` — Added `google-auth-library` (was transitive dep, now explicit; subsequently replaced by native Web Crypto approach).
+
+### Vercel Env Vars Added This Session
+- `GOOGLE_ANALYTICS_PROPERTY_ID=527739552`
+- `GA_CLIENT_EMAIL=alpine-peak-analytics@alpine-peak-roofing.iam.gserviceaccount.com`
+- `GA_PRIVATE_KEY` — raw PEM (had issues)
+- `GA_PRIVATE_KEY_B64` — base64-encoded PEM (used by current route)
+
+### Technical Notes
+- Root cause of `error:1E08010C:DECODER routines::unsupported`: Vercel's Node.js 18/20 uses OpenSSL 3.x which breaks the gRPC auth plugin's key loading. `crypto.subtle.importKey('pkcs8', ...)` bypasses this entirely.
+- JWT flow: `crypto.subtle.importKey` → `crypto.subtle.sign('RSASSA-PKCS1-v1_5')` → POST to `https://oauth2.googleapis.com/token` → Bearer token → GA4 REST API.
+
+---
+
 ## Last Activity — 2026-03-11 (session 10)
 
 ### Session Summary
