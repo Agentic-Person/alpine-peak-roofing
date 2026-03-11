@@ -4,7 +4,14 @@ import { NextResponse } from 'next/server';
 const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID;
 
 function getClient() {
-  const privateKey = process.env.GA_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  // Prefer base64-encoded key (avoids all newline/quote escaping issues)
+  // Fall back to raw key with newline conversion
+  let privateKey: string | undefined;
+  if (process.env.GA_PRIVATE_KEY_B64) {
+    privateKey = Buffer.from(process.env.GA_PRIVATE_KEY_B64, 'base64').toString('utf-8');
+  } else {
+    privateKey = process.env.GA_PRIVATE_KEY?.replace(/\\n/g, '\n').replace(/^"|"$/g, '');
+  }
   const clientEmail = process.env.GA_CLIENT_EMAIL;
 
   return new BetaAnalyticsDataClient({
