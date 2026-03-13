@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@supabase/supabase-js'
+
+// Use service role key for server-side inserts (bypasses RLS for reliable writes)
+function getAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !serviceKey) throw new Error('Missing Supabase service role env vars')
+  return createClient(url, serviceKey)
+}
 
 interface SupplementSniperLeadBody {
   name: string
@@ -63,6 +71,7 @@ export async function POST(request: NextRequest) {
 
   // ── Save to Supabase ────────────────────────────────────────────────────
   try {
+    const supabase = getAdminClient()
     const { error: dbError } = await supabase
       .from('supplement_sniper_leads')
       .insert({
