@@ -59,15 +59,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Build conversation context for OpenAI
-    const messages = [
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
       {
-        role: 'system' as const,
+        role: 'system',
         content: ALPINE_PEAK_SYSTEM_PROMPT
       },
-      {
-        role: 'user' as const,
-        content: body.message
-      }
     ]
 
     // Add conversation history if available
@@ -75,13 +71,14 @@ export async function POST(request: NextRequest) {
       const historyMessages = body.context.conversation_history
         .slice(-6) // Only include last 6 messages to avoid token limits
         .map((msg: any) => ({
-          role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
-          content: msg.content
+          role: (msg.type === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: String(msg.content ?? '')
         }))
-      
-      // Insert history before the current message
-      messages.splice(1, 0, ...historyMessages)
+      messages.push(...historyMessages)
     }
+
+    // Add current user message last
+    messages.push({ role: 'user', content: body.message })
 
     console.log('OpenAI API: Sending request with', messages.length, 'messages')
 
