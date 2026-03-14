@@ -102,8 +102,42 @@ export default async function BlogDetail({
   const relatedPosts = await getRelatedPosts(post.id, post.focus_keyword);
   const category = post.focus_keyword || (post.keywords && post.keywords[0]) || "General";
 
+  const baseUrl = "https://alpinepeakroofing.com";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.meta_description || undefined,
+    "image": post.featured_image_url || undefined,
+    "datePublished": post.published_at || undefined,
+    "dateModified": post.published_at || undefined,
+    "author": {
+      "@type": "Organization",
+      "name": "Alpine Peak Roofing",
+      "url": baseUrl,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Alpine Peak Roofing",
+      "url": baseUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/logo.png`,
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/blog/${post.slug}`,
+    },
+    "keywords": post.keywords?.join(", ") || undefined,
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px]">
         <div className="absolute inset-0">

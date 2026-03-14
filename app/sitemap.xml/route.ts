@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 interface SitemapURL {
   url: string
@@ -11,9 +12,32 @@ interface SitemapURL {
   keywords?: string[]
 }
 
+async function getPublishedBlogPosts(): Promise<Array<{ slug: string; published_at: string | null; updated_at: string | null }>> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return []
+
+  try {
+    const client = createClient(url, key)
+    const { data, error } = await client
+      .from('blog_posts')
+      .select('slug, published_at, updated_at')
+      .eq('status', 'published')
+      .order('published_at', { ascending: false })
+
+    if (error || !data) return []
+    return data
+  } catch {
+    return []
+  }
+}
+
 export async function GET() {
   const baseUrl = 'https://alpinepeakroofing.com'
-  
+
+  // Fetch live blog posts for dynamic sitemap entries
+  const blogPosts = await getPublishedBlogPosts()
+
   // Enhanced sitemap data with semantic relationships
   const pages: SitemapURL[] = [
     // Core Pages
@@ -205,18 +229,32 @@ export async function GET() {
       keywords: ['central mountains roofing', 'colorado mountains', 'high altitude service', 'summit county', 'eagle county', 'pitkin county']
     },
 
-    // Blog
+    // Blog index
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date().toISOString(),
-      changeFreq: 'weekly',
-      priority: 0.7,
+      changeFreq: 'daily',
+      priority: 0.8,
       category: 'content',
       semanticType: 'Blog',
       relatedPages: ['/guides/mountain-roofing-colorado', '/faq'],
       keywords: ['roofing blog', 'industry news', 'maintenance tips', 'seasonal advice']
     }
   ]
+
+  // Build blog post URL entries dynamically
+  const blogEntries = blogPosts.map(post => {
+    const lastMod = post.updated_at || post.published_at || new Date().toISOString()
+    return `
+  <url>
+    <loc>${baseUrl}/blog/${post.slug}</loc>
+    <lastmod>${new Date(lastMod).toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <alpine:category>blog</alpine:category>
+    <alpine:type>BlogPosting</alpine:type>
+  </url>`
+  }).join('')
 
   // Generate enhanced XML sitemap with semantic annotations
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -232,7 +270,7 @@ export async function GET() {
     Enhanced Sitemap for Alpine Peak Roofing
     Optimized for LLM Understanding and Semantic Search
     Generated: ${new Date().toISOString()}
-    Total Pages: ${pages.length}
+    Total Pages: ${pages.length + blogPosts.length} (${pages.length} static + ${blogPosts.length} blog posts)
   -->
   
   ${pages.map(page => `
@@ -252,38 +290,8 @@ export async function GET() {
     </alpine:related>` : ''}
   </url>`).join('')}
 
-  <!-- 
-    Semantic Relationships Summary for AI Systems:
-    
-    Core Navigation Flow:
-    / → /about → /contact → /estimator
-    
-    Service Hierarchy:
-    /services → /services/residential, /services/commercial, /services/emergency
-    /services/premium → /services/premium/copper-roofing
-    
-    Knowledge Base Structure:
-    /faq ↔ /glossary ↔ /guides/mountain-roofing-colorado
-    
-    Location Network:
-    /locations/aspen ↔ /locations/vail ↔ /locations/telluride
-    
-    Content Categories:
-    - Core: Homepage, About, Contact, Process
-    - Services: All service-related pages
-    - Knowledge: FAQ, Glossary, Guides, Resources
-    - Locations: Geographic service areas
-    - Technology: AI tools, Chatbot, Automation
-    - Showcase: Portfolio, Case studies
-    
-    Priority Ranking:
-    1.0: Homepage (primary entry point)
-    0.9: Contact, Services, Emergency (high conversion)
-    0.8: About, FAQ, Portfolio, Premium Services
-    0.7: Guides, Weather, Locations (tier 1)
-    0.6: Technical Resources, Locations (tier 2)
-    0.5: Technology demos, Chatbot
-  -->
+  <!-- Dynamic Blog Posts (${blogPosts.length} published articles) -->
+  ${blogEntries}
 
 </urlset>`
 
@@ -291,7 +299,7 @@ export async function GET() {
     status: 200,
     headers: {
       'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=86400, s-maxage=86400', // 24 hours
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600', // 1 hour (was 24h — blog posts daily)
     },
   })
 }
