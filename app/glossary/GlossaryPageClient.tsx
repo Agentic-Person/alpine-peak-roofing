@@ -814,7 +814,7 @@ export function GlossaryPageClient() {
                           {term.term}
                         </CardTitle>
                         {term.mountainSpecific && (
-                          <Mountain className="h-5 w-5 text-gray-600" title="Mountain-specific term" />
+                          <Mountain className="h-5 w-5 text-gray-600" aria-label="Mountain-specific term" />
                         )}
                       </div>
                       

@@ -45,7 +45,15 @@ async function generateQueryEmbedding(text: string): Promise<number[] | null> {
   }
 }
 
-async function searchKnowledgeBase(embedding: number[], limit: number = 3) {
+interface KnowledgeResult {
+  id: string
+  title: string
+  content: string
+  category_name: string
+  similarity: number
+}
+
+async function searchKnowledgeBase(embedding: number[], limit: number = 3): Promise<KnowledgeResult[]> {
   try {
     const { data, error } = await getSupabase().rpc('search_knowledge_content', {
       query_embedding: embedding,
@@ -65,7 +73,7 @@ async function searchKnowledgeBase(embedding: number[], limit: number = 3) {
   }
 }
 
-function generateRAGResponse(userMessage: string, knowledgeResults: any[]): string {
+function generateRAGResponse(userMessage: string, knowledgeResults: KnowledgeResult[]): string {
   if (knowledgeResults.length === 0) {
     return `I'd be happy to help you with your roofing question: "${userMessage}". 
 

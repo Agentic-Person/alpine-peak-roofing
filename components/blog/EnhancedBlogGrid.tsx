@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, type Variants } from 'framer-motion'
 import { Clock, ArrowRight, Search, X, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -79,12 +79,12 @@ export default function EnhancedBlogGrid({
     (c) => c === 'All Posts' || activeCategorySet.has(c),
   )
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 24 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
   }
