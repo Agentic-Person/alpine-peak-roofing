@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ArrowLeft, ArrowRight, Calendar, Clock, Tag } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import ReactMarkdown from "react-markdown";
+import CopyLinkButton from "@/components/blog/CopyLinkButton";
 
 function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;
@@ -358,6 +359,9 @@ export default async function BlogDetail({
                 </svg>
                 Share on Facebook
               </a>
+
+              {/* Copy Link */}
+              <CopyLinkButton url={postUrl} />
             </div>
           </div>
         </div>
