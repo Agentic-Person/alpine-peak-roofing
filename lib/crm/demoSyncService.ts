@@ -141,8 +141,10 @@ export class DemoCRMSyncService {
         demo_features_explored: interaction.demo_metadata.features_explored.join(', '),
         demo_timestamp: interaction.timestamp,
         demo_last_message: interaction.message.substring(0, 500), // Truncate for CRM storage
-        demo_last_response: interaction.response.substring(0, 500)
-      },
+        demo_last_response: interaction.response.substring(0, 500),
+        interest_category: '' as string,
+        demo_intent: '' as string
+      } as Record<string, unknown>,
       
       // Tags for segmentation
       tags: [
@@ -172,7 +174,7 @@ export class DemoCRMSyncService {
    * Map prospect level to CRM lead status
    */
   private mapProspectLevelToStatus(prospectLevel: string): string {
-    const statusMap = {
+    const statusMap: Record<string, string> = {
       'visitor': 'Demo Visitor',
       'interested': 'Demo Interested',
       'qualified': 'Demo Qualified Lead',

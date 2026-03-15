@@ -102,7 +102,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
       // Call the roof analysis API
       const response = await analyzeRoof(localAddress);
       
-      if (response.success) {
+      if (response.success && response.measurements) {
         setMeasurements(response.measurements);
         onNext();
       } else {

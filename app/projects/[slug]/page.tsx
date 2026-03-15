@@ -4,6 +4,7 @@
  * Design: Mountain Modernism — Alpine Luxury Editorial
  * Full blog-style project case study page with story, specs, blueprints, and testimonial
  */
+import { use } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -33,8 +34,9 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-export default function ProjectDetail({ params }: { params: { slug: string } }) {
-  const project = portfolioProjects.find((p) => p.id === params.slug);
+export default function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const project = portfolioProjects.find((p) => p.id === slug);
 
   if (!project) {
     return (

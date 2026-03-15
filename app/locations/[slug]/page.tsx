@@ -4,7 +4,7 @@
  * Design: Mountain Modernism — Alpine Luxury Editorial
  * Location detail page with climate data, services, projects, and emergency response
  */
-import { useEffect } from "react";
+import { useEffect, use } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -30,12 +30,13 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-export default function LocationDetail({ params }: { params: { slug: string } }) {
-  const location = locations.find((l) => l.slug === params.slug);
+export default function LocationDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const location = locations.find((l) => l.slug === slug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [params.slug]);
+  }, [slug]);
 
   if (!location) {
     return (

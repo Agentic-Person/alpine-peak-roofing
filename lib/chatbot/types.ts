@@ -11,13 +11,17 @@ export interface ChatMessage {
     actions?: QuickAction[]
     is_emergency?: boolean
     requires_human?: boolean
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    file_upload?: any
+    handoff_request?: boolean
+    urgency?: string
   }
 }
 
 export interface QuickAction {
   id: string
   label: string
-  action: 'send_message' | 'request_callback' | 'schedule_inspection' | 'emergency_contact'
+  action: 'send_message' | 'request_callback' | 'schedule_inspection' | 'emergency_contact' | 'call_emily'
   value?: string
 }
 
@@ -51,6 +55,8 @@ export interface ConversationContext {
   last_activity: Date
   ip_address?: string
   location?: GeographicInfo
+  user_info?: UserInfo
+  lead_score?: number
 }
 
 export interface UtmParameters {

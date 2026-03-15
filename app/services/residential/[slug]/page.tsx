@@ -13,15 +13,15 @@ import {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
   Thermometer, Leaf, AlertTriangle, Snowflake, PaintBucket
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, use } from 'react';
 
 const iconMap: Record<string, React.ElementType> = {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
   Thermometer, Leaf, AlertTriangle, Snowflake, PaintBucket,
 };
 
-export default function ResidentialServiceDetailPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function ResidentialServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const service = getServiceBySlug(slug);
   const serviceTestimonials = getTestimonialsByService(slug);
 

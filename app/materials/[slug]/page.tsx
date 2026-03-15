@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { getMaterialBySlug, materials } from "@/lib/materials";
 import { motion } from "framer-motion";
-import { useState, useMemo } from "react";
+import { useState, useMemo, use } from "react";
 import {
   ArrowLeft,
   ChevronRight,
@@ -234,8 +234,9 @@ function PriceCalculator({ material }: { material: NonNullable<ReturnType<typeof
   );
 }
 
-export default function MaterialDetail({ params }: { params: { slug: string } }) {
-  const material = getMaterialBySlug(params.slug || "");
+export default function MaterialDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+  const material = getMaterialBySlug(slug || "");
 
   if (!material) {
     return (

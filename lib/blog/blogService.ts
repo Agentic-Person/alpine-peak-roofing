@@ -143,7 +143,7 @@ export class BlogService {
       throw new Error(`Error fetching recent blog posts: ${error.message}`);
     }
 
-    return posts || [];
+    return (posts || []) as unknown as BlogPost[];
   }
 
   /**
@@ -169,7 +169,7 @@ export class BlogService {
       throw new Error(`Error fetching related blog posts: ${error.message}`);
     }
 
-    return posts || [];
+    return (posts || []) as unknown as BlogPost[];
   }
 
   /**
@@ -188,7 +188,7 @@ export class BlogService {
       throw new Error(`Error searching blog posts: ${error.message}`);
     }
 
-    return posts || [];
+    return (posts || []) as unknown as BlogPost[];
   }
 
   /**
@@ -298,7 +298,7 @@ export class BlogService {
       throw new Error(`Error fetching seasonal blog posts: ${error.message}`);
     }
 
-    return posts || [];
+    return (posts || []) as unknown as BlogPost[];
   }
 
   /**
@@ -317,6 +317,6 @@ export class BlogService {
       throw new Error(`Error fetching posts by keyword: ${error.message}`);
     }
 
-    return posts || [];
+    return (posts || []) as unknown as BlogPost[];
   }
 }

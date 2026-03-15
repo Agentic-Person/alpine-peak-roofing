@@ -192,7 +192,7 @@ export const useEstimatorStore = create<EstimatorState>()(
     {
       name: 'estimator-store',
       // Don't persist sensitive data in localStorage
-      partialize: (state) => ({
+      partialize: (state: EstimatorState) => ({
         currentStep: state.currentStep,
         address: state.address,
         selectedMaterial: state.selectedMaterial,

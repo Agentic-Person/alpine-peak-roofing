@@ -68,7 +68,7 @@ function ChatWidget({
       setSessionId(existingSessionId)
 
       // Try to load existing conversation, but continue if it fails
-      let existingMessages = []
+      let existingMessages: ChatMessageType[] = []
       try {
         existingMessages = await chatService.getConversation(existingSessionId)
       } catch (dbError) {
