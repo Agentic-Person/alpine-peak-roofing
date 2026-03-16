@@ -350,13 +350,13 @@ function EstimateComplete({ estimate, pdfUrl, emailSent, onStartOver }: Estimate
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <a
-          href="tel:+17195550123"
+          href="tel:+19704561176"
           className="bg-orange-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-orange-600 transition-colors flex items-center justify-center space-x-3"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
           </svg>
-          <span>Call Now: (719) 555-0123</span>
+          <span>Call Now: (970) 456-1176</span>
         </a>
         
         {pdfUrl && (
@@ -389,7 +389,7 @@ function EstimateComplete({ estimate, pdfUrl, emailSent, onStartOver }: Estimate
         <p className="text-sm text-gray-500">
           This estimate is valid for 30 days. Final pricing may vary based on actual site conditions and material availability.
           <br />
-          Alpine Peak Roofing is licensed, bonded, and insured. License #12345.
+          Alpine Peak Roofing is licensed, bonded, and insured.
         </p>
       </div>
     </div>

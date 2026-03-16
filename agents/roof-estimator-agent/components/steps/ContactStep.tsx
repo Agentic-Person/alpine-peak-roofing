@@ -196,7 +196,7 @@ export function ContactStep({ contactInfo, onNext, onBack }: ContactStepProps) {
             className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
               validationErrors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
             }`}
-            placeholder="(719) 555-0123"
+            placeholder="(970) 456-1176"
             disabled={isSubmitting}
           />
           {validationErrors.phone && (
