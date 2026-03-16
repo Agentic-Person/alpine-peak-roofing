@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { XMarkIcon, ExclamationTriangleIcon, ClockIcon } from '@heroicons/react/24/outline'
+import { X as XMarkIcon, AlertTriangle as ExclamationTriangleIcon, Clock as ClockIcon } from 'lucide-react'
 
 interface ExitIntentPopupProps {
   isVisible: boolean
