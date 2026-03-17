@@ -2,12 +2,55 @@
 
 /**
  * AdminContactsClient — interactive unified CRM table
- * Features: search, filter by stage (has estimate / lead only), sort, expandable detail row
+ * Features: search, filter by stage (has estimate / lead only), sort, expandable detail row, CSV export
  */
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { ContactRow } from './page'
+
+// ---------------------------------------------------------------------------
+// CSV export
+// ---------------------------------------------------------------------------
+function exportContactsCSV(rows: ContactRow[]) {
+  const headers = [
+    'First Name', 'Last Name', 'Email', 'Phone', 'Address',
+    'Stage', 'Lead Score', 'Priority', 'Lead Status', 'Lead Source',
+    'Has Estimate', 'Estimate Total', 'Estimate Material', 'Estimate Status',
+    'Estimate Date', 'Lead Created', 'Last Activity',
+  ]
+
+  const escape = (val: string | number | boolean | null | undefined) => {
+    if (val == null) return ''
+    const s = String(val)
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+      return `"${s.replace(/"/g, '""')}"`
+    }
+    return s
+  }
+
+  const csvRows = rows.map((c) => [
+    c.first_name, c.last_name, c.email, c.phone, c.address,
+    c.has_estimate && c.lead_id ? 'Lead + Estimate' : c.has_estimate ? 'Estimate Only' : 'Lead Only',
+    c.lead_score, c.priority, c.lead_status, c.lead_source,
+    c.has_estimate ? 'Yes' : 'No',
+    c.estimate_total ?? '',
+    c.estimate_material ?? '',
+    c.estimate_status ?? '',
+    c.estimate_created_at ? new Date(c.estimate_created_at).toLocaleDateString('en-US') : '',
+    c.lead_created_at ? new Date(c.lead_created_at).toLocaleDateString('en-US') : '',
+    new Date(c.last_activity_at).toLocaleDateString('en-US'),
+  ].map(escape).join(','))
+
+  const csv = [headers.join(','), ...csvRows].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `alpine-peak-contacts-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 // ---------------------------------------------------------------------------
 // Formatters
@@ -225,6 +268,8 @@ export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
   const [sortKey, setSortKey] = useState<SortKey>('last_activity')
   const [expandedKey, setExpandedKey] = useState<string | null>(null)
 
+
+
   const filtered = useMemo(() => {
     let rows = contacts
 
@@ -300,6 +345,14 @@ export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
         </div>
 
         <span className="text-xs text-gray-500 ml-auto">{filtered.length} contacts</span>
+
+        <button
+          onClick={() => exportContactsCSV(filtered)}
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-all font-medium"
+          title="Export visible contacts to CSV"
+        >
+          ⬇ Export CSV
+        </button>
       </div>
 
       {/* Table */}

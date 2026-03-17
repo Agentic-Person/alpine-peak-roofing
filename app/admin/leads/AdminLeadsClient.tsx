@@ -4,6 +4,42 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import type { LeadRow } from './page'
 
+// ---------------------------------------------------------------------------
+// CSV export
+// ---------------------------------------------------------------------------
+function exportLeadsCSV(rows: LeadRow[]) {
+  const headers = [
+    'First Name', 'Last Name', 'Email', 'Phone', 'Address',
+    'Source', 'Project Type', 'Timeline', 'Budget Range', 'Score', 'Priority', 'Status',
+    'Created At',
+  ]
+
+  const escape = (val: string | number | null | undefined) => {
+    if (val == null) return ''
+    const s = String(val)
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+      return `"${s.replace(/"/g, '""')}"`
+    }
+    return s
+  }
+
+  const csvRows = rows.map((r) => [
+    r.first_name, r.last_name, r.email, r.phone, r.address,
+    r.source, r.project_type, r.timeline, r.budget_range,
+    r.lead_score, r.priority, r.status,
+    new Date(r.created_at).toLocaleDateString('en-US'),
+  ].map(escape).join(','))
+
+  const csv = [headers.join(','), ...csvRows].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `alpine-peak-leads-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 const PRIORITY_COLORS: Record<string, string> = {
   high:   'bg-red-500/20 text-red-400 border-red-500/30',
   medium: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
@@ -94,6 +130,14 @@ export function AdminLeadsClient({ leads }: { leads: LeadRow[] }) {
           {filtered.length} lead{filtered.length !== 1 ? 's' : ''}
           {hotCount > 0 && <span className="ml-2 text-red-400 font-semibold">🔥 {hotCount} hot</span>}
         </span>
+
+        <button
+          onClick={() => exportLeadsCSV(filtered)}
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-all font-medium"
+          title="Export visible leads to CSV"
+        >
+          ⬇ Export CSV
+        </button>
       </div>
 
       {filtered.length === 0 ? (
