@@ -19,6 +19,13 @@ const LINKS = [
     badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
   },
   {
+    href: '/admin/leads',
+    title: 'Leads Dashboard',
+    desc: 'All website leads — chat, estimator, and contact captures with lead scores',
+    badge: 'Live',
+    badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
+  },
+  {
     href: 'https://supabase.com/dashboard/project/adueyerxzutuuwtxyage/editor',
     title: 'Supabase Dashboard',
     desc: 'Direct database access — run SQL, view tables, check RLS policies',
