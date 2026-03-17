@@ -12,6 +12,13 @@ export const metadata: Metadata = {
 
 const LINKS = [
   {
+    href: '/admin/contacts',
+    title: 'Contacts (CRM)',
+    desc: 'Unified view — leads + estimates joined by session. Full visitor journey in one place.',
+    badge: 'Live',
+    badgeColor: 'bg-green-500/20 text-green-400 border-green-500/30',
+  },
+  {
     href: '/admin/estimates',
     title: 'Estimates Dashboard',
     desc: 'View all submitted roof estimates, pipeline totals, and customer links',
