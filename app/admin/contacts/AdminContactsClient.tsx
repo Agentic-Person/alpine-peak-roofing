@@ -2,12 +2,36 @@
 
 /**
  * AdminContactsClient — interactive unified CRM table
- * Features: search, filter by stage (has estimate / lead only), sort, expandable detail row, CSV export
+ * Features: search, filter by stage (has estimate / lead only), sort, expandable detail row, CSV export,
+ *           inline lead status update (new → contacted → qualified → won / lost)
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import type { ContactRow } from './page'
+
+// ---------------------------------------------------------------------------
+// Status helpers
+// ---------------------------------------------------------------------------
+const LEAD_STATUSES = ['new', 'contacted', 'qualified', 'won', 'lost'] as const
+type LeadStatusValue = (typeof LEAD_STATUSES)[number]
+
+const STATUS_STYLES: Record<LeadStatusValue, string> = {
+  new: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
+  contacted: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  qualified: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+  won: 'bg-green-500/20 text-green-400 border-green-500/30',
+  lost: 'bg-red-500/20 text-red-400 border-red-500/30',
+}
+
+async function patchLeadStatus(leadId: string, status: string): Promise<boolean> {
+  const res = await fetch(`/api/admin/leads/${leadId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  })
+  return res.ok
+}
 
 // ---------------------------------------------------------------------------
 // CSV export
@@ -186,9 +210,15 @@ function ContactDetail({ contact }: { contact: ContactRow }) {
           <dl className="space-y-1.5">
             <DetailRow label="Lead ID" value={contact.lead_id.slice(0, 8) + '…'} />
             <DetailRow label="Source" value={contact.lead_source} />
-            <DetailRow label="Status" value={contact.lead_status} />
             <DetailRow label="Session" value={contact.session_id ? contact.session_id.slice(0, 12) + '…' : null} />
             <DetailRow label="Created" value={fmtDate(contact.lead_created_at)} />
+            <div className="flex items-baseline gap-2 pt-0.5">
+              <span className="text-gray-500 text-xs w-16 shrink-0">Status</span>
+              <LeadStatusDropdown
+                leadId={contact.lead_id}
+                initialStatus={contact.lead_status}
+              />
+            </div>
           </dl>
         ) : (
           <p className="text-gray-600 italic">No lead record</p>
@@ -257,18 +287,73 @@ function DetailRow({ label, value, highlight }: { label: string; value: string |
 }
 
 // ---------------------------------------------------------------------------
+// Inline status dropdown
+// ---------------------------------------------------------------------------
+function LeadStatusDropdown({
+  leadId,
+  initialStatus,
+}: {
+  leadId: string
+  initialStatus: string | null
+}) {
+  const [status, setStatus] = useState<string>(initialStatus ?? 'new')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState(false)
+
+  const handleChange = useCallback(
+    async (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const next = e.target.value
+      setSaving(true)
+      setError(false)
+      const ok = await patchLeadStatus(leadId, next)
+      setSaving(false)
+      if (ok) {
+        setStatus(next)
+      } else {
+        setError(true)
+      }
+    },
+    [leadId]
+  )
+
+  const styleKey = (LEAD_STATUSES as readonly string[]).includes(status)
+    ? (status as LeadStatusValue)
+    : 'new'
+
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      <select
+        value={status}
+        onChange={handleChange}
+        disabled={saving}
+        className={`text-xs px-2 py-1 rounded-lg border font-medium cursor-pointer transition-all focus:outline-none focus:ring-1 focus:ring-amber-500/50 disabled:opacity-50 ${STATUS_STYLES[styleKey]}`}
+        title="Update lead status"
+      >
+        {LEAD_STATUSES.map((s) => (
+          <option key={s} value={s} className="bg-gray-900 text-white">
+            {s.charAt(0).toUpperCase() + s.slice(1)}
+          </option>
+        ))}
+      </select>
+      {saving && <span className="text-xs text-gray-500 animate-pulse">Saving…</span>}
+      {error && <span className="text-xs text-red-400">Failed — retry</span>}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Main client component
 // ---------------------------------------------------------------------------
 type SortKey = 'last_activity' | 'score' | 'pipeline'
 type StageFilter = 'all' | 'estimate' | 'lead-only'
+type StatusFilter = 'all' | LeadStatusValue
 
 export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState<StageFilter>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [sortKey, setSortKey] = useState<SortKey>('last_activity')
   const [expandedKey, setExpandedKey] = useState<string | null>(null)
-
-
 
   const filtered = useMemo(() => {
     let rows = contacts
@@ -276,6 +361,11 @@ export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
     // Stage filter
     if (stageFilter === 'estimate') rows = rows.filter((c) => c.has_estimate)
     else if (stageFilter === 'lead-only') rows = rows.filter((c) => !c.has_estimate)
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      rows = rows.filter((c) => (c.lead_status ?? 'new') === statusFilter)
+    }
 
     // Search
     if (search.trim()) {
@@ -298,7 +388,7 @@ export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
       sorted.sort((a, b) => new Date(b.last_activity_at).getTime() - new Date(a.last_activity_at).getTime())
     }
     return sorted
-  }, [contacts, search, stageFilter, sortKey])
+  }, [contacts, search, stageFilter, statusFilter, sortKey])
 
   return (
     <div className="space-y-4">
@@ -340,6 +430,31 @@ export function AdminContactsClient({ contacts }: { contacts: ContactRow[] }) {
               }`}
             >
               {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Status filter */}
+        <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-lg p-1">
+          <button
+            onClick={() => setStatusFilter('all')}
+            className={`text-xs px-3 py-1.5 rounded-md font-medium transition-all ${
+              statusFilter === 'all' ? 'bg-white/20 text-white' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            All Status
+          </button>
+          {LEAD_STATUSES.map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`text-xs px-3 py-1.5 rounded-md font-medium transition-all capitalize ${
+                statusFilter === s
+                  ? `${STATUS_STYLES[s]} border`
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {s}
             </button>
           ))}
         </div>
