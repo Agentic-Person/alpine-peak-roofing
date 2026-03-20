@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
   const historyEncoded = searchParams.get('history') || ''
   const conversationHistory = decodeHistory(historyEncoded)
 
-  const baseUrl = process.env.NEXT_APP_URL?.replace(/\/$/, '') || 'http://localhost:8080'
+  // Strip \r\n and trailing whitespace that can creep in from env vars (causes &#xD;&#xA; in TwiML)
+  const baseUrl = (process.env.NEXT_APP_URL || 'http://localhost:8080').replace(/[\r\n\s]+/g, '').replace(/\/$/, '')
   const twiml = new twilio.twiml.VoiceResponse()
 
   // If Twilio couldn't transcribe anything, re-prompt once

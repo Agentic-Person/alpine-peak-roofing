@@ -53,7 +53,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Base URL for action callbacks — must be the public-facing URL in production
-  const baseUrl = process.env.NEXT_APP_URL?.replace(/\/$/, '') || 'http://localhost:8080'
+  // Strip \r\n and trailing whitespace that can creep in from env vars (causes &#xD;&#xA; in TwiML)
+  const baseUrl = (process.env.NEXT_APP_URL || 'http://localhost:8080').replace(/[\r\n\s]+/g, '').replace(/\/$/, '')
   const processUrl = `${baseUrl}/api/voice/process`
 
   // Build greeting TwiML
