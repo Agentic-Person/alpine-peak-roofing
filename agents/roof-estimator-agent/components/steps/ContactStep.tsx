@@ -40,10 +40,8 @@ export function ContactStep({ contactInfo, onNext, onBack }: ContactStepProps) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = 'Please enter a valid email address';
     }
-    
-    if (!formData.phone.trim()) {
-      errors.phone = 'Phone number is required';
-    } else if (!/^\(?[\d\s\-\(\)\+]{10,}$/.test(formData.phone.replace(/\s/g, ''))) {
+
+    if (formData.phone.trim() && !/^\(?[\d\s\-\(\)\+]{10,}$/.test(formData.phone.replace(/\s/g, ''))) {
       errors.phone = 'Please enter a valid phone number';
     }
     

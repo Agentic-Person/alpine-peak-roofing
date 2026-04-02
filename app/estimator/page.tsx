@@ -1,5 +1,6 @@
 import { EstimatorWizard } from '@/agents/roof-estimator-agent/components/EstimatorWizard';
 import EstimatorCarousel from '@/components/estimator/EstimatorCarousel';
+import { AddressAutoAnalyzer } from '@/components/estimator/AddressAutoAnalyzer';
 import { Suspense } from 'react';
 
 const CALENDLY_URL = 'https://calendly.com/jimmy-agenticpersonnel/30min'
@@ -53,6 +54,11 @@ export default function EstimatorPage() {
 
       {/* ── How It Works — Auto-playing Carousel ── */}
       <EstimatorCarousel />
+
+      {/* ── Auto-analyze if address is in URL ── */}
+      <Suspense fallback={null}>
+        <AddressAutoAnalyzer />
+      </Suspense>
 
       {/* ── Wizard ── */}
       <main className="container mx-auto px-4 py-10">

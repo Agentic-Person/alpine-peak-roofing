@@ -46,7 +46,7 @@ const SLIDES = [
 export default function RoofEstimateModal() {
   const { isOpen, close } = useEstimateModal()
   const [current, setCurrent] = useState(0)
-  const [email, setEmail] = useState('')
+  const [address, setAddress] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -64,7 +64,7 @@ export default function RoofEstimateModal() {
     if (isOpen) {
       setCurrent(0)
       setSubmitted(false)
-      setEmail('')
+      setAddress('')
       startCarousel()
       // Focus trap — focus email input after short delay
       setTimeout(() => inputRef.current?.focus(), 300)
@@ -95,37 +95,28 @@ export default function RoofEstimateModal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email || !email.includes('@')) return
+    const trimmed = address.trim()
+    if (!trimmed || trimmed.length < 5) return
     setLoading(true)
 
-    // Store email locally for estimator pre-fill
-    try { localStorage.setItem('apr_estimate_email', email) } catch {}
-
-    // Fire GA4 conversion event
+    // Fire GA4 event
     try {
       // @ts-ignore
       if (typeof window !== 'undefined' && window.gtag) {
         // @ts-ignore
-        window.gtag('event', 'estimate_email_gate', {
+        window.gtag('event', 'estimate_address_entry', {
           event_category: 'lead',
           event_label: 'roof_estimate_modal',
         })
       }
     } catch {}
 
-    // Non-blocking API call — fire and forget
-    fetch('/api/leads/capture', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, source: 'estimate_modal', type: 'email_gate' }),
-    }).catch(() => {}) // silently ignore if endpoint not configured
-
     setSubmitted(true)
     setLoading(false)
 
-    // Open estimator in new window after brief success flash
+    // Open estimator with pre-filled address so user sees their roof immediately
     setTimeout(() => {
-      window.open('/estimator', '_blank', 'noopener,noreferrer')
+      window.open(`/estimator?address=${encodeURIComponent(trimmed)}`, '_blank', 'noopener,noreferrer')
       close()
     }, 900)
   }
@@ -297,32 +288,33 @@ export default function RoofEstimateModal() {
             </div>
           </div>
 
-          {/* ── Email Gate ── */}
+          {/* ── Address Entry ── */}
           {!submitted ? (
             <div>
               <p
                 className="font-bold text-lg mb-1 text-center"
                 style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
               >
-                Your satellite analysis is ready.
+                See your roof from satellite — instantly.
               </p>
               <p
                 className="text-sm text-center mb-4"
                 style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "'Lato', sans-serif" }}
               >
-                Enter your email to unlock your free estimate — no salesperson, no commitment.
+                Enter your address to view your roof and get a free estimate — no email required.
               </p>
 
               <form onSubmit={handleSubmit}>
-                <div className="flex flex-col sm:flex-row gap-2.5">
+                <div className="flex flex-col gap-2.5">
                   <input
                     ref={inputRef}
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="your@email.com"
+                    type="text"
+                    value={address}
+                    onChange={e => setAddress(e.target.value)}
+                    placeholder="123 Main St, Denver, CO 80202"
                     required
-                    className="flex-1 px-4 py-3.5 rounded-lg text-sm outline-none transition-all"
+                    autoComplete="street-address"
+                    className="w-full px-4 py-3.5 rounded-lg text-sm outline-none transition-all"
                     style={{
                       background: 'rgba(255,255,255,0.08)',
                       border: '1px solid rgba(255,255,255,0.18)',
@@ -334,8 +326,8 @@ export default function RoofEstimateModal() {
                   />
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap"
+                    disabled={loading || address.trim().length < 5}
+                    className="flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-lg font-bold text-sm transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap"
                     style={{
                       background: 'var(--amber-gold)',
                       color: '#1A2332',
@@ -343,7 +335,7 @@ export default function RoofEstimateModal() {
                       letterSpacing: '0.05em',
                       textTransform: 'uppercase',
                       boxShadow: '0 4px 20px rgba(229,168,0,0.35)',
-                      opacity: loading ? 0.7 : 1,
+                      opacity: (loading || address.trim().length < 5) ? 0.7 : 1,
                       cursor: loading ? 'wait' : 'pointer',
                     }}
                   >
@@ -361,7 +353,7 @@ export default function RoofEstimateModal() {
                 className="text-center mt-3"
                 style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', fontFamily: "'Lato', sans-serif" }}
               >
-                🔒 No spam. Your info is safe. Unsubscribe anytime.
+                🔒 100% free. No email required to see your roof.
               </p>
             </div>
           ) : (
