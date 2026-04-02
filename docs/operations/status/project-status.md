@@ -2,6 +2,26 @@
 
 ---
 
+## Last Activity — 2026-04-02 (session 12)
+
+### Session Summary
+Restructured the **Analyze My Roof** estimator flow to improve lead capture and remove friction. Replaced the email-gate modal with an address-entry modal so users can see their roof on a real map before providing an email. Email collection now happens at the confirmation step (after they see their property), gating the materials and estimate behind it. Removed the Colorado-only address restriction so anyone can use the tool.
+
+### Files Changed
+- `components/estimator/RoofEstimateModal.tsx` — Replaced email input with address input; opens `/estimator?address=...` to auto-analyze
+- `components/estimator/AddressAutoAnalyzer.tsx` — NEW: reads `?address=` URL param, auto-triggers roof analysis, skips to confirmation step
+- `agents/roof-estimator-agent/components/steps/ConfirmationStep.tsx` — Added email gate (required to proceed); replaced placeholder image with Google Maps satellite embed (OpenStreetMap fallback)
+- `agents/roof-estimator-agent/components/steps/AddressStep.tsx` — Removed Colorado-only validation and service area notice
+- `agents/roof-estimator-agent/components/steps/ContactStep.tsx` — Made phone field truly optional
+- `app/estimator/page.tsx` — Added AddressAutoAnalyzer component
+
+### Technical Notes
+- Google Maps embed uses `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` env var; falls back to OpenStreetMap if not set
+- Email collected at confirmation step is stored in Zustand store and pre-filled in the later ContactStep
+- Lead capture API fires non-blocking at confirmation step with source `estimate_confirmation`
+
+---
+
 ## Last Activity — 2026-03-11 (session 11)
 
 ### Session Summary
