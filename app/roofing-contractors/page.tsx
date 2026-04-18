@@ -1,14 +1,54 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
 
-export const metadata = {
+const BASE_URL = 'https://alpinepeakroofing.com'
+const PAGE_URL = `${BASE_URL}/roofing-contractors`
+
+export const metadata: Metadata = {
   title: 'AI Toolsets for Roofing Contractors | Agentic Personnel',
   description:
-    'A demo of what Agentic Personnel builds for roofing contractors: missed call recovery, smart follow-up, and dashboard visibility.'
+    'A demo of what Agentic Personnel builds for roofing contractors: missed call recovery, smart follow-up, and dashboard visibility.',
+  alternates: {
+    canonical: PAGE_URL,
+  },
+  openGraph: {
+    title: 'AI Toolsets for Roofing Contractors | Agentic Personnel',
+    description:
+      'Missed call recovery, smart follow-up, and full dashboard visibility — built by Agentic Personnel for roofing contractors.',
+    url: PAGE_URL,
+    type: 'website',
+  },
+}
+
+function RoofingContractorsSchema() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'AI Toolsets for Roofing Contractors',
+    url: PAGE_URL,
+    description:
+      'Demo showcasing AI-powered tools for roofing contractors: missed call recovery, smart follow-up automation, and CRM dashboard.',
+    about: {
+      '@type': 'SoftwareApplication',
+      name: 'Agentic Personnel Roofing Automation Platform',
+      applicationCategory: 'BusinessApplication',
+      description:
+        'AI-powered automation stack for roofing contractors: missed call recovery, lead follow-up, and dashboard visibility.',
+    },
+  }
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
 }
 
 export default function RoofingContractorsLandingPage() {
   return (
+    <>
+      <RoofingContractorsSchema />
     <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
       <section className="mx-auto max-w-5xl px-6 py-20">
         <div className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80">
@@ -79,5 +119,6 @@ export default function RoofingContractorsLandingPage() {
         </p>
       </section>
     </main>
+    </>
   )
 }
