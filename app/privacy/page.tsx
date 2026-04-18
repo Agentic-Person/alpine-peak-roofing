@@ -4,6 +4,9 @@ import { Shield, Eye, Lock, Users, FileText, Phone, MessageSquare, Bot } from 'l
 export const metadata = {
   title: 'Privacy Policy | Alpine Peak Roofing',
   description: 'Alpine Peak Roofing privacy policy. Learn how we collect, use, and protect your personal information including SMS communications.',
+  alternates: {
+    canonical: 'https://alpinepeakroofing.com/privacy',
+  },
 }
 
 export default function PrivacyPage() {

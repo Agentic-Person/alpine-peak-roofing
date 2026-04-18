@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { materials } from '@/lib/materials'
 
 interface SitemapURL {
   url: string
@@ -239,6 +240,108 @@ export async function GET() {
       semanticType: 'Blog',
       relatedPages: ['/guides/mountain-roofing-colorado', '/faq'],
       keywords: ['roofing blog', 'industry news', 'maintenance tips', 'seasonal advice']
+    },
+
+    // Materials index
+    {
+      url: `${baseUrl}/materials`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'materials',
+      semanticType: 'CollectionPage',
+      relatedPages: ['/services', '/investment-analysis', '/process'],
+      keywords: ['roofing materials', 'premium materials', 'GAF shingles', 'metal roofing', 'slate roofing', 'cedar shake']
+    },
+
+    // Material detail pages (dynamic from lib/materials.ts)
+    ...materials.map(m => ({
+      url: `${baseUrl}/materials/${m.slug}`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly' as const,
+      priority: 0.8,
+      category: 'materials',
+      semanticType: 'ProductPage',
+      relatedPages: ['/materials', '/investment-analysis', '/services'],
+      keywords: [m.name, m.shortName, m.manufacturer, 'colorado roofing material']
+    })),
+
+    // Portfolio
+    {
+      url: `${baseUrl}/portfolio`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.8,
+      category: 'portfolio',
+      semanticType: 'CollectionPage',
+      relatedPages: ['/services', '/contact', '/about'],
+      keywords: ['roofing portfolio', 'completed projects', 'mountain roofing showcase', 'before after roof']
+    },
+
+    // Service sub-pages
+    {
+      url: `${baseUrl}/services/residential`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/materials', '/process', '/contact'],
+      keywords: ['residential roofing', 'home roofing', 'colorado residential roofing', 'roof replacement']
+    },
+    {
+      url: `${baseUrl}/services/commercial`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/materials', '/process', '/contact'],
+      keywords: ['commercial roofing', 'flat roofing', 'colorado commercial roofing', 'TPO roofing']
+    },
+    {
+      url: `${baseUrl}/services/storm-damage`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/contact', '/faq'],
+      keywords: ['storm damage roofing', 'hail damage', 'insurance claim roofing', 'emergency roof repair']
+    },
+
+    // Financing
+    {
+      url: `${baseUrl}/financing`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.7,
+      category: 'financial',
+      semanticType: 'WebPage',
+      relatedPages: ['/investment-analysis', '/contact', '/services'],
+      keywords: ['roofing financing', 'roof payment plans', 'zero percent financing roofing', 'monthly roof payments']
+    },
+
+    // Legal / utility
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'yearly',
+      priority: 0.3,
+      category: 'legal',
+      semanticType: 'WebPage',
+      relatedPages: ['/terms', '/contact'],
+      keywords: ['privacy policy', 'data protection']
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'yearly',
+      priority: 0.3,
+      category: 'legal',
+      semanticType: 'WebPage',
+      relatedPages: ['/privacy', '/contact'],
+      keywords: ['terms of service', 'service agreement']
     }
   ]
 
@@ -270,7 +373,7 @@ export async function GET() {
     Enhanced Sitemap for Alpine Peak Roofing
     Optimized for LLM Understanding and Semantic Search
     Generated: ${new Date().toISOString()}
-    Total Pages: ${pages.length + blogPosts.length} (${pages.length} static + ${blogPosts.length} blog posts)
+    Total Pages: ${pages.length + blogPosts.length} (${pages.length} static/dynamic + ${blogPosts.length} blog posts)
   -->
   
   ${pages.map(page => `

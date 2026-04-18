@@ -4,6 +4,9 @@ import { FileText, CheckCircle, AlertTriangle, Phone, Gavel, Shield, MessageSqua
 export const metadata = {
   title: 'Terms of Service | Alpine Peak Roofing',
   description: 'Alpine Peak Roofing terms of service. Read our service terms, SMS consent policy, AI assistant terms, and conditions.',
+  alternates: {
+    canonical: 'https://alpinepeakroofing.com/terms',
+  },
 }
 
 export default function TermsPage() {
