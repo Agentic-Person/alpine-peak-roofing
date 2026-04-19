@@ -252,9 +252,11 @@ function ChatWidget({
   }
 
   // Position classes
+  // Mobile: near-fullscreen with 16px inset so the panel never overflows the viewport.
+  // Desktop (md:+): restore the original positions.
   const positionClasses = {
-    'bottom-right': 'top-[190px] right-[30px]',
-    'bottom-left': 'bottom-4 left-4'
+    'bottom-right': 'inset-4 md:inset-auto md:top-[190px] md:right-[30px]',
+    'bottom-left': 'inset-4 md:inset-auto md:bottom-4 md:left-4'
   }
 
   // Theme classes
@@ -335,7 +337,9 @@ function ChatWidget({
   return (
     <div className={cn('fixed z-[9999]', positionClasses[position])}>
       <div className={cn(
-        'flex flex-col h-[500px] w-[380px] rounded-lg border shadow-2xl bg-white',
+        // Mobile: fill the inset-4 wrapper so the panel can never overflow.
+        // Desktop: restore the fixed 400x600 panel size.
+        'flex flex-col h-full w-full rounded-lg border shadow-2xl bg-white',
         'md:h-[600px] md:w-[400px]',
         themeClasses[theme],
         className
