@@ -6,6 +6,7 @@
  */
 import { use } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -63,10 +64,13 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
       {/* Hero Section */}
       <section className="relative h-[70vh] min-h-[500px]">
         <div className="absolute inset-0">
-          <img
+          <Image
             src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0B1D3A] via-[#0B1D3A]/60 to-transparent" />
         </div>
@@ -170,9 +174,12 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                 <div className="w-12 h-0.5 bg-[#C9A84C] mb-4" />
                 <h2 className="font-playfair text-3xl text-white mb-6">Architectural Design</h2>
                 <div className="relative rounded-lg overflow-hidden border border-white/10 mb-4">
-                  <img
+                  <Image
                     src={project.blueprintImage}
                     alt={project.blueprintCaption}
+                    width={1600}
+                    height={900}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="w-full h-auto"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B1D3A]/80 to-transparent" />
@@ -336,10 +343,12 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                 whileHover={{ scale: 1.02 }}
                 className="group relative h-48 rounded-lg overflow-hidden cursor-pointer"
               >
-                <img
+                <Image
                   src={prevProject.image}
                   alt={prevProject.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 300px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#0B1D3A]/90 to-transparent flex items-center p-6">
                   <div>
@@ -357,10 +366,12 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                 whileHover={{ scale: 1.02 }}
                 className="group relative h-48 rounded-lg overflow-hidden cursor-pointer"
               >
-                <img
+                <Image
                   src={nextProject.image}
                   alt={nextProject.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 768px) 50vw, 300px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-l from-[#0B1D3A]/90 to-transparent flex items-end justify-end p-6">
                   <div className="text-right">
@@ -383,10 +394,12 @@ export default function ProjectDetail({ params }: { params: Promise<{ slug: stri
                   whileHover={{ scale: 1.03 }}
                   className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer"
                 >
-                  <img
+                  <Image
                     src={p.image}
                     alt={p.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 50vw, 300px"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0B1D3A]/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                     <div>

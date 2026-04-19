@@ -69,7 +69,7 @@ export function ChatMessage({ message, theme = 'alpine', className }: ChatMessag
         )}>
           {isBot ? (
             <Image
-              src="/images/team/ai-agent-avatar-02.png"
+              src="/images/team/ai-agent-avatar-02.webp"
               alt="Emily - AI Assistant"
               width={32}
               height={32}

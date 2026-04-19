@@ -6,6 +6,7 @@
  */
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { images } from "@/lib/images";
 import { portfolioProjects } from "@/lib/portfolioProjects";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,7 +35,7 @@ export default function PortfolioClient() {
       {/* Hero */}
       <section className="relative py-32 lg:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={images.gallery1} alt="Portfolio" className="w-full h-full object-cover" />
+          <Image src={images.gallery1} alt="Portfolio" fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>
         <div className="relative container">
@@ -97,10 +98,12 @@ export default function PortfolioClient() {
                 >
                   <Link href={`/projects/${project.id}`}>
                     <div className="group block relative overflow-hidden aspect-square w-full cursor-pointer">
-                      <img
+                      <Image
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       {/* Always-visible bottom bar */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.06_0.03_260/0.95)] via-[oklch(0.08_0.03_260/0.7)] to-transparent p-5">
@@ -157,15 +160,15 @@ export default function PortfolioClient() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={1}
-              className="relative">
-              <img src={images.portfolioBefore} alt="Before" className="w-full aspect-[4/3] object-cover" />
+              className="relative aspect-[4/3]">
+              <Image src={images.portfolioBefore} alt="Before" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               <div className="absolute top-4 left-4 bg-red-600/90 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
                 Before
               </div>
             </motion.div>
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={2}
-              className="relative">
-              <img src={images.portfolioAfter} alt="After" className="w-full aspect-[4/3] object-cover" />
+              className="relative aspect-[4/3]">
+              <Image src={images.portfolioAfter} alt="After" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               <div className="absolute top-4 left-4 bg-gold/90 text-navy-dark text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
                 After
               </div>

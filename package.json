@@ -48,6 +48,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.12",
     "lighthouse": "^12.8.2",
+    "sharp": "^0.33.5",
     "typescript": "^5"
   }
 }

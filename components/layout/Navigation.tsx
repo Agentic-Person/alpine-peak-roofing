@@ -70,7 +70,7 @@ export default function Navigation() {
             <Link href="/" className="flex items-center gap-3 flex-shrink-0">
               <div className="relative" style={{ width: 52, height: 52 }}>
                 <Image
-                  src="/images/logo/APR-LOGO-solo.png"
+                  src="/images/logo/APR-LOGO-solo.webp"
                   alt="Alpine Peak Roofing"
                   fill
                   className="object-contain"

@@ -10,7 +10,7 @@
     "hero_home": {
       "id": "hero_home",
       "name": "Homepage Hero",
-      "path": "/images/heroes/H1_homepage_hero.jpg",
+      "path": "/images/heroes/H1_homepage_hero.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing professional team installing shingles on residential home with Denver mountains in background",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -21,7 +21,7 @@
     "hero_home_alt": {
       "id": "hero_home_alt",
       "name": "Homepage Hero Alternate",
-      "path": "/images/heroes/H2_homepage_hero_alt.jpg",
+      "path": "/images/heroes/H2_homepage_hero_alt.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Aerial view of Denver residential neighborhood with Alpine Peak Roofing crew at work",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -32,7 +32,7 @@
     "hero_services": {
       "id": "hero_services",
       "name": "Services Page Hero",
-      "path": "/images/heroes/H3_services_hero.jpg",
+      "path": "/images/heroes/H3_services_hero.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Split view of residential and commercial roofing projects in progress",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -43,7 +43,7 @@
     "hero_about": {
       "id": "hero_about",
       "name": "About Page Hero",
-      "path": "/images/heroes/H4_about_hero.jpg",
+      "path": "/images/heroes/H4_about_hero.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing team standing proudly with Denver mountain skyline",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -54,7 +54,7 @@
     "hero_emergency": {
       "id": "hero_emergency",
       "name": "Emergency Services Hero",
-      "path": "/images/heroes/H5_emergency_hero.jpg",
+      "path": "/images/heroes/H5_emergency_hero.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing emergency response crew working in urgent conditions",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -65,7 +65,7 @@
     "hero_process": {
       "id": "hero_process",
       "name": "Process Page Hero",
-      "path": "/images/heroes/roofing_split_screen_sunset_rain.png",
+      "path": "/images/heroes/roofing_split_screen_sunset_rain.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Time-lapse progression of roofing installation from start to completion",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -76,7 +76,7 @@
     "hero_contact": {
       "id": "hero_contact",
       "name": "Contact Page Hero",
-      "path": "/images/M1/hero_contact.png",
+      "path": "/images/M1/hero_contact.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing office building exterior with professional signage",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -88,7 +88,7 @@
     "ba_victorian_before": {
       "id": "ba_victorian_before",
       "name": "Victorian Home - Before",
-      "path": "/images/portfolio/BA1_victorian_before.jpg",
+      "path": "/images/portfolio/BA1_victorian_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Victorian home with damaged aging roof before Alpine Peak Roofing restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -101,7 +101,7 @@
     "ba_victorian_after": {
       "id": "ba_victorian_after",
       "name": "Victorian Home - After",
-      "path": "/images/portfolio/BA1_victorian_after.jpg",
+      "path": "/images/portfolio/BA1_victorian_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Victorian home with beautiful new architectural shingle roof after Alpine Peak restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -114,7 +114,7 @@
     "ba_ranch_before": {
       "id": "ba_ranch_before",
       "name": "Ranch Home - Before",
-      "path": "/images/portfolio/BA2_ranch_before.jpg",
+      "path": "/images/portfolio/BA2_ranch_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Ranch style home with old worn roofing before modernization",
       "dimensions": { "width": 1200, "height": 800 },
@@ -127,7 +127,7 @@
     "ba_ranch_after": {
       "id": "ba_ranch_after",
       "name": "Ranch Home - After",
-      "path": "/images/portfolio/BA2_ranch_after.jpg",
+      "path": "/images/portfolio/BA2_ranch_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Ranch style home modernized with contemporary premium roofing materials",
       "dimensions": { "width": 1200, "height": 800 },
@@ -140,7 +140,7 @@
     "ba_commercial_before": {
       "id": "ba_commercial_before",
       "name": "Commercial Building - Before",
-      "path": "/images/portfolio/BA3_commercial_before.jpg",
+      "path": "/images/portfolio/BA3_commercial_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Commercial office building with deteriorated flat roof before TPO installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -153,7 +153,7 @@
     "ba_commercial_after": {
       "id": "ba_commercial_after",
       "name": "Commercial Building - After",
-      "path": "/images/portfolio/BA3_commercial_after.jpg",
+      "path": "/images/portfolio/BA3_commercial_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Commercial office building with new white TPO membrane roofing system installed",
       "dimensions": { "width": 1200, "height": 800 },
@@ -166,7 +166,7 @@
     "ba_mountain_before": {
       "id": "ba_mountain_before",
       "name": "Mountain Home - Before",
-      "path": "/images/portfolio/BA4_mountain_before.jpg",
+      "path": "/images/portfolio/BA4_mountain_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Mountain home with hail-damaged roof before premium restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -179,7 +179,7 @@
     "ba_mountain_after": {
       "id": "ba_mountain_after",
       "name": "Mountain Home - After",
-      "path": "/images/portfolio/BA4_mountain_after.jpg",
+      "path": "/images/portfolio/BA4_mountain_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Mountain home with stunning new premium metal and shingle roof installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -192,7 +192,7 @@
     "ba_aurora_before": {
       "id": "ba_aurora_before",
       "name": "Aurora Project - Before",
-      "path": "/images/portfolio/BA5_aurora_before.jpg",
+      "path": "/images/portfolio/BA5_aurora_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Aurora Colorado home with storm damaged roof requiring full replacement",
       "dimensions": { "width": 1200, "height": 800 },
@@ -205,7 +205,7 @@
     "ba_aurora_after": {
       "id": "ba_aurora_after",
       "name": "Aurora Project - After",
-      "path": "/images/portfolio/BA5_aurora_after.jpg",
+      "path": "/images/portfolio/BA5_aurora_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Aurora Colorado home with beautiful new roof installation and improved curb appeal",
       "dimensions": { "width": 1200, "height": 800 },
@@ -219,7 +219,7 @@
     "portfolio_victorian": {
       "id": "portfolio_victorian",
       "name": "Victorian Showcase",
-      "path": "/images/portfolio/P1_victorian_after.jpg",
+      "path": "/images/portfolio/P1_victorian_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Completed Victorian home roof restoration showcase — architectural shingles",
       "dimensions": { "width": 1200, "height": 800 },
@@ -231,7 +231,7 @@
     "portfolio_modern_metal": {
       "id": "portfolio_modern_metal",
       "name": "Modern Metal Roof Showcase",
-      "path": "/images/portfolio/P2_modern_metal_after.jpg",
+      "path": "/images/portfolio/P2_modern_metal_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Modern home with sleek standing seam metal roofing installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -243,7 +243,7 @@
     "portfolio_craftsman": {
       "id": "portfolio_craftsman",
       "name": "Craftsman Home Showcase",
-      "path": "/images/portfolio/P3_craftsman_after.jpg",
+      "path": "/images/portfolio/P3_craftsman_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Craftsman bungalow with premium new roof and enhanced architectural details",
       "dimensions": { "width": 1200, "height": 800 },
@@ -255,7 +255,7 @@
     "portfolio_crew_installation": {
       "id": "portfolio_crew_installation",
       "name": "Crew Installation in Progress",
-      "path": "/images/portfolio/P4_crew_installation.jpg",
+      "path": "/images/portfolio/P4_crew_installation.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing professional crew working efficiently on residential installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -267,7 +267,7 @@
     "portfolio_craftsmanship": {
       "id": "portfolio_craftsmanship",
       "name": "Craftsmanship Detail Closeup",
-      "path": "/images/portfolio/P5_craftsmanship_closeup.jpg",
+      "path": "/images/portfolio/P5_craftsmanship_closeup.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Close-up of precision roofing craftsmanship — perfect shingle alignment and flashing",
       "dimensions": { "width": 1200, "height": 800 },
@@ -280,7 +280,7 @@
     "service_residential": {
       "id": "service_residential",
       "name": "Residential Roofing Service",
-      "path": "/images/heroes/hero-home-001.png",
+      "path": "/images/heroes/hero-home-001.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Luxury mountain home with dark metal standing seam roof — Alpine Peak Roofing residential",
       "dimensions": { "width": 800, "height": 600 },
@@ -292,7 +292,7 @@
     "service_commercial": {
       "id": "service_commercial",
       "name": "Commercial Roofing Service",
-      "path": "/images/services/S2_commercial.jpg",
+      "path": "/images/services/S2_commercial.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Commercial roofing specialists installing TPO membrane on flat roof",
       "dimensions": { "width": 800, "height": 600 },
@@ -304,7 +304,7 @@
     "service_emergency": {
       "id": "service_emergency",
       "name": "Emergency Roofing Service",
-      "path": "/images/services/S3_emergency.jpg",
+      "path": "/images/services/S3_emergency.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Emergency roofing repair crew responding to storm damage with tarping and repair",
       "dimensions": { "width": 800, "height": 600 },
@@ -316,7 +316,7 @@
     "service_metal": {
       "id": "service_metal",
       "name": "Metal Roofing Service",
-      "path": "/images/services/S4_metal_roofing.jpg",
+      "path": "/images/services/S4_metal_roofing.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "Standing seam metal roof installation on Colorado home",
       "dimensions": { "width": 800, "height": 600 },
@@ -328,7 +328,7 @@
     "service_inspection": {
       "id": "service_inspection",
       "name": "Drone Inspection Service",
-      "path": "/images/services/S5_drone_inspection.jpg",
+      "path": "/images/services/S5_drone_inspection.webp",
       "placeholder": "/images/placeholders/service-placeholder.svg",
       "alt": "AI-powered drone performing detailed roof inspection and damage assessment",
       "dimensions": { "width": 800, "height": 600 },
@@ -341,7 +341,7 @@
     "team_ceo": {
       "id": "team_ceo",
       "name": "CEO & Founder",
-      "path": "/images/team/T5_female_ceo.jpg",
+      "path": "/images/team/T5_female_ceo.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing CEO and founder — Denver's most trusted roofing leader",
       "dimensions": { "width": 600, "height": 600 },
@@ -353,7 +353,7 @@
     "team_lead_roofer": {
       "id": "team_lead_roofer",
       "name": "Lead Roofer / Foreman",
-      "path": "/images/team/T1_lead_roofer.jpg",
+      "path": "/images/team/T1_lead_roofer.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing lead roofer and job site foreman",
       "dimensions": { "width": 600, "height": 600 },
@@ -365,7 +365,7 @@
     "team_project_coordinator": {
       "id": "team_project_coordinator",
       "name": "Project Coordinator",
-      "path": "/images/team/T2_project_coordinator.jpg",
+      "path": "/images/team/T2_project_coordinator.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing project coordinator managing schedules and client communications",
       "dimensions": { "width": 600, "height": 600 },
@@ -377,7 +377,7 @@
     "team_senior_technician": {
       "id": "team_senior_technician",
       "name": "Senior Technician",
-      "path": "/images/team/T3_senior_technician.jpg",
+      "path": "/images/team/T3_senior_technician.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing senior roofing technician — 15 years of expertise",
       "dimensions": { "width": 600, "height": 600 },
@@ -389,7 +389,7 @@
     "team_sales_estimator": {
       "id": "team_sales_estimator",
       "name": "Sales & Estimator",
-      "path": "/images/team/T4_sales_estimator.jpg",
+      "path": "/images/team/T4_sales_estimator.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing sales and estimating specialist",
       "dimensions": { "width": 600, "height": 600 },
@@ -402,7 +402,7 @@
     "bg_shingle_texture": {
       "id": "bg_shingle_texture",
       "name": "Shingle Texture Background",
-      "path": "/images/backgrounds/BG1_shingle_texture.jpg",
+      "path": "/images/backgrounds/BG1_shingle_texture.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Close-up texture of premium architectural asphalt shingles",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -413,7 +413,7 @@
     "bg_mountain_panorama": {
       "id": "bg_mountain_panorama",
       "name": "Mountain Panorama Background",
-      "path": "/images/backgrounds/BG2_mountain_panorama.jpg",
+      "path": "/images/backgrounds/BG2_mountain_panorama.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Panoramic view of Colorado Rocky Mountains — Denver's roofing backdrop",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -424,7 +424,7 @@
     "bg_cedar_texture": {
       "id": "bg_cedar_texture",
       "name": "Cedar Texture Background",
-      "path": "/images/backgrounds/BG3_cedar_texture.jpg",
+      "path": "/images/backgrounds/BG3_cedar_texture.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Premium cedar shake roofing texture detail",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -497,7 +497,7 @@
     "residential_victorian_before": {
       "id": "residential_victorian_before",
       "name": "Victorian Home - Before",
-      "path": "/images/portfolio/BA1_victorian_before.jpg",
+      "path": "/images/portfolio/BA1_victorian_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Victorian home with damaged aging roof before Alpine Peak Roofing restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -508,7 +508,7 @@
     "residential_victorian_after": {
       "id": "residential_victorian_after",
       "name": "Victorian Home - After",
-      "path": "/images/portfolio/BA1_victorian_after.jpg",
+      "path": "/images/portfolio/BA1_victorian_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Victorian home with beautiful new architectural shingle roof after Alpine Peak restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -519,7 +519,7 @@
     "commercial_office_before": {
       "id": "commercial_office_before",
       "name": "Commercial Office - Before",
-      "path": "/images/portfolio/BA3_commercial_before.jpg",
+      "path": "/images/portfolio/BA3_commercial_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Commercial office building with deteriorated flat roof before TPO installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -530,7 +530,7 @@
     "commercial_office_after": {
       "id": "commercial_office_after",
       "name": "Commercial Office - After",
-      "path": "/images/portfolio/BA3_commercial_after.jpg",
+      "path": "/images/portfolio/BA3_commercial_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Commercial office building with new white TPO membrane roofing system",
       "dimensions": { "width": 1200, "height": 800 },
@@ -541,7 +541,7 @@
     "residential_ranch_before": {
       "id": "residential_ranch_before",
       "name": "Ranch Home - Before",
-      "path": "/images/portfolio/BA2_ranch_before.jpg",
+      "path": "/images/portfolio/BA2_ranch_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Ranch style home with old worn roofing before modernization",
       "dimensions": { "width": 1200, "height": 800 },
@@ -552,7 +552,7 @@
     "residential_ranch_after": {
       "id": "residential_ranch_after",
       "name": "Ranch Home - After",
-      "path": "/images/portfolio/BA2_ranch_after.jpg",
+      "path": "/images/portfolio/BA2_ranch_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Ranch style home modernized with contemporary premium roofing materials",
       "dimensions": { "width": 1200, "height": 800 },
@@ -563,7 +563,7 @@
     "residential_modern_before": {
       "id": "residential_modern_before",
       "name": "Mountain Home - Before",
-      "path": "/images/portfolio/BA4_mountain_before.jpg",
+      "path": "/images/portfolio/BA4_mountain_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Mountain home with hail-damaged roof before premium metal restoration",
       "dimensions": { "width": 1200, "height": 800 },
@@ -574,7 +574,7 @@
     "residential_modern_after": {
       "id": "residential_modern_after",
       "name": "Modern Metal Roof - After",
-      "path": "/images/portfolio/P2_modern_metal_after.jpg",
+      "path": "/images/portfolio/P2_modern_metal_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Modern home with sleek standing seam metal roofing installation",
       "dimensions": { "width": 1200, "height": 800 },
@@ -585,7 +585,7 @@
     "commercial_warehouse_before": {
       "id": "commercial_warehouse_before",
       "name": "Commercial Building - Before",
-      "path": "/images/portfolio/BA3_commercial_before.jpg",
+      "path": "/images/portfolio/BA3_commercial_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Commercial warehouse with deteriorating roof before replacement",
       "dimensions": { "width": 1200, "height": 800 },
@@ -596,7 +596,7 @@
     "commercial_warehouse_after": {
       "id": "commercial_warehouse_after",
       "name": "Commercial Building - After",
-      "path": "/images/portfolio/BA3_commercial_after.jpg",
+      "path": "/images/portfolio/BA3_commercial_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Commercial warehouse with new energy-efficient roofing system",
       "dimensions": { "width": 1200, "height": 800 },
@@ -607,7 +607,7 @@
     "residential_colonial_before": {
       "id": "residential_colonial_before",
       "name": "Aurora Home - Before",
-      "path": "/images/portfolio/BA5_aurora_before.jpg",
+      "path": "/images/portfolio/BA5_aurora_before.webp",
       "placeholder": "/images/placeholders/project-before-placeholder.svg",
       "alt": "Aurora Colorado home with storm damaged roof before replacement",
       "dimensions": { "width": 1200, "height": 800 },
@@ -618,7 +618,7 @@
     "residential_colonial_after": {
       "id": "residential_colonial_after",
       "name": "Craftsman Home - After",
-      "path": "/images/portfolio/P3_craftsman_after.jpg",
+      "path": "/images/portfolio/P3_craftsman_after.webp",
       "placeholder": "/images/placeholders/project-after-placeholder.svg",
       "alt": "Craftsman home with premium new roof and enhanced architectural details",
       "dimensions": { "width": 1200, "height": 800 },
@@ -629,7 +629,7 @@
     "team_founder": {
       "id": "team_founder",
       "name": "CEO & Founder",
-      "path": "/images/team/T5_female_ceo.jpg",
+      "path": "/images/team/T5_female_ceo.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing CEO and founder — Denver's most trusted roofing leader",
       "dimensions": { "width": 600, "height": 600 },
@@ -640,7 +640,7 @@
     "team_project_manager": {
       "id": "team_project_manager",
       "name": "Project Coordinator",
-      "path": "/images/team/T2_project_coordinator.jpg",
+      "path": "/images/team/T2_project_coordinator.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing project coordinator managing schedules and client communications",
       "dimensions": { "width": 600, "height": 600 },
@@ -651,7 +651,7 @@
     "team_foreman": {
       "id": "team_foreman",
       "name": "Lead Roofer / Foreman",
-      "path": "/images/team/T1_lead_roofer.jpg",
+      "path": "/images/team/T1_lead_roofer.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing lead roofer and job site foreman",
       "dimensions": { "width": 600, "height": 600 },
@@ -662,7 +662,7 @@
     "team_customer_service": {
       "id": "team_customer_service",
       "name": "Sales & Customer Experience",
-      "path": "/images/team/T4_sales_estimator.jpg",
+      "path": "/images/team/T4_sales_estimator.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing sales and customer experience specialist",
       "dimensions": { "width": 600, "height": 600 },
@@ -673,7 +673,7 @@
     "team_safety": {
       "id": "team_safety",
       "name": "Senior Technician",
-      "path": "/images/team/T3_senior_technician.jpg",
+      "path": "/images/team/T3_senior_technician.webp",
       "placeholder": "/images/placeholders/team-placeholder.svg",
       "alt": "Alpine Peak Roofing senior roofing technician",
       "dimensions": { "width": 600, "height": 600 },
@@ -685,7 +685,7 @@
     "hero_portfolio": {
       "id": "hero_portfolio",
       "name": "Portfolio Page Hero",
-      "path": "/images/M1/hero_portfolio.png",
+      "path": "/images/M1/hero_portfolio.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Before and after roof transformation showing Alpine Peak quality craftsmanship",
       "dimensions": { "width": 1920, "height": 1080 },
@@ -697,7 +697,7 @@
     "facility_exterior": {
       "id": "facility_exterior",
       "name": "Company Facility",
-      "path": "/images/M1/hero_homepage.png",
+      "path": "/images/M1/hero_homepage.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing facility exterior with professional signage",
       "dimensions": { "width": 1200, "height": 800 },
@@ -708,7 +708,7 @@
     "crew_action": {
       "id": "crew_action",
       "name": "Work Crew in Action",
-      "path": "/images/portfolio/P4_crew_installation.jpg",
+      "path": "/images/portfolio/P4_crew_installation.webp",
       "placeholder": "/images/placeholders/hero-placeholder.svg",
       "alt": "Alpine Peak Roofing crew working together on residential roof",
       "dimensions": { "width": 800, "height": 600 },

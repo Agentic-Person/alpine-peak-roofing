@@ -31,7 +31,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-2">
               <Image
-                src="/images/logo/APR-LOGO-solo.png"
+                src="/images/logo/APR-LOGO-solo.webp"
                 alt="Alpine Peak Roofing Logo"
                 width={20}
                 height={20}

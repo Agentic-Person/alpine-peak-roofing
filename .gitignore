@@ -78,3 +78,10 @@ markdown_fix_payload.json
 current_workflow_check.json
 *.sql
 lib/n8n-api.js
+
+# Lighthouse audit artifacts
+lighthouse-*.json
+lighthouse-*.html
+
+# One-off script artifacts
+scripts/.image-optimization-mapping.json

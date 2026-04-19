@@ -54,7 +54,7 @@ export function supabasePostToStaticPost(post: SupabasePost, index: number): Sta
     title:       post.title,
     slug:        post.slug,
     excerpt,
-    image:       post.featured_image_url || '/images/blog/blog_1_diy_vs_professional.jpg',
+    image:       post.featured_image_url || '/images/blog/blog_1_diy_vs_professional.webp',
     category:    (post.season && SEASON_TO_CATEGORY[post.season]) ?? 'Maintenance',
     readTime,
     publishDate: post.published_at ?? post.created_at,

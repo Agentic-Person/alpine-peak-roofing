@@ -306,7 +306,7 @@ function ChatWidget({
             <div className="relative w-full h-full flex items-center justify-center">
               <div className="relative w-10 h-10 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-white shadow-inner">
                 <Image
-                  src="/images/team/ai-agent-avatar-02.png"
+                  src="/images/team/ai-agent-avatar-02.webp"
                   alt="AI Assistant"
                   width={128}
                   height={128}

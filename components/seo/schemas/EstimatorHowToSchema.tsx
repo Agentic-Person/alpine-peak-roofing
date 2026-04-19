@@ -19,7 +19,7 @@ export default function EstimatorHowToSchema() {
       "Get a free, itemized roof replacement estimate in under 60 seconds using satellite imagery and AI-powered roof analysis. No phone call or home visit required.",
     "image": {
       "@type": "ImageObject",
-      "url": "https://alpinepeakroofing.com/images/estimator/E5_v3_estimate_delivered.jpg"
+      "url": "https://alpinepeakroofing.com/images/estimator/E5_v3_estimate_delivered.webp"
     },
     "totalTime": "PT1M",
     "estimatedCost": {
@@ -69,7 +69,7 @@ export default function EstimatorHowToSchema() {
         "text":
           "Select from architectural asphalt shingles, standing-seam metal, natural slate, or cedar shake. Live pricing updates in real time as you change materials, colors, and upgrade options.",
         "url": "https://alpinepeakroofing.com/estimator#step-4",
-        "image": "https://alpinepeakroofing.com/images/estimator/E4_v3_material_samples.jpg"
+        "image": "https://alpinepeakroofing.com/images/estimator/E4_v3_material_samples.webp"
       },
       {
         "@type": "HowToStep",
@@ -78,7 +78,7 @@ export default function EstimatorHowToSchema() {
         "text":
           "Your fully itemized estimate — covering materials, labor, tear-off, underlayment, and timeline — is delivered instantly on-screen and by email. No waiting on a callback and no sales pressure.",
         "url": "https://alpinepeakroofing.com/estimator#step-5",
-        "image": "https://alpinepeakroofing.com/images/estimator/E5_v3_estimate_delivered.jpg"
+        "image": "https://alpinepeakroofing.com/images/estimator/E5_v3_estimate_delivered.webp"
       },
       {
         "@type": "HowToStep",
@@ -87,7 +87,7 @@ export default function EstimatorHowToSchema() {
         "text":
           "If you want to move forward, book a free 30-minute consultation with an Alpine Peak project manager to walk through your estimate, discuss insurance options, and schedule installation.",
         "url": "https://alpinepeakroofing.com/estimator#step-6",
-        "image": "https://alpinepeakroofing.com/images/estimator/timber_home_brown_roof.jpg"
+        "image": "https://alpinepeakroofing.com/images/estimator/timber_home_brown_roof.webp"
       }
     ],
     "about": {

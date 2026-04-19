@@ -31,14 +31,14 @@ const SLIDES = [
     step: 4,
     label: 'Choose Your Materials',
     desc: 'Browse architectural shingles, standing seam metal, natural slate, and cedar — with live pricing updated in real time.',
-    src: '/images/estimator/E4_v3_material_samples.jpg',
+    src: '/images/estimator/E4_v3_material_samples.webp',
     alt: 'Choose from premium roofing materials: asphalt, metal, slate, cedar',
   },
   {
     step: 5,
     label: 'Estimate Delivered',
     desc: 'Your fully itemized estimate is ready — materials, labor, and timeline — instantly. No waiting, no sales pressure.',
-    src: '/images/estimator/E5_v3_estimate_delivered.jpg',
+    src: '/images/estimator/E5_v3_estimate_delivered.webp',
     alt: 'Couple reviewing their instant roofing estimate on a laptop',
   },
 ]

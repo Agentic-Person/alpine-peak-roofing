@@ -18,10 +18,10 @@ export default function AIToolsLandingPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const heroImages = [
-    '/images/heroes/hero-roofers-001.png',
-    '/images/heroes/hero-roofers-002.png',
-    '/images/heroes/hero-roofers-003.png',
-    '/images/heroes/hero-roofers-004.png'
+    '/images/heroes/hero-roofers-001.webp',
+    '/images/heroes/hero-roofers-002.webp',
+    '/images/heroes/hero-roofers-003.webp',
+    '/images/heroes/hero-roofers-004.webp'
   ]
 
   useEffect(() => {

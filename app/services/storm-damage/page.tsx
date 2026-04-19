@@ -31,7 +31,7 @@ export default function StormDamage() {
       <ServiceSchema
         name="Storm Damage Roof Repair"
         description="24/7 emergency storm damage roofing services in Colorado. Expert hail, wind, and snow damage repair with full insurance claim support."
-        image="/images/services/service-storm-damage-hero.png"
+        image="/images/services/service-storm-damage-hero.webp"
         url="/services/storm-damage"
         category="Emergency Roofing"
       />
@@ -47,7 +47,7 @@ export default function StormDamage() {
       <section className="relative min-h-[55vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="/images/services/service-storm-damage-hero.png"
+            src="/images/services/service-storm-damage-hero.webp"
             alt="Storm damage roof repair — 24/7 emergency response across Colorado"
             fill
             priority

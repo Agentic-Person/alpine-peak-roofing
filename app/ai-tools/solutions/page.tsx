@@ -124,7 +124,7 @@ export default function IntelligentRoofingAutomationsPage() {
 
               <div className="aspect-[4/3] bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg overflow-hidden">
                 <Image
-                  src="/images/ai-tools/chatbot-card.png"
+                  src="/images/ai-tools/chatbot-card.webp"
                   alt="AI Chatbot Interface showing conversational flow and automation"
                   width={600}
                   height={450}
@@ -144,7 +144,7 @@ export default function IntelligentRoofingAutomationsPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="order-2 lg:order-1 aspect-[4/3] bg-gradient-to-br from-green-100 to-green-200 rounded-lg overflow-hidden">
                 <Image
-                  src="/images/ai-tools/autoblog-card.png"
+                  src="/images/ai-tools/autoblog-card.webp"
                   alt="Automated Blog Content Generation System with SEO optimization"
                   width={600}
                   height={450}
@@ -276,7 +276,7 @@ export default function IntelligentRoofingAutomationsPage() {
 
               <div className="aspect-[4/3] bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg overflow-hidden">
                 <Image
-                  src="/images/ai-tools/roofestimator-card.png"
+                  src="/images/ai-tools/roofestimator-card.webp"
                   alt="Instant Roof Estimator with satellite imagery and AI measurement technology"
                   width={600}
                   height={450}
@@ -296,7 +296,7 @@ export default function IntelligentRoofingAutomationsPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="order-2 lg:order-1 aspect-[4/3] bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg overflow-hidden">
                 <Image
-                  src="/images/ai-tools/crm-card.png"
+                  src="/images/ai-tools/crm-card.webp"
                   alt="Lead Generation and CRM Dashboard with automated pipeline management"
                   width={600}
                   height={450}

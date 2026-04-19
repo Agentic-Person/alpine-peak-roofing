@@ -251,8 +251,8 @@ Built email-gate modal for the instant roof estimator CTA flow. All "Analyze My 
 - `app/layout.tsx` — Wrapped app in EstimateModalProvider; added RoofEstimateModal globally
 - `components/layout/Navigation.tsx` — Desktop + mobile CTAs now open modal via useEstimateModal()
 - `components/layout/Footer.tsx` — Corrected footer background color (#003399 → #004080)
-- `public/images/estimator/E4_v3_material_samples.jpg` — NEW: material lineup shot
-- `public/images/estimator/E5_v3_estimate_delivered.jpg` — NEW: couple reviewing estimate on laptop
+- `public/images/estimator/E4_v3_material_samples.webp` — NEW: material lineup shot
+- `public/images/estimator/E5_v3_estimate_delivered.webp` — NEW: couple reviewing estimate on laptop
 
 ### Commits
 - `66817eb` feat(estimator): email-gate modal with dark navy design + new carousel images

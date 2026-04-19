@@ -7,6 +7,7 @@
  */
 import type { Metadata } from "next";
 import Script from "next/script";
+import Image from "next/image";
 import { images } from "@/lib/images";
 import AboutHeroAnimations from "@/components/about/islands/AboutHeroAnimations";
 import AboutAnimatedSections from "@/components/about/islands/AboutAnimatedSections";
@@ -97,12 +98,13 @@ export default function About() {
       {/* ==================== HERO ==================== */}
       <section className="relative py-32 lg:py-40 overflow-hidden" aria-labelledby="about-hero-heading">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={images.teamPhoto}
             alt="Alpine Peak Roofing team — Colorado's premier mountain roofing specialists"
-            className="w-full h-full object-cover"
-            fetchPriority="high"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>

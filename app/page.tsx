@@ -8,6 +8,7 @@
  */
 import type { Metadata } from "next";
 import Script from "next/script";
+import Image from "next/image";
 import { images } from "@/lib/images";
 
 import HeroAnimations from "@/components/home/islands/HeroAnimations";
@@ -131,13 +132,13 @@ export default function Home() {
       {/* ==================== HERO SECTION ==================== */}
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          {/* LCP image: kept as <img> — CDN domain not in next.config.ts remotePatterns */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={images.heroHome}
             alt="Luxury mountain home with premium roofing in Colorado"
-            className="w-full h-full object-cover"
-            fetchPriority="high"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.75)] to-[oklch(0.12_0.03_260/0.4)]" />
         </div>
@@ -190,8 +191,7 @@ export default function Home() {
       {/* ==================== WHY CHOOSE US ==================== */}
       <section className="relative py-24 overflow-hidden" aria-labelledby="why-us-heading">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={images.inspection} alt="Professional roof inspection in Colorado mountains" className="w-full h-full object-cover" />
+          <Image src={images.inspection} alt="Professional roof inspection in Colorado mountains" fill sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.95)] via-[oklch(0.12_0.03_260/0.85)] to-[oklch(0.12_0.03_260/0.7)]" />
         </div>
         <div className="relative container">
@@ -216,8 +216,7 @@ export default function Home() {
       {/* ==================== MATERIALS SECTION ==================== */}
       <section className="relative py-24 overflow-hidden" aria-labelledby="materials-heading">
         <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={images.materialsDisplayBg} alt="Premium roofing materials display" className="w-full h-full object-cover" />
+          <Image src={images.materialsDisplayBg} alt="Premium roofing materials display" fill sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.10_0.03_260/0.88)] via-[oklch(0.12_0.03_260/0.82)] to-[oklch(0.10_0.03_260/0.92)]" />
         </div>
         <div className="relative container">

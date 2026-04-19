@@ -52,7 +52,7 @@ function FullChatMessage({ message, onCopy }: FullChatMessageProps) {
           {isBot ? (
             <div className="h-10 w-10 rounded-full overflow-hidden bg-white flex items-center justify-center">
               <Image
-                src="/images/logo/APR-LOGO-solo.png"
+                src="/images/logo/APR-LOGO-solo.webp"
                 alt="Alpine Peak Roofing Logo"
                 width={32}
                 height={32}
@@ -122,7 +122,7 @@ function TypingIndicator() {
       <div className="flex max-w-[85%] space-x-3">
         <div className="h-10 w-10 rounded-full overflow-hidden bg-white flex items-center justify-center">
           <Image
-            src="/images/logo/APR-LOGO-solo.png"
+            src="/images/logo/APR-LOGO-solo.webp"
             alt="Alpine Peak Roofing Logo"
             width={32}
             height={32}
@@ -355,7 +355,7 @@ export default function AIChatPage() {
                   <div className="relative mb-6">
                     <div className="w-48 h-48 mx-auto rounded-full overflow-hidden border-4 border-white/20 shadow-xl">
                       <Image
-                        src="/images/team/ai-agent-avatar-02.png"
+                        src="/images/team/ai-agent-avatar-02.webp"
                         alt="Emily - AI Consultant"
                         width={192}
                         height={192}

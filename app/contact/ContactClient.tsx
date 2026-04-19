@@ -4,6 +4,7 @@
  * Contact page: Form, phone, email, map, service areas
  */
 import { useState } from "react";
+import Image from "next/image";
 import { images } from "@/lib/images";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -37,7 +38,7 @@ export default function ContactClient() {
       {/* Hero */}
       <section className="relative py-32 lg:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={images.heroHome} alt="Contact Alpine Peak Roofing" className="w-full h-full object-cover" />
+          <Image src={images.heroHome} alt="Contact Alpine Peak Roofing" fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>
         <div className="relative container">

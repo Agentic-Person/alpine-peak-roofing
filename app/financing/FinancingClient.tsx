@@ -5,6 +5,7 @@
  */
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { images } from "@/lib/images";
 import { motion } from "framer-motion";
 import {
@@ -104,7 +105,7 @@ export default function FinancingClient() {
       {/* Hero */}
       <section className="relative py-32 lg:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={images.materialsDisplay} alt="Financing options" className="w-full h-full object-cover" />
+          <Image src={images.materialsDisplay} alt="Financing options" fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.80)] to-[oklch(0.12_0.03_260/0.5)]" />
         </div>
         <div className="relative container">
