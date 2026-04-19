@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { materials } from '@/lib/materials'
+import { locations } from '@/lib/locations'
+
+// Premium locations get higher sitemap priority — mirrors marketing focus.
+const PREMIUM_LOCATION_SLUGS = new Set(['aspen', 'vail', 'telluride'])
 
 interface SitemapURL {
   url: string
@@ -156,67 +160,29 @@ export async function GET() {
       keywords: ['roofing resources', 'knowledge base', 'technical information']
     },
 
-    // Location Pages - Premium Communities
-    {
-      url: `${baseUrl}/locations/aspen`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.9,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/vail', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['aspen roofing', 'aspen contractors', 'luxury mountain roofing', '7908 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/vail`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.9,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/aspen', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['vail roofing', 'vail contractors', 'ski resort roofing', '8150 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/telluride`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/aspen', '/locations/vail', '/guides/mountain-roofing-colorado'],
-      keywords: ['telluride roofing', 'telluride contractors', 'historic preservation', '8750 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/crested-butte`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
-      keywords: ['crested butte roofing', 'extreme weather roofing', '8885 feet elevation', '500 inches snow']
-    },
-    {
-      url: `${baseUrl}/locations/steamboat-springs`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/winter-park', '/locations/crested-butte', '/guides/mountain-roofing-colorado'],
-      keywords: ['steamboat springs roofing', 'resort ranch roofing', '6732 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/winter-park`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
-      keywords: ['winter park roofing', 'continental divide roofing', '9052 feet elevation']
-    },
+    // Location Pages — every slug in lib/locations.ts gets an entry.
+    // Premium markets (aspen/vail/telluride) get priority 0.9; others 0.8.
+    ...locations
+      .filter(loc => loc.slug !== 'central-mountains') // listed separately under Service Areas
+      .map<SitemapURL>(loc => {
+        const elevationDigits = loc.elevation.replace(/[^0-9]/g, '')
+        const nameLower = loc.name.toLowerCase()
+        return {
+          url: `${baseUrl}/locations/${loc.slug}`,
+          lastModified: new Date().toISOString(),
+          changeFreq: 'monthly',
+          priority: PREMIUM_LOCATION_SLUGS.has(loc.slug) ? 0.9 : 0.8,
+          category: 'locations',
+          semanticType: 'LocalBusinessPage',
+          relatedPages: ['/guides/mountain-roofing-colorado', '/services/residential', '/services/commercial'],
+          keywords: [
+            `${nameLower} roofing`,
+            `${nameLower} contractors`,
+            `${loc.region.toLowerCase()} roofing`,
+            elevationDigits ? `${elevationDigits} feet elevation` : loc.elevation,
+          ],
+        }
+      }),
 
     // Service Areas
     {
