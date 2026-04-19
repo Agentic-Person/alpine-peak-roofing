@@ -1,5 +1,5 @@
 # Alpine Peak Roofing — Bridge Status
-> Last updated: April 17, 2026
+> Last updated: April 18, 2026
 
 ## 🟡 Status: In Progress — SEO/AEO Optimization Complete, Lead Pipeline Activation Pending
 
@@ -16,10 +16,11 @@
 - **HIGH** — `GOOGLE_SOLAR_API_KEY` not set — roof analysis uses seeded heuristic (fake but stable numbers) instead of real satellite measurements. Need Solar API enabled on Google Cloud project
 - **MED** — `TEAM_ALERT_PHONE` not set — SMS hot lead alerts to team phone are disabled
 - **MED** — `ELEVENLABS_PHONE_NUMBER_ID` not set — Emily's outbound AI calls to new leads are disabled
-- **MED** — `blog_posts` Supabase table not provisioned — build warns, `/blog/[slug]` returns empty shell; blog Article schema ready but no live posts until table exists
 - **LOW** — `/contact` `RoofingContractor` schema uses placeholder Denver 80202 address — replace with real business address
 
 ## 🔨 Recently Built
+- [x] **Sitemap location coverage fix** (April 18) — `app/sitemap.xml/route.ts` now drives location entries from `lib/locations.ts` so all 12 city pages are listed (was hardcoded to 6). Sitemap total: 103 → 109 URLs (6 new location slugs + 72 blog posts + 4 materials + 3 services + static pages).
+- [x] **Preview verification complete** (April 18) — 16 key routes all return HTTP 200 on the Vercel preview build with full JSON-LD schemas (HowTo on process, Product on materials, RoofingContractor+Place on locations, ContactPage+ContactPoint on contact, FinancialProduct on financing, BlogPosting on blog, etc.). Blog_posts table confirmed live with 72 published posts.
 - [x] **SEO/AEO optimization pass** (April 17) — converted 5 main pages (`/`, `/about`, `/services*`, `/process`, `/materials*`, `/locations*`, `/portfolio`, `/contact`, `/financing`, `/investment-analysis`) from client to server components. Every page now renders full content in initial HTML with per-page metadata, canonical URLs, and JSON-LD schemas. AEO crawlers (ChatGPT, Perplexity, Claude, Google AI Overviews) can finally see the content.
 - [x] **Duplicate `-seo` pages removed** (April 17) — `/about-seo`, `/services-seo`, `/process-seo` deleted after merging unique copy into originals. Eliminates duplicate-content penalty.
 - [x] **Sitemap expanded** (April 17) — 17 → 31 static routes + dynamic blog. Materials, portfolio, service detail pages, financing, legal pages all now listed.
@@ -47,7 +48,6 @@
 - [ ] Activate lead pipeline — add `RESEND_API_KEY` + verify domain + add `TEAM_ALERT_PHONE` + `ELEVENLABS_PHONE_NUMBER_ID`
 - [ ] Set up `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for satellite view in estimator
 - [ ] Set up `GOOGLE_SOLAR_API_KEY` for real roof measurements
-- [ ] Provision `blog_posts` Supabase table so `/blog/[slug]` renders live posts
 - [ ] Replace `/contact` schema placeholder address with real business address
 - [ ] Run Lighthouse against live Vercel domain for true Performance score
 - [ ] Cleanup pass on 297 pre-existing lint warnings (legacy `any` types, unescaped entities)

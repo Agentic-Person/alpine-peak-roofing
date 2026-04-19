@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-04-17 (Session 13 — SEO/AEO Optimization Pass)
+**Last Updated:** 2026-04-18 (Session 13 — SEO/AEO Optimization Pass, preview verified)
 **Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `C:\projects\APR\website\existing-repo`
@@ -37,7 +37,7 @@ Full audit + rebuild for answer-engine crawlability. An outside SEO company had 
 `/about-seo`, `/services-seo`, `/process-seo` directories removed after merging their unique copy into the originals. Eliminates the duplicate-content penalty.
 
 ### Sitemap expanded
-`app/sitemap.xml/route.ts`: 17 → 31 static routes + dynamic blog posts. Now includes materials index + each material slug, portfolio, service details, financing, privacy, terms.
+`app/sitemap.xml/route.ts`: 17 → 37 static routes + dynamic blog posts. Now includes materials index + each material slug, portfolio, service details, financing, privacy, terms. Location entries driven from `lib/locations.ts` so all 12 city pages are listed automatically (April 18 follow-up — previously only 6 were hardcoded).
 
 ### Internal linking matrix (local SEO)
 Each location page now links out to `/services/residential`, `/services/commercial`, `/services/storm-damage` plus material detail pages — the classic city × service cross-linking.
@@ -53,10 +53,15 @@ Framer Motion animations, state, and event handlers extracted into small `compon
 - Lighthouse local: **SEO 100, Accessibility 92**, Performance 66 (localhost-limited — CloudFront images 404 locally, real Vercel score will be higher)
 
 ### Known follow-ups
-- `blog_posts` Supabase table not provisioned — build warns, `/blog/[slug]` returns error shell. Table needs to be created in Supabase before blog is live.
 - `/contact` schema uses placeholder Denver 80202 address — replace with real business address once confirmed.
 - 297 lint warnings remain (pre-existing, demoted to `warn`) — cleanup target, not blocking.
 - Run Lighthouse against live Vercel URL for a true Performance score.
+
+### Preview verification (April 18)
+Vercel preview deploy of `feat/seo-aeo-optimization-pass` tested end-to-end via protection-bypass token:
+- **16 routes returned HTTP 200** with H1, content markers, and JSON-LD present in initial HTML
+- **Sitemap: 109 URLs** — 72 blog posts (table confirmed live), 12 locations, 4 materials, 3 services, 6 static informational pages, 12 other
+- **Schema coverage verified:** Product + AggregateOffer + Brand on materials, RoofingContractor + Place + City + GeoCoordinates on locations, HowTo + HowToStep + HowToSupply + HowToTool on /process, ContactPage + ContactPoint + OpeningHoursSpecification on /contact, FinancialProduct on /financing, CollectionPage + CreativeWork on /portfolio, LocalBusiness schemas on homepage
 
 ---
 
@@ -234,7 +239,6 @@ ai-tools/       chatbot-card, autoblog-card, roofestimator-card, crm-card .png
 - [x] Blog — SEO metadata (Article/BlogPosting schema added Session 13), featured image display
 - [ ] Location pages — content review + Denver Blue design (SSR + LocalBusiness schema done Session 13; Denver Blue polish still pending)
 - [ ] Background images (BG1-BG3) — implement in CTA sections and footer
-- [ ] Provision `blog_posts` Supabase table so `/blog/[slug]` renders live posts
 - [ ] Replace placeholder address in `/contact` schema with real business address
 
 ### Future
