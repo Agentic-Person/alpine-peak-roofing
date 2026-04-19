@@ -1,27 +1,121 @@
 import Script from 'next/script';
 
+/**
+ * FAQ schema optimized for Answer Engine Optimization (AEO).
+ *
+ * Each answer follows the featured-snippet format:
+ *   1) First sentence: a direct, complete answer (≈40–55 words) written so it
+ *      can stand alone in a Google "People Also Ask" box or a voice response.
+ *   2) Following sentences: supporting detail, numbers, and context.
+ *
+ * Facts are sourced from lib/locations.ts, lib/materials.ts, and company data.
+ */
 export default function FAQSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "@id": "https://alpinepeakroofing.com/faq#faqpage",
     "name": "Alpine Peak Roofing - Frequently Asked Questions",
-    "description": "Comprehensive FAQ covering mountain roofing, emergency services, and premium roofing solutions in Colorado",
+    "description":
+      "Answers to common Denver and Colorado roofing questions covering cost, insurance claims, hail damage, materials, timelines, and emergency service.",
     "mainEntity": [
       {
         "@type": "Question",
         "name": "What makes Alpine Peak Roofing different from other Colorado roofing contractors?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Alpine Peak Roofing specializes exclusively in luxury mountain properties across Colorado's premier communities like Aspen, Vail, and Telluride. Our expertise in high-altitude conditions, sustainable practices, and premium materials sets us apart. We offer concierge-level service with dedicated project management and 25-year warranties on all luxury installations."
+          "text":
+            "Alpine Peak Roofing specializes in premium residential and commercial roofing across the Denver metro area and Colorado's mountain communities, combining factory-certified installers, Class 4 impact-resistant systems, and 25-year workmanship warranties. Family-owned since 1989, we deliver concierge-level project management, transparent pricing, and direct insurance-claim support on every job."
         }
       },
       {
-        "@type": "Question", 
-        "name": "Do you provide 24/7 emergency roofing services in mountain communities?",
+        "@type": "Question",
+        "name": "How much does a new roof cost in Denver, Colorado?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, we provide 24/7/365 emergency response across all Colorado mountain communities. Our emergency hotline +1-720-555-ROOF connects you directly to our dispatch center, and we guarantee response within 2 hours for all emergency calls in our service area, including Aspen, Vail, Telluride, and surrounding mountain towns."
+          "text":
+            "A new asphalt-shingle roof in Denver typically costs $12,000 to $25,000 for an average 2,000 sq ft home, or about $4.50 to $7.00 per square foot installed. Metal roofing runs $9 to $14 per square foot, standing-seam metal $12 to $18, and natural slate $20 to $40. Final price depends on roof pitch, tear-off layers, underlayment, and hail-resistant shingle upgrades."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does a roof replacement take in Colorado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Most Denver-area roof replacements are completed in one to three days for standard asphalt-shingle homes, weather permitting. Larger homes, metal systems, tile, or slate installations usually take four to seven days. Crews tear off the old roof, install synthetic underlayment and ice-and-water shield, then install the new roofing system and complete a final inspection before cleanup."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does homeowners insurance cover hail damage to my roof in Colorado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Yes — most Colorado homeowners policies cover hail damage under dwelling (Coverage A), minus your wind/hail deductible, which is typically 1% to 5% of your home's insured value. Colorado is the #2 hail state in the U.S., so carriers routinely pay claims. File within one year of the storm date, document the damage with photos, and request a licensed roofer's inspection before the adjuster arrives."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I file a roof insurance claim for storm damage?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "To file a roof insurance claim in Colorado, first document the damage with dated photos, then call your insurance carrier to open a claim and receive a claim number, and finally schedule a free inspection with a licensed roofing contractor before the adjuster visits. Alpine Peak handles the full process: we meet the adjuster on-site, provide Xactimate-aligned estimates, and supplement the claim if anything is missed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the best roofing material for Colorado weather?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "The best roofing material for Colorado weather is a Class 4 impact-resistant architectural shingle such as GAF Timberline HDZ IR, which resists hail, carries a 130 mph wind rating, and qualifies for insurance discounts of 10% to 30%. Standing-seam metal is the top choice for mountain homes with heavy snow loads, and synthetic slate performs best on historic or luxury properties."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often should I replace my roof in Denver?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Most Denver asphalt-shingle roofs last 15 to 20 years — shorter than the national average of 20 to 30 years because of intense UV exposure at altitude and frequent hailstorms along the Front Range. Metal roofs last 40 to 70 years, tile 50+ years, and natural slate up to 100 years. Schedule annual inspections after age 10 and after any storm with hail larger than 1 inch."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the signs my Denver roof needs to be replaced?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "The clearest signs a Denver roof needs replacement are curling or cracked shingles, bald spots where granules are missing, dented metal vents or flashing from hail, daylight visible in the attic, and active leaks or water stains on ceilings. Granules collecting in gutters and a roof older than 15 years are also strong indicators. Book a free inspection to confirm before filing an insurance claim."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I get a free roof inspection after a hail storm?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Yes, Alpine Peak Roofing provides free post-storm roof inspections throughout the Denver metro area and along the Front Range, usually within 24 to 48 hours of your request. Our inspectors photograph and document every hail impact, measure bruising on shingles, check soft metals, and provide a written damage report you can submit to your insurance carrier."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer financing for roof replacement?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Yes, Alpine Peak Roofing offers financing for qualified homeowners through our lending partners, including 0% APR promotional plans for up to 18 months and fixed-rate terms from 5 to 15 years. Monthly payments on a typical $18,000 Denver roof replacement start around $180. Applications take about 60 seconds and approval decisions are usually returned the same day."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you provide 24/7 emergency roofing services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "Yes, Alpine Peak Roofing provides 24/7/365 emergency roofing service across the Denver metro area and Colorado mountain communities, with a guaranteed on-site response within 2 hours for active leaks and storm damage. Our emergency crews tarp exposed areas, stop active leaks, board up skylights, and document the damage for your insurance claim — all before permanent repairs begin."
         }
       },
       {
@@ -29,15 +123,17 @@ export default function FAQSchema() {
         "name": "What roofing materials work best for Colorado mountain homes?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "For Colorado mountain properties, we recommend premium materials designed for extreme weather conditions: architectural shingles with high wind ratings, metal roofing systems for snow load management, slate or synthetic slate for historic properties, and cool roof systems for energy efficiency. All materials are selected for their ability to withstand hail, heavy snow loads, and UV exposure at high altitudes."
+          "text":
+            "For Colorado mountain homes above 7,000 feet, standing-seam metal is the top choice because it sheds heavy snow, carries a 50+ year lifespan, and handles extreme UV exposure. Class 4 impact-resistant architectural shingles work well at mid-elevations, and synthetic slate suits historic properties in Aspen, Telluride, and Crested Butte. All selections should carry a Class A fire rating for wildfire protection."
         }
       },
       {
         "@type": "Question",
         "name": "How much does a luxury mountain roof cost in Colorado?",
         "acceptedAnswer": {
-          "@type": "Answer", 
-          "text": "Luxury mountain roofing projects typically range from $150,000 to $500,000+ depending on size, materials, and complexity. Factors affecting cost include: high-altitude accessibility, premium material selection, architectural complexity, solar integration, and sustainable features. We provide detailed estimates that include all aspects of mountain installation challenges."
+          "@type": "Answer",
+          "text":
+            "Luxury mountain roofing projects in Aspen, Vail, and Telluride typically range from $150,000 to $500,000 or more, driven by premium materials, high-altitude access logistics, architectural complexity, and snow-load engineering. Standing-seam copper, natural slate, and cedar-shake restorations fall at the higher end. Estimates include heated-eave systems, ice-and-water shield upgrades, and integrated solar readiness where appropriate."
         }
       },
       {
@@ -45,7 +141,8 @@ export default function FAQSchema() {
         "name": "Do you work with historic properties in mountain towns?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Absolutely. Alpine Peak specializes in historic preservation roofing throughout Colorado's mountain communities, especially in Telluride, Aspen, and Crested Butte. We maintain relationships with historic preservation societies and have extensive experience with Victorian-era homes, mining-era buildings, and other historic structures requiring period-appropriate materials and techniques."
+          "text":
+            "Yes, Alpine Peak specializes in historic preservation roofing throughout Colorado's mountain communities, particularly Telluride, Aspen, and Crested Butte, where Victorian-era and mining-era structures require period-accurate materials. We coordinate with local historic preservation commissions, source synthetic slate and cedar shake that meets design-review standards, and use detailing techniques consistent with the original roof age."
         }
       },
       {
@@ -53,7 +150,8 @@ export default function FAQSchema() {
         "name": "What sustainable roofing options do you offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Our sustainable roofing solutions include: solar-ready installations, recycled content materials (up to 80%), energy-efficient cool roof systems, living roof systems for appropriate applications, and sustainable material sourcing. We're LEED accredited and help properties achieve green building certifications while maintaining luxury aesthetics."
+          "text":
+            "Alpine Peak offers several sustainable roofing systems, including cool-roof reflective shingles that lower cooling loads by 10% to 25%, solar-ready underlayments engineered for PV panel attachment, recycled-content metal panels containing up to 95% recycled steel, and living-roof assemblies for appropriate commercial applications. We are LEED-accredited and help projects pursue Energy Star and green-building certifications."
         }
       },
       {
@@ -61,23 +159,26 @@ export default function FAQSchema() {
         "name": "How long do your roofing warranties last?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Alpine Peak offers comprehensive 25-year warranties on all luxury installations, covering materials, workmanship, and performance. This includes protection against leaks, material defects, and installation issues. Our warranty is fully transferable and backed by our bonding and insurance. We also provide extended manufacturer warranties on premium materials."
+          "text":
+            "Alpine Peak Roofing installations carry a 25-year workmanship warranty on labor plus the full manufacturer material warranty, which is lifetime-limited on GAF, CertainTeed, and Owens Corning architectural shingles and 30 to 50 years on standing-seam metal. Warranties are transferable to future homeowners, cover leaks and installation defects, and can be upgraded to GAF Golden Pledge or System Plus for full-system coverage."
         }
       },
       {
         "@type": "Question",
-        "name": "Can you install solar panels as part of roofing projects?",
+        "name": "Can you install solar panels as part of my roof replacement?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, we design and install solar-ready roofing systems and can coordinate solar panel installation. Our solar integration planning ensures optimal placement for Colorado's mountain sun conditions, proper structural support for snow loads, and seamless aesthetic integration with your roof design. We work with certified solar partners for complete energy solutions."
+          "text":
+            "Yes, Alpine Peak designs solar-ready roofing systems and coordinates PV installation with certified solar partners, which is the most cost-effective approach because mounting racks and flashing are integrated during the new-roof install. Our team engineers the structure for Colorado snow loads, orients panels for peak sun exposure, and ensures manufacturer warranties remain intact after panel attachment."
         }
       },
       {
-        "@type": "Question", 
+        "@type": "Question",
         "name": "What areas do you serve in Colorado?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Alpine Peak serves Colorado's premier mountain communities including Aspen, Vail, Telluride, Crested Butte, Steamboat Springs, Breckenridge, Keystone, Winter Park, and the greater Denver metro area. We specialize in high-altitude installations and understand the unique challenges of mountain roofing projects."
+          "text":
+            "Alpine Peak Roofing serves the full Denver metropolitan area plus Colorado's premier mountain communities, including Aspen, Vail, Telluride, Crested Butte, Steamboat Springs, Breckenridge, Frisco, Silverthorne, Winter Park, Durango, and Glenwood Springs. We operate crews from Front Range dispatch centers and mobile mountain teams so response times stay under two hours for emergency calls in our service region."
         }
       },
       {
@@ -85,7 +186,17 @@ export default function FAQSchema() {
         "name": "How do you handle insurance claims for storm damage?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Alpine Peak has extensive experience with insurance claims and can bill directly to most major insurers. We provide detailed damage assessments, work directly with adjusters, and ensure all storm damage is properly documented and repaired to exceed original specifications. Our emergency response team can secure properties immediately while claims are processed."
+          "text":
+            "Alpine Peak manages the full insurance-claim process for storm damage: we inspect the roof, produce a line-item Xactimate-compatible estimate, meet your adjuster on-site, and supplement the claim if items are missed. We bill most major Colorado carriers directly, coordinate ACV and depreciation release paperwork, and you pay only your deductible — there is no out-of-pocket cost for approved claims."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is an impact-resistant (Class 4) roof and is it worth it in Colorado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text":
+            "A Class 4 impact-resistant roof uses shingles tested under UL 2218 to survive a 2-inch steel-ball drop without cracking, providing the highest hail rating available. In Colorado, most major insurers offer 10% to 30% annual premium discounts for Class 4 roofs, and the systems typically pay back the $500 to $1,500 upgrade cost within three to five years while dramatically reducing hail-claim frequency."
         }
       }
     ],
@@ -94,10 +205,19 @@ export default function FAQSchema() {
       "@id": "https://alpinepeakroofing.com/#organization"
     },
     "audience": {
-      "@type": "Audience", 
-      "audienceType": "Mountain Property Owners",
+      "@type": "Audience",
+      "audienceType": "Colorado homeowners and commercial property owners",
       "geographicArea": [
-        "Aspen", "Vail", "Telluride", "Crested Butte", "Colorado"
+        "Denver",
+        "Aurora",
+        "Lakewood",
+        "Arvada",
+        "Boulder",
+        "Aspen",
+        "Vail",
+        "Telluride",
+        "Crested Butte",
+        "Colorado"
       ]
     }
   };

@@ -48,7 +48,7 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
           Comprehensive Roofing Solutions
         </h2>
         <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-          From residential homes to commercial properties, we provide the full spectrum of roofing services with unmatched quality and professionalism.
+          What roofing services does Alpine Peak offer? We deliver the full spectrum — residential roof replacement and repair, commercial systems, and 24/7 emergency response — with the quality and professionalism Colorado homeowners and property managers demand.
         </p>
       </motion.div>
 

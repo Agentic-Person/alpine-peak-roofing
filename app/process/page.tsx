@@ -9,6 +9,7 @@ import { images } from "@/lib/images";
 import ProcessHeroAnimated from "@/components/process/islands/ProcessHeroAnimated";
 import ProcessStepsAnimated, { type ProcessStep } from "@/components/process/islands/ProcessStepsAnimated";
 import ProcessGuaranteesAnimated from "@/components/process/islands/ProcessGuaranteesAnimated";
+import HowToSchema from "@/components/seo/schemas/HowToSchema";
 
 export const metadata: Metadata = {
   title: "Our Roofing Process | Alpine Peak Roofing — Denver, Colorado",
@@ -109,41 +110,33 @@ const steps: ProcessStep[] = [
   },
 ];
 
-// HowTo JSON-LD schema for AEO (answer engines love structured how-to content)
-const howToSchema = {
-  "@context": "https://schema.org",
-  "@type": "HowTo",
-  name: "How Alpine Peak Roofing Handles Your Roofing Project",
-  description:
-    "A 6-step process from initial consultation through expert installation and final warranty handover, designed for complete transparency and quality.",
-  totalTime: "P14D",
-  estimatedCost: {
-    "@type": "MonetaryAmount",
-    currency: "USD",
-    value: "Contact for free estimate",
-  },
-  supply: [
-    { "@type": "HowToSupply", name: "Premium roofing materials" },
-    { "@type": "HowToSupply", name: "Factory-certified installation crew" },
-  ],
-  tool: [
-    { "@type": "HowToTool", name: "Drone inspection equipment" },
-    { "@type": "HowToTool", name: "Infrared moisture detection technology" },
-  ],
-  step: steps.map((s) => ({
-    "@type": "HowToStep",
-    name: s.title,
-    text: s.description,
-    position: parseInt(s.number, 10),
-  })),
-};
-
 export default function ProcessPage() {
   return (
     <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      <HowToSchema
+        scriptId="process-howto-schema"
+        id="https://alpinepeakroofing.com/process#howto"
+        name="How Alpine Peak Roofing Replaces Your Roof"
+        description="A 6-step process from initial consultation through expert installation and final warranty handover, designed for complete transparency and quality for Colorado homeowners."
+        totalTime="P14D"
+        estimatedCost="0"
+        supply={[
+          "Premium roofing materials",
+          "Factory-certified installation crew",
+          "Ice & water shield underlayment",
+          "Transferable manufacturer warranty",
+        ]}
+        tool={[
+          "Drone inspection equipment",
+          "Infrared moisture detection technology",
+          "Pneumatic nailers & fastening systems",
+          "Magnetic nail-sweep cleanup tools",
+        ]}
+        steps={steps.map((s) => ({
+          name: s.title,
+          text: s.description,
+          url: `https://alpinepeakroofing.com/process#step-${s.number}`,
+        }))}
       />
 
       {/* Hero */}

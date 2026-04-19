@@ -7,8 +7,10 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronRight, ArrowRight } from "lucide-react";
 import { locations } from "@/lib/locations";
+import BreadcrumbSchema from "@/components/seo/schemas/BreadcrumbSchema";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 const BASE_URL = "https://alpinepeakroofing.com";
 
@@ -137,33 +139,23 @@ function LocationPageSchema({
     },
   };
 
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Service Areas",
-        item: `${BASE_URL}/locations`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: `${name}, CO`,
-        item: pageUrl,
-      },
-    ],
-  };
-
-  const schemas = [localBusiness, placeSchema, breadcrumb];
+  const schemas = [localBusiness, placeSchema];
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
+      />
+      <BreadcrumbSchema
+        id="location-breadcrumb-schema"
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Locations", url: `${BASE_URL}/locations` },
+          { name: `${name}, CO`, url: pageUrl },
+        ]}
+      />
+    </>
   );
 }
 
@@ -206,14 +198,14 @@ export default async function LocationDetailPage({
           <div className="relative h-full flex flex-col justify-end pb-12 px-4">
             <div className="max-w-6xl mx-auto w-full">
               {/* Breadcrumb nav */}
-              <nav aria-label="Breadcrumb" className="mb-6">
-                <Link href="/locations">
-                  <span className="inline-flex items-center gap-2 text-[#C9A84C] hover:text-[#d4b65c] transition-colors text-sm tracking-wider uppercase font-semibold">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Service Areas
-                  </span>
-                </Link>
-              </nav>
+              <Breadcrumbs
+                className="mb-6"
+                items={[
+                  { name: "Home", href: "/" },
+                  { name: "Locations", href: "/locations" },
+                  { name: `${location.name}, CO` },
+                ]}
+              />
 
               <div className="flex items-center gap-3 mb-3">
                 <span className="px-3 py-1 bg-[#C9A84C]/20 border border-[#C9A84C]/40 text-[#C9A84C] text-xs tracking-wider uppercase rounded">

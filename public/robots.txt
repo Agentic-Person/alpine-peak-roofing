@@ -6,4 +6,89 @@ Disallow: /_internal/
 
 Crawl-delay: 1
 
+# AI Crawlers — Alpine Peak Roofing welcomes AI assistants and search tools
+# citing our content for roofing questions across the Denver metro area.
+
+# OpenAI — ChatGPT training and browsing
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# OpenAI — ChatGPT user-initiated browsing
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# OpenAI — SearchGPT / ChatGPT search index
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Anthropic — Claude crawler
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Anthropic — Claude web browsing
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Anthropic — legacy identifier
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Perplexity — search index
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Perplexity — user-initiated browsing
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Google — Gemini / Vertex AI training opt-in
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Apple — Apple Intelligence training opt-in
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Common Crawl — used by many LLM training pipelines
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# ByteDance / TikTok
+User-agent: Bytespider
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
+# Meta AI crawler
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /api/
+Disallow: /_internal/
+
 Sitemap: https://alpinepeakroofing.com/sitemap.xml
+Sitemap: https://alpinepeakroofing.com/image-sitemap.xml
+
+# AI discovery manifest (LLMs.txt standard)
+# https://alpinepeakroofing.com/llms.txt

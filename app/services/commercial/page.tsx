@@ -8,6 +8,9 @@ import Image from 'next/image';
 import { commercialServices } from '@/lib/servicesData';
 import { ChevronLeft, Phone, ArrowRight } from 'lucide-react';
 import { BreadcrumbSchema, ServiceSchema } from '@/components/SchemaMarkup';
+import ServiceOfferSchema, {
+  type ServiceOfferItem,
+} from '@/components/seo/schemas/ServiceOfferSchema';
 import { AnimatedServiceGrid } from '@/components/services/islands/AnimatedServiceGrid';
 import { AnimatedFeatureList } from '@/components/services/islands/AnimatedFeatureList';
 import type { FeatureItem } from '@/components/services/islands/AnimatedFeatureList';
@@ -59,6 +62,45 @@ const serviceGridItems: ServiceGridItem[] = commercialServices.map((s) => ({
   category: s.category,
 }));
 
+/**
+ * Commercial offers are intentionally priced by tier (`priceRange`) rather
+ * than hard USD values. Commercial roof projects vary by building footprint,
+ * existing-system condition, and roof-deck access, so only tier hints make it
+ * into the Service/Offer schema — never a fabricated number.
+ */
+const commercialOffers: ServiceOfferItem[] = [
+  {
+    name: 'Flat Roof Systems',
+    description: 'TPO, EPDM, PVC, and modified bitumen single-ply systems with NDL warranties available.',
+    unitText: 'project',
+  },
+  {
+    name: 'Commercial Metal Roofing',
+    description: 'Standing-seam and structural metal systems engineered for mountain snow and wind loads.',
+    unitText: 'project',
+  },
+  {
+    name: 'Preventive Maintenance Programs',
+    description: 'Biannual inspections, cleaning, and priority repairs under fixed-fee service agreements.',
+    unitText: 'year',
+  },
+  {
+    name: 'Roof Coating Systems',
+    description: 'Silicone, acrylic, and polyurethane coatings that restore and extend existing commercial roofs.',
+    unitText: 'project',
+  },
+  {
+    name: 'Snow & Ice Management',
+    description: 'Heat-trace systems, snow retention, and winter rapid-response clearing for flat commercial roofs.',
+    unitText: 'project',
+  },
+  {
+    name: 'Emergency Commercial Repairs',
+    description: '24/7 emergency leak response, temporary dry-in, and permanent repair for commercial properties.',
+    unitText: 'response',
+  },
+];
+
 export default function CommercialServices() {
   return (
     <main className="bg-[#0a1628]">
@@ -76,6 +118,15 @@ export default function CommercialServices() {
           { name: 'Services', url: '/services' },
           { name: 'Commercial', url: '/services/commercial' },
         ]}
+      />
+      <ServiceOfferSchema
+        id="commercial-services-offer"
+        name="Commercial Roofing Services"
+        description="Commercial roofing solutions for Colorado mountain resorts, retail centers, and municipal properties — TPO, EPDM, modified bitumen, metal, coatings, maintenance, and emergency response."
+        serviceType="Commercial Roofing Contractor"
+        url="https://alpinepeakroofing.com/services/commercial"
+        priceRange="$$$ – $$$$$"
+        offers={commercialOffers}
       />
 
       {/* Hero Section */}

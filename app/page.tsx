@@ -11,6 +11,7 @@ import Script from "next/script";
 import { images } from "@/lib/images";
 
 import HeroAnimations from "@/components/home/islands/HeroAnimations";
+import TrustBar from "@/components/home/TrustBar";
 import StatsBar from "@/components/home/islands/StatsBar";
 import ServicesGrid from "@/components/home/islands/ServicesGrid";
 import WhyChooseUs from "@/components/home/islands/WhyChooseUs";
@@ -168,6 +169,9 @@ export default function Home() {
           </svg>
         </div>
       </section>
+
+      {/* ==================== TRUST BAR ==================== */}
+      <TrustBar />
 
       {/* ==================== STATS BAR ==================== */}
       <section className="bg-navy-dark py-12 relative z-10" aria-label="Company statistics">

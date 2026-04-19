@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import PortfolioClient from './PortfolioClient';
+import { ImageObjectSchema } from '@/components/seo/schemas';
+import { portfolioProjects } from '@/lib/portfolioProjects';
 
 export const metadata: Metadata = {
   title: 'Roofing Portfolio — Completed Projects in Denver & Colorado Mountains | Alpine Peak Roofing',
@@ -136,6 +138,12 @@ const collectionPageSchema = {
   ],
 };
 
+// Turn "Vail, CO" → "Vail, Colorado" for schema.org contentLocation.
+function normalizeLocation(projectLocation: string): string {
+  const [city] = projectLocation.split(',').map((s) => s.trim());
+  return city ? `${city}, Colorado` : 'Colorado';
+}
+
 export default function Page() {
   return (
     <>
@@ -143,6 +151,17 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
       />
+      {portfolioProjects.map((project) => (
+        <ImageObjectSchema
+          key={project.id}
+          idSuffix={project.id}
+          url={project.image}
+          name={`${project.title} — ${project.location}`}
+          caption={`${project.title}: ${project.roofType} on a ${project.homeSqft.toLocaleString()} sq ft residence in ${project.location} (${project.elevation}). ${project.tagline}`}
+          contentLocation={normalizeLocation(project.location)}
+          uploadDate={`${project.year}-01-01`}
+        />
+      ))}
       <PortfolioClient />
     </>
   );

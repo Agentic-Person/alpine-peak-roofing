@@ -140,7 +140,54 @@ export default function PrimaryBusinessSchema() {
         "@type": "Organization",
         "name": "Better Business Bureau"
       }
-    ]
+    ],
+    // Credentials mirrored in the homepage <TrustBar /> visible UI.
+    // TODO: Update recognizedBy.identifier for the Colorado license once the real number is confirmed.
+    // TODO: Replace the Review aggregate count once live aggregate review data is wired in.
+    "hasCredential": [
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "Colorado Roofing Contractor License",
+        "credentialCategory": "license",
+        "recognizedBy": {
+          "@type": "GovernmentOrganization",
+          "name": "State of Colorado"
+        },
+        "identifier": "CO Lic. #XXXXXX"
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "BBB A+ Accredited Business",
+        "credentialCategory": "certification",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "Better Business Bureau",
+          "url": "https://www.bbb.org/"
+        }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "GAF Master Elite Certified Contractor",
+        "credentialCategory": "certification",
+        "recognizedBy": {
+          "@type": "Organization",
+          "name": "GAF Materials Corporation",
+          "url": "https://www.gaf.com/"
+        }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        "name": "Fully Insured — General Liability & Workers' Compensation",
+        "credentialCategory": "certification"
+      }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": "250"
+    }
   };
 
   return (

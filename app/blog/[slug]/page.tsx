@@ -7,6 +7,11 @@ import { ArrowLeft, ArrowRight, Calendar, Clock, Tag } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import ReactMarkdown from "react-markdown";
 import CopyLinkButton from "@/components/blog/CopyLinkButton";
+import AuthorBio from "@/components/blog/AuthorBio";
+import BreadcrumbSchema from "@/components/seo/schemas/BreadcrumbSchema";
+import ArticleSchema from "@/components/seo/schemas/ArticleSchema";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import { getAuthor, getDefaultAuthor } from "@/lib/authors";
 
 function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;
@@ -115,6 +120,10 @@ export default async function BlogDetail({
   const category = post.focus_keyword || (post.keywords && post.keywords[0]) || "General";
   const readingTime = calculateReadingTime(post.content);
 
+  // TODO(blog-data): Once `blog_posts` carries an `author_slug` column,
+  // resolve via `getAuthor(post.author_slug)` and fall back to default.
+  const author = getAuthor("mike-alpine") ?? getDefaultAuthor();
+
   const baseUrl = "https://alpinepeakroofing.com";
   const postUrl = `${baseUrl}/blog/${post.slug}`;
   const encodedUrl = encodeURIComponent(postUrl);
@@ -153,30 +162,11 @@ export default async function BlogDetail({
     "keywords": post.keywords?.join(", ") || post.focus_keyword || undefined,
   };
 
-  const breadcrumbLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": baseUrl,
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Blog",
-        "item": `${baseUrl}/blog`,
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": post.title,
-        "item": postUrl,
-      },
-    ],
-  };
+  const breadcrumbItems = [
+    { name: "Home", url: baseUrl },
+    { name: "Blog", url: `${baseUrl}/blog` },
+    { name: post.title, url: postUrl },
+  ];
 
   return (
     <div>
@@ -184,9 +174,17 @@ export default async function BlogDetail({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      <BreadcrumbSchema id="blog-breadcrumb-schema" items={breadcrumbItems} />
+      <ArticleSchema
+        id="blog-article-schema"
+        headline={post.title}
+        description={post.meta_description}
+        datePublished={post.published_at || new Date().toISOString()}
+        dateModified={post.updated_at || post.published_at}
+        author={author}
+        image={post.featured_image_url || `${baseUrl}/logo.png`}
+        url={postUrl}
+        articleSection={category}
       />
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px]">
@@ -219,6 +217,14 @@ export default async function BlogDetail({
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-end">
           <div className="container pb-12">
+            <Breadcrumbs
+              className="mb-4"
+              items={[
+                { name: "Home", href: "/" },
+                { name: "Blog", href: "/blog" },
+                { name: post.title },
+              ]}
+            />
             <div className="mb-4">
               <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
                 {category}
@@ -295,6 +301,9 @@ export default async function BlogDetail({
               {post.content}
             </ReactMarkdown>
           </article>
+
+          {/* Author Bio (EEAT signal) */}
+          <AuthorBio author={author} />
 
           {/* Tags */}
           {post.keywords && post.keywords.length > 0 && (

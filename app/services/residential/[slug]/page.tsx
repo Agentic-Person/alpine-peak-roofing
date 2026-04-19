@@ -5,18 +5,21 @@
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
 import { residentialServices, getServiceBySlug, getRelatedServices } from '@/lib/servicesData';
 import { getTestimonialsByService } from '@/lib/testimonials';
 import { locations } from '@/lib/locations';
-import { ChevronLeft } from 'lucide-react';
 import {
   ServiceSchema,
   FAQSchema,
-  BreadcrumbSchema,
   ReviewSchema,
 } from '@/components/SchemaMarkup';
+import BreadcrumbSchema from '@/components/seo/schemas/BreadcrumbSchema';
+import ServiceOfferSchema, {
+  type ServiceOfferItem,
+} from '@/components/seo/schemas/ServiceOfferSchema';
+import { materials } from '@/lib/materials';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ServiceDetailClient } from '@/components/services/islands/ServiceDetailClient';
 import {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
@@ -28,6 +31,96 @@ const iconMap: Record<string, ElementType> = {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
   Thermometer, Leaf, AlertTriangle, Snowflake, PaintBucket,
 };
+
+/**
+ * Per-slug pricing config for the Service/Offer schema. `minPrice`/`maxPrice`
+ * are USD values in the given `unitText`. `materialSlugs` pulls live installed
+ * pricing from `lib/materials.ts` so schema stays in sync with published copy.
+ */
+interface ResidentialPricingConfig {
+  serviceType: string;
+  unitText?: string;
+  priceRange?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  materialSlugs?: string[];
+}
+
+const RESIDENTIAL_PRICING: Record<string, ResidentialPricingConfig> = {
+  'complete-roof-replacement': {
+    serviceType: 'Residential Roof Replacement',
+    unitText: 'sqft',
+    priceRange: '$$$',
+    materialSlugs: ['gaf-timberline', 'standing-seam', 'natural-slate', 'cedar-shake'],
+  },
+  'roof-repairs': {
+    serviceType: 'Residential Roof Repair',
+    unitText: 'project',
+    priceRange: '$$',
+    minPrice: 450,
+    maxPrice: 6500,
+  },
+  'new-construction': {
+    serviceType: 'New Construction Roofing',
+    unitText: 'sqft',
+    priceRange: '$$$',
+    minPrice: 6,
+    maxPrice: 22,
+  },
+  'gutter-systems': {
+    serviceType: 'Gutter Installation & Protection',
+    unitText: 'linear foot',
+    priceRange: '$$',
+    minPrice: 12,
+    maxPrice: 45,
+  },
+  'ventilation': {
+    serviceType: 'Attic & Roof Ventilation',
+    unitText: 'project',
+    priceRange: '$$',
+    minPrice: 850,
+    maxPrice: 3800,
+  },
+  'skylights-solar': {
+    serviceType: 'Skylight & Solar Integration',
+    unitText: 'unit',
+    priceRange: '$$$',
+    minPrice: 1500,
+    maxPrice: 8500,
+  },
+};
+
+function buildResidentialOffers(slug: string): {
+  offers?: ServiceOfferItem[];
+  minPrice?: number;
+  maxPrice?: number;
+  config?: ResidentialPricingConfig;
+} {
+  const config = RESIDENTIAL_PRICING[slug];
+  if (!config) return {};
+
+  if (config.materialSlugs && config.materialSlugs.length > 0) {
+    const offers: ServiceOfferItem[] = config.materialSlugs
+      .map((materialSlug) => materials.find((m) => m.slug === materialSlug))
+      .filter((m): m is (typeof materials)[number] => Boolean(m))
+      .map((m) => ({
+        name: `${m.shortName} Installed`,
+        description: `${m.name} — fully installed pricing including tear-off, underlayment, flashing, and cleanup.`,
+        minPrice: m.installedPrice.low,
+        maxPrice: m.installedPrice.high,
+        unitText: 'sqft',
+      }));
+    if (offers.length > 0) {
+      return { offers, config };
+    }
+  }
+
+  return {
+    minPrice: config.minPrice,
+    maxPrice: config.maxPrice,
+    config,
+  };
+}
 
 export async function generateStaticParams() {
   return residentialServices.map((s) => ({ slug: s.slug }));
@@ -70,6 +163,8 @@ export default async function ResidentialServiceDetailPage({
   const serviceTestimonials = getTestimonialsByService(slug);
   const relatedServices = getRelatedServices(service.relatedServices);
   const IconComponent = iconMap[service.icon] ?? Layers;
+  const canonicalUrl = `https://alpinepeakroofing.com/services/residential/${service.slug}`;
+  const pricing = buildResidentialOffers(slug);
 
   return (
     <div className="bg-[#0a1628]">
@@ -83,13 +178,28 @@ export default async function ResidentialServiceDetailPage({
       />
       <FAQSchema faqs={service.faqs} />
       <BreadcrumbSchema
+        id="residential-service-breadcrumb-schema"
         items={[
-          { name: 'Home', url: '/' },
-          { name: 'Services', url: '/services' },
-          { name: 'Residential', url: '/services/residential' },
-          { name: service.title, url: `/services/residential/${service.slug}` },
+          { name: 'Home', url: 'https://alpinepeakroofing.com' },
+          { name: 'Services', url: 'https://alpinepeakroofing.com/services' },
+          { name: 'Residential', url: 'https://alpinepeakroofing.com/services/residential' },
+          { name: service.title, url: `https://alpinepeakroofing.com/services/residential/${service.slug}` },
         ]}
       />
+      {pricing.config && (
+        <ServiceOfferSchema
+          id={`residential-service-offer-${service.slug}`}
+          name={service.title}
+          description={service.metaDescription}
+          serviceType={pricing.config.serviceType}
+          url={canonicalUrl}
+          priceRange={pricing.config.priceRange}
+          minPrice={pricing.minPrice}
+          maxPrice={pricing.maxPrice}
+          unitText={pricing.config.unitText}
+          offers={pricing.offers}
+        />
+      )}
       {serviceTestimonials.length > 0 && (
         <ReviewSchema
           serviceName={service.title}
@@ -118,13 +228,15 @@ export default async function ResidentialServiceDetailPage({
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/95 via-[#0a1628]/75 to-[#0a1628]/30" />
         </div>
         <div className="container relative z-10 py-24">
-          <Link
-            href="/services/residential"
-            className="inline-flex items-center gap-2 text-[#c9a84c] hover:text-[#d4b65c] text-sm font-medium mb-6 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Residential Services
-          </Link>
+          <Breadcrumbs
+            className="mb-6"
+            items={[
+              { name: 'Home', href: '/' },
+              { name: 'Services', href: '/services' },
+              { name: 'Residential', href: '/services/residential' },
+              { name: service.title },
+            ]}
+          />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-[#c9a84c]/20 flex items-center justify-center">
               <IconComponent className="w-5 h-5 text-[#c9a84c]" />

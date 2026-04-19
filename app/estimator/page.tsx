@@ -1,6 +1,7 @@
 import { EstimatorWizard } from '@/agents/roof-estimator-agent/components/EstimatorWizard';
 import EstimatorCarousel from '@/components/estimator/EstimatorCarousel';
 import { AddressAutoAnalyzer } from '@/components/estimator/AddressAutoAnalyzer';
+import EstimatorHowToSchema from '@/components/seo/schemas/EstimatorHowToSchema';
 import { Suspense } from 'react';
 
 const CALENDLY_URL = 'https://calendly.com/jimmy-agenticpersonnel/30min'
@@ -8,6 +9,9 @@ const CALENDLY_URL = 'https://calendly.com/jimmy-agenticpersonnel/30min'
 export default function EstimatorPage() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--background-primary)' }}>
+
+      {/* ── AEO: HowTo structured data for "How do I get a roof estimate?" queries ── */}
+      <EstimatorHowToSchema />
 
       {/* ── Page Header ── */}
       <div

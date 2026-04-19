@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import HowToSchema from '@/components/seo/schemas/HowToSchema'
 
 export const metadata: Metadata = {
   title: 'Complete Guide to Mountain Roofing in Colorado | Alpine Peak Roofing',
@@ -19,6 +20,64 @@ export const metadata: Metadata = {
 export default function MountainRoofingGuide() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <HowToSchema
+        scriptId="mountain-roofing-howto-schema"
+        id="https://alpinepeakroofing.com/guides/mountain-roofing-colorado#howto"
+        name="How to Prepare a Mountain Roof for Colorado's High-Altitude Climate"
+        description="A 6-step preparation and seasonal-inspection sequence for roofs in Colorado mountain communities — covering snow-load verification, wind-uplift hardening, UV-resistant material selection, installation, and proactive maintenance."
+        totalTime="P7D"
+        estimatedCost="0"
+        supply={[
+          "Class 4 impact-rated roofing material (standing-seam metal, synthetic slate, or IR-variant architectural shingles)",
+          "Ice and water shield underlayment (self-adhering)",
+          "Hurricane clips rated 180+ mph",
+          "Snow retention system (snow guards or fences)",
+        ]}
+        tool={[
+          "Drone inspection platform",
+          "Infrared moisture detection camera",
+          "Structural snow-load calculator (ASCE 7)",
+          "Wind-uplift testing kit",
+        ]}
+        steps={[
+          {
+            name: "Run a site-specific snow-load and wind-load analysis",
+            text:
+              "Calculate the design snow load using the ASCE 7 formula (Pr = 0.7 × Ce × Ct × Is × Pf) with Colorado exposure, thermal, and importance factors. Cross-check with ground snow loads for your elevation band — from 30 psf in the Denver metro up to 250+ psf above 10,000 feet. Add terrain-modified wind analysis for ridge acceleration, valley channeling, and canyon tunneling effects.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#snow-load-engineering",
+          },
+          {
+            name: "Inspect the existing roof with drone and infrared imaging",
+            text:
+              "Fly the full roof with a drone to document every plane, valley, and penetration. Follow up with infrared moisture scanning to locate saturated decking and hidden leak paths before tear-off. Photograph all findings for insurance and warranty records.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#maintenance-protocols",
+          },
+          {
+            name: "Select high-altitude-rated roofing materials",
+            text:
+              "Choose a material engineered for high-UV, heavy-snow, freeze-thaw service: standing-seam steel with Kynar coating (50+ years, 180+ mph wind), copper (100+ years), synthetic slate (Class 4 hail, 50-year warranty), or premium IR-variant architectural shingles for budget-sensitive projects.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#material-selection",
+          },
+          {
+            name: "Upgrade fastening and edge details",
+            text:
+              "Increase fastener density 50–100% over code minimums. Use ring-shank nails, 2.5\"-penetration structural screws, and hurricane clips rated 180+ mph. Reinforce edges and corners with triple-layer construction and perimeter load-distribution plates to resist wind uplift in exposed mountain terrain.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#wind-resistance",
+          },
+          {
+            name: "Install with high-altitude techniques and ice-and-water shield",
+            text:
+              "Run self-adhering ice and water shield from the eaves up past the interior wall line — typically 6 feet in mountain communities. Plan for reduced adhesive cure rates and longer acclimatization periods at altitude. Install snow retention systems on metal roofs to prevent avalanche-style shed.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#installation-techniques",
+          },
+          {
+            name: "Schedule twice-yearly maintenance and post-storm inspections",
+            text:
+              "Book a spring inspection to document winter damage, clean gutters, and verify snow-retention hardware. Book a fall inspection to confirm flashings, sealants, and heat-trace systems are ready for snow season. After every major wind or hail event, request a documentation inspection for insurance records.",
+            url: "https://alpinepeakroofing.com/guides/mountain-roofing-colorado#maintenance-protocols",
+          },
+        ]}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm">

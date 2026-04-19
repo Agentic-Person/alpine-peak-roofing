@@ -5,10 +5,8 @@
  */
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   DollarSign,
   Layers,
   Clock,
@@ -18,6 +16,8 @@ import {
 } from "lucide-react";
 import { getMaterialBySlug, materials } from "@/lib/materials";
 import MaterialDetailClient from "@/components/materials/islands/MaterialDetailClient";
+import BreadcrumbSchema from "@/components/seo/schemas/BreadcrumbSchema";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 // ── Static params — pre-renders every material page at build time ─────────────
 
@@ -123,41 +123,19 @@ export default async function MaterialDetailPage({
     ],
   };
 
-  // BreadcrumbList JSON-LD schema
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: "https://alpinepeakroofing.com",
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Materials",
-        item: "https://alpinepeakroofing.com/materials",
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: material.name,
-        item: `https://alpinepeakroofing.com/materials/${slug}`,
-      },
-    ],
-  };
-
   return (
     <article className="bg-navy-dark">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      <BreadcrumbSchema
+        id="material-breadcrumb-schema"
+        items={[
+          { name: "Home", url: "https://alpinepeakroofing.com" },
+          { name: "Materials", url: "https://alpinepeakroofing.com/materials" },
+          { name: material.name, url: `https://alpinepeakroofing.com/materials/${slug}` },
+        ]}
       />
 
       {/* Hero Section */}
@@ -177,14 +155,14 @@ export default async function MaterialDetailPage({
           <div className="absolute inset-0 bg-gradient-to-t from-navy-dark via-navy-dark/70 to-navy-dark/30" />
         </div>
         <div className="container relative z-10 pb-12 pt-32">
-          <Link
-            href="/materials"
-            className="inline-flex items-center gap-2 text-gold hover:text-gold-light text-sm mb-6 transition-colors"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
-          >
-            <ArrowLeft size={16} />
-            BACK TO MATERIALS
-          </Link>
+          <Breadcrumbs
+            className="mb-6"
+            items={[
+              { name: "Home", href: "/" },
+              { name: "Materials", href: "/materials" },
+              { name: material.name },
+            ]}
+          />
           <div className="flex items-center gap-3 mb-4">
             <span
               className="bg-gold/20 text-gold px-3 py-1 text-xs font-semibold tracking-wider"

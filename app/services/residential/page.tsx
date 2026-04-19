@@ -8,6 +8,10 @@ import Image from 'next/image';
 import { residentialServices } from '@/lib/servicesData';
 import { ChevronLeft, Phone, ArrowRight } from 'lucide-react';
 import { BreadcrumbSchema, ServiceSchema } from '@/components/SchemaMarkup';
+import ServiceOfferSchema, {
+  type ServiceOfferItem,
+} from '@/components/seo/schemas/ServiceOfferSchema';
+import { materials } from '@/lib/materials';
 import { AnimatedServiceGrid } from '@/components/services/islands/AnimatedServiceGrid';
 import { AnimatedFeatureList } from '@/components/services/islands/AnimatedFeatureList';
 import type { FeatureItem } from '@/components/services/islands/AnimatedFeatureList';
@@ -59,6 +63,50 @@ const serviceGridItems: ServiceGridItem[] = residentialServices.map((s) => ({
   category: s.category,
 }));
 
+/**
+ * AggregateOffer that spans every residential sub-service. Material-installed
+ * pricing is sourced live from `lib/materials.ts` so the schema reflects
+ * current public pricing tables. Service-level ranges (repairs, gutters,
+ * ventilation, skylights) are broad but realistic Denver-metro bands.
+ */
+const residentialOffers: ServiceOfferItem[] = [
+  ...materials.map<ServiceOfferItem>((m) => ({
+    name: `${m.shortName} — Installed`,
+    description: `Fully installed ${m.name.toLowerCase()} on Colorado residential homes.`,
+    minPrice: m.installedPrice.low,
+    maxPrice: m.installedPrice.high,
+    unitText: 'sqft',
+  })),
+  {
+    name: 'Roof Repair',
+    description: 'Leak repair, flashing, shingle replacement, and storm-damage repair.',
+    minPrice: 450,
+    maxPrice: 6500,
+    unitText: 'project',
+  },
+  {
+    name: 'Gutter Systems',
+    description: 'Seamless aluminum, copper, and guard-protected gutters.',
+    minPrice: 12,
+    maxPrice: 45,
+    unitText: 'linear foot',
+  },
+  {
+    name: 'Ventilation Systems',
+    description: 'Ridge vents, soffit vents, and powered attic fans sized for mountain climate.',
+    minPrice: 850,
+    maxPrice: 3800,
+    unitText: 'project',
+  },
+  {
+    name: 'Skylights & Solar Integration',
+    description: 'Velux skylight installation and solar-ready roof integrations.',
+    minPrice: 1500,
+    maxPrice: 8500,
+    unitText: 'unit',
+  },
+];
+
 export default function ResidentialServices() {
   return (
     <main className="bg-[#0a1628]">
@@ -76,6 +124,15 @@ export default function ResidentialServices() {
           { name: 'Services', url: '/services' },
           { name: 'Residential', url: '/services/residential' },
         ]}
+      />
+      <ServiceOfferSchema
+        id="residential-services-offer"
+        name="Residential Roofing Services"
+        description="Complete residential roofing across the Denver metro and Colorado mountain communities — replacement, repair, new construction, gutters, ventilation, and skylights."
+        serviceType="Residential Roofing Contractor"
+        url="https://alpinepeakroofing.com/services/residential"
+        priceRange="$$ – $$$$"
+        offers={residentialOffers}
       />
 
       {/* Hero Section — static for SSR, animation island below */}
@@ -123,11 +180,12 @@ export default function ResidentialServices() {
               Our Services
             </span>
             <h2 className="font-['Playfair_Display'] text-3xl md:text-4xl text-white font-bold mt-3 mb-4">
-              Complete Residential Solutions
+              What residential roofing services do we offer?
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              From emergency repairs to full roof replacements, we offer every residential roofing
-              service your Colorado mountain home needs.
+              Alpine Peak Roofing offers full roof replacement, roof repair, new-construction
+              roofing, gutters, ventilation, and skylight installation for Colorado homes — every
+              service your mountain home needs from a single licensed contractor.
             </p>
           </div>
           <AnimatedServiceGrid services={serviceGridItems} basePath="/services/residential" />

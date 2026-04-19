@@ -5,18 +5,18 @@
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
 import { commercialServices, getServiceBySlug, getRelatedServices } from '@/lib/servicesData';
 import { getTestimonialsByService } from '@/lib/testimonials';
 import { locations } from '@/lib/locations';
-import { ChevronLeft } from 'lucide-react';
 import {
   ServiceSchema,
   FAQSchema,
-  BreadcrumbSchema,
   ReviewSchema,
 } from '@/components/SchemaMarkup';
+import BreadcrumbSchema from '@/components/seo/schemas/BreadcrumbSchema';
+import ServiceOfferSchema from '@/components/seo/schemas/ServiceOfferSchema';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { ServiceDetailClient } from '@/components/services/islands/ServiceDetailClient';
 import {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
@@ -27,6 +27,21 @@ import type { ElementType } from 'react';
 const iconMap: Record<string, ElementType> = {
   Layers, Wrench, Shield, Droplets, Wind, Sun, Building2,
   Thermometer, Leaf, AlertTriangle, Snowflake, PaintBucket,
+};
+
+/**
+ * Commercial service pricing is quote-based — actual numbers vary wildly by
+ * building footprint, system type, and roof condition. We surface
+ * `priceRange` tier hints ("$$$", "$$$$") via the Service/Offer schema and
+ * omit hard numbers so the schema remains accurate.
+ */
+const COMMERCIAL_SERVICE_CONFIG: Record<string, { serviceType: string; priceRange: string }> = {
+  'flat-roof-systems': { serviceType: 'Commercial Flat Roof Installation', priceRange: '$$$' },
+  'commercial-metal-roofing': { serviceType: 'Commercial Metal Roofing', priceRange: '$$$$' },
+  'commercial-maintenance': { serviceType: 'Commercial Roof Maintenance Program', priceRange: '$$' },
+  'roof-coatings': { serviceType: 'Commercial Roof Coating Systems', priceRange: '$$' },
+  'snow-ice-management': { serviceType: 'Commercial Snow & Ice Management', priceRange: '$$' },
+  'commercial-emergency': { serviceType: 'Emergency Commercial Roof Repair', priceRange: '$$$' },
 };
 
 export async function generateStaticParams() {
@@ -70,6 +85,8 @@ export default async function CommercialServiceDetailPage({
   const serviceTestimonials = getTestimonialsByService(slug);
   const relatedServices = getRelatedServices(service.relatedServices);
   const IconComponent = iconMap[service.icon] ?? Layers;
+  const canonicalUrl = `https://alpinepeakroofing.com/services/commercial/${service.slug}`;
+  const offerConfig = COMMERCIAL_SERVICE_CONFIG[slug];
 
   return (
     <div className="bg-[#0a1628]">
@@ -83,13 +100,25 @@ export default async function CommercialServiceDetailPage({
       />
       <FAQSchema faqs={service.faqs} />
       <BreadcrumbSchema
+        id="commercial-service-breadcrumb-schema"
         items={[
-          { name: 'Home', url: '/' },
-          { name: 'Services', url: '/services' },
-          { name: 'Commercial', url: '/services/commercial' },
-          { name: service.title, url: `/services/commercial/${service.slug}` },
+          { name: 'Home', url: 'https://alpinepeakroofing.com' },
+          { name: 'Services', url: 'https://alpinepeakroofing.com/services' },
+          { name: 'Commercial', url: 'https://alpinepeakroofing.com/services/commercial' },
+          { name: service.title, url: `https://alpinepeakroofing.com/services/commercial/${service.slug}` },
         ]}
       />
+      {offerConfig && (
+        <ServiceOfferSchema
+          id={`commercial-service-offer-${service.slug}`}
+          name={service.title}
+          description={service.metaDescription}
+          serviceType={offerConfig.serviceType}
+          url={canonicalUrl}
+          priceRange={offerConfig.priceRange}
+          unitText="project"
+        />
+      )}
       {serviceTestimonials.length > 0 && (
         <ReviewSchema
           serviceName={service.title}
@@ -118,13 +147,15 @@ export default async function CommercialServiceDetailPage({
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628]/95 via-[#0a1628]/75 to-[#0a1628]/30" />
         </div>
         <div className="container relative z-10 py-24">
-          <Link
-            href="/services/commercial"
-            className="inline-flex items-center gap-2 text-[#c9a84c] hover:text-[#d4b65c] text-sm font-medium mb-6 transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Commercial Services
-          </Link>
+          <Breadcrumbs
+            className="mb-6"
+            items={[
+              { name: 'Home', href: '/' },
+              { name: 'Services', href: '/services' },
+              { name: 'Commercial', href: '/services/commercial' },
+              { name: service.title },
+            ]}
+          />
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-[#c9a84c]/20 flex items-center justify-center">
               <IconComponent className="w-5 h-5 text-[#c9a84c]" />
