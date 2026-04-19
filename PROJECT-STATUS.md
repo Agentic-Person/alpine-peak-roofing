@@ -1,6 +1,6 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-04-18 (Session 13 — SEO/AEO Optimization Pass, preview verified)
+**Last Updated:** 2026-04-19 (Session 13 — SEO/AEO Optimization Pass, mobile polish)
 **Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `C:\projects\APR\website\existing-repo`
@@ -62,6 +62,11 @@ Vercel preview deploy of `feat/seo-aeo-optimization-pass` tested end-to-end via 
 - **16 routes returned HTTP 200** with H1, content markers, and JSON-LD present in initial HTML
 - **Sitemap: 109 URLs** — 72 blog posts (table confirmed live), 12 locations, 4 materials, 3 services, 6 static informational pages, 12 other
 - **Schema coverage verified:** Product + AggregateOffer + Brand on materials, RoofingContractor + Place + City + GeoCoordinates on locations, HowTo + HowToStep + HowToSupply + HowToTool on /process, ContactPage + ContactPoint + OpeningHoursSpecification on /contact, FinancialProduct on /financing, CollectionPage + CreativeWork on /portfolio, LocalBusiness schemas on homepage
+
+### Mobile polish (April 19)
+User testing on a physical phone surfaced two chat-widget issues, both fixed in `components/chatbot/ChatWidget.tsx`:
+- **Floating button sized for mobile** — was 168px across on every viewport (too dominant on phones). Now 56px mobile / 168px desktop via `md:` breakpoint. Still comfortably above the 44px minimum tap-target (iOS HIG / Material Design).
+- **Open chat panel fits the screen** — was fixed 380×500 anchored 30px from right edge, overflowing phones narrower than 410px. Now `inset-4` (16px from all sides, fills viewport) on mobile / fixed 400×600 on desktop. Matches the pattern used by Intercom, HubSpot, Drift.
 
 ---
 

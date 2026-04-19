@@ -1,5 +1,5 @@
 # Alpine Peak Roofing — Bridge Status
-> Last updated: April 18, 2026
+> Last updated: April 19, 2026
 
 ## 🟡 Status: In Progress — SEO/AEO Optimization Complete, Lead Pipeline Activation Pending
 
@@ -19,6 +19,7 @@
 - **LOW** — `/contact` `RoofingContractor` schema uses placeholder Denver 80202 address — replace with real business address
 
 ## 🔨 Recently Built
+- [x] **Chat widget mobile responsiveness** (April 19) — floating button shrinks from 168px to 56px on mobile viewports (`md:` breakpoint), still above 44px minimum tap target. When opened, the chat panel now uses `inset-4` on mobile (near-fullscreen with 16px margin) instead of a fixed 380x500 that overflowed phones narrower than 410px. Desktop layout unchanged pixel-for-pixel. Files: `components/chatbot/ChatWidget.tsx`.
 - [x] **Sitemap location coverage fix** (April 18) — `app/sitemap.xml/route.ts` now drives location entries from `lib/locations.ts` so all 12 city pages are listed (was hardcoded to 6). Sitemap total: 103 → 109 URLs (6 new location slugs + 72 blog posts + 4 materials + 3 services + static pages).
 - [x] **Preview verification complete** (April 18) — 16 key routes all return HTTP 200 on the Vercel preview build with full JSON-LD schemas (HowTo on process, Product on materials, RoofingContractor+Place on locations, ContactPage+ContactPoint on contact, FinancialProduct on financing, BlogPosting on blog, etc.). Blog_posts table confirmed live with 72 published posts.
 - [x] **SEO/AEO optimization pass** (April 17) — converted 5 main pages (`/`, `/about`, `/services*`, `/process`, `/materials*`, `/locations*`, `/portfolio`, `/contact`, `/financing`, `/investment-analysis`) from client to server components. Every page now renders full content in initial HTML with per-page metadata, canonical URLs, and JSON-LD schemas. AEO crawlers (ChatGPT, Perplexity, Claude, Google AI Overviews) can finally see the content.
