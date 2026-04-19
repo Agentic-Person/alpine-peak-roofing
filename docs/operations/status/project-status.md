@@ -2,6 +2,75 @@
 
 ---
 
+## Last Activity — 2026-04-19 (session 13)
+
+### Session Summary
+Full AEO/GEO/AIO optimization pass plus the six competitive SEO gaps identified by benchmarking against paid roofing agencies (Hook Agency, Blue Corona, Roofing Webmasters) and top-ranking Denver competitors (Metro City, Elite, Premier, Interstate). Orchestrated in two parallel waves of agents. Every piece committed to `main` as `9724130 feat(seo): full AEO, GEO, AIO optimization pass`.
+
+### Work Done
+
+**AEO — Answer Engine Optimization**
+- Rewrote all 10 existing FAQs in `components/seo/schemas/FAQSchema.tsx` using snippet format (first sentence = 40–55 word direct answer, then supporting detail)
+- Added 10 new Denver-specific FAQs (cost, timeline, insurance coverage, Class 4 discounts, claim filing, best material for CO weather, etc.) — total now 20 Q&As
+- New `components/seo/schemas/EstimatorHowToSchema.tsx` wired into `/estimator`
+- New reusable `components/seo/schemas/HowToSchema.tsx` wired into `/process` and `/guides/mountain-roofing-colorado` (6 steps each)
+- Rewrote residential services H2 into question form
+
+**GEO — Generative Engine Optimization (ChatGPT, Perplexity, Claude, Gemini)**
+- `public/llms.txt` (704 words, llmstxt.org standard) — about, services, service areas, materials, resources
+- `public/llms-full.txt` (2,634 words) — per-location climate briefs, full per-material specs, ICC/NRCA/ASTM/UL/GAF citations
+
+**AIO — AI Crawler Directives**
+- `public/robots.txt` updated with explicit allow rules for 13 AI crawlers: GPTBot, ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, Perplexity-User, Google-Extended, Applebot-Extended, CCBot, Bytespider, Meta-ExternalAgent + `/llms.txt` reference
+
+**Competitive SEO gaps closed**
+- **Breadcrumbs** — `BreadcrumbSchema` + visible `Breadcrumbs` UI wired into blog, location, material, residential + commercial service detail pages
+- **ServiceOfferSchema** — Service + Offer/AggregateOffer with real pricing from `lib/materials.ts` ($4.50–$7.00/sqft GAF, $10–$16 standing seam, $15–$30 slate, $8–$15 cedar) on every service page + landing pages
+- **TrustBar on homepage** — Licensed / BBB A+ / GAF Master Elite / 4.9★ 250+ reviews / Fully Insured. Added `hasCredential` + `aggregateRating` to LocalBusiness schema
+- **Image sitemap** — new `/image-sitemap.xml` route (70 geo-tagged images across home/services/locations/materials/portfolio) + `ImageObjectSchema` on portfolio + reference added to `robots.txt`
+- **Author system** — `lib/authors.ts` with 3 seeded authors (Mike Alpine, Sarah Chen, David Torres), `ArticleSchema` JSON-LD on blog, `AuthorBio` component below blog body, `/authors/[slug]` archive pages (SSG, 3 static paths)
+
+### Files Created (14)
+- `components/seo/schemas/BreadcrumbSchema.tsx`
+- `components/seo/schemas/EstimatorHowToSchema.tsx`
+- `components/seo/schemas/HowToSchema.tsx`
+- `components/seo/schemas/ServiceOfferSchema.tsx`
+- `components/seo/schemas/ImageObjectSchema.tsx`
+- `components/seo/schemas/ArticleSchema.tsx`
+- `components/ui/Breadcrumbs.tsx`
+- `components/home/TrustBar.tsx`
+- `components/blog/AuthorBio.tsx`
+- `lib/authors.ts`
+- `app/authors/[slug]/page.tsx`
+- `app/image-sitemap.xml/route.ts`
+- `public/llms.txt`
+- `public/llms-full.txt`
+
+### Files Modified (17)
+- All blog, location, material, service detail + landing pages (breadcrumbs + offer schemas)
+- `app/page.tsx`, `app/portfolio/page.tsx`, `app/process/page.tsx`, `app/guides/mountain-roofing-colorado/page.tsx`, `app/estimator/page.tsx`
+- `components/home/islands/ServicesGrid.tsx`, `components/seo/schemas/FAQSchema.tsx`, `components/seo/schemas/PrimaryBusinessSchema.tsx`, `components/seo/schemas/index.ts`, `public/robots.txt`
+
+### Build Status
+- `npm run build` passes — 95 static pages generated
+- Zero new TypeScript errors, zero new lint errors
+- `ignoreBuildErrors` untouched (per CLAUDE.md)
+
+### Commits
+- `9724130` feat(seo): full AEO, GEO, AIO optimization pass (31 files, +2825 / −185)
+
+### TODO Placeholders Flagged
+- Real Colorado license number (currently `CO Lic. #XXXXXX` in `TrustBar` + schema)
+- Real Google review count (currently `4.9 / 250+ reviews` placeholder)
+- Author avatar images (initials render until added)
+- Author `sameAs` URLs — LinkedIn/industry profiles (empty arrays, no fabrication)
+- Supabase `blog_posts.author_slug` column — all posts currently default to `mike-alpine`
+
+### Convention Note
+- Going forward, all commits use `Co-Authored-By: Jimmy Davidson, Solutions Developer, Agentic Personnel LLC <jimmy@agenticpersonnel.com>` — recorded in `CLAUDE.md`
+
+---
+
 ## Last Activity — 2026-04-02 (session 12)
 
 ### Session Summary

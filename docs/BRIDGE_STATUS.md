@@ -1,9 +1,9 @@
 # Alpine Peak Roofing — Bridge Status
-> Last updated: April 19, 2026
+> Last updated: April 19, 2026 (session 13)
 
-## 🟡 Status: In Progress — SEO/AEO Optimization Complete, Lead Pipeline Activation Pending
+## 🟡 Status: In Progress — Full SEO/AEO/GEO/AIO + Competitive Gaps Closed, Lead Pipeline Activation Pending
 
-**Phase:** SEO/AEO optimization landed, estimator UX stable, lead capture pipeline awaiting API keys
+**Phase:** AEO/GEO/AIO + 6 paid-agency SEO gaps shipped, estimator UX stable, lead capture pipeline awaiting API keys
 **Live:** https://alpinepeakroofing.com (Vercel)
 **Repo:** github.com/Agentic-Person/alpine-peak-roofing
 **Stack:** Next.js 15.5 App Router, React 19, TypeScript, Tailwind CSS 3, Supabase (Postgres + pgvector), OpenAI, OpenClaw, ElevenLabs, Twilio, Resend
@@ -19,6 +19,16 @@
 - **LOW** — `/contact` `RoofingContractor` schema uses placeholder Denver 80202 address — replace with real business address
 
 ## 🔨 Recently Built
+- [x] **Full AEO/GEO/AIO optimization pass + 6 competitive SEO gaps closed** (April 19, session 13, commit `9724130`) — benchmarked against paid roofing agencies (Hook Agency, Blue Corona, Roofing Webmasters) and Denver competitors (Metro City, Elite, Premier, Interstate); orchestrated two parallel waves of agents to ship:
+  - **AEO**: rewrote all 10 FAQs to featured-snippet format (40–55 word lead answer), added 10 Denver-specific FAQs (20 total), new `EstimatorHowToSchema` on `/estimator`, reusable `HowToSchema` on `/process` and `/guides/mountain-roofing-colorado`
+  - **GEO**: `public/llms.txt` (704 words, llmstxt.org standard) + `public/llms-full.txt` (2,634 words, per-location climate briefs, full material specs, ICC/NRCA/ASTM/UL/GAF citations)
+  - **AIO**: explicit allow rules for 13 AI crawlers in `robots.txt` (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, Bytespider, Meta-ExternalAgent, +5 more) and `/llms.txt` reference
+  - **BreadcrumbList schema + visible breadcrumbs UI** wired into blog/locations/materials/services detail pages
+  - **ServiceOfferSchema** — Service + Offer/AggregateOffer with real pricing from `lib/materials.ts` on all service pages + landings
+  - **TrustBar on homepage** (Licensed / BBB A+ / GAF Master Elite / 4.9★ 250+ reviews / Fully Insured) + `hasCredential` + `aggregateRating` on LocalBusiness schema
+  - **Image sitemap** — `/image-sitemap.xml` route with 70 geo-tagged images, `ImageObjectSchema` on portfolio, reference in `robots.txt`
+  - **Blog author system** — `lib/authors.ts` (3 authors), `ArticleSchema`, `AuthorBio` component, SSG `/authors/[slug]` archive pages for EEAT signals
+  - Build: 95 static pages, zero new TS/lint errors, `ignoreBuildErrors` untouched
 - [x] **Chat widget mobile responsiveness** (April 19) — floating button shrinks from 168px to 56px on mobile viewports (`md:` breakpoint), still above 44px minimum tap target. When opened, the chat panel now uses `inset-4` on mobile (near-fullscreen with 16px margin) instead of a fixed 380x500 that overflowed phones narrower than 410px. Desktop layout unchanged pixel-for-pixel. Files: `components/chatbot/ChatWidget.tsx`.
 - [x] **Sitemap location coverage fix** (April 18) — `app/sitemap.xml/route.ts` now drives location entries from `lib/locations.ts` so all 12 city pages are listed (was hardcoded to 6). Sitemap total: 103 → 109 URLs (6 new location slugs + 72 blog posts + 4 materials + 3 services + static pages).
 - [x] **Preview verification complete** (April 18) — 16 key routes all return HTTP 200 on the Vercel preview build with full JSON-LD schemas (HowTo on process, Product on materials, RoofingContractor+Place on locations, ContactPage+ContactPoint on contact, FinancialProduct on financing, BlogPosting on blog, etc.). Blog_posts table confirmed live with 72 published posts.
@@ -50,6 +60,9 @@
 - [ ] Set up `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for satellite view in estimator
 - [ ] Set up `GOOGLE_SOLAR_API_KEY` for real roof measurements
 - [ ] Replace `/contact` schema placeholder address with real business address
+- [ ] Fill SEO placeholders: real CO license number (TrustBar + schema), real review count (currently `4.9 / 250+ reviews`)
+- [ ] Add author avatars + real `sameAs` URLs (LinkedIn) to `lib/authors.ts`
+- [ ] Add `author_slug` column to Supabase `blog_posts` and wire blog → author lookup (currently all posts default to `mike-alpine`)
 - [ ] Run Lighthouse against live Vercel domain for true Performance score
 - [ ] Cleanup pass on 297 pre-existing lint warnings (legacy `any` types, unescaped entities)
 - [ ] Standalone estimator tool (separate project — reusable across roofing clients)

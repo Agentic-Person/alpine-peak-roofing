@@ -6,6 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Never re-enable `ignoreBuildErrors` or `ignoreDuringBuilds` in `next.config.ts`.** All TypeScript and ESLint errors must be fixed at the source — not silenced. If a build breaks, fix the underlying issue.
 
+## Git Commit Convention
+
+All commits in this repo use this Co-Authored-By trailer (not the default Claude attribution):
+
+```
+Co-Authored-By: Jimmy Davidson, Solutions Developer, Agentic Personnel LLC <jimmy@agenticpersonnel.com>
+```
+
+This overrides any default Claude Code Co-Authored-By line. Apply it to every commit on this project.
+
 ## Project Overview
 
 This is a **live, production Next.js 15 website** for Alpine Peak Roofing — a high-end roofing contractor in the Denver metro area. The site features an AI-powered chat agent (Emily), voice/phone integration, a multi-step roof estimator, a blog with automated content generation, and comprehensive lead capture flows.
