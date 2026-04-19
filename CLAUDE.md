@@ -2,124 +2,141 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## WARNING: Build Integrity
+
+**Never re-enable `ignoreBuildErrors` or `ignoreDuringBuilds` in `next.config.ts`.** All TypeScript and ESLint errors must be fixed at the source — not silenced. If a build breaks, fix the underlying issue.
+
 ## Project Overview
 
-This is a high-end roofing contractor website project for Alpine Peak Roofing, featuring AI-powered automation, chatbot integration, and comprehensive CRM workflows. The project aims to create a premium digital presence that automates lead capture, qualification, and customer engagement through modern web technologies.
+This is a **live, production Next.js 15 website** for Alpine Peak Roofing — a high-end roofing contractor in the Denver metro area. The site features an AI-powered chat agent (Emily), voice/phone integration, a multi-step roof estimator, a blog with automated content generation, and comprehensive lead capture flows.
 
 **Company Identity:** "Pinnacle of Protection, Peak of Performance"
 **Location:** Denver metro area and surrounding regions
 **Target Market:** Residential homeowners, commercial property managers, and insurance adjusters
 
-## Project Structure
-
-Currently in planning/documentation phase:
-```
-apr-website/
-├── docs/                                    # Project documentation
-│   ├── tech-specs-2025.md                 # Technical implementation specs
-│   ├── roofing-prd-2025.md                # Product requirements document
-│   ├── Website Architecture and Design Plan.md
-│   ├── AI Chatbot Design and Workflow Plan.md
-│   ├── market-analysis-2025.md
-│   └── Alpine Peak Roofing_ Company Identity and Content.md
-```
-
-**Note:** This is currently a documentation-only repository. Implementation has not yet begun.
-
-## Planned Technology Stack
-
-Based on technical specifications in docs/:
+## Actual Technology Stack
 
 ### Frontend
-- **Framework:** Next.js 14 with App Router
-- **Styling:** Tailwind CSS with custom component library
-- **State Management:** Zustand for global state
+- **Framework:** Next.js 15.5 with App Router, React 19, TypeScript
+- **Styling:** Tailwind CSS 3 with custom design tokens (navy/gold palette)
+- **Components:** Radix UI primitives, Framer Motion for animations
+- **State Management:** Zustand
 - **Forms:** React Hook Form with Zod validation
-- **Analytics:** Google Analytics 4 + Custom events tracking
+- **Notifications:** Sonner (not react-hot-toast — removed)
 
-### Backend & Automation
-- **API:** Node.js with Express.js
-- **Database:** PostgreSQL with encryption
-- **Automation Platform:** n8n for workflow orchestration
-- **Chatbot:** GPT-4 Turbo with custom training
-- **CRM Integration:** HubSpot/Salesforce APIs
-- **Caching:** Redis for performance optimization
+### Backend (all Next.js route handlers — no Express, no n8n)
+- **Database:** Supabase (Postgres + pgvector for RAG)
+- **AI Chat:** OpenAI SDK (`gpt-4o-mini`) via `lib/agent.ts` (single source of truth)
+- **Agent Persona:** OpenClaw at `http://100.124.20.121:18790/v1` (Tailscale), model `openclaw:emily`; falls back to direct OpenAI
+- **Voice/Phone:** ElevenLabs Conversational AI + Twilio routing → `/api/voice/llm` (OpenAI-compatible SSE)
+- **Email:** Resend for transactional email
+- **Analytics:** Google Analytics 4 via `lib/ga4.ts`
 
 ### Infrastructure
-- **Hosting:** Cloud-based with 99.9% uptime guarantee
-- **Performance:** CDN integration, under 3-second load times
-- **Security:** SSL certification, end-to-end encryption, GDPR/CCPA compliance
-- **Deployment:** Docker containerization with Kubernetes orchestration
+- **Hosting:** Vercel
+- **No Docker, no Kubernetes, no Redis, no n8n runtime, no HubSpot/Salesforce**
 
-## Planned Development Commands
+## Project Structure
 
-When implementation begins, the following commands will be available:
+```
+app/                        # Next.js App Router pages & route handlers
+├── api/                    # API route handlers
+│   ├── agent/chat/        # Primary chat endpoint (JSON)
+│   ├── chat/              # Legacy chat endpoint
+│   ├── voice/llm/         # ElevenLabs Custom LLM (SSE streaming)
+│   ├── voice/route.ts     # Twilio TwiML webhook
+│   ├── admin/             # Admin endpoints (protected by ADMIN_SECRET)
+│   └── webhooks/          # Webhook handlers
+├── blog/[slug]/           # Blog detail (dynamic, SSR)
+├── locations/[slug]/      # Location detail (dynamic)
+├── materials/[slug]/      # Material detail (dynamic)
+├── services/              # Residential + commercial service pages
+├── estimator/             # Multi-step roof estimator wizard
+└── ...
+agents/                    # Self-contained agent component library
+├── roof-estimator-agent/  # Estimator wizard (used by /estimator)
+└── lead-crm-agent/        # Lead capture components
+lib/                       # Shared utilities
+├── agent.ts               # Emily persona, RAG search, lead scoring (single source of truth)
+├── materials.ts           # Roofing materials data
+├── locations.ts           # Service area location data
+├── ga4.ts                 # GA4 event tracking
+└── ...
+components/                # Shared React components
+docs/                      # Reference documentation
+scripts/                   # Blog generation scripts
+```
 
-### Initial Setup
+## Agent Architecture
+
+- **Single source of truth:** `lib/agent.ts` — Emily persona, RAG search, lead scoring
+- **Web chat:** `/api/agent/chat` (JSON) + `/api/chat` (legacy endpoint)
+- **Voice/phone:** `/api/voice/llm` — OpenAI-compatible SSE streaming for ElevenLabs Custom LLM
+- **ChatWidget** calls `/api/agent/chat` via `lib/chatbot/chatService.ts`
+- **OpenClaw session persistence:** pass `user: sessionId` in request body — OpenClaw routes repeat visitors to same Emily session
+
+## Knowledge Base (Supabase)
+- Table: `knowledge_base` (chunks from docs/, materials, locations, FAQ, services)
+- Search: `search_knowledge_base(query_embedding, match_threshold, match_count)`
+- Ingest: POST `/api/admin/ingest-knowledge` with `Authorization: Bearer {ADMIN_SECRET}`
+
+## Development Commands
+
 ```bash
-# Create Next.js project
-npx create-next-app@latest apr-website --typescript --tailwind --app --no-src-dir --import-alias "@/*"
-
-# Install core dependencies
-npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
-npm install framer-motion react-hot-toast zustand
-npm install react-youtube @types/react-youtube
-npm install lucide-react @hookform/resolvers zod
-
 # Development
 npm run dev
 
-# Production build
+# Production build (must pass with zero errors)
 npm run build
-npm run start
 
-# Linting and type checking (when configured)
+# Type check only
+npx tsc --noEmit
+
+# Lint
 npm run lint
-npm run typecheck
+
+# Blog generation
+npm run blog:generate
+npm run blog:generate:dry    # dry run
+npm run blog:generate:no-image
 ```
 
-## Planned Architecture Patterns
+## Key Environment Variables
 
-### API Route Structure
 ```
-/api/leads/capture          # Lead capture from forms/chatbot
-/api/chatbot/process        # Chatbot message processing
-/api/crm/sync              # CRM integration endpoints
-/api/automation/trigger    # n8n workflow triggers
-/api/webhooks/discord      # External webhook handlers
+OPENAI_API_KEY
+OPENAI_AGENT_MODEL          # default: gpt-4o-mini
+OPENCLAW_API_KEY            # OpenClaw Bearer token
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+ELEVENLABS_AGENT_ID
+ELEVENLABS_API_KEY
+TWILIO_ACCOUNT_SID
+TWILIO_AUTH_TOKEN
+TWILIO_PHONE_NUMBER
+RESEND_API_KEY
+ADMIN_SECRET                # protects /api/admin/* routes
+NEXT_PUBLIC_GA4_ID          # Google Analytics 4 measurement ID
 ```
 
-### Database Schema Overview
-Key planned tables:
-- `leads` - Lead information with scoring and status
-- `chat_conversations` - Chatbot interaction history
-- `automation_executions` - n8n workflow tracking
-- `content_items` - SEO-optimized content management
+## Next.js 15 Dynamic Route Convention
 
-### Automation Workflows (n8n)
-- **Lead Processing Pipeline:** Form → Validation → CRM → Notifications
-- **Content Publishing:** Scheduled → AI Generation → SEO → Distribution
-- **Storm Response:** Weather API → Alert System → Emergency Protocols
+All dynamic route params are `Promise<{...}>` in Next.js 15. Always use:
 
-## Key Implementation Priorities
+```ts
+// Correct (Next.js 15):
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+}
 
-### Phase 1: Foundation (Months 1-2)
-- Core website with responsive design
-- Basic CRM integration
-- SEO optimization and content structure
-- Security and compliance implementation
+// Client component (use React.use()):
+export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
+}
+```
 
-### Phase 2: Automation (Months 2-3)
-- n8n workflow deployment
-- AI chatbot development and integration
-- Advanced CRM automation
-- Content marketing automation
-
-### Phase 3: Advanced Features (Months 3-4)
-- Customer portal development
-- Project management integration
-- Payment processing
-- Mobile optimization
+Same applies to `generateMetadata` and `generateStaticParams`.
 
 ## Business Context
 
@@ -139,39 +156,29 @@ Key planned tables:
 ## Development Guidelines
 
 ### Code Quality Standards
-- Follow Next.js 14 App Router conventions
-- Implement TypeScript strictly for type safety
-- Use Tailwind CSS for consistent styling
-- Maintain responsive, mobile-first design
-- Ensure WCAG 2.1 AA accessibility compliance
+- Follow Next.js 15 App Router conventions (server components by default, `"use client"` only when needed)
+- TypeScript strict mode — no `any` without justification
+- Tailwind CSS for all styling — no inline style objects except for dynamic font-family overrides
+- Mobile-first responsive design
+- WCAG 2.1 AA accessibility compliance
+- Use `next/image` instead of `<img>` for all content images
 
 ### Security Best Practices
 - Never commit environment variables or API keys
-- Implement end-to-end encryption for sensitive data
-- Use rate limiting on all API endpoints
+- All `/api/admin/*` routes must check `ADMIN_SECRET`
 - Validate all user inputs with Zod schemas
-- Regular security audits and penetration testing
+- Rate limiting on public API endpoints
 
 ### Performance Requirements
 - Page load times under 3 seconds
 - Mobile PageSpeed score of 90+
 - Core Web Vitals compliance
-- CDN integration for static assets
-- Optimized images with Next.js Image component
+- Prefer static generation (`○`) over dynamic (`ƒ`) where possible
+- Optimized images with `next/image`
 
-## Integration Requirements
-
-### CRM Systems
-- HubSpot Professional/Enterprise integration
-- Salesforce API connectivity
-- Real-time bi-directional synchronization
-- Custom field mapping and validation
-
-### External Services
-- Google Analytics 4 for tracking
-- YouTube iframe API for content
-- Weather APIs for storm response
-- Payment processing (Stripe/PayPal)
-- Email service providers (SendGrid/Mailgun)
-
-When implementation begins, this documentation will be updated with actual file structures, specific commands, and deployment configurations.
+### Known Pre-existing Warnings (not blocking, fix incrementally)
+- `react/no-unescaped-entities` — apostrophes/quotes in JSX text across many files
+- `@typescript-eslint/no-explicit-any` — legacy `any` types in agents/ and some API routes
+- `@typescript-eslint/no-unused-vars` — unused imports in several pages
+- `@next/next/no-img-element` — raw `<img>` tags in a few components
+- These are demoted to `warn` in `eslint.config.mjs` — do not re-promote to `error` until fully resolved

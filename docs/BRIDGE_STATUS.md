@@ -1,12 +1,12 @@
 # Alpine Peak Roofing — Bridge Status
-> Last updated: April 2, 2026
+> Last updated: April 19, 2026
 
-## 🟡 Status: In Progress — Estimator Flow Rebuild + Lead Pipeline Activation
+## 🟡 Status: In Progress — SEO/AEO Optimization Complete, Lead Pipeline Activation Pending
 
-**Phase:** Estimator UX overhaul, lead capture pipeline, admin CRM, standalone estimator planning
+**Phase:** SEO/AEO optimization landed, estimator UX stable, lead capture pipeline awaiting API keys
 **Live:** https://alpinepeakroofing.com (Vercel)
 **Repo:** github.com/Agentic-Person/alpine-peak-roofing
-**Stack:** Next.js 14 App Router, TypeScript, Tailwind CSS, Supabase (Postgres + pgvector), OpenAI, ElevenLabs, Twilio
+**Stack:** Next.js 15.5 App Router, React 19, TypeScript, Tailwind CSS 3, Supabase (Postgres + pgvector), OpenAI, OpenClaw, ElevenLabs, Twilio, Resend
 
 ---
 
@@ -16,9 +16,21 @@
 - **HIGH** — `GOOGLE_SOLAR_API_KEY` not set — roof analysis uses seeded heuristic (fake but stable numbers) instead of real satellite measurements. Need Solar API enabled on Google Cloud project
 - **MED** — `TEAM_ALERT_PHONE` not set — SMS hot lead alerts to team phone are disabled
 - **MED** — `ELEVENLABS_PHONE_NUMBER_ID` not set — Emily's outbound AI calls to new leads are disabled
-- **LOW** — Pre-existing TS build errors: missing `twilio` and `react-markdown` packages block `next build` (not blocking dev server or deployment)
+- **LOW** — `/contact` `RoofingContractor` schema uses placeholder Denver 80202 address — replace with real business address
 
 ## 🔨 Recently Built
+- [x] **Chat widget mobile responsiveness** (April 19) — floating button shrinks from 168px to 56px on mobile viewports (`md:` breakpoint), still above 44px minimum tap target. When opened, the chat panel now uses `inset-4` on mobile (near-fullscreen with 16px margin) instead of a fixed 380x500 that overflowed phones narrower than 410px. Desktop layout unchanged pixel-for-pixel. Files: `components/chatbot/ChatWidget.tsx`.
+- [x] **Sitemap location coverage fix** (April 18) — `app/sitemap.xml/route.ts` now drives location entries from `lib/locations.ts` so all 12 city pages are listed (was hardcoded to 6). Sitemap total: 103 → 109 URLs (6 new location slugs + 72 blog posts + 4 materials + 3 services + static pages).
+- [x] **Preview verification complete** (April 18) — 16 key routes all return HTTP 200 on the Vercel preview build with full JSON-LD schemas (HowTo on process, Product on materials, RoofingContractor+Place on locations, ContactPage+ContactPoint on contact, FinancialProduct on financing, BlogPosting on blog, etc.). Blog_posts table confirmed live with 72 published posts.
+- [x] **SEO/AEO optimization pass** (April 17) — converted 5 main pages (`/`, `/about`, `/services*`, `/process`, `/materials*`, `/locations*`, `/portfolio`, `/contact`, `/financing`, `/investment-analysis`) from client to server components. Every page now renders full content in initial HTML with per-page metadata, canonical URLs, and JSON-LD schemas. AEO crawlers (ChatGPT, Perplexity, Claude, Google AI Overviews) can finally see the content.
+- [x] **Duplicate `-seo` pages removed** (April 17) — `/about-seo`, `/services-seo`, `/process-seo` deleted after merging unique copy into originals. Eliminates duplicate-content penalty.
+- [x] **Sitemap expanded** (April 17) — 17 → 31 static routes + dynamic blog. Materials, portfolio, service detail pages, financing, legal pages all now listed.
+- [x] **Schema coverage** (April 17) — LocalBusiness, RoofingContractor, Service, Product, HowTo, Place, BreadcrumbList, ItemList, CollectionPage, FinancialProduct, ContactPage, BlogPosting, FAQPage, Article, AboutPage emitted across the site.
+- [x] **Pre-rendering** (April 17) — 12 location pages + 4 material pages now statically generated via `generateStaticParams`.
+- [x] **Internal linking matrix** (April 17) — each `/locations/[city]` page cross-links to services + materials (classic local-SEO play).
+- [x] **Client island pattern** (April 17) — Framer Motion animations + state extracted into small client components under `components/*/islands/`; parent pages stay server-rendered.
+- [x] **Build integrity enforced** (April 17) — `ignoreBuildErrors` + `ignoreDuringBuilds` flipped to `false` in `next.config.ts`. TS and ESLint errors can no longer be silenced. `react-hot-toast` dead dep removed.
+- [x] **Lighthouse** (April 17, localhost) — SEO 100, Accessibility 92. (Performance 66 localhost-limited; real Vercel score pending.)
 - [x] **Estimator flow restructured** — removed email gate from modal; users now enter address → see their roof on a map → enter email to continue → pick materials → contact info → estimate (April 2)
 - [x] Email collection moved to confirmation step (after seeing roof) instead of before any value delivered (April 2)
 - [x] Colorado-only address restriction removed — anyone can use the tool (April 2)
@@ -37,6 +49,9 @@
 - [ ] Activate lead pipeline — add `RESEND_API_KEY` + verify domain + add `TEAM_ALERT_PHONE` + `ELEVENLABS_PHONE_NUMBER_ID`
 - [ ] Set up `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for satellite view in estimator
 - [ ] Set up `GOOGLE_SOLAR_API_KEY` for real roof measurements
+- [ ] Replace `/contact` schema placeholder address with real business address
+- [ ] Run Lighthouse against live Vercel domain for true Performance score
+- [ ] Cleanup pass on 297 pre-existing lint warnings (legacy `any` types, unescaped entities)
 - [ ] Standalone estimator tool (separate project — reusable across roofing clients)
 - [ ] Google Places autocomplete on address input (currently placeholder suggestions)
 - [ ] Automated blog system

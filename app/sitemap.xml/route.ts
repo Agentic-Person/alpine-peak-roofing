@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { materials } from '@/lib/materials'
+import { locations } from '@/lib/locations'
+
+// Premium locations get higher sitemap priority — mirrors marketing focus.
+const PREMIUM_LOCATION_SLUGS = new Set(['aspen', 'vail', 'telluride'])
 
 interface SitemapURL {
   url: string
@@ -155,67 +160,29 @@ export async function GET() {
       keywords: ['roofing resources', 'knowledge base', 'technical information']
     },
 
-    // Location Pages - Premium Communities
-    {
-      url: `${baseUrl}/locations/aspen`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.9,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/vail', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['aspen roofing', 'aspen contractors', 'luxury mountain roofing', '7908 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/vail`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.9,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/aspen', '/locations/telluride', '/guides/mountain-roofing-colorado'],
-      keywords: ['vail roofing', 'vail contractors', 'ski resort roofing', '8150 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/telluride`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/aspen', '/locations/vail', '/guides/mountain-roofing-colorado'],
-      keywords: ['telluride roofing', 'telluride contractors', 'historic preservation', '8750 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/crested-butte`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
-      keywords: ['crested butte roofing', 'extreme weather roofing', '8885 feet elevation', '500 inches snow']
-    },
-    {
-      url: `${baseUrl}/locations/steamboat-springs`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/winter-park', '/locations/crested-butte', '/guides/mountain-roofing-colorado'],
-      keywords: ['steamboat springs roofing', 'resort ranch roofing', '6732 feet elevation']
-    },
-    {
-      url: `${baseUrl}/locations/winter-park`,
-      lastModified: new Date().toISOString(),
-      changeFreq: 'monthly',
-      priority: 0.8,
-      category: 'locations',
-      semanticType: 'LocalBusinessPage',
-      relatedPages: ['/locations/steamboat-springs', '/guides/mountain-roofing-colorado'],
-      keywords: ['winter park roofing', 'continental divide roofing', '9052 feet elevation']
-    },
+    // Location Pages — every slug in lib/locations.ts gets an entry.
+    // Premium markets (aspen/vail/telluride) get priority 0.9; others 0.8.
+    ...locations
+      .filter(loc => loc.slug !== 'central-mountains') // listed separately under Service Areas
+      .map<SitemapURL>(loc => {
+        const elevationDigits = loc.elevation.replace(/[^0-9]/g, '')
+        const nameLower = loc.name.toLowerCase()
+        return {
+          url: `${baseUrl}/locations/${loc.slug}`,
+          lastModified: new Date().toISOString(),
+          changeFreq: 'monthly',
+          priority: PREMIUM_LOCATION_SLUGS.has(loc.slug) ? 0.9 : 0.8,
+          category: 'locations',
+          semanticType: 'LocalBusinessPage',
+          relatedPages: ['/guides/mountain-roofing-colorado', '/services/residential', '/services/commercial'],
+          keywords: [
+            `${nameLower} roofing`,
+            `${nameLower} contractors`,
+            `${loc.region.toLowerCase()} roofing`,
+            elevationDigits ? `${elevationDigits} feet elevation` : loc.elevation,
+          ],
+        }
+      }),
 
     // Service Areas
     {
@@ -239,6 +206,108 @@ export async function GET() {
       semanticType: 'Blog',
       relatedPages: ['/guides/mountain-roofing-colorado', '/faq'],
       keywords: ['roofing blog', 'industry news', 'maintenance tips', 'seasonal advice']
+    },
+
+    // Materials index
+    {
+      url: `${baseUrl}/materials`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'materials',
+      semanticType: 'CollectionPage',
+      relatedPages: ['/services', '/investment-analysis', '/process'],
+      keywords: ['roofing materials', 'premium materials', 'GAF shingles', 'metal roofing', 'slate roofing', 'cedar shake']
+    },
+
+    // Material detail pages (dynamic from lib/materials.ts)
+    ...materials.map(m => ({
+      url: `${baseUrl}/materials/${m.slug}`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly' as const,
+      priority: 0.8,
+      category: 'materials',
+      semanticType: 'ProductPage',
+      relatedPages: ['/materials', '/investment-analysis', '/services'],
+      keywords: [m.name, m.shortName, m.manufacturer, 'colorado roofing material']
+    })),
+
+    // Portfolio
+    {
+      url: `${baseUrl}/portfolio`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.8,
+      category: 'portfolio',
+      semanticType: 'CollectionPage',
+      relatedPages: ['/services', '/contact', '/about'],
+      keywords: ['roofing portfolio', 'completed projects', 'mountain roofing showcase', 'before after roof']
+    },
+
+    // Service sub-pages
+    {
+      url: `${baseUrl}/services/residential`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/materials', '/process', '/contact'],
+      keywords: ['residential roofing', 'home roofing', 'colorado residential roofing', 'roof replacement']
+    },
+    {
+      url: `${baseUrl}/services/commercial`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/materials', '/process', '/contact'],
+      keywords: ['commercial roofing', 'flat roofing', 'colorado commercial roofing', 'TPO roofing']
+    },
+    {
+      url: `${baseUrl}/services/storm-damage`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.9,
+      category: 'services',
+      semanticType: 'ServicePage',
+      relatedPages: ['/services', '/contact', '/faq'],
+      keywords: ['storm damage roofing', 'hail damage', 'insurance claim roofing', 'emergency roof repair']
+    },
+
+    // Financing
+    {
+      url: `${baseUrl}/financing`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'monthly',
+      priority: 0.7,
+      category: 'financial',
+      semanticType: 'WebPage',
+      relatedPages: ['/investment-analysis', '/contact', '/services'],
+      keywords: ['roofing financing', 'roof payment plans', 'zero percent financing roofing', 'monthly roof payments']
+    },
+
+    // Legal / utility
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'yearly',
+      priority: 0.3,
+      category: 'legal',
+      semanticType: 'WebPage',
+      relatedPages: ['/terms', '/contact'],
+      keywords: ['privacy policy', 'data protection']
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date().toISOString(),
+      changeFreq: 'yearly',
+      priority: 0.3,
+      category: 'legal',
+      semanticType: 'WebPage',
+      relatedPages: ['/privacy', '/contact'],
+      keywords: ['terms of service', 'service agreement']
     }
   ]
 
@@ -270,7 +339,7 @@ export async function GET() {
     Enhanced Sitemap for Alpine Peak Roofing
     Optimized for LLM Understanding and Semantic Search
     Generated: ${new Date().toISOString()}
-    Total Pages: ${pages.length + blogPosts.length} (${pages.length} static + ${blogPosts.length} blog posts)
+    Total Pages: ${pages.length + blogPosts.length} (${pages.length} static/dynamic + ${blogPosts.length} blog posts)
   -->
   
   ${pages.map(page => `

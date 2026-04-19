@@ -20,6 +20,19 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    // Downgrade rules that are widespread in existing code to warnings.
+    // These are pre-existing style/hygiene issues — not correctness errors.
+    // Address them incrementally; do NOT re-promote to error until fixed everywhere.
+    rules: {
+      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-require-imports": "warn",
+      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@next/next/no-img-element": "warn",
+    },
+  },
 ];
 
 export default eslintConfig;

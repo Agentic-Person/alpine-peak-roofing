@@ -1,10 +1,72 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-03-05 (Session 9)
-**Branch:** `feature/blog-automation-and-workflow-optimization`
+**Last Updated:** 2026-04-19 (Session 13 — SEO/AEO Optimization Pass, mobile polish)
+**Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
-**Local:** `D:\APS\Projects\AlpinePeakCompany\AlpinePeakRoofing\apr-website`
-**Dev Server:** `http://localhost:3004`
+**Local:** `C:\projects\APR\website\existing-repo`
+**Dev Server:** `http://localhost:3000`
+
+---
+
+## Session 13 — SEO/AEO Optimization Pass (2026-04-17)
+
+Full audit + rebuild for answer-engine crawlability. An outside SEO company had claimed the site needed a full rewrite. It didn't — just needed five pages stripped of `"use client"` plus proper metadata and schemas. Done in a day across parallel Sonnet 4.6 agents.
+
+### Build integrity restored
+- `ignoreBuildErrors` and `ignoreDuringBuilds` flipped to `false` in `next.config.ts` — TypeScript and ESLint errors can no longer be silenced
+- Pre-existing TS errors resolved: Next.js 15 `params: Promise<...>` convention applied to the one remaining dynamic route, `react-markdown` implicit-any types fixed, `lib/ga4.ts` `prefer-rest-params` fixed
+- `react-hot-toast` uninstalled (unused; `sonner` is the active toast lib)
+- CloudFront CDN hostname added to `images.remotePatterns` so `next/image` can optimize these
+- `CLAUDE.md` modernized — stack now documented as Next.js 15 / React 19 / Supabase (not the old "planning phase" framing)
+
+### Pages converted from `"use client"` to Server Components
+| Page | Schema emitted | Pre-rendered? |
+|---|---|---|
+| `/` | LocalBusiness, RoofingContractor, WebPage | Static |
+| `/about` | AboutPage | Static |
+| `/services` (+ residential, commercial, storm-damage, emergency) | Service, Breadcrumb (+ FAQ/Review on [slug]) | Static + SSG |
+| `/process` | **HowTo** (6 steps — AEO gold) | Static |
+| `/materials` (index + [slug] × 4) | ItemList + Product + Breadcrumb | SSG (4 slugs) |
+| `/locations` (index + [slug] × 12) | ItemList + RoofingContractor + Place + Breadcrumb | SSG (12 slugs) |
+| `/portfolio` | CollectionPage + 12 CreativeWork items | Static |
+| `/investment-analysis` | Article | Static |
+| `/financing` | FinancialProduct ×2 | Static |
+| `/contact` | ContactPage + RoofingContractor | Static |
+
+### Duplicate "SEO" pages deleted
+`/about-seo`, `/services-seo`, `/process-seo` directories removed after merging their unique copy into the originals. Eliminates the duplicate-content penalty.
+
+### Sitemap expanded
+`app/sitemap.xml/route.ts`: 17 → 37 static routes + dynamic blog posts. Now includes materials index + each material slug, portfolio, service details, financing, privacy, terms. Location entries driven from `lib/locations.ts` so all 12 city pages are listed automatically (April 18 follow-up — previously only 6 were hardcoded).
+
+### Internal linking matrix (local SEO)
+Each location page now links out to `/services/residential`, `/services/commercial`, `/services/storm-damage` plus material detail pages — the classic city × service cross-linking.
+
+### Client island pattern established
+Framer Motion animations, state, and event handlers extracted into small `components/*/islands/` files that carry `"use client"`. Parent pages stay server-rendered and ship full HTML to crawlers.
+
+### Verification (Wave 3)
+- `npm run build`: clean pass, 91 routes, 47 static + 4 SSG groups + 40 dynamic API/admin
+- `npx tsc --noEmit`: 0 errors
+- `npm run lint`: 0 errors, 297 pre-existing warnings (legacy `any` / `unescaped-entities`)
+- Crawl check on 15 routes: every page has H1, visible content, and JSON-LD in initial HTML
+- Lighthouse local: **SEO 100, Accessibility 92**, Performance 66 (localhost-limited — CloudFront images 404 locally, real Vercel score will be higher)
+
+### Known follow-ups
+- `/contact` schema uses placeholder Denver 80202 address — replace with real business address once confirmed.
+- 297 lint warnings remain (pre-existing, demoted to `warn`) — cleanup target, not blocking.
+- Run Lighthouse against live Vercel URL for a true Performance score.
+
+### Preview verification (April 18)
+Vercel preview deploy of `feat/seo-aeo-optimization-pass` tested end-to-end via protection-bypass token:
+- **16 routes returned HTTP 200** with H1, content markers, and JSON-LD present in initial HTML
+- **Sitemap: 109 URLs** — 72 blog posts (table confirmed live), 12 locations, 4 materials, 3 services, 6 static informational pages, 12 other
+- **Schema coverage verified:** Product + AggregateOffer + Brand on materials, RoofingContractor + Place + City + GeoCoordinates on locations, HowTo + HowToStep + HowToSupply + HowToTool on /process, ContactPage + ContactPoint + OpeningHoursSpecification on /contact, FinancialProduct on /financing, CollectionPage + CreativeWork on /portfolio, LocalBusiness schemas on homepage
+
+### Mobile polish (April 19)
+User testing on a physical phone surfaced two chat-widget issues, both fixed in `components/chatbot/ChatWidget.tsx`:
+- **Floating button sized for mobile** — was 168px across on every viewport (too dominant on phones). Now 56px mobile / 168px desktop via `md:` breakpoint. Still comfortably above the 44px minimum tap-target (iOS HIG / Material Design).
+- **Open chat panel fits the screen** — was fixed 380×500 anchored 30px from right edge, overflowing phones narrower than 410px. Now `inset-4` (16px from all sides, fills viewport) on mobile / fixed 400×600 on desktop. Matches the pattern used by Intercom, HubSpot, Drift.
 
 ---
 
@@ -179,9 +241,10 @@ ai-tools/       chatbot-card, autoblog-card, roofestimator-card, crm-card .png
 - [ ] Merge branch to `main` once stable
 
 ### Medium Priority
-- [ ] Blog — SEO metadata, featured image display
-- [ ] Location pages — content review + Denver Blue design
+- [x] Blog — SEO metadata (Article/BlogPosting schema added Session 13), featured image display
+- [ ] Location pages — content review + Denver Blue design (SSR + LocalBusiness schema done Session 13; Denver Blue polish still pending)
 - [ ] Background images (BG1-BG3) — implement in CTA sections and footer
+- [ ] Replace placeholder address in `/contact` schema with real business address
 
 ### Future
 - [ ] Google Analytics 4 integration

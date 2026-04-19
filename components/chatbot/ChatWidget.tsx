@@ -252,9 +252,11 @@ function ChatWidget({
   }
 
   // Position classes
+  // Mobile: near-fullscreen with 16px inset so the panel never overflows the viewport.
+  // Desktop (md:+): restore the original positions.
   const positionClasses = {
-    'bottom-right': 'top-[190px] right-[30px]',
-    'bottom-left': 'bottom-4 left-4'
+    'bottom-right': 'inset-4 md:inset-auto md:top-[190px] md:right-[30px]',
+    'bottom-left': 'inset-4 md:inset-auto md:bottom-4 md:left-4'
   }
 
   // Theme classes
@@ -297,12 +299,12 @@ function ChatWidget({
           
           <Button
             onClick={toggleWidget}
-            className="relative h-42 w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-2 border-yellow-400 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-yellow-500/25 group overflow-hidden"
+            className="relative h-14 w-14 md:h-42 md:w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-2 border-yellow-400 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-yellow-500/25 group overflow-hidden"
             aria-label="Open AI Assistant Chat"
           >
             {/* AI Agent Avatar - Perfect Circle */}
             <div className="relative w-full h-full flex items-center justify-center">
-              <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-white shadow-inner">
+              <div className="relative w-10 h-10 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-white shadow-inner">
                 <Image
                   src="/images/team/ai-agent-avatar-02.png"
                   alt="AI Assistant"
@@ -317,7 +319,7 @@ function ChatWidget({
 
           {/* Enhanced notification badge */}
           {leadScore > 0 && (
-            <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 h-5 w-5 md:h-8 md:w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-xs md:text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
               !
             </div>
           )}
@@ -335,7 +337,9 @@ function ChatWidget({
   return (
     <div className={cn('fixed z-[9999]', positionClasses[position])}>
       <div className={cn(
-        'flex flex-col h-[500px] w-[380px] rounded-lg border shadow-2xl bg-white',
+        // Mobile: fill the inset-4 wrapper so the panel can never overflow.
+        // Desktop: restore the fixed 400x600 panel size.
+        'flex flex-col h-full w-full rounded-lg border shadow-2xl bg-white',
         'md:h-[600px] md:w-[400px]',
         themeClasses[theme],
         className

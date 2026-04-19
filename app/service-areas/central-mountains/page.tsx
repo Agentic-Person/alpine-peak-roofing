@@ -1,23 +1,81 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 
+const BASE_URL = 'https://alpinepeakroofing.com'
+const PAGE_URL = `${BASE_URL}/service-areas/central-mountains`
+
 export const metadata: Metadata = {
   title: 'Central Mountains Colorado Roofing Service Area | Alpine Peak Roofing',
   description: 'Comprehensive roofing services across Colorado\'s Central Mountains region. Summit, Eagle, Pitkin Counties coverage from 8,000-12,000+ feet elevation. 25+ resort destinations served.',
-  keywords: 'central mountains colorado roofing, summit county roofing, eagle county roofing, pitkin county roofing, colorado mountain roofing contractors',
+  alternates: {
+    canonical: PAGE_URL,
+  },
   openGraph: {
     title: 'Central Mountains Colorado Regional Roofing Services',
     description: 'Complete roofing coverage across Colorado\'s premier mountain communities and resort destinations.',
-    type: 'article',
-    url: 'https://alpinepeakroofing.com/service-areas/central-mountains',
+    type: 'website',
+    url: PAGE_URL,
   },
-  alternates: {
-    canonical: 'https://alpinepeakroofing.com/service-areas/central-mountains'
-  }
+}
+
+function CentralMountainsSchema() {
+  const schemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Service Areas', item: `${BASE_URL}/service-areas` },
+        { '@type': 'ListItem', position: 3, name: 'Central Mountains', item: PAGE_URL },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'RoofingContractor',
+      name: 'Alpine Peak Roofing — Central Mountains Region',
+      description: 'Comprehensive roofing services across Summit, Eagle, and Pitkin Counties in Colorado\'s Central Mountains.',
+      url: PAGE_URL,
+      telephone: '(970) 446-8995',
+      areaServed: [
+        { '@type': 'AdministrativeArea', name: 'Summit County, CO' },
+        { '@type': 'AdministrativeArea', name: 'Eagle County, CO' },
+        { '@type': 'AdministrativeArea', name: 'Pitkin County, CO' },
+      ],
+      parentOrganization: {
+        '@type': 'RoofingContractor',
+        '@id': `${BASE_URL}/#organization`,
+        name: 'Alpine Peak Roofing',
+        url: BASE_URL,
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Central Mountains Colorado Roofing Service Area',
+      url: PAGE_URL,
+      description: 'Regional roofing coverage for Summit, Eagle, and Pitkin Counties across 25+ Colorado mountain communities.',
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Service Areas', item: `${BASE_URL}/service-areas` },
+          { '@type': 'ListItem', position: 3, name: 'Central Mountains', item: PAGE_URL },
+        ],
+      },
+    },
+  ]
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
+    />
+  )
 }
 
 export default function CentralMountainsServiceAreaPage() {
   return (
+    <>
+      <CentralMountainsSchema />
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
@@ -459,7 +517,66 @@ export default function CentralMountainsServiceAreaPage() {
             </div>
           </div>
         </section>
+
+        {/* Internal Links — Services */}
+        <section className="py-12 px-4 bg-slate-50">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Roofing Services in the Central Mountains
+            </h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <Link
+                href="/services/residential"
+                className="block bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-400 p-5 transition-colors"
+              >
+                <h3 className="font-semibold text-gray-900 mb-1">Residential Roofing</h3>
+                <p className="text-gray-600 text-sm">Full replacements, repairs &amp; new construction.</p>
+              </Link>
+              <Link
+                href="/services/commercial"
+                className="block bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-400 p-5 transition-colors"
+              >
+                <h3 className="font-semibold text-gray-900 mb-1">Commercial Roofing</h3>
+                <p className="text-gray-600 text-sm">Resort &amp; commercial flat and metal systems.</p>
+              </Link>
+              <Link
+                href="/services/storm-damage"
+                className="block bg-white rounded-lg shadow-sm border border-gray-200 hover:border-blue-400 p-5 transition-colors"
+              >
+                <h3 className="font-semibold text-gray-900 mb-1">Storm Damage</h3>
+                <p className="text-gray-600 text-sm">24/7 emergency response across all three counties.</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Internal Links — Materials */}
+        <section className="py-12 px-4 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Roofing Materials for High-Altitude Conditions
+            </h2>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { slug: 'gaf-timberline', name: 'Architectural Shingles', note: 'Class 4 hail-rated' },
+                { slug: 'standing-seam', name: 'Standing Seam Metal', note: 'Ideal for extreme snow loads' },
+                { slug: 'natural-slate', name: 'Natural Slate', note: 'Century-long lifespan' },
+                { slug: 'cedar-shake', name: 'Cedar Shake', note: 'Natural mountain aesthetic' },
+              ].map((mat) => (
+                <Link
+                  key={mat.slug}
+                  href={`/materials/${mat.slug}`}
+                  className="block bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-400 p-4 transition-colors"
+                >
+                  <h3 className="font-semibold text-gray-900 text-sm mb-1">{mat.name}</h3>
+                  <p className="text-gray-500 text-xs">{mat.note}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
+    </>
   )
 }

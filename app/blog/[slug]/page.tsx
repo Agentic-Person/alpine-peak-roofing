@@ -1,3 +1,4 @@
+import React from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -25,6 +26,7 @@ interface BlogPost {
   featured_image_url?: string;
   alt_text?: string;
   published_at?: string;
+  updated_at?: string;
   status: string;
 }
 
@@ -86,6 +88,9 @@ export async function generateMetadata({
   return {
     title: post.seo_title || `${post.title} | Alpine Peak Roofing Blog`,
     description: post.meta_description || undefined,
+    alternates: {
+      canonical: `https://alpinepeakroofing.com/blog/${post.slug}`,
+    },
     openGraph: {
       title: post.seo_title || post.title,
       description: post.meta_description || undefined,
@@ -126,7 +131,7 @@ export default async function BlogDetail({
     "description": post.meta_description || undefined,
     "image": post.featured_image_url || undefined,
     "datePublished": post.published_at || undefined,
-    "dateModified": post.published_at || undefined,
+    "dateModified": post.updated_at || post.published_at || undefined,
     "author": {
       "@type": "Organization",
       "name": "Alpine Peak Roofing",
@@ -145,7 +150,7 @@ export default async function BlogDetail({
       "@type": "WebPage",
       "@id": `${baseUrl}/blog/${post.slug}`,
     },
-    "keywords": post.keywords?.join(", ") || undefined,
+    "keywords": post.keywords?.join(", ") || post.focus_keyword || undefined,
   };
 
   const breadcrumbLd = {
@@ -248,40 +253,40 @@ export default async function BlogDetail({
           <article style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
             <ReactMarkdown
               components={{
-                h1: ({ children }) => (
+                h1: ({ children }: { children?: React.ReactNode }) => (
                   <h1 className="text-3xl font-bold text-white mb-6 mt-8" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h1>
                 ),
-                h2: ({ children }) => (
+                h2: ({ children }: { children?: React.ReactNode }) => (
                   <h2 className="text-2xl font-bold text-white mb-4 mt-8" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h2>
                 ),
-                h3: ({ children }) => (
+                h3: ({ children }: { children?: React.ReactNode }) => (
                   <h3 className="text-xl font-bold text-white mb-3 mt-6" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h3>
                 ),
-                p: ({ children }) => (
+                p: ({ children }: { children?: React.ReactNode }) => (
                   <p className="text-white/80 leading-relaxed mb-4">{children}</p>
                 ),
-                ul: ({ children }) => (
+                ul: ({ children }: { children?: React.ReactNode }) => (
                   <ul className="list-disc list-inside text-white/80 mb-4 space-y-1">{children}</ul>
                 ),
-                ol: ({ children }) => (
+                ol: ({ children }: { children?: React.ReactNode }) => (
                   <ol className="list-decimal list-inside text-white/80 mb-4 space-y-1">{children}</ol>
                 ),
-                li: ({ children }) => (
+                li: ({ children }: { children?: React.ReactNode }) => (
                   <li className="text-white/80">{children}</li>
                 ),
-                strong: ({ children }) => (
+                strong: ({ children }: { children?: React.ReactNode }) => (
                   <strong className="text-white font-semibold">{children}</strong>
                 ),
-                em: ({ children }) => (
+                em: ({ children }: { children?: React.ReactNode }) => (
                   <em className="text-white/90 italic">{children}</em>
                 ),
-                blockquote: ({ children }) => (
+                blockquote: ({ children }: { children?: React.ReactNode }) => (
                   <blockquote className="border-l-4 border-gold pl-4 my-6 text-white/70 italic">{children}</blockquote>
                 ),
-                a: ({ href, children }) => (
+                a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
                   <a href={href} className="text-gold hover:text-gold-light underline transition-colors">{children}</a>
                 ),
-                code: ({ children }) => (
+                code: ({ children }: { children?: React.ReactNode }) => (
                   <code className="bg-white/10 text-gold px-1.5 py-0.5 rounded text-sm">{children}</code>
                 ),
                 hr: () => <hr className="border-white/10 my-8" />,

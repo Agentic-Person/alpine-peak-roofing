@@ -2,14 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has type errors.
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   images: {
     remotePatterns: [
@@ -17,6 +13,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "adueyerxzutuuwtxyage.supabase.co",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "d2xsxph8kpxj0f.cloudfront.net",
+        pathname: "/**",
       },
     ],
   },
