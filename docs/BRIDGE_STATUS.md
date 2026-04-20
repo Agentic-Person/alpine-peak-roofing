@@ -1,9 +1,9 @@
 # Alpine Peak Roofing — Bridge Status
-> Last updated: April 19, 2026 (session 13)
+> Last updated: April 19, 2026 (session 14)
 
-## 🟡 Status: In Progress — Full SEO/AEO/GEO/AIO + Competitive Gaps Closed, Lead Pipeline Activation Pending
+## 🟡 Status: In Progress — Full SEO/AEO/GEO/AIO + Image Perf Fix Shipped, Lead Pipeline Activation Pending
 
-**Phase:** AEO/GEO/AIO + 6 paid-agency SEO gaps shipped, estimator UX stable, lead capture pipeline awaiting API keys
+**Phase:** All four optimization disciplines (SEO, AEO, GEO, AIO) now at parity-or-beyond vs. top Denver roofing competitors. Mobile LCP fixed (44.5s → 7.5s). Estimator UX stable. Lead capture pipeline awaiting API keys.
 **Live:** https://alpinepeakroofing.com (Vercel)
 **Repo:** github.com/Agentic-Person/alpine-peak-roofing
 **Stack:** Next.js 15.5 App Router, React 19, TypeScript, Tailwind CSS 3, Supabase (Postgres + pgvector), OpenAI, OpenClaw, ElevenLabs, Twilio, Resend
@@ -19,6 +19,13 @@
 - **LOW** — `/contact` `RoofingContractor` schema uses placeholder Denver 80202 address — replace with real business address
 
 ## 🔨 Recently Built
+- [x] **Image optimization + next/image conversion** (April 19, session 14, commit `40e69d9`) — Lighthouse audit on the live Vercel domain exposed a 44.5s mobile LCP caused by unresized images. Shipped a full fix:
+  - **265MB → 21.5MB** `public/images/` (−91.9%). 128 PNG/JPG files batch-converted to resized WebP via new `scripts/optimize-images.mjs` (sharp-based, per-folder max widths: 1920px heroes, 1600px services/portfolio/estimator, 1200px blog/M1/ai-tools, 800px logo, quality 80). Deleted `timber_home_brown_roof - Copy.jpg` (8.8MB duplicate).
+  - **15 raw `<img>` → `<Image>`** across `app/page.tsx`, `app/portfolio/PortfolioClient.tsx`, `app/financing/FinancingClient.tsx`, `app/contact/ContactClient.tsx`, `app/about/page.tsx`, `app/projects/[slug]/page.tsx`. Hero LCP elements got `priority sizes="100vw"`. Zero `no-img-element` warnings remain repo-wide.
+  - **Code reference rewrite** via `scripts/rewrite-image-refs.mjs` — 103 `.png`/`.jpg` references updated to `.webp` across 16 files.
+  - **Results (live mobile Lighthouse):** LCP 44.5s → 7.5s (−83%), FCP 4.9s → 4.2s, TBT 80ms → 50ms, Performance 62 → 66, SEO 100 → 100. `uses-responsive-images` waste dropped from 29.3s to 0.17s (−99.4%).
+  - **Canonical SEO/AEO/GEO/AIO ledger**: new `docs/SEO_AEO_GEO_AIO_SUMMARY.md` documents every optimization across all four disciplines — companion to the existing `docs/SEO_AEO_PLAYBOOK.md`.
+  - `.gitignore` updated for `lighthouse-*.json`, `lighthouse-*.html`, and `scripts/.image-optimization-mapping.json`.
 - [x] **Full AEO/GEO/AIO optimization pass + 6 competitive SEO gaps closed** (April 19, session 13, commit `9724130`) — benchmarked against paid roofing agencies (Hook Agency, Blue Corona, Roofing Webmasters) and Denver competitors (Metro City, Elite, Premier, Interstate); orchestrated two parallel waves of agents to ship:
   - **AEO**: rewrote all 10 FAQs to featured-snippet format (40–55 word lead answer), added 10 Denver-specific FAQs (20 total), new `EstimatorHowToSchema` on `/estimator`, reusable `HowToSchema` on `/process` and `/guides/mountain-roofing-colorado`
   - **GEO**: `public/llms.txt` (704 words, llmstxt.org standard) + `public/llms-full.txt` (2,634 words, per-location climate briefs, full material specs, ICC/NRCA/ASTM/UL/GAF citations)
@@ -63,7 +70,7 @@
 - [ ] Fill SEO placeholders: real CO license number (TrustBar + schema), real review count (currently `4.9 / 250+ reviews`)
 - [ ] Add author avatars + real `sameAs` URLs (LinkedIn) to `lib/authors.ts`
 - [ ] Add `author_slug` column to Supabase `blog_posts` and wire blog → author lookup (currently all posts default to `mike-alpine`)
-- [ ] Run Lighthouse against live Vercel domain for true Performance score
+- [ ] Chip further at mobile Performance (currently 66) — remaining opportunities: render-blocking CSS + GTM (1.19s), apex → www redirect chain (1.01s), unused JS (330ms), preconnect hints to CloudFront + GA (268ms)
 - [ ] Cleanup pass on 297 pre-existing lint warnings (legacy `any` types, unescaped entities)
 - [ ] Standalone estimator tool (separate project — reusable across roofing clients)
 - [ ] Google Places autocomplete on address input (currently placeholder suggestions)

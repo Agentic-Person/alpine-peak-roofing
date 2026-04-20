@@ -2,6 +2,85 @@
 
 ---
 
+## Last Activity — 2026-04-19 (session 14)
+
+### Session Summary
+Performance audit + image optimization + canonical SEO/AEO/GEO/AIO documentation. Ran Lighthouse against the live Vercel domain for the first time, discovered a catastrophic 44.5-second mobile LCP caused by 6MB+ CloudFront hero images served as raw `<img>` tags and 265MB of unresized PNG/JPG files under `public/images/`. Shipped a complete fix and created a canonical summary doc covering every SEO/AEO/GEO/AIO improvement across the life of the project.
+
+### Work Done
+
+**Lighthouse Baseline (before)**
+- Mobile: Performance 62, Accessibility 92, Best Practices 96, SEO 100
+- Desktop: Performance 66, Accessibility 92, Best Practices 96, SEO 100
+- Mobile LCP: 44.5s (catastrophic)
+- `uses-responsive-images` waste: 29.3s
+
+**Root Causes Identified**
+- 265MB of unresized images in `public/images/` — 12 service PNGs at 6–7.8MB each, a 4.4MB logo PNG, an 8.8MB `timber_home_brown_roof - Copy.jpg` duplicate, ~16 blog JPGs at 2MB each
+- 15 raw `<img>` tags in 6 files bypassing `next/image` (homepage hero loading 5.8MB CloudFront source unoptimized)
+- Stale comment on `app/page.tsx` claiming CloudFront domain wasn't in `remotePatterns` (it was)
+
+**Image Optimization Pipeline Built**
+- `scripts/optimize-images.mjs` — sharp-based batch converter. Walks `public/images/**`, applies per-folder max widths (1920px heroes, 1600px services/portfolio/estimator, 1200px blog/M1/ai-tools, 800px logo), writes WebP at quality 80, deletes originals. Emits a mapping JSON.
+- `scripts/rewrite-image-refs.mjs` — reads mapping, finds all `.png`/`.jpg` references in `.ts`/`.tsx`/`.js`/`.json`/`.md`, rewrites to `.webp`.
+- Added `sharp@^0.33.0` as devDependency.
+- Result: 128 files converted, 265.2MB → 21.5MB (91.9% reduction). 103 code references updated across 16 files.
+
+**Raw `<img>` → `<Image>` Conversion**
+- 15 raw `<img>` tags replaced with `next/image` `<Image fill>` across:
+  - `app/page.tsx` — 3 tags (hero + 2 section backgrounds)
+  - `app/portfolio/PortfolioClient.tsx` — 4 tags (hero + grid thumbnails + before/after pair)
+  - `app/financing/FinancingClient.tsx` — 1 tag
+  - `app/contact/ContactClient.tsx` — 1 tag
+  - `app/about/page.tsx` — 1 tag
+  - `app/projects/[slug]/page.tsx` — 5 tags
+- Hero images got `priority sizes="100vw"`. Grid thumbnails got responsive `sizes` (`(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw`).
+- Removed stale "CDN domain not in remotePatterns" comment on homepage.
+- Zero `@next/next/no-img-element` warnings remain repo-wide.
+
+**Canonical Documentation Created**
+- `docs/SEO_AEO_GEO_AIO_SUMMARY.md` — 12-section canonical ledger of every optimization across SEO / AEO / GEO / AIO for Alpine Peak Roofing. Covers the foundation pass (April 17), session 13 AEO/GEO/AIO + competitive gaps, session 14 performance work. Companion to `docs/SEO_AEO_PLAYBOOK.md` (strategy).
+
+**Results (live mobile Lighthouse, after)**
+- Mobile LCP: 44.5s → 7.5s (−83%)
+- Mobile FCP: 4.9s → 4.2s (−14%)
+- Mobile TBT: 80ms → 50ms (−38%)
+- Mobile Performance: 62 → 66 (+4)
+- Mobile SEO: 100 → 100 (hold)
+- `uses-responsive-images` waste: 29.3s → 0.17s (−99.4%)
+
+### Files Created
+- `scripts/optimize-images.mjs`
+- `scripts/rewrite-image-refs.mjs`
+- `docs/SEO_AEO_GEO_AIO_SUMMARY.md`
+
+### Files Modified (26)
+- `app/about/page.tsx`, `app/contact/ContactClient.tsx`, `app/financing/FinancingClient.tsx`, `app/page.tsx`, `app/portfolio/PortfolioClient.tsx`, `app/projects/[slug]/page.tsx` — `<img>` → `<Image>`
+- `app/ai-chat/page.tsx`, `app/ai-tools/page.tsx`, `app/ai-tools/solutions/page.tsx`, `app/services/storm-damage/page.tsx` — image extension rewrites
+- `components/chatbot/ChatHeader.tsx`, `components/chatbot/ChatMessage.tsx`, `components/chatbot/ChatWidget.tsx`, `components/estimator/EstimatorCarousel.tsx`, `components/estimator/RoofEstimateModal.tsx`, `components/layout/Footer.tsx`, `components/layout/Navigation.tsx`, `components/seo/schemas/EstimatorHowToSchema.tsx` — image extension rewrites
+- `lib/blog/blogData.ts`, `lib/blog/supabaseAdapter.ts`, `docs/images/imageManifest.json`
+- `.gitignore`, `package.json`, `package-lock.json`
+
+### Image Deletions (128)
+- All PNG/JPG files under `public/images/**` replaced with WebP equivalents
+- `public/images/portfolio/timber_home_brown_roof - Copy.jpg` (8.8MB duplicate) deleted outright
+
+### Build Status
+- `npm run build` passes — 95 static pages generated
+- Zero new TypeScript errors, zero new lint errors, zero `no-img-element` warnings
+- `ignoreBuildErrors` untouched (per CLAUDE.md)
+
+### Commits
+- `40e69d9` perf(images): optimize 128 images to WebP, convert img tags to next/image (284 files, +890 / −253)
+
+### Remaining Performance Opportunities (not shipped)
+- 1.19s render-blocking resources (CSS + GTM)
+- 1.01s redirect chain (apex → www)
+- 330ms unused JS
+- 268ms `uses-rel-preconnect` (preconnect hints for CloudFront + GA)
+
+---
+
 ## Last Activity — 2026-04-19 (session 13)
 
 ### Session Summary
