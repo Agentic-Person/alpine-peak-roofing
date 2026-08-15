@@ -1,10 +1,27 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-04-19 (Session 13 — SEO/AEO Optimization Pass, mobile polish)
+**Last Updated:** 2026-08-15 (Session 14 — AI-readiness 100 pass: server-rendered schema rewrite, deployed + re-audited live at 98.6/100)
 **Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
-**Local:** `C:\projects\APR\website\existing-repo`
+**Local:** `D:gent-services\projects\client-siteslpine-peak-roofing` (fresh clone 2026-08-15; the old C:\projects\APR path is stale)
 **Dev Server:** `http://localhost:3000`
+
+---
+
+## Session 14 — AI-Readiness 100 Pass + Production Deploy (2026-08-15)
+
+Run by the Peak Growth Roofing agent fleet (Fable 5 audit/design, Sonnet 5 implementation/deploy) as part of bringing every portfolio site to ~100 on Peak Growth's five-component AI-search readiness composite [JSON-LD, llms.txt, FAQPage, Lighthouse SEO, Lighthouse Performance].
+
+**Critical discovery:** every JSON-LD schema on the live site was CLIENT-INJECTED. All 14 components in `components/seo/schemas/` emitted via `next/script` — even `strategy="beforeInteractive"` does not server-render the tag; it defers into the hydration queue (`__next_s.push`). Raw HTML had ZERO real `<script type="application/ld+json">` tags, so AI crawlers (GPTBot, PerplexityBot, ClaudeBot — none execute JS) saw no structured data at all. This is why Session 13's schema work validated in-browser/Lighthouse yet was invisible to answer engines.
+
+**Fixed on `feature/ai-readiness-100` (4 commits, merged to main at `658c3b0`):**
+- All 14 schema components rewritten to server-render via new escape-safe `components/seo/schemas/jsonLd.ts` (`<` → `<`, script-breakout tested). Verified by raw curl on the production build: 21 routes, 208 server-rendered JSON-LD tags, FAQPage on every route, zero remaining `__next_s` injections, document ~7 KB smaller.
+- Fonts were loading TWICE (next/font self-hosted AND re-fetched from Google Fonts via `@import`s in Navigation.tsx + globals.css — 790ms render-blocking). All four families self-hosted; 394 inline font-family literals rewritten to the next/font CSS vars.
+- LCP: hero `fetchPriority="high"`; competing chat-avatar preload demoted to lazy; AVIF enabled; 1440 deviceSizes; nav logo `sizes="52px"` (was fetching 1440px for a 52px slot); hero quality 68 (visually verified imperceptible).
+
+**Deployed 2026-08-15 — IMPORTANT OPERATIONAL NOTE:** this Vercel project (`jimihacks-projects/alpine-peak-roofing`, prj_veMrCTb2SsFTGsZklJtuN9Gc2klN) has **NO Git integration** — pushes to origin/main never auto-deploy. Deploy manually with `vercel deploy --prod` (that is how this release shipped: dpl_7jV54iG7DPhNeSq9JpbLYBKnpp8c, aliased to www.alpinepeakroofing.com), or wire the Git integration in the Vercel dashboard.
+
+**Live re-audit (post-deploy, tag-aware, Lighthouse median-of-three):** JSON-LD 9 real tags ✓ · llms.txt 200 ✓ · FAQPage ✓ · SEO median 100 · Performance median 93 → **composite 98.6/100** (was 52 crawler-visible before this session). Remaining perf ceiling is element render delay (render-blocking CSS) + GA gtag.js — not image bytes. Pre-existing cosmetic bug noted, not fixed: chat avatar renders 16x124 inside its 56x56 button.
 
 ---
 
