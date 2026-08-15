@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function EmergencyServiceSchema() {
   const schema = {
@@ -181,11 +181,10 @@ export default function EmergencyServiceSchema() {
   };
 
   return (
-    <Script
+    <script
       id="emergency-service-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

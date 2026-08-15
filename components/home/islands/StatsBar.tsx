@@ -31,10 +31,10 @@ export default function StatsBar() {
           className="text-center px-6"
         >
           <stat.icon size={24} className="text-gold mx-auto mb-3" />
-          <div className="text-3xl md:text-4xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <div className="text-3xl md:text-4xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
             {stat.number}
           </div>
-          <div className="text-xs uppercase tracking-[0.15em] text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+          <div className="text-xs uppercase tracking-[0.15em] text-white/50" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
             {stat.label}
           </div>
         </motion.div>

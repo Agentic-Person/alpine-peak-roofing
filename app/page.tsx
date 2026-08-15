@@ -7,7 +7,7 @@
  * Client animations extracted to components/home/islands/
  */
 import type { Metadata } from "next";
-import Script from "next/script";
+import { jsonLdHtml } from "@/components/seo/schemas/jsonLd";
 import Image from "next/image";
 import { images } from "@/lib/images";
 
@@ -122,11 +122,10 @@ const webPageSchema = {
 export default function Home() {
   return (
     <>
-      <Script
+      <script
         id="webpage-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(webPageSchema) }}
       />
 
       {/* ==================== HERO SECTION ==================== */}
@@ -137,7 +136,9 @@ export default function Home() {
             alt="Luxury mountain home with premium roofing in Colorado"
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
+            quality={68}
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.75)] to-[oklch(0.12_0.03_260/0.4)]" />
@@ -148,14 +149,14 @@ export default function Home() {
             {/* Static fallback visible to crawlers immediately; animations layer on top */}
             <noscript>
               <div className="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 px-4 py-1.5 mb-6">
-                <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   Licensed &amp; Insured — Serving Colorado Since 1989
                 </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                 Colorado&apos;s Premier <span className="text-gold">Roofing</span> Specialists
               </h1>
-              <p className="text-lg md:text-xl text-white/70 mb-10 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-lg md:text-xl text-white/70 mb-10 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 Expert craftsmanship meets mountain-grade durability. From Aspen to Telluride, we deliver roofing solutions built to withstand Colorado&apos;s most demanding conditions.
               </p>
             </noscript>

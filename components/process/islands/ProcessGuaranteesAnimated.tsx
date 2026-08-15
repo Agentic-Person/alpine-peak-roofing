@@ -50,13 +50,13 @@ export default function ProcessGuaranteesAnimated() {
               <Shield size={48} className="text-gold mx-auto mb-6" />
               <h2
                 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 Our <span className="text-gold">Triple Guarantee</span>
               </h2>
               <p
                 className="text-lg text-white/60 mb-12 max-w-2xl mx-auto"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 We stand behind every project with three ironclad guarantees that protect your investment.
               </p>
@@ -75,19 +75,19 @@ export default function ProcessGuaranteesAnimated() {
                 >
                   <div
                     className="text-3xl font-bold text-gold mb-2"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
+                    style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                   >
                     {g.period}
                   </div>
                   <h3
                     className="text-lg font-bold text-white mb-3"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
+                    style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                   >
                     {g.title}
                   </h3>
                   <p
                     className="text-sm text-white/50 leading-relaxed"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {g.desc}
                   </p>
@@ -110,20 +110,20 @@ export default function ProcessGuaranteesAnimated() {
           >
             <h2
               className="text-3xl md:text-4xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Ready to Get Started?
             </h2>
             <p
               className="text-lg text-white/60 mb-8 max-w-xl mx-auto"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Take the first step toward a better roof. Schedule your free consultation today.
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               SCHEDULE FREE CONSULTATION <ChevronRight size={16} />
             </Link>

@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export interface ImageObjectSchemaProps {
   /** Canonical URL of the image (CDN or local). */
@@ -97,11 +97,10 @@ export default function ImageObjectSchema({
   const scriptId = `image-object-schema-${safeSuffix}`;
 
   return (
-    <Script
+    <script
       id={scriptId}
       type="application/ld+json"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

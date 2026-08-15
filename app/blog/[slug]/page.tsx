@@ -207,7 +207,7 @@ export default async function BlogDetail({
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-10">
           <Link href="/blog">
-            <span className="inline-flex items-center gap-2 bg-navy-dark/80 hover:bg-navy-dark text-gold px-4 py-2 text-sm font-semibold transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <span className="inline-flex items-center gap-2 bg-navy-dark/80 hover:bg-navy-dark text-gold px-4 py-2 text-sm font-semibold transition-all" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               <ArrowLeft size={16} />
               Back to Blog
             </span>
@@ -226,14 +226,14 @@ export default async function BlogDetail({
               ]}
             />
             <div className="mb-4">
-              <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 {category}
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               {post.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-6 text-white/70" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <div className="flex flex-wrap items-center gap-6 text-white/70" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               {post.published_at && (
                 <div className="flex items-center gap-2">
                   <Calendar size={16} />
@@ -256,17 +256,17 @@ export default async function BlogDetail({
       {/* Article Content */}
       <section className="py-16 md:py-24">
         <div className="container max-w-3xl">
-          <article style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+          <article style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
             <ReactMarkdown
               components={{
                 h1: ({ children }: { children?: React.ReactNode }) => (
-                  <h1 className="text-3xl font-bold text-white mb-6 mt-8" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h1>
+                  <h1 className="text-3xl font-bold text-white mb-6 mt-8" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{children}</h1>
                 ),
                 h2: ({ children }: { children?: React.ReactNode }) => (
-                  <h2 className="text-2xl font-bold text-white mb-4 mt-8" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4 mt-8" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{children}</h2>
                 ),
                 h3: ({ children }: { children?: React.ReactNode }) => (
-                  <h3 className="text-xl font-bold text-white mb-3 mt-6" style={{ fontFamily: "'Playfair Display', serif" }}>{children}</h3>
+                  <h3 className="text-xl font-bold text-white mb-3 mt-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{children}</h3>
                 ),
                 p: ({ children }: { children?: React.ReactNode }) => (
                   <p className="text-white/80 leading-relaxed mb-4">{children}</p>
@@ -313,7 +313,7 @@ export default async function BlogDetail({
                   <span
                     key={tag}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-gold text-xs font-semibold uppercase tracking-wider transition-all"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     <Tag size={14} />
                     {tag}
@@ -325,7 +325,7 @@ export default async function BlogDetail({
 
           {/* Social Share */}
           <div className="mt-10 pt-8 border-t border-white/10">
-            <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-4" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Share This Article
             </p>
             <div className="flex flex-wrap gap-3">
@@ -335,7 +335,7 @@ export default async function BlogDetail({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-[#1DA1F2]/20 hover:border-[#1DA1F2]/40 border border-white/10 text-white/70 hover:text-[#1DA1F2] text-xs font-semibold transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 aria-label="Share on X / Twitter"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -350,7 +350,7 @@ export default async function BlogDetail({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-[#0A66C2]/20 hover:border-[#0A66C2]/40 border border-white/10 text-white/70 hover:text-[#0A66C2] text-xs font-semibold transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 aria-label="Share on LinkedIn"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -365,7 +365,7 @@ export default async function BlogDetail({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-[#1877F2]/20 hover:border-[#1877F2]/40 border border-white/10 text-white/70 hover:text-[#1877F2] text-xs font-semibold transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 aria-label="Share on Facebook"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -385,7 +385,7 @@ export default async function BlogDetail({
       {relatedPosts.length > 0 && (
         <section className="py-20 border-t border-white/10">
           <div className="container">
-            <h2 className="text-3xl font-bold text-white mb-12" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="text-3xl font-bold text-white mb-12" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Related Articles
             </h2>
 
@@ -410,12 +410,12 @@ export default async function BlogDetail({
                   </div>
 
                   <div className="flex-1 p-4 flex flex-col">
-                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-gold transition-colors line-clamp-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-gold transition-colors line-clamp-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                       {relatedPost.title}
                     </h3>
 
                     {relatedPost.published_at && (
-                      <p className="text-xs text-white/40 mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-xs text-white/40 mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         {new Date(relatedPost.published_at).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
@@ -424,7 +424,7 @@ export default async function BlogDetail({
                     )}
 
                     <Link href={`/blog/${relatedPost.slug}`} className="mt-auto">
-                      <span className="inline-flex items-center gap-1 text-gold hover:text-gold-light transition-colors text-xs font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <span className="inline-flex items-center gap-1 text-gold hover:text-gold-light transition-colors text-xs font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         Read More
                         <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                       </span>
@@ -440,14 +440,14 @@ export default async function BlogDetail({
       {/* CTA Section */}
       <section className="py-16 bg-white/5 border-t border-white/10">
         <div className="container text-center">
-          <h2 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-3xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
             Ready to Protect Your Roof?
           </h2>
-          <p className="text-white/60 mb-8 max-w-2xl mx-auto" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+          <p className="text-white/60 mb-8 max-w-2xl mx-auto" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
             Schedule a free professional inspection and get expert recommendations tailored to your Colorado home.
           </p>
           <Link href="/contact">
-            <span className="inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-semibold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <span className="inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-semibold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Get Free Estimate
               <ArrowRight size={16} />
             </span>

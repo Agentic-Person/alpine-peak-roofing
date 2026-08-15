@@ -20,19 +20,19 @@ export default function EstimatorPage() {
       >
         <p
           className="text-xs uppercase tracking-widest mb-3 font-bold"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'var(--amber-gold)', letterSpacing: '0.2em' }}
+          style={{ fontFamily: "var(--font-lato), system-ui, sans-serif", color: 'var(--amber-gold)', letterSpacing: '0.2em' }}
         >
           Powered by Satellite & AI
         </p>
         <h1
           className="text-4xl md:text-5xl font-bold mb-4"
-          style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+          style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
         >
           Instant Roof Estimate
         </h1>
         <p
           className="text-lg max-w-2xl mx-auto mb-8"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'rgba(255,255,255,0.70)', fontWeight: 300 }}
+          style={{ fontFamily: "var(--font-lato), system-ui, sans-serif", color: 'rgba(255,255,255,0.70)', fontWeight: 300 }}
         >
           Accurate satellite measurements + AI analysis. Your detailed estimate in under 60 seconds — completely free.
         </p>
@@ -46,7 +46,7 @@ export default function EstimatorPage() {
           style={{
             background: 'var(--amber-gold)',
             color: 'var(--ink)',
-            fontFamily: "'Lato', sans-serif",
+            fontFamily: "var(--font-lato), system-ui, sans-serif",
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             boxShadow: '0 4px 20px rgba(229,168,0,0.4)',
@@ -87,29 +87,29 @@ export default function EstimatorPage() {
             <div>
               <h3
                 className="text-lg font-bold mb-3"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
               >
                 Alpine Peak Roofing
               </h3>
-              <p style={{ color: 'rgba(255,255,255,0.60)', fontSize: '0.875rem', fontFamily: "'Lato', sans-serif" }}>
+              <p style={{ color: 'rgba(255,255,255,0.60)', fontSize: '0.875rem', fontFamily: "var(--font-lato), system-ui, sans-serif" }}>
                 Colorado&apos;s most trusted roofing professionals. Licensed, bonded, and insured since 1989.
               </p>
             </div>
             <div>
-              <h4 className="font-bold mb-3 text-sm uppercase tracking-wider" style={{ color: 'var(--amber-gold)', fontFamily: "'Lato', sans-serif" }}>
+              <h4 className="font-bold mb-3 text-sm uppercase tracking-wider" style={{ color: 'var(--amber-gold)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}>
                 Contact
               </h4>
-              <div className="space-y-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: "'Lato', sans-serif" }}>
+              <div className="space-y-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}>
                 <div>(970) 456-1176</div>
                 <div>info@alpinepeakroofing.com</div>
                 <div>Denver Metro, CO</div>
               </div>
             </div>
             <div>
-              <h4 className="font-bold mb-3 text-sm uppercase tracking-wider" style={{ color: 'var(--amber-gold)', fontFamily: "'Lato', sans-serif" }}>
+              <h4 className="font-bold mb-3 text-sm uppercase tracking-wider" style={{ color: 'var(--amber-gold)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}>
                 Our Technology
               </h4>
-              <div className="space-y-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: "'Lato', sans-serif" }}>
+              <div className="space-y-1.5 text-sm" style={{ color: 'rgba(255,255,255,0.65)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}>
                 <div>Satellite imagery analysis</div>
                 <div>AI-powered measurements</div>
                 <div>Instant cost calculations</div>
@@ -119,7 +119,7 @@ export default function EstimatorPage() {
           </div>
           <div
             className="mt-8 pt-8 text-center text-xs"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.40)', fontFamily: "'Lato', sans-serif" }}
+            style={{ borderTop: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.40)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}
           >
             &copy; 2026 Alpine Peak Roofing. All rights reserved.
           </div>

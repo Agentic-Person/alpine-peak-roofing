@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function PrimaryBusinessSchema() {
   const schema = {
@@ -191,11 +191,10 @@ export default function PrimaryBusinessSchema() {
   };
 
   return (
-    <Script
+    <script
       id="primary-business-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

@@ -140,19 +140,19 @@ export default async function AuthorPage({
             <div className="gold-line mb-4" />
             <span
               className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Author
             </span>
             <h1
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               {author.name}
             </h1>
             <p
               className="text-lg md:text-xl text-gold font-semibold"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               {author.title}
             </p>
@@ -170,7 +170,7 @@ export default async function AuthorPage({
             <div className="mt-12">
               <h2
                 className="text-2xl font-bold text-white mb-6"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 Areas of Expertise
               </h2>
@@ -179,7 +179,7 @@ export default async function AuthorPage({
                   <li
                     key={topic}
                     className="flex items-start gap-2 text-white/80"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     <ArrowRight size={16} className="text-gold mt-1 flex-shrink-0" />
                     <span>{topic}</span>
@@ -196,7 +196,7 @@ export default async function AuthorPage({
         <div className="container max-w-5xl">
           <h2
             className="text-3xl font-bold text-white mb-8"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             Articles by {author.name}
           </h2>
@@ -224,14 +224,14 @@ export default async function AuthorPage({
                   <div className="flex-1 p-5 flex flex-col">
                     <h3
                       className="text-lg font-bold text-white mb-2 group-hover:text-gold transition-colors line-clamp-2"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
+                      style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                     >
                       {post.title}
                     </h3>
                     {post.published_at && (
                       <p
                         className="flex items-center gap-1 text-xs text-white/40 mb-3"
-                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                       >
                         <Calendar size={12} />
                         {new Date(post.published_at).toLocaleDateString("en-US", {
@@ -244,7 +244,7 @@ export default async function AuthorPage({
                     <Link href={`/blog/${post.slug}`} className="mt-auto">
                       <span
                         className="inline-flex items-center gap-1 text-gold hover:text-gold-light transition-colors text-xs font-semibold"
-                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                       >
                         Read Article
                         <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -257,7 +257,7 @@ export default async function AuthorPage({
           ) : (
             <div
               className="bg-white/5 border border-white/10 p-8 md:p-12 text-center"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               <p className="text-white/70 text-lg mb-2">
                 Posts by {author.name} coming soon.
@@ -280,7 +280,7 @@ export default async function AuthorPage({
           <div className="container max-w-5xl">
             <h2
               className="text-2xl font-bold text-white mb-8"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Meet the Rest of the Team
             </h2>
@@ -295,13 +295,13 @@ export default async function AuthorPage({
                     >
                       <p
                         className="text-gold text-xs font-semibold uppercase tracking-wider mb-1"
-                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                       >
                         {a.title}
                       </p>
                       <p
                         className="text-white font-bold text-lg"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                       >
                         {a.name}
                       </p>

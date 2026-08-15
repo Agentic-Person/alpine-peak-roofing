@@ -79,11 +79,11 @@ export default function AboutAnimatedSections() {
               custom={0}
             >
               <div className="gold-line mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Story</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Our Story</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                 From Humble Beginnings to Colorado&apos;s Premier Roofer
               </h2>
-              <div className="space-y-4 text-white/60 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <div className="space-y-4 text-white/60 leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 <p>Alpine Peak Roofing was founded in 1989 by a team of passionate craftsmen who believed that Colorado homeowners deserved better. Better materials, better workmanship, and better service than what was available at the time.</p>
                 <p>Starting with a single truck and a commitment to excellence, we built our reputation one roof at a time. Word spread through the mountain communities — from Vail to Aspen, Telluride to Steamboat Springs — that Alpine Peak was the name to trust.</p>
                 <p>Today, we&apos;re proud to be one of Colorado&apos;s largest and most respected roofing companies, with a team of over 50 certified professionals and thousands of completed projects across the state. But our values haven&apos;t changed: every project gets the same attention to detail and commitment to quality that built our reputation over three decades ago.</p>
@@ -101,8 +101,8 @@ export default function AboutAnimatedSections() {
                 <Image src={images.aboutOffice} alt="Alpine Peak Roofing office" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
               </div>
               <div className="absolute -bottom-6 -left-6 bg-gold p-6 hidden lg:block">
-                <div className="text-4xl font-bold text-navy-dark" style={{ fontFamily: "'Playfair Display', serif" }}>35+</div>
-                <div className="text-sm text-navy-dark/70 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Years of Excellence</div>
+                <div className="text-4xl font-bold text-navy-dark" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>35+</div>
+                <div className="text-sm text-navy-dark/70 font-medium" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Years of Excellence</div>
               </div>
             </motion.div>
           </div>
@@ -121,8 +121,8 @@ export default function AboutAnimatedSections() {
             className="text-center max-w-2xl mx-auto mb-16"
           >
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Values</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Our Values</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               The Principles That Guide Us
             </h2>
           </motion.div>
@@ -141,8 +141,8 @@ export default function AboutAnimatedSections() {
                 <div className="w-14 h-14 bg-gold/10 flex items-center justify-center mx-auto mb-4">
                   <v.icon size={24} className="text-gold" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{v.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{v.desc}</p>
+                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{v.title}</h3>
+                <p className="text-sm text-white/50 leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{v.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -173,18 +173,18 @@ export default function AboutAnimatedSections() {
               custom={1}
             >
               <div className="gold-line mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Certifications &amp; Partnerships</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Certifications &amp; Partnerships</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                 Industry-Leading Credentials
               </h2>
-              <p className="text-white/60 mb-8 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-white/60 mb-8 leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 Our certifications represent thousands of hours of training, rigorous quality standards, and a commitment to staying at the forefront of roofing technology. Direct partnerships with leading manufacturers ensure access to the latest roofing technologies and extended warranty protections.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {certifications.map((cert) => (
                   <div key={cert} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-3">
                     <CheckCircle2 size={16} className="text-gold flex-shrink-0" />
-                    <span className="text-sm text-white/70" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{cert}</span>
+                    <span className="text-sm text-white/70" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{cert}</span>
                   </div>
                 ))}
               </div>
@@ -205,11 +205,11 @@ export default function AboutAnimatedSections() {
             className="text-center max-w-2xl mx-auto mb-16"
           >
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Journey</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Our Journey</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Company Milestones &amp; Growth
             </h2>
-            <p className="text-white/60 mt-4 text-lg" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-white/60 mt-4 text-lg" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Our journey from a small local contractor to Colorado&apos;s premier roofing company reflects our unwavering commitment to excellence, continuous innovation, and customer satisfaction.
             </p>
           </motion.div>
@@ -226,13 +226,13 @@ export default function AboutAnimatedSections() {
                 className={`border p-8 ${m.color}`}
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="text-2xl font-bold text-gold" style={{ fontFamily: "'Playfair Display', serif" }}>{m.year}</div>
+                  <div className="text-2xl font-bold text-gold" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{m.year}</div>
                   <div>
-                    <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>{m.title}</h3>
-                    <p className="text-gold text-xs font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.heading}</p>
+                    <h3 className="text-lg font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{m.title}</h3>
+                    <p className="text-gold text-xs font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{m.heading}</p>
                   </div>
                 </div>
-                <p className="text-white/60 text-sm leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.desc}</p>
+                <p className="text-white/60 text-sm leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{m.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -251,11 +251,11 @@ export default function AboutAnimatedSections() {
             className="text-center max-w-2xl mx-auto mb-16"
           >
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Our Team</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Our Team</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Meet the Experts
             </h2>
-            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Our leadership team brings decades of combined experience in roofing, construction management, and customer service.
             </p>
           </motion.div>
@@ -274,10 +274,10 @@ export default function AboutAnimatedSections() {
                 <div className="w-16 h-16 bg-gold/10 flex items-center justify-center mb-4">
                   <Users size={28} className="text-gold" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{member.name}</h3>
-                <p className="text-gold text-sm font-medium mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{member.role}</p>
-                <p className="text-white/40 text-xs mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{member.exp} experience</p>
-                <p className="text-white/50 text-sm leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{member.bio}</p>
+                <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{member.name}</h3>
+                <p className="text-gold text-sm font-medium mb-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{member.role}</p>
+                <p className="text-white/40 text-xs mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{member.exp} experience</p>
+                <p className="text-white/50 text-sm leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{member.bio}</p>
               </motion.div>
             ))}
           </div>
@@ -296,11 +296,11 @@ export default function AboutAnimatedSections() {
             className="text-center max-w-2xl mx-auto mb-16"
           >
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Community Commitment</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Community Commitment</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Community &amp; Social Responsibility
             </h2>
-            <p className="text-white/60 mt-4 text-lg" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-white/60 mt-4 text-lg" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               As a Colorado-based company, we&apos;re deeply committed to giving back to the communities we serve.
             </p>
           </motion.div>
@@ -316,11 +316,11 @@ export default function AboutAnimatedSections() {
                 variants={fadeUp}
                 className="bg-white/5 border border-white/10 p-8 hover:border-gold/30 transition-colors"
               >
-                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>{prog.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{prog.desc}</p>
+                <h3 className="text-lg font-bold text-white mb-3" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{prog.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{prog.desc}</p>
                 <ul className="space-y-2">
                   {prog.items.map((item) => (
-                    <li key={item} className="flex items-center gap-2 text-sm text-white/70" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <li key={item} className="flex items-center gap-2 text-sm text-white/70" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       <CheckCircle2 size={14} className="text-gold flex-shrink-0" />
                       {item}
                     </li>
@@ -343,29 +343,29 @@ export default function AboutAnimatedSections() {
             custom={0}
           >
             <div className="gold-line mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Experience the Alpine Peak Difference
             </h2>
-            <p className="text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-white/60 mb-8 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Join thousands of satisfied Colorado homeowners and businesses who trust Alpine Peak Roofing for their most important investment. Contact us today to discover why we&apos;re Colorado&apos;s premier roofing contractor.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 GET YOUR FREE ESTIMATE
               </Link>
               <a
                 href="tel:9704561176"
                 className="inline-flex items-center justify-center gap-2 border-2 border-white/20 hover:border-gold/50 text-white hover:text-gold px-8 py-4 text-sm font-bold tracking-wide transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 (970) 456-1176
               </a>
             </div>
-            <p className="mt-6 text-sm text-white/40" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="mt-6 text-sm text-white/40" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Licensed &amp; Insured • GAF Master Elite • OSHA Safety Certified • BBB A+ • Available 24/7
             </p>
           </motion.div>

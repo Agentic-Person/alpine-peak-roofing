@@ -42,14 +42,14 @@ export default function PortfolioClient() {
           <div className="max-w-3xl">
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="gold-line mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Portfolio</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Portfolio</span>
             </motion.div>
             <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Our Finest{" "}<span className="text-gold">Work</span>
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Browse our collection of 12 showcase projects across Colorado's most beautiful mountain communities. Click any project to explore the full story.
             </motion.p>
           </div>
@@ -76,7 +76,7 @@ export default function PortfolioClient() {
                     ? "bg-gold text-navy-dark"
                     : "bg-white/5 text-white/60 hover:text-gold border border-white/10 hover:border-gold/30"
                 }`}
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {cat}
               </button>
@@ -107,13 +107,13 @@ export default function PortfolioClient() {
                       />
                       {/* Always-visible bottom bar */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.06_0.03_260/0.95)] via-[oklch(0.08_0.03_260/0.7)] to-transparent p-5">
-                        <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                        <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                           {project.roofType.split("—")[0].trim()}
                         </span>
-                        <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                        <h3 className="text-lg font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                           {project.title}
                         </h3>
-                        <div className="flex items-center gap-4 text-white/50 text-xs" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                        <div className="flex items-center gap-4 text-white/50 text-xs" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                           <span className="flex items-center gap-1">
                             <MapPin className="w-3 h-3" />
                             {project.location}
@@ -149,11 +149,11 @@ export default function PortfolioClient() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
             className="text-center max-w-2xl mx-auto mb-16">
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Transformations</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Transformations</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Before &amp; After
             </h2>
-            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               See the dramatic difference a new roof makes. These transformations showcase the quality of our craftsmanship.
             </p>
           </motion.div>
@@ -162,14 +162,14 @@ export default function PortfolioClient() {
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={1}
               className="relative aspect-[4/3]">
               <Image src={images.portfolioBefore} alt="Before" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-              <div className="absolute top-4 left-4 bg-red-600/90 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <div className="absolute top-4 left-4 bg-red-600/90 text-white text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 Before
               </div>
             </motion.div>
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={2}
               className="relative aspect-[4/3]">
               <Image src={images.portfolioAfter} alt="After" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-              <div className="absolute top-4 left-4 bg-gold/90 text-navy-dark text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <div className="absolute top-4 left-4 bg-gold/90 text-navy-dark text-xs font-bold px-3 py-1 uppercase tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 After
               </div>
             </motion.div>
@@ -186,10 +186,10 @@ export default function PortfolioClient() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Ready to Start Your Project?
             </h2>
-            <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Every project in our portfolio started with a conversation. Let's start yours.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

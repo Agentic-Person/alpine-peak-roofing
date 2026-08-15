@@ -155,14 +155,14 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-lato), 'Lato', system-ui, sans-serif;
+  font-family: var(--font-lato), system-ui, sans-serif;
   font-feature-settings: "kern" 1, "liga" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .font-display {
-  font-family: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  font-family: var(--font-playfair), Georgia, serif;
 }
 
 /* ============================================================
@@ -188,11 +188,11 @@ body {
    ============================================================ */
 
 .font-display {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-playfair), Georgia, serif;
 }
 
 .font-body {
-  font-family: 'Lato', system-ui, sans-serif;
+  font-family: var(--font-lato), system-ui, sans-serif;
 }
 
 /* Gold/amber accent underline */
@@ -371,7 +371,7 @@ body {
 }
 
 .step-number {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: var(--font-playfair), Georgia, serif;
   font-size: 8rem;
   font-weight: 900;
   line-height: 1;
@@ -568,7 +568,7 @@ body {
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
   border-radius: 4px;
-  font-family: 'Lato', var(--font-lato), sans-serif;
+  font-family: var(--font-lato), system-ui, sans-serif;
   font-weight: 700;
   font-size: 0.875rem;
   letter-spacing: 0.1em;
@@ -715,6 +715,3 @@ body {
   clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
   padding-bottom: 4rem;
 }
-
-/* Google Fonts — Source Sans 3 for Manus pages */
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap');

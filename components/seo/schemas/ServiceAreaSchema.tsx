@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function ServiceAreaSchema() {
   const schema = {
@@ -162,11 +162,10 @@ export default function ServiceAreaSchema() {
   };
 
   return (
-    <Script
+    <script
       id="service-area-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

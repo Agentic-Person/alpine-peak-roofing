@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 /**
  * HowTo structured data for the Alpine Peak Roofing instant estimator.
@@ -97,11 +97,10 @@ export default function EstimatorHowToSchema() {
   };
 
   return (
-    <Script
+    <script
       id="estimator-howto-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

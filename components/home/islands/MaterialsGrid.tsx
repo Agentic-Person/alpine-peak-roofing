@@ -25,13 +25,13 @@ export default function MaterialsGrid() {
         className="text-center max-w-3xl mx-auto mb-14"
       >
         <div className="gold-line mx-auto mb-4" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Premium Materials
         </span>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
           Only the Finest Materials
         </h2>
-        <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           We partner with the industry&apos;s leading manufacturers to ensure every roof we install meets the highest standards of durability, beauty, and performance. Our material selection is specifically curated for Colorado&apos;s extreme weather conditions.
         </p>
       </motion.div>
@@ -60,17 +60,17 @@ export default function MaterialsGrid() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260)] via-transparent to-transparent" />
                 <div className="absolute top-2 right-2 bg-gold/90 text-navy-dark px-2 py-0.5">
-                  <span className="text-[10px] font-bold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{m.warranty}</span>
+                  <span className="text-[10px] font-bold tracking-wide" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{m.warranty}</span>
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="text-sm font-bold text-white group-hover:text-gold transition-colors mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3 className="text-sm font-bold text-white group-hover:text-gold transition-colors mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                   {m.shortName}
                 </h3>
-                <p className="text-[11px] text-white/40 mb-2" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <p className="text-[11px] text-white/40 mb-2" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   From ${m.installedPrice.low.toFixed(2)}/sqft installed
                 </p>
-                <span className="text-gold text-[10px] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <span className="text-gold text-[10px] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   LEARN MORE <ChevronRight size={12} />
                 </span>
               </div>
@@ -83,7 +83,7 @@ export default function MaterialsGrid() {
         <Link
           href="/services"
           className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           VIEW ALL SERVICES &amp; MATERIALS <ArrowRight size={16} />
         </Link>

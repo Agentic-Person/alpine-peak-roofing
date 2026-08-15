@@ -29,20 +29,20 @@ export default function WhyChooseUs() {
         custom={0}
       >
         <div className="gold-line mb-4" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Why Alpine Peak
         </span>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
           Built Different. <br />
           <span className="text-gold">Built to Last.</span>
         </h2>
-        <p className="text-lg text-white/60 mb-8" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <p className="text-lg text-white/60 mb-8" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           For over three decades, Alpine Peak Roofing has set the standard for roofing excellence in Colorado. Our commitment to quality craftsmanship, premium materials, and exceptional customer service has earned us the trust of thousands of homeowners and businesses across the Rocky Mountains.
         </p>
         <Link
           href="/about"
           className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           LEARN OUR STORY <ArrowRight size={16} />
         </Link>
@@ -60,10 +60,10 @@ export default function WhyChooseUs() {
             className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 hover:border-gold/30 transition-colors"
           >
             <item.icon size={24} className="text-gold mb-3" />
-            <h3 className="text-base font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h3 className="text-base font-bold text-white mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               {item.title}
             </h3>
-            <p className="text-sm text-white/50" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-sm text-white/50" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               {item.desc}
             </p>
           </motion.div>

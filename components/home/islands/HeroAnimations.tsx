@@ -13,7 +13,7 @@ export default function HeroAnimations() {
         className="inline-flex items-center gap-2 bg-gold/10 border border-gold/30 px-4 py-1.5 mb-6"
       >
         <Shield size={14} className="text-gold" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Licensed &amp; Insured — Serving Colorado Since 1989
         </span>
       </motion.div>
@@ -23,7 +23,7 @@ export default function HeroAnimations() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
         className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6"
-        style={{ fontFamily: "'Playfair Display', serif" }}
+        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
       >
         Colorado&apos;s Premier{" "}
         <span className="text-gold">Roofing</span>{" "}
@@ -35,7 +35,7 @@ export default function HeroAnimations() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
         className="text-lg md:text-xl text-white/70 mb-10 max-w-xl leading-relaxed"
-        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       >
         Expert craftsmanship meets mountain-grade durability. From Aspen to Telluride, we deliver roofing solutions built to withstand Colorado&apos;s most demanding conditions.
       </motion.p>
@@ -49,7 +49,7 @@ export default function HeroAnimations() {
         <Link
           href="/contact"
           className="inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all hover:shadow-lg hover:shadow-gold/20"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           GET YOUR FREE ESTIMATE
           <ChevronRight size={16} />
@@ -57,7 +57,7 @@ export default function HeroAnimations() {
         <a
           href="tel:9704561176"
           className="inline-flex items-center justify-center gap-2 border-2 border-white/20 hover:border-gold/50 text-white hover:text-gold px-8 py-4 text-sm font-bold tracking-wide transition-all"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           <Phone size={16} />
           (970) 456-1176

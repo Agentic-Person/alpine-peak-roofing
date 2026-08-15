@@ -41,13 +41,13 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
         className="max-w-2xl mb-16"
       >
         <div className="gold-line mb-4" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Our Expertise
         </span>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
           Comprehensive Roofing Solutions
         </h2>
-        <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           What roofing services does Alpine Peak offer? We deliver the full spectrum — residential roof replacement and repair, commercial systems, and 24/7 emergency response — with the quality and professionalism Colorado homeowners and property managers demand.
         </p>
       </motion.div>
@@ -73,13 +73,13 @@ export default function ServicesGrid({ services }: ServicesGridProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.95)] via-[oklch(0.10_0.03_260/0.5)] to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 {(() => { const Icon = ICON_MAP[service.title]; return Icon ? <Icon size={28} className="text-gold mb-3" /> : null; })()}
-                <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                   {service.title}
                 </h3>
-                <p className="text-sm text-white/60 mb-4 line-clamp-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <p className="text-sm text-white/60 mb-4 line-clamp-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   {service.description}
                 </p>
-                <span className="inline-flex items-center gap-1 text-gold text-sm font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <span className="inline-flex items-center gap-1 text-gold text-sm font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   Learn More <ArrowRight size={14} />
                 </span>
               </div>

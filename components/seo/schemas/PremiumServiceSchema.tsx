@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function PremiumServiceSchema() {
   const schema = {
@@ -147,11 +147,10 @@ export default function PremiumServiceSchema() {
   };
 
   return (
-    <Script
+    <script
       id="premium-service-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

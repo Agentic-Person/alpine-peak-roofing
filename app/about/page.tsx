@@ -6,7 +6,7 @@
  * Client animations extracted to components/about/islands/
  */
 import type { Metadata } from "next";
-import Script from "next/script";
+import { jsonLdHtml } from "@/components/seo/schemas/jsonLd";
 import Image from "next/image";
 import { images } from "@/lib/images";
 import AboutHeroAnimations from "@/components/about/islands/AboutHeroAnimations";
@@ -88,11 +88,10 @@ const aboutPageSchema = {
 export default function About() {
   return (
     <>
-      <Script
+      <script
         id="about-page-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }}
-        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(aboutPageSchema) }}
       />
 
       {/* ==================== HERO ==================== */}
@@ -113,13 +112,13 @@ export default function About() {
             {/* Static fallback for crawlers */}
             <noscript>
               <div className="gold-line mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 About Alpine Peak
               </span>
-              <h1 id="about-hero-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <h1 id="about-hero-heading" className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                 Three Decades of Mountain-Grade Excellence
               </h1>
-              <p className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 Founded in 1989, Alpine Peak Roofing has grown from a small family operation to Colorado&apos;s most trusted roofing company.
               </p>
             </noscript>

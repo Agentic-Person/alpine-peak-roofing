@@ -166,13 +166,13 @@ export default async function MaterialDetailPage({
           <div className="flex items-center gap-3 mb-4">
             <span
               className="bg-gold/20 text-gold px-3 py-1 text-xs font-semibold tracking-wider"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               {material.warranty} WARRANTY
             </span>
             <span
               className="bg-white/10 text-alpine-white/80 px-3 py-1 text-xs font-semibold tracking-wider"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               {material.lifespan} LIFESPAN
             </span>
@@ -180,13 +180,13 @@ export default async function MaterialDetailPage({
           {/* Single h1 with material name */}
           <h1
             className="text-3xl md:text-5xl lg:text-6xl font-bold text-alpine-white mb-4 max-w-4xl"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             {material.name}
           </h1>
           <p
             className="text-lg md:text-xl text-alpine-white/70 max-w-2xl"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             {material.tagline}
           </p>
@@ -229,13 +229,13 @@ export default async function MaterialDetailPage({
                 <div>
                   <dt
                     className="text-[10px] uppercase tracking-wider text-alpine-white/40"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {stat.label}
                   </dt>
                   <dd
                     className="text-sm font-semibold text-alpine-white"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {stat.value}
                   </dd>

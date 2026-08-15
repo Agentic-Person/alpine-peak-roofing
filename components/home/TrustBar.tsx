@@ -76,13 +76,13 @@ export default function TrustBar() {
                 <span className="flex flex-col leading-tight">
                   <span
                     className="text-sm font-semibold text-white"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {badge.label}
                   </span>
                   <span
                     className="text-[11px] uppercase tracking-[0.12em] text-white/50"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {badge.sublabel}
                   </span>

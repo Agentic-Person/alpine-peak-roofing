@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function ReviewSchema() {
   const schema = {
@@ -156,11 +156,10 @@ export default function ReviewSchema() {
   };
 
   return (
-    <Script
+    <script
       id="review-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

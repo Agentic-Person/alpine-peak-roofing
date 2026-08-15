@@ -86,19 +86,19 @@ export default function Services() {
               <div className="gold-line mb-4" />
               <span
                 className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 Residential
               </span>
               <h2
                 className="text-3xl md:text-4xl font-bold text-white mb-6"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 Residential Roofing Services
               </h2>
               <p
                 className="text-white/60 mb-8 leading-relaxed"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 Your home is your most valuable asset. We protect it with premium materials, expert
                 installation, and comprehensive warranties. Whether you need a complete replacement or
@@ -117,7 +117,7 @@ export default function Services() {
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 GET A FREE ESTIMATE <ChevronRight size={16} />
               </Link>
@@ -141,19 +141,19 @@ export default function Services() {
               <div className="gold-line mb-4" />
               <span
                 className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 Commercial
               </span>
               <h2
                 className="text-3xl md:text-4xl font-bold text-white mb-6"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 Commercial Roofing Services
               </h2>
               <p
                 className="text-white/60 mb-8 leading-relaxed"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 Protect your business with commercial roofing solutions engineered for performance. We
                 work with property managers, business owners, and general contractors to deliver
@@ -172,7 +172,7 @@ export default function Services() {
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 REQUEST COMMERCIAL QUOTE <ChevronRight size={16} />
               </Link>
@@ -199,21 +199,21 @@ export default function Services() {
               <Zap size={20} className="text-gold" />
               <span
                 className="text-xs uppercase tracking-[0.2em] text-gold font-semibold"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 24/7 Emergency Service
               </span>
             </div>
             <h2
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Storm Damage?{' '}
               <span className="text-gold">We&apos;re Here.</span>
             </h2>
             <p
               className="text-lg text-white/60 mb-8"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Colorado&apos;s weather doesn&apos;t wait, and neither do we. Our emergency response
               team is available 24/7 to address storm damage, leaks, and urgent repairs. We&apos;ll
@@ -230,7 +230,7 @@ export default function Services() {
                 <li
                   key={item}
                   className="flex items-center gap-3 text-white/70"
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   <CheckCircle2 size={16} className="text-gold flex-shrink-0" />
                   {item}
@@ -240,7 +240,7 @@ export default function Services() {
             <a
               href="tel:9704561176"
               className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               CALL EMERGENCY LINE: (970) 456-1176
             </a>
@@ -266,17 +266,17 @@ export default function Services() {
             <div className="gold-line mx-auto mb-4" />
             <span
               className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Our Primary Product Line
             </span>
             <h2
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Premium Roofing Materials
             </h2>
-            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               We only install materials that meet our rigorous standards for durability, beauty, and
               performance in Colorado&apos;s demanding climate. Click any material to explore full
               details, pricing, and specifications.
