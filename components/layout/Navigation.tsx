@@ -68,6 +68,7 @@ export default function Navigation() {
                   src="/images/logo/APR-LOGO-solo.webp"
                   alt="Alpine Peak Roofing"
                   fill
+                  sizes="52px"
                   className="object-contain"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                 />

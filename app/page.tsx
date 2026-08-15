@@ -139,6 +139,7 @@ export default function Home() {
             priority
             fetchPriority="high"
             sizes="100vw"
+            quality={68}
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.10_0.03_260/0.92)] via-[oklch(0.12_0.03_260/0.75)] to-[oklch(0.12_0.03_260/0.4)]" />
