@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 /**
  * FAQ schema optimized for Answer Engine Optimization (AEO).
@@ -223,11 +223,10 @@ export default function FAQSchema() {
   };
 
   return (
-    <Script
+    <script
       id="faq-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export interface HowToStepInput {
   /** Short title of the step — e.g. "Free Inspection & Assessment". */
@@ -98,11 +98,10 @@ export default function HowToSchema({
   }
 
   return (
-    <Script
+    <script
       id={scriptId ?? `howto-schema-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

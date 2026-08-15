@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 import type { Author } from '@/lib/authors';
 
 export interface ArticleSchemaProps {
@@ -82,11 +82,10 @@ export default function ArticleSchema({
   };
 
   return (
-    <Script
+    <script
       id={id}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

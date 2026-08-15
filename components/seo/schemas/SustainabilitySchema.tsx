@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export default function SustainabilitySchema() {
   const schema = {
@@ -161,11 +161,10 @@ export default function SustainabilitySchema() {
   };
 
   return (
-    <Script
+    <script
       id="sustainability-schema"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

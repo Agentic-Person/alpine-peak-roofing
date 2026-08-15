@@ -6,7 +6,7 @@
  * Client animations extracted to components/about/islands/
  */
 import type { Metadata } from "next";
-import Script from "next/script";
+import { jsonLdHtml } from "@/components/seo/schemas/jsonLd";
 import Image from "next/image";
 import { images } from "@/lib/images";
 import AboutHeroAnimations from "@/components/about/islands/AboutHeroAnimations";
@@ -88,11 +88,10 @@ const aboutPageSchema = {
 export default function About() {
   return (
     <>
-      <Script
+      <script
         id="about-page-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }}
-        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(aboutPageSchema) }}
       />
 
       {/* ==================== HERO ==================== */}

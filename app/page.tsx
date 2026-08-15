@@ -7,7 +7,7 @@
  * Client animations extracted to components/home/islands/
  */
 import type { Metadata } from "next";
-import Script from "next/script";
+import { jsonLdHtml } from "@/components/seo/schemas/jsonLd";
 import Image from "next/image";
 import { images } from "@/lib/images";
 
@@ -122,11 +122,10 @@ const webPageSchema = {
 export default function Home() {
   return (
     <>
-      <Script
+      <script
         id="webpage-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(webPageSchema) }}
       />
 
       {/* ==================== HERO SECTION ==================== */}

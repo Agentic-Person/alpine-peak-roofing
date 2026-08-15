@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export interface ServiceOfferItem {
   /** Display name of the offer (e.g. "GAF Timberline Installed") */
@@ -167,11 +167,10 @@ export default function ServiceOfferSchema({
   }
 
   return (
-    <Script
+    <script
       id={id ?? `service-offer-schema-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }

@@ -1,4 +1,4 @@
-import Script from 'next/script';
+import { jsonLdHtml } from './jsonLd';
 
 export interface BreadcrumbSchemaItem {
   name: string;
@@ -31,11 +31,10 @@ export default function BreadcrumbSchema({ items, id = 'breadcrumb-schema' }: Br
   };
 
   return (
-    <Script
+    <script
       id={id}
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      strategy="beforeInteractive"
+      dangerouslySetInnerHTML={{ __html: jsonLdHtml(schema) }}
     />
   );
 }
