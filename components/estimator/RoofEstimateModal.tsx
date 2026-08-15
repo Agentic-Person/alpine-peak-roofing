@@ -156,19 +156,19 @@ export default function RoofEstimateModal() {
           <div className="text-center mb-6">
             <p
               className="text-xs font-bold uppercase tracking-widest mb-2"
-              style={{ color: 'var(--amber-gold)', fontFamily: "'Lato', sans-serif", letterSpacing: '0.2em' }}
+              style={{ color: 'var(--amber-gold)', fontFamily: "var(--font-lato), system-ui, sans-serif", letterSpacing: '0.2em' }}
             >
               Powered by Satellite &amp; AI
             </p>
             <h2
               className="text-2xl md:text-3xl font-bold mb-2 leading-tight"
-              style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
             >
               Get Your Free Roof Estimate
             </h2>
             <p
               className="text-sm"
-              style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "'Lato', sans-serif", fontWeight: 300 }}
+              style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "var(--font-lato), system-ui, sans-serif", fontWeight: 300 }}
             >
               Satellite measurements. AI analysis. Your estimate in under 60 seconds.
             </p>
@@ -207,7 +207,7 @@ export default function RoofEstimateModal() {
               >
                 <span
                   style={{
-                    fontFamily: "'Lato', sans-serif",
+                    fontFamily: "var(--font-lato), system-ui, sans-serif",
                     fontWeight: 900,
                     fontSize: '0.65rem',
                     letterSpacing: '0.1em',
@@ -227,13 +227,13 @@ export default function RoofEstimateModal() {
             >
               <p
                 className="font-bold text-base mb-1"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
               >
                 {slide.label}
               </p>
               <p
                 className="text-sm leading-relaxed"
-                style={{ color: 'rgba(255,255,255,0.60)', fontFamily: "'Lato', sans-serif" }}
+                style={{ color: 'rgba(255,255,255,0.60)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}
               >
                 {slide.desc}
               </p>
@@ -268,21 +268,21 @@ export default function RoofEstimateModal() {
           >
             <div className="flex items-center gap-1.5">
               <Satellite size={14} style={{ color: 'var(--amber-gold)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "'Lato', sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
+              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "var(--font-lato), system-ui, sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
                 Satellite Imaging
               </span>
             </div>
             <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.15)' }} />
             <div className="flex items-center gap-1.5">
               <Zap size={14} style={{ color: 'var(--amber-gold)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "'Lato', sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
+              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "var(--font-lato), system-ui, sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
                 AI-Powered
               </span>
             </div>
             <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.15)' }} />
             <div className="flex items-center gap-1.5">
               <Shield size={14} style={{ color: 'var(--amber-gold)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "'Lato', sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
+              <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', fontFamily: "var(--font-lato), system-ui, sans-serif", fontWeight: 700, letterSpacing: '0.04em' }}>
                 100% Free
               </span>
             </div>
@@ -293,13 +293,13 @@ export default function RoofEstimateModal() {
             <div>
               <p
                 className="font-bold text-lg mb-1 text-center"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
               >
                 See your roof from satellite — instantly.
               </p>
               <p
                 className="text-sm text-center mb-4"
-                style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "'Lato', sans-serif" }}
+                style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}
               >
                 Enter your address to view your roof and get a free estimate — no email required.
               </p>
@@ -319,7 +319,7 @@ export default function RoofEstimateModal() {
                       background: 'rgba(255,255,255,0.08)',
                       border: '1px solid rgba(255,255,255,0.18)',
                       color: '#FFFFFF',
-                      fontFamily: "'Lato', sans-serif",
+                      fontFamily: "var(--font-lato), system-ui, sans-serif",
                     }}
                     onFocus={e => (e.target.style.borderColor = 'rgba(229,168,0,0.6)')}
                     onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.18)')}
@@ -331,7 +331,7 @@ export default function RoofEstimateModal() {
                     style={{
                       background: 'var(--amber-gold)',
                       color: '#1A2332',
-                      fontFamily: "'Lato', sans-serif",
+                      fontFamily: "var(--font-lato), system-ui, sans-serif",
                       letterSpacing: '0.05em',
                       textTransform: 'uppercase',
                       boxShadow: '0 4px 20px rgba(229,168,0,0.35)',
@@ -351,7 +351,7 @@ export default function RoofEstimateModal() {
 
               <p
                 className="text-center mt-3"
-                style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', fontFamily: "'Lato', sans-serif" }}
+                style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem', fontFamily: "var(--font-lato), system-ui, sans-serif" }}
               >
                 🔒 100% free. No email required to see your roof.
               </p>
@@ -366,13 +366,13 @@ export default function RoofEstimateModal() {
               </div>
               <p
                 className="font-bold text-lg mb-1"
-                style={{ fontFamily: "'Playfair Display', serif", color: '#FFFFFF' }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: '#FFFFFF' }}
               >
                 Launching Your Analysis…
               </p>
               <p
                 className="text-sm"
-                style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "'Lato', sans-serif" }}
+                style={{ color: 'rgba(255,255,255,0.55)', fontFamily: "var(--font-lato), system-ui, sans-serif" }}
               >
                 Your satellite roof estimator is opening now.
               </p>

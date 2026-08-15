@@ -101,7 +101,7 @@ export default function EstimatorCarousel() {
         {/* Section label */}
         <p
           className="text-center text-xs uppercase font-bold tracking-widest mb-10"
-          style={{ fontFamily: "'Lato', sans-serif", color: 'var(--azure)', letterSpacing: '0.2em' }}
+          style={{ fontFamily: "var(--font-lato), system-ui, sans-serif", color: 'var(--azure)', letterSpacing: '0.2em' }}
         >
           How It Works
         </p>
@@ -111,7 +111,7 @@ export default function EstimatorCarousel() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3"
             style={{ background: 'var(--amber-gold)' }}>
             <span style={{
-              fontFamily: "'Lato', sans-serif",
+              fontFamily: "var(--font-lato), system-ui, sans-serif",
               fontWeight: 900,
               fontSize: '0.7rem',
               letterSpacing: '0.12em',
@@ -123,7 +123,7 @@ export default function EstimatorCarousel() {
           </div>
           <h3
             className="text-2xl md:text-3xl font-bold"
-            style={{ fontFamily: "'Playfair Display', serif", color: 'var(--ink)' }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: 'var(--ink)' }}
           >
             {slide.label}
           </h3>
@@ -159,7 +159,7 @@ export default function EstimatorCarousel() {
         <p
           className="text-center text-base mb-8 max-w-lg mx-auto"
           style={{
-            fontFamily: "'Lato', sans-serif",
+            fontFamily: "var(--font-lato), system-ui, sans-serif",
             color: 'var(--text-muted)',
             lineHeight: 1.75,
           }}

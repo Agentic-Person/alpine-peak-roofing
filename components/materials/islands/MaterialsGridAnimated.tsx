@@ -54,7 +54,7 @@ export default function MaterialsGridAnimated({ materials }: Props) {
               <div className="absolute top-3 right-3 bg-gold/90 text-navy-dark px-3 py-1">
                 <span
                   className="text-xs font-bold tracking-wide"
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   {m.warranty}
                 </span>
@@ -66,13 +66,13 @@ export default function MaterialsGridAnimated({ materials }: Props) {
                     <DollarSign size={14} className="text-gold" />
                     <span
                       className="text-sm font-bold text-gold"
-                      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                     >
                       ${m.installedPrice.low.toFixed(2)}–${m.installedPrice.high.toFixed(2)}
                     </span>
                     <span
                       className="text-[10px] text-white/40"
-                      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                     >
                       /sqft
                     </span>
@@ -81,7 +81,7 @@ export default function MaterialsGridAnimated({ materials }: Props) {
                     <Clock size={12} className="text-white/40" />
                     <span
                       className="text-[10px] text-white/40"
-                      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                     >
                       {m.lifespan}
                     </span>
@@ -93,25 +93,25 @@ export default function MaterialsGridAnimated({ materials }: Props) {
             <div className="p-5">
               <h3
                 className="text-base font-bold text-white group-hover:text-gold transition-colors mb-1"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 {m.shortName}
               </h3>
               <p
                 className="text-xs text-gold/70 font-medium mb-2"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {m.manufacturer}
               </p>
               <p
                 className="text-sm text-white/50 leading-relaxed mb-4 line-clamp-2"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {m.description}
               </p>
               <span
                 className="text-gold text-xs font-semibold flex items-center gap-1 group-hover:gap-2 transition-all tracking-wide"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 VIEW FULL DETAILS <ChevronRight size={14} />
               </span>

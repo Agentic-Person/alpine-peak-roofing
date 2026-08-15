@@ -61,13 +61,13 @@ function PriceCalculator({ material }: { material: MaterialData }) {
         <div>
           <h3
             className="text-xl font-bold text-alpine-white"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             Estimate Calculator
           </h3>
           <p
             className="text-sm text-alpine-white/50"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             Ballpark pricing for Colorado installations
           </p>
@@ -78,7 +78,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
       <div className="mb-6">
         <label
           className="block text-sm font-medium text-gold mb-3 tracking-wide"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           PRICING VIEW
         </label>
@@ -90,7 +90,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
                 ? "bg-gold text-navy-dark"
                 : "bg-white/5 text-alpine-white/70 hover:bg-white/10 border border-white/10"
             }`}
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             <span className="block text-xs opacity-70 mb-0.5">Material + Install</span>
             <span className="font-bold">
@@ -104,7 +104,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
                 ? "bg-gold text-navy-dark"
                 : "bg-white/5 text-alpine-white/70 hover:bg-white/10 border border-white/10"
             }`}
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             <span className="block text-xs opacity-70 mb-0.5">Material Only</span>
             <span className="font-bold">
@@ -118,7 +118,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
       <div className="mb-6">
         <label
           className="block text-sm font-medium text-gold mb-3 tracking-wide"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           ROOF SIZE (SQUARE FEET)
         </label>
@@ -132,7 +132,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
                   ? "bg-gold text-navy-dark"
                   : "bg-white/5 text-alpine-white/70 hover:bg-white/10 border border-white/10"
               }`}
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               {p.toLocaleString()}
             </button>
@@ -149,7 +149,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
         />
         <div
           className="flex justify-between text-xs text-alpine-white/40 mt-1"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           <span>500 sq ft</span>
           <span className="text-gold font-semibold">{sqft.toLocaleString()} sq ft</span>
@@ -162,19 +162,19 @@ function PriceCalculator({ material }: { material: MaterialData }) {
         <div className="bg-white/5 p-4 text-center border border-white/5">
           <p
             className="text-xs text-alpine-white/50 mb-1 uppercase tracking-wide"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             Budget
           </p>
           <p
             className="text-lg md:text-xl font-bold text-alpine-white"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             {formatPrice(estimates.low)}
           </p>
           <p
             className="text-xs text-alpine-white/40"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             ${priceData.low.toFixed(2)}/sqft
           </p>
@@ -182,19 +182,19 @@ function PriceCalculator({ material }: { material: MaterialData }) {
         <div className="bg-gold/10 p-4 text-center border border-gold/30">
           <p
             className="text-xs text-gold mb-1 uppercase tracking-wide font-semibold"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             Average
           </p>
           <p
             className="text-lg md:text-xl font-bold text-gold"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             {formatPrice(estimates.avg)}
           </p>
           <p
             className="text-xs text-gold/70"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             ${priceData.avg.toFixed(2)}/sqft
           </p>
@@ -202,19 +202,19 @@ function PriceCalculator({ material }: { material: MaterialData }) {
         <div className="bg-white/5 p-4 text-center border border-white/5">
           <p
             className="text-xs text-alpine-white/50 mb-1 uppercase tracking-wide"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             Premium
           </p>
           <p
             className="text-lg md:text-xl font-bold text-alpine-white"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             {formatPrice(estimates.high)}
           </p>
           <p
             className="text-xs text-alpine-white/40"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             ${priceData.high.toFixed(2)}/sqft
           </p>
@@ -224,7 +224,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
       <div className="bg-white/5 px-3 py-2 border border-white/5 mb-4 text-center">
         <p
           className="text-xs text-alpine-white/60"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           {pricingMode === "installed" ? (
             <>
@@ -241,7 +241,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
       <div className="bg-white/5 p-4 border border-white/5 mb-6">
         <p
           className="text-xs text-alpine-white/50 italic"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           * These are ballpark estimates for Colorado installations. Actual pricing varies based on roof
           complexity, pitch, accessibility, removal of existing roof, and local market conditions. Get
@@ -252,7 +252,7 @@ function PriceCalculator({ material }: { material: MaterialData }) {
       <Link
         href="/contact"
         className="flex items-center justify-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-4 text-sm font-semibold tracking-wide transition-all w-full hover:shadow-lg hover:shadow-gold/20"
-        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       >
         GET YOUR FREE EXACT ESTIMATE
         <ChevronRight size={16} />
@@ -272,7 +272,7 @@ function MaterialThumbnails({ others }: ThumbProps) {
     <div className="flex items-center gap-3 mb-6">
       <span
         className="text-[10px] uppercase tracking-wider text-alpine-white/40 shrink-0"
-        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       >
         Other Materials:
       </span>
@@ -294,7 +294,7 @@ function MaterialThumbnails({ others }: ThumbProps) {
             <div className="absolute bottom-0 left-0 right-0 bg-navy-dark/80 px-2 py-1">
               <p
                 className="text-[10px] md:text-xs text-white text-center truncate font-medium"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {m.shortName}
               </p>
@@ -327,50 +327,50 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Overview
                 </h2>
                 <p
                   className="text-alpine-white/70 leading-relaxed text-lg mb-4"
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   {material.longDescription}
                 </p>
                 <div className="bg-navy-light border border-white/10 p-5 mt-6">
                   <p
                     className="text-sm text-alpine-white/60 mb-1"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     MANUFACTURER
                   </p>
                   <p
                     className="text-gold font-semibold"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {material.manufacturer}
                   </p>
                   <p
                     className="text-sm text-alpine-white/60 mt-3 mb-1"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     IDEAL FOR
                   </p>
                   <p
                     className="text-alpine-white/80 text-sm"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {material.idealFor}
                   </p>
                   <p
                     className="text-sm text-alpine-white/60 mt-3 mb-1"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     COLOR OPTIONS
                   </p>
                   <p
                     className="text-alpine-white/80 text-sm"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     {material.colorOptions}
                   </p>
@@ -382,7 +382,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Pros &amp; Cons
                 </h2>
@@ -392,7 +392,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                       <CheckCircle2 size={20} className="text-emerald-400" />
                       <h3
                         className="text-lg font-bold text-alpine-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                       >
                         Advantages
                       </h3>
@@ -403,7 +403,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                           <CheckCircle2 size={14} className="text-emerald-400 mt-1 shrink-0" />
                           <span
                             className="text-sm text-alpine-white/70"
-                            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                           >
                             {pro}
                           </span>
@@ -416,7 +416,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                       <XCircle size={20} className="text-red-400" />
                       <h3
                         className="text-lg font-bold text-alpine-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                       >
                         Considerations
                       </h3>
@@ -427,7 +427,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                           <XCircle size={14} className="text-red-400 mt-1 shrink-0" />
                           <span
                             className="text-sm text-alpine-white/70"
-                            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                           >
                             {con}
                           </span>
@@ -443,7 +443,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Warranty Information
                 </h2>
@@ -452,7 +452,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                     <Shield size={24} className="text-gold" />
                     <span
                       className="text-2xl font-bold text-gold"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
+                      style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                     >
                       {material.warranty} Warranty
                     </span>
@@ -463,7 +463,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                         <Shield size={14} className="text-gold/60 mt-1 shrink-0" />
                         <span
                           className="text-sm text-alpine-white/70"
-                          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                         >
                           {detail}
                         </span>
@@ -478,13 +478,13 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Is {material.shortName} Right for You?
                 </h2>
                 <p
                   className="text-alpine-white/60 mb-6"
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   Choose {material.shortName.toLowerCase()} if:
                 </p>
@@ -497,7 +497,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                       <Star size={16} className="text-gold mt-0.5 shrink-0" />
                       <span
                         className="text-sm text-alpine-white/80"
-                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                       >
                         {reason}
                       </span>
@@ -511,7 +511,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Maintenance Tips
                 </h2>
@@ -521,7 +521,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                       <Wrench size={14} className="text-gold/60 mt-1 shrink-0" />
                       <span
                         className="text-sm text-alpine-white/70"
-                        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                       >
                         {tip}
                       </span>
@@ -535,7 +535,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="gold-line mb-4" />
                 <h2
                   className="text-2xl md:text-3xl font-bold text-alpine-white mb-6"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
+                  style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                 >
                   Colorado-Specific Considerations
                 </h2>
@@ -544,7 +544,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                     <MapPin size={20} className="text-gold" />
                     <h3
                       className="text-lg font-bold text-alpine-white"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
+                      style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                     >
                       What Colorado Homeowners Need to Know
                     </h3>
@@ -555,7 +555,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                         <Zap size={14} className="text-gold/60 mt-1 shrink-0" />
                         <span
                           className="text-sm text-alpine-white/70"
-                          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                         >
                           {item}
                         </span>
@@ -576,13 +576,13 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                 <div className="bg-navy border border-white/10 p-6 mt-6">
                   <h3
                     className="text-lg font-bold text-alpine-white mb-3"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
+                    style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                   >
                     Questions About {material.shortName}?
                   </h3>
                   <p
                     className="text-sm text-alpine-white/60 mb-4"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     Our roofing experts can help you decide if {material.shortName.toLowerCase()} is
                     the right choice for your home.
@@ -590,7 +590,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                   <a
                     href="tel:9704561176"
                     className="flex items-center justify-center gap-2 border border-gold/40 hover:border-gold text-gold px-6 py-3 text-sm font-semibold tracking-wide transition-all w-full"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     <Phone size={16} />
                     (970) 456-1176
@@ -608,7 +608,7 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
           <div className="text-center mb-10">
             <h2
               className="text-2xl md:text-3xl font-bold text-alpine-white"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Explore Other Materials
             </h2>
@@ -633,26 +633,26 @@ export default function MaterialDetailClient({ material, otherMaterials }: Props
                   <div className="flex items-center justify-between mb-2">
                     <h3
                       className="text-lg font-bold text-alpine-white group-hover:text-gold transition-colors"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
+                      style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
                     >
                       {m.shortName}
                     </h3>
                     <span
                       className="text-xs bg-gold/20 text-gold px-2 py-0.5"
-                      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                     >
                       {m.warranty}
                     </span>
                   </div>
                   <p
                     className="text-sm text-alpine-white/50 mb-3"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     From ${m.installedPrice.low.toFixed(2)}/sqft installed
                   </p>
                   <span
                     className="text-gold text-sm flex items-center gap-1 group-hover:gap-2 transition-all"
-                    style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                    style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                   >
                     LEARN MORE <ChevronRight size={14} />
                   </span>

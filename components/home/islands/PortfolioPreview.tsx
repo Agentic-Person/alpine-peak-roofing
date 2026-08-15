@@ -27,17 +27,17 @@ export default function PortfolioPreview() {
       >
         <div>
           <div className="gold-line mb-4" />
-          <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+          <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
             Our Work
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
             Featured Projects
           </h2>
         </div>
         <Link
           href="/portfolio"
           className="inline-flex items-center gap-2 text-gold font-semibold hover:gap-3 transition-all text-sm tracking-wide mt-4 md:mt-0"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           VIEW ALL PROJECTS <ArrowRight size={16} />
         </Link>
@@ -63,13 +63,13 @@ export default function PortfolioPreview() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.95)] via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
-                <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <span className="text-xs uppercase tracking-[0.15em] text-gold block mb-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   {project.roofType.split('—')[0].trim()}
                 </span>
-                <h3 className="text-lg font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <h3 className="text-lg font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                   {project.title}
                 </h3>
-                <p className="text-white/50 text-sm" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <p className="text-white/50 text-sm" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   {project.location}
                 </p>
               </div>

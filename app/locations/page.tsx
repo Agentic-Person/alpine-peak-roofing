@@ -76,7 +76,7 @@ export default function LocationsPage() {
             <div className="text-center mb-8">
               <span
                 className="text-xs uppercase tracking-[0.2em] text-[#C9A84C] font-semibold block mb-4"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 Service Areas
               </span>
@@ -85,7 +85,7 @@ export default function LocationsPage() {
               </h1>
               <p
                 className="text-lg text-white/70 max-w-3xl mx-auto"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 From the Front Range to the Western Slope, Alpine Peak Roofing serves
                 communities across the Colorado Rocky Mountains. Each location presents

@@ -15,7 +15,7 @@ export default function ProcessHeroAnimated() {
         <div className="gold-line mb-4" />
         <span
           className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           Our Process
         </span>
@@ -25,7 +25,7 @@ export default function ProcessHeroAnimated() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
         className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6"
-        style={{ fontFamily: "'Playfair Display', serif" }}
+        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
       >
         A Seamless{" "}<span className="text-gold">Experience</span>
       </motion.h1>
@@ -34,7 +34,7 @@ export default function ProcessHeroAnimated() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
         className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed"
-        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       >
         From your first call to the final inspection, every step is designed for transparency, quality, and your peace of mind.
       </motion.p>

@@ -62,7 +62,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
                   ? "bg-gold text-navy-dark"
                   : "bg-white/5 text-gold hover:bg-white/10"
               }`}
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               All Articles
             </button>
@@ -75,7 +75,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
                     ? "bg-gold text-navy-dark"
                     : "bg-white/5 text-gold hover:bg-white/10"
                 }`}
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {category}
               </button>
@@ -88,7 +88,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
       <section className="py-20">
         <div className="container">
           {filteredPosts.length === 0 ? (
-            <p className="text-center text-white/40" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-center text-white/40" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               No articles found.
             </p>
           ) : (
@@ -121,7 +121,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-dark via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4">
-                      <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <span className="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-semibold uppercase tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         {getCategory(post)}
                       </span>
                     </div>
@@ -130,20 +130,20 @@ export default function BlogClient({ posts }: BlogClientProps) {
                   {/* Content */}
                   <div className="flex-1 p-6 flex flex-col">
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-gold transition-colors line-clamp-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-gold transition-colors line-clamp-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                       {post.title}
                     </h3>
 
                     {/* Excerpt */}
                     {post.meta_description && (
-                      <p className="text-sm text-white/60 mb-4 line-clamp-2" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <p className="text-sm text-white/60 mb-4 line-clamp-2" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         {post.meta_description}
                       </p>
                     )}
 
                     {/* Meta */}
                     {post.published_at && (
-                      <div className="flex items-center gap-4 text-xs text-white/40 mb-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <div className="flex items-center gap-4 text-xs text-white/40 mb-4" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         <div className="flex items-center gap-1">
                           <Calendar size={14} />
                           {new Date(post.published_at).toLocaleDateString("en-US", {
@@ -162,7 +162,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
                           <span
                             key={tag}
                             className="inline-flex items-center gap-1 text-xs text-gold/60 hover:text-gold transition-colors"
-                            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                           >
                             <Tag size={12} />
                             {tag}
@@ -173,7 +173,7 @@ export default function BlogClient({ posts }: BlogClientProps) {
 
                     {/* Read More Link */}
                     <Link href={`/blog/${post.slug}`} className="mt-auto">
-                      <span className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors text-sm font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                      <span className="inline-flex items-center gap-2 text-gold hover:text-gold-light transition-colors text-sm font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                         Read Article
                         <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                       </span>

@@ -28,7 +28,7 @@ export default function Breadcrumbs({ items, className = '' }: BreadcrumbsProps)
     <nav
       aria-label="Breadcrumb"
       className={`text-sm ${className}`}
-      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
     >
       <ol className="flex flex-wrap items-center gap-2">
         {items.map((item, index) => {

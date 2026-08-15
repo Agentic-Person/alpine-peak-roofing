@@ -55,10 +55,10 @@ export function LocationsGrid({ cards }: { cards: LocationCard[] }) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B1D3A] via-[#0B1D3A]/30 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  <h3 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                     {location.name}
                   </h3>
-                  <p className="text-[#C9A84C] text-sm font-semibold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <p className="text-[#C9A84C] text-sm font-semibold tracking-wide" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     {location.tagline}
                   </p>
                 </div>
@@ -67,14 +67,14 @@ export function LocationsGrid({ cards }: { cards: LocationCard[] }) {
               {/* Content */}
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     Elevation
                   </span>
-                  <span className="text-white text-sm font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <span className="text-white text-sm font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     {location.elevation}
                   </span>
                 </div>
-                <p className="text-white/60 text-sm leading-relaxed mb-4 flex-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                <p className="text-white/60 text-sm leading-relaxed mb-4 flex-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                   {location.description}
                 </p>
                 <div className="flex items-center gap-2 text-[#C9A84C] font-semibold text-sm group-hover:gap-3 transition-all">

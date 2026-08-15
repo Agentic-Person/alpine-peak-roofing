@@ -51,13 +51,13 @@ export function AnimatedServiceCards({ services }: AnimatedServiceCardsProps) {
             <div>
               <h3
                 className="text-base font-bold text-white mb-1"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+                style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
               >
                 {s.title}
               </h3>
               <p
                 className="text-sm text-white/50"
-                style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
               >
                 {s.desc}
               </p>

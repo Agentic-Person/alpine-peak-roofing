@@ -46,11 +46,6 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Google Fonts */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;700;900&display=swap');
-      `}</style>
-
       <header
         className={`sticky top-0 z-50 transition-all duration-300 ${
           scrolled
@@ -80,13 +75,13 @@ export default function Navigation() {
               <div>
                 <span
                   className="block font-display font-bold leading-tight"
-                  style={{ color: 'var(--cream)', fontFamily: "'Playfair Display', serif", fontSize: '1rem' }}
+                  style={{ color: 'var(--cream)', fontFamily: "var(--font-playfair), Georgia, serif", fontSize: '1rem' }}
                 >
                   Alpine Peak
                 </span>
                 <span
                   className="block font-body"
-                  style={{ color: 'var(--sandstone)', fontFamily: "'Lato', sans-serif", fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase' }}
+                  style={{ color: 'var(--sandstone)', fontFamily: "var(--font-lato), system-ui, sans-serif", fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase' }}
                 >
                   Roofing
                 </span>
@@ -104,7 +99,7 @@ export default function Navigation() {
                   }`}
                   style={{
                     color: isActive(item.href) ? 'var(--gold)' : 'rgba(255,255,255,0.80)',
-                    fontFamily: "'Lato', sans-serif",
+                    fontFamily: "var(--font-lato), system-ui, sans-serif",
                     fontSize: '0.775rem',
                     fontWeight: 700,
                     letterSpacing: '0.07em',
@@ -128,7 +123,7 @@ export default function Navigation() {
                   }`}
                   style={{
                     color: pathname.startsWith('/ai') ? 'var(--gold)' : 'rgba(255,255,255,0.80)',
-                    fontFamily: "'Lato', sans-serif",
+                    fontFamily: "var(--font-lato), system-ui, sans-serif",
                     fontSize: '0.775rem',
                     fontWeight: 700,
                     letterSpacing: '0.07em',
@@ -190,7 +185,7 @@ export default function Navigation() {
                         <div>
                           <div
                             style={{
-                              fontFamily: "'Lato', sans-serif",
+                              fontFamily: "var(--font-lato), system-ui, sans-serif",
                               fontSize: '0.8rem',
                               fontWeight: 700,
                               color: 'var(--cedar)',
@@ -215,7 +210,7 @@ export default function Navigation() {
                 onClick={openEstimateModal}
                 className="flex items-center gap-1.5 px-3 py-2 rounded text-xs font-bold transition-colors"
                 style={{
-                  fontFamily: "'Lato', sans-serif",
+                  fontFamily: "var(--font-lato), system-ui, sans-serif",
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
                   color: 'var(--amber-gold)',
@@ -233,7 +228,7 @@ export default function Navigation() {
                   color: '#ffffff',
                   background: 'transparent',
                   border: '1px solid #ffffff',
-                  fontFamily: "'Lato', sans-serif",
+                  fontFamily: "var(--font-lato), system-ui, sans-serif",
                   fontSize: '0.72rem',
                   fontWeight: 800,
                   letterSpacing: '0.05em',
@@ -274,7 +269,7 @@ export default function Navigation() {
               <Phone size={14} style={{ color: 'var(--gold)' }} />
               <a
                 href="tel:9704561176"
-                style={{ color: 'var(--gold)', fontFamily: "'Lato', sans-serif", fontWeight: 700, fontSize: '0.875rem' }}
+                style={{ color: 'var(--gold)', fontFamily: "var(--font-lato), system-ui, sans-serif", fontWeight: 700, fontSize: '0.875rem' }}
               >
                 (970) 456-1176
               </a>
@@ -290,7 +285,7 @@ export default function Navigation() {
                   style={{
                     color: isActive(item.href) ? 'var(--gold)' : 'rgba(255,255,255,0.85)',
                     background: isActive(item.href) ? 'rgba(229,168,0,0.08)' : 'transparent',
-                    fontFamily: "'Lato', sans-serif",
+                    fontFamily: "var(--font-lato), system-ui, sans-serif",
                     fontSize: '0.875rem',
                     fontWeight: 600,
                     letterSpacing: '0.06em',
@@ -306,7 +301,7 @@ export default function Navigation() {
                 className="flex items-center gap-2 px-3 py-3 rounded-md transition-colors"
                 style={{
                   color: 'rgba(255,255,255,0.85)',
-                  fontFamily: "'Lato', sans-serif",
+                  fontFamily: "var(--font-lato), system-ui, sans-serif",
                   fontSize: '0.875rem',
                   fontWeight: 600,
                   letterSpacing: '0.06em',
@@ -323,7 +318,7 @@ export default function Navigation() {
                 onClick={() => { setIsOpen(false); openEstimateModal() }}
                 className="flex items-center justify-center w-full py-3 rounded-lg font-bold text-sm transition-colors"
                 style={{
-                  fontFamily: "'Lato', sans-serif",
+                  fontFamily: "var(--font-lato), system-ui, sans-serif",
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase',
                   color: 'var(--amber-gold)',
@@ -341,7 +336,7 @@ export default function Navigation() {
                 style={{
                   color: 'var(--forest-deep)',
                   background: 'var(--gold)',
-                  fontFamily: "'Lato', sans-serif",
+                  fontFamily: "var(--font-lato), system-ui, sans-serif",
                   fontSize: '0.875rem',
                   fontWeight: 800,
                   padding: '0.75rem 1rem',

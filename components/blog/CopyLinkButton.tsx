@@ -36,7 +36,7 @@ export default function CopyLinkButton({ url }: CopyLinkButtonProps) {
           ? 'bg-green-500/20 border-green-500/40 text-green-400'
           : 'bg-white/5 hover:bg-gold/10 hover:border-gold/40 border-white/10 text-white/70 hover:text-gold'
       }`}
-      style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+      style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       aria-label={copied ? 'Link copied!' : 'Copy link to clipboard'}
     >
       {copied ? <Check size={14} aria-hidden="true" /> : <Link2 size={14} aria-hidden="true" />}

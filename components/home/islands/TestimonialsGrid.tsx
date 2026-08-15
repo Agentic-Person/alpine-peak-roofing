@@ -43,10 +43,10 @@ export default function TestimonialsGrid() {
         className="text-center max-w-2xl mx-auto mb-16"
       >
         <div className="gold-line mx-auto mb-4" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Client Testimonials
         </span>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
           What Our Clients Say
         </h2>
       </motion.div>
@@ -67,18 +67,18 @@ export default function TestimonialsGrid() {
                 <Star key={j} size={16} className="text-gold fill-gold" />
               ))}
             </div>
-            <p className="text-white/70 mb-6 leading-relaxed italic" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <p className="text-white/70 mb-6 leading-relaxed italic" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               &ldquo;{t.text}&rdquo;
             </p>
             <div>
-              <p className="text-white font-semibold text-sm" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-white font-semibold text-sm" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 {t.author}
               </p>
-              <p className="text-white/40 text-xs" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-white/40 text-xs" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 {t.location}
               </p>
             </div>
-            <div className="absolute top-6 right-6 text-6xl text-gold/10 leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="absolute top-6 right-6 text-6xl text-gold/10 leading-none" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               &ldquo;
             </div>
           </motion.div>

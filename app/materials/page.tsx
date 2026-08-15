@@ -93,13 +93,13 @@ export default function MaterialsPage() {
             <h2
               id="materials-grid-heading"
               className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Explore Our Materials
             </h2>
             <p
               className="text-lg text-white/60"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Each material below includes full specs, pricing, pros &amp; cons, warranty info, and Colorado-specific considerations.
             </p>
@@ -129,20 +129,20 @@ export default function MaterialsPage() {
             <div className="gold-line mx-auto mb-4" />
             <h2
               className="text-3xl md:text-4xl font-bold text-white mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               Not Sure Which Material Is Right for You?
             </h2>
             <p
               className="text-lg text-white/60 mb-8"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               Our roofing experts will help you choose the best material for your home, budget, and Colorado climate conditions.
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-8 py-4 text-sm font-bold tracking-wide transition-all"
-              style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+              style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
             >
               GET A FREE CONSULTATION <ChevronRight size={16} />
             </Link>

@@ -50,15 +50,15 @@ export default function ServiceAreasGrid({ serviceAreas }: ServiceAreasGridProps
         className="text-center max-w-2xl mx-auto mb-16"
       >
         <div className="gold-line mx-auto mb-4" />
-        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           Where We Serve
         </span>
         <Link href="/locations" className="group">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 group-hover:text-gold transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 group-hover:text-gold transition-colors" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
             Service Areas
           </h2>
         </Link>
-        <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+        <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
           From the Front Range to the Western Slope, Alpine Peak Roofing serves communities across the Colorado Rocky Mountains.
         </p>
       </motion.div>
@@ -86,24 +86,24 @@ export default function ServiceAreasGrid({ serviceAreas }: ServiceAreasGridProps
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.08_0.03_260/0.85)] via-[oklch(0.10_0.03_260/0.3)] to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-bold text-white mb-0.5" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    <h3 className="text-lg font-bold text-white mb-0.5" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                       {area.name}
                     </h3>
-                    <p className="text-gold text-xs font-semibold tracking-wide" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <p className="text-gold text-xs font-semibold tracking-wide" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       {area.tagline}
                     </p>
                   </div>
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-white/40 text-[10px] uppercase tracking-widest" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <span className="text-white/40 text-[10px] uppercase tracking-widest" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       Elevation
                     </span>
-                    <span className="text-white text-xs font-semibold" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <span className="text-white text-xs font-semibold" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       {area.elevation}
                     </span>
                   </div>
-                  <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <p className="text-white/50 text-xs leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     {area.description}
                   </p>
                 </div>

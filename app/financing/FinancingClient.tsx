@@ -112,14 +112,14 @@ export default function FinancingClient() {
           <div className="max-w-3xl">
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="gold-line mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Financing</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Financing</span>
             </motion.div>
             <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+              className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Flexible{" "}<span className="text-gold">Financing</span>{" "}Options
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               Don't let budget concerns delay protecting your home. We offer flexible financing to make premium roofing accessible.
             </motion.p>
           </div>
@@ -137,11 +137,11 @@ export default function FinancingClient() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
             className="text-center max-w-2xl mx-auto mb-16">
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Payment Plans</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Payment Plans</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Choose Your Plan
             </h2>
-            <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               We've partnered with leading lenders to offer competitive financing options for every budget.
             </p>
           </motion.div>
@@ -151,18 +151,18 @@ export default function FinancingClient() {
               <motion.div key={plan.title} custom={i + 1} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp}
                 className={`relative p-8 ${plan.highlight ? "bg-gold/10 border-2 border-gold" : "bg-white/5 border border-white/10"} hover:border-gold/50 transition-colors`}>
                 {plan.highlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-navy-dark text-xs font-bold px-4 py-1 uppercase tracking-wider" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-navy-dark text-xs font-bold px-4 py-1 uppercase tracking-wider" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     Most Popular
                   </div>
                 )}
                 <div className="text-center mb-6">
-                  <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{plan.title}</h3>
-                  <div className="text-3xl font-bold text-gold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>{plan.apr}</div>
-                  <p className="text-sm text-white/40" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{plan.term} term</p>
+                  <h3 className="text-xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{plan.title}</h3>
+                  <div className="text-3xl font-bold text-gold mb-1" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>{plan.apr}</div>
+                  <p className="text-sm text-white/40" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{plan.term} term</p>
                 </div>
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <li key={f} className="flex items-center gap-2 text-sm text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       <CheckCircle2 size={14} className="text-gold flex-shrink-0" />
                       {f}
                     </li>
@@ -174,7 +174,7 @@ export default function FinancingClient() {
                       ? "bg-gold hover:bg-gold-light text-navy-dark"
                       : "border border-gold/40 hover:border-gold text-gold"
                   }`}
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   APPLY NOW <ChevronRight size={16} />
                 </Link>
@@ -191,11 +191,11 @@ export default function FinancingClient() {
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
               className="text-center mb-12">
               <div className="gold-line mx-auto mb-4" />
-              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Estimate</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Estimate</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                 Payment Calculator
               </h2>
-              <p className="text-lg text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-lg text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 Get an estimate of your monthly payment based on project cost and term.
               </p>
             </motion.div>
@@ -205,7 +205,7 @@ export default function FinancingClient() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       Project Cost: <span className="text-gold">${loanAmount.toLocaleString()}</span>
                     </label>
                     <input
@@ -217,13 +217,13 @@ export default function FinancingClient() {
                       onChange={(e) => setLoanAmount(Number(e.target.value))}
                       className="w-full accent-[oklch(0.75_0.12_85)] h-2 bg-white/10 rounded-none appearance-none cursor-pointer"
                     />
-                    <div className="flex justify-between text-xs text-white/30 mt-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                    <div className="flex justify-between text-xs text-white/30 mt-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                       <span>$5,000</span>
                       <span>$100,000</span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Loan Term</label>
+                    <label className="block text-sm text-white/60 mb-2 font-medium" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Loan Term</label>
                     <div className="grid grid-cols-3 gap-2">
                       {[12, 60, 120].map((term) => (
                         <button
@@ -234,7 +234,7 @@ export default function FinancingClient() {
                               ? "bg-gold text-navy-dark"
                               : "bg-white/5 text-white/60 border border-white/10 hover:border-gold/30"
                           }`}
-                          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                         >
                           {term} mo
                         </button>
@@ -245,16 +245,16 @@ export default function FinancingClient() {
 
                 <div className="flex flex-col items-center justify-center bg-white/5 p-8">
                   <Calculator size={24} className="text-gold mb-3" />
-                  <p className="text-sm text-white/40 mb-1" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>Estimated Monthly Payment</p>
-                  <div className="text-4xl font-bold text-gold mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  <p className="text-sm text-white/40 mb-1" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>Estimated Monthly Payment</p>
+                  <div className="text-4xl font-bold text-gold mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
                     ${Math.round(monthlyPayment).toLocaleString()}
                   </div>
-                  <p className="text-xs text-white/30" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+                  <p className="text-xs text-white/30" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                     {loanTerm === 12 ? "0% APR" : loanTerm === 60 ? "6.99% APR" : "8.99% APR"} for {loanTerm} months
                   </p>
                 </div>
               </div>
-              <p className="text-xs text-white/30 mt-6 text-center" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <p className="text-xs text-white/30 mt-6 text-center" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 * This calculator provides estimates only. Actual rates and terms may vary based on credit approval. Contact us for a personalized quote.
               </p>
             </motion.div>
@@ -268,8 +268,8 @@ export default function FinancingClient() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeUp} custom={0}
             className="text-center max-w-2xl mx-auto mb-16">
             <div className="gold-line mx-auto mb-4" />
-            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>FAQ</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>FAQ</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               Frequently Asked Questions
             </h2>
           </motion.div>
@@ -282,7 +282,7 @@ export default function FinancingClient() {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
-                  <span className="text-white font-medium pr-4" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{faq.q}</span>
+                  <span className="text-white font-medium pr-4" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{faq.q}</span>
                   {openFaq === i ? (
                     <ChevronUp size={18} className="text-gold flex-shrink-0" />
                   ) : (
@@ -291,7 +291,7 @@ export default function FinancingClient() {
                 </button>
                 {openFaq === i && (
                   <div className="px-5 pb-5">
-                    <p className="text-sm text-white/50 leading-relaxed" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>{faq.a}</p>
+                    <p className="text-sm text-white/50 leading-relaxed" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>{faq.a}</p>
                   </div>
                 )}
               </motion.div>
@@ -306,12 +306,12 @@ export default function FinancingClient() {
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8 bg-white/5 border border-white/10 p-8 md:p-12">
             <Shield size={48} className="text-gold flex-shrink-0" />
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Insurance Claims Assistance</h3>
-              <p className="text-white/60" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+              <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>Insurance Claims Assistance</h3>
+              <p className="text-white/60" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
                 We work directly with your insurance company to make the claims process as smooth as possible. Our team will document damage, prepare estimates, and advocate on your behalf.
               </p>
             </div>
-            <Link href="/contact" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all flex-shrink-0" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
+            <Link href="/contact" className="inline-flex items-center gap-2 bg-gold hover:bg-gold-light text-navy-dark px-6 py-3 text-sm font-semibold tracking-wide transition-all flex-shrink-0" style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}>
               LEARN MORE <ArrowRight size={16} />
             </Link>
           </div>

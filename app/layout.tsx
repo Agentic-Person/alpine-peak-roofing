@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Playfair_Display, Lato } from "next/font/google";
+import { Playfair_Display, Lato, Source_Sans_3 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navigation from '@/components/layout/Navigation';
@@ -43,6 +43,13 @@ const lato = Lato({
   variable: "--font-lato",
   subsets: ["latin"],
   weight: ["300", "400", "700", "900"],
+  display: "swap",
+});
+
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
+  subsets: ["latin"],
+  weight: ["300", "400", "600", "700"],
   display: "swap",
 });
 
@@ -93,7 +100,7 @@ export default function RootLayout({
         `}
       </Script>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${lato.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${lato.variable} ${sourceSans.variable} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider>

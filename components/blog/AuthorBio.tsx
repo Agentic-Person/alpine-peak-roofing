@@ -43,7 +43,7 @@ export default function AuthorBio({
         <p
           id={`author-bio-${author.slug}-heading`}
           className="text-white/50 text-xs font-semibold uppercase tracking-widest mb-4"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           {heading}
         </p>
@@ -66,7 +66,7 @@ export default function AuthorBio({
             <div
               className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-full border-2 border-gold/40 bg-navy-dark text-gold text-xl md:text-2xl font-bold"
               aria-hidden="true"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
             >
               {initials}
             </div>
@@ -77,7 +77,7 @@ export default function AuthorBio({
         <div className="flex-1 min-w-0">
           <h3
             className="text-xl md:text-2xl font-bold text-white mb-1"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
           >
             <Link
               href={`/authors/${author.slug}`}
@@ -89,14 +89,14 @@ export default function AuthorBio({
 
           <p
             className="text-gold text-sm font-semibold uppercase tracking-wider mb-4"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             {author.title}
           </p>
 
           <p
             className="text-white/70 leading-relaxed mb-4"
-            style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+            style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
           >
             {author.bio}
           </p>
@@ -107,7 +107,7 @@ export default function AuthorBio({
                 <li
                   key={credential}
                   className="inline-flex items-center px-3 py-1 bg-gold/10 border border-gold/30 text-gold text-xs font-semibold"
-                  style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+                  style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
                 >
                   {credential}
                 </li>

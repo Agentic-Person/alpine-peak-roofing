@@ -14,7 +14,7 @@ export function ServicesHeroText() {
         <div className="gold-line mb-4" />
         <span
           className="text-xs uppercase tracking-[0.2em] text-gold font-semibold block mb-3"
-          style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+          style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
         >
           Our Services
         </span>
@@ -24,7 +24,7 @@ export function ServicesHeroText() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
         className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6"
-        style={{ fontFamily: "'Playfair Display', serif" }}
+        style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
       >
         Complete Roofing{' '}
         <span className="text-gold">Solutions</span>
@@ -34,7 +34,7 @@ export function ServicesHeroText() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.2 }}
         className="text-lg md:text-xl text-white/70 max-w-xl leading-relaxed"
-        style={{ fontFamily: "'Source Sans 3', sans-serif" }}
+        style={{ fontFamily: "var(--font-source-sans), system-ui, sans-serif" }}
       >
         From residential repairs to large-scale commercial installations, we deliver expert
         craftsmanship for every project.
