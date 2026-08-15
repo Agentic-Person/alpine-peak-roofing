@@ -311,7 +311,7 @@ function ChatWidget({
                   width={128}
                   height={128}
                   className="object-cover object-center w-full h-full"
-                  priority
+                  loading="lazy"
                 />
               </div>
             </div>

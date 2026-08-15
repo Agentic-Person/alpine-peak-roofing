@@ -137,6 +137,7 @@ export default function Home() {
             alt="Luxury mountain home with premium roofing in Colorado"
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover"
           />
