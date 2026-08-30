@@ -253,9 +253,11 @@ function ChatWidget({
 
   // Position classes
   // Mobile: near-fullscreen with 16px inset so the panel never overflows the viewport.
-  // Desktop (md:+): restore the original positions.
+  // Desktop (md:+): anchored bottom-right, just above the closed bubble.
+  // (Was pinned to the top-right below the header — moved down 2026-08-30 per
+  // owner feedback: "way up at the top right.")
   const positionClasses = {
-    'bottom-right': 'inset-4 md:inset-auto md:top-[190px] md:right-[30px]',
+    'bottom-right': 'inset-4 md:inset-auto md:bottom-28 md:right-8',
     'bottom-left': 'inset-4 md:inset-auto md:bottom-4 md:left-4'
   }
 
@@ -268,66 +270,49 @@ function ChatWidget({
 
   if (!isOpen) {
     return (
-      <div className="fixed z-[9999]" style={{ top: '190px', right: '30px' }}>
-        {/* Animated gradient border container */}
-        <div className="relative">
-          {/* Pulsing purple shadow background */}
-          <div 
-            className="absolute inset-0 rounded-full bg-purple-500/30 blur-xl" 
-            style={{ 
-              animation: 'pulse 2s ease-in-out infinite',
-            }} 
+      <div className="fixed z-[9999] bottom-6 right-6 md:bottom-8 md:right-8">
+        {/* Emily's chat bubble: a real circle (the old h-42/w-42 classes below
+            were never valid Tailwind sizes, so desktop silently fell back to
+            the 56px mobile size while a 128px avatar tried to fit inside it —
+            that's what was clipping her face down to a thin sliver) with a
+            solid Azure ring and a slow gold "heartbeat" ring pulsing outward
+            behind it. Owner spec 2026-08-30: bottom-right, not top-right;
+            not obnoxious, just a beat every few seconds. */}
+        <div className="relative group p-2">
+          {/* Outer gold heartbeat ring — sits outside the avatar's own blue
+              ring (not inset-0 on top of it) so it reads as a second, larger
+              ring instead of being painted over by the button. */}
+          <span
+            className="absolute inset-0 rounded-full border-4 border-[#E5A800] animate-chat-heartbeat"
+            aria-hidden="true"
           />
-          
-          {/* Animated yellow-to-gold rotating border */}
-          <div 
-            className="absolute inset-1 rounded-full opacity-80" 
-            style={{ 
-              animation: 'spin 4s linear infinite',
-              background: 'conic-gradient(from 0deg, #fbbf24, #f59e0b, #d97706, #92400e, #78350f, #fbbf24)'
-            }} 
-          />
-          
-          {/* Secondary counter-rotating ring */}
-          <div 
-            className="absolute inset-2 rounded-full opacity-60" 
-            style={{ 
-              animation: 'spin 6s linear infinite reverse',
-              background: 'conic-gradient(from 180deg, #3b82f6, #1d4ed8, #1e40af, #3b82f6)'
-            }} 
-          />
-          
+
           <Button
             onClick={toggleWidget}
-            className="relative h-14 w-14 md:h-42 md:w-42 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 shadow-2xl border-2 border-yellow-400 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:shadow-yellow-500/25 group overflow-hidden"
+            className="relative h-24 w-24 md:h-32 md:w-32 rounded-full p-0 border-4 border-[#0077CC] shadow-2xl transition-transform duration-300 hover:scale-105 overflow-hidden bg-white"
             aria-label="Open AI Assistant Chat"
           >
-            {/* AI Agent Avatar - Perfect Circle */}
-            <div className="relative w-full h-full flex items-center justify-center">
-              <div className="relative w-10 h-10 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-white shadow-inner">
-                <Image
-                  src="/images/team/ai-agent-avatar-02.webp"
-                  alt="AI Assistant"
-                  width={128}
-                  height={128}
-                  className="object-cover object-center w-full h-full"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+            <Image
+              src="/images/team/ai-agent-avatar-02.webp"
+              alt="Emily, Alpine Peak Roofing's AI assistant"
+              fill
+              sizes="128px"
+              className="object-cover object-[center_30%]"
+              priority
+            />
           </Button>
 
           {/* Enhanced notification badge */}
           {leadScore > 0 && (
-            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 h-5 w-5 md:h-8 md:w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-xs md:text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white">
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 h-6 w-6 md:h-8 md:w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center text-xs md:text-sm text-white font-bold shadow-lg animate-bounce border-2 border-white z-10">
               !
             </div>
           )}
 
           {/* Floating text hint */}
-          <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
-            Chat with AI Assistant
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
+            Chat with Emily
+            <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
           </div>
         </div>
       </div>

@@ -1,12 +1,50 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-08-15 (Session 14 — AI-readiness 100 pass: server-rendered schema rewrite, deployed + re-audited live at 98.6/100)
+**Last Updated:** 2026-08-30 (Session 15 — chat widget fixed: was pinned top-right with a broken Tailwind size class clipping Emily's photo to a sliver; now bottom-right, a real circle, blue+gold heartbeat-pulse ring, and the correct professional Emily photo everywhere it appears)
 **Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:gent-services\projects\client-siteslpine-peak-roofing` (fresh clone 2026-08-15; the old C:\projects\APR path is stale)
 **Dev Server:** `http://localhost:3000`
 
 ---
+
+## Session 15 — Chat widget: position, avatar, ring fixed (2026-08-30)
+
+Owner feedback (screenshot): the closed-state chat bubble sat "way up at the top right" with the
+avatar's face "clipped off" — confirmed live on production before touching anything.
+
+**Root cause of the clipping:** `components/chatbot/ChatWidget.tsx`'s closed-state button used
+`h-14 w-14 md:h-42 md:w-42` — `h-42`/`w-42` are not valid Tailwind spacing-scale values (no config
+override exists for `42`), so on desktop the class silently generated no CSS and the button fell
+back to the mobile `56px` size, while the avatar wrapper inside it was sized `md:w-32 md:h-32`
+(128px) — massive overflow, squeezing the circular photo into a thin clipped vertical sliver.
+Same root-cause family as the earlier Silver Loon `position: relative`/`fixed` tailwind-merge bug
+(a broken/silently-dropped utility class), different symptom.
+
+**Fixed:**
+- Position: was hardcoded `top: 190px, right: 30px` (both the closed bubble's inline style and the
+  open panel's `positionClasses`) — now `bottom-6 right-6` (`md:bottom-8 md:right-8`) for the
+  bubble, `md:bottom-28 md:right-8` for the open panel.
+- Size: replaced the broken `h-42/w-42` with valid `h-24 w-24 md:h-32 md:w-32` (96px/128px) — a
+  real circle now, no overflow.
+- Avatar: `public/images/team/ai-agent-avatar-02.webp` was actually a *different*,
+  AI-generated headshot (styled with a sci-fi earpiece overlay) — not the plain professional photo
+  the owner intends as "Emily" across sites. Replaced the file content (same filename, so all 4
+  call sites — `ChatWidget.tsx`, `ChatHeader.tsx`, `ChatMessage.tsx`, `app/ai-chat/page.tsx` —
+  updated at once) with the same portrait now used on Silver Loon Roofing's Emily widget, for
+  cross-site consistency.
+- Ring: replaced the old effect (purple pulsing blur + two counter-rotating conic-gradient rings —
+  busy, and partly hidden behind the broken sizing anyway) with a solid Azure (`#0077CC`) ring
+  directly on the avatar and a separate Amber Gold (`#E5A800`) ring offset outside it via a `p-2`
+  spacer div (an `inset-0` sibling would've painted directly under the avatar's own border and
+  been invisible at rest). New `@keyframes chat-heartbeat-ring` in `app/globals.css` — a
+  double-beat pulse (scale+fade at 8%/16%/24%, resting 3.6s cycle) rather than a continuous smooth
+  pulse, so it reads as "you can connect with this" without being obnoxious. Respects
+  `prefers-reduced-motion`.
+- Verified live on a local dev server (port 3001 — Silver Loon's own dev server was already
+  running on 3000): bubble renders as a clean circle bottom-right, blue+gold rings both visible,
+  clicking it opens the panel correctly positioned nearby, header/message avatars all show the
+  correct photo. `npx tsc --noEmit` clean.
 
 ## Session 14 — AI-Readiness 100 Pass + Production Deploy (2026-08-15)
 

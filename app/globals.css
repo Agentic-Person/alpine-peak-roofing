@@ -715,3 +715,21 @@ body {
   clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
   padding-bottom: 4rem;
 }
+
+/* Chat-widget "heartbeat" ring — a slow double-beat pulse (lub-dub, then a
+   pause) rather than a continuous smooth pulse, so it reads as "you can
+   connect with this" without being obnoxious. Owner spec 2026-08-30. */
+@keyframes chat-heartbeat-ring {
+  0%, 28%, 100% { transform: scale(1); opacity: 0.85; }
+  8%  { transform: scale(1.16); opacity: 0.45; }
+  16% { transform: scale(1); opacity: 0.85; }
+  24% { transform: scale(1.1); opacity: 0.5; }
+}
+.animate-chat-heartbeat {
+  animation: chat-heartbeat-ring 3.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-chat-heartbeat {
+    animation: none;
+  }
+}
