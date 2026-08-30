@@ -1,12 +1,33 @@
 # Alpine Peak Roofing — Project Status
 
-**Last Updated:** 2026-08-30 (Session 15 — chat widget fixed: was pinned top-right with a broken Tailwind size class clipping Emily's photo to a sliver; now bottom-right, a real circle, blue+gold heartbeat-pulse ring, and the correct professional Emily photo everywhere it appears)
+**Last Updated:** 2026-08-30 (Session 15b — chat widget ring redesigned same day: owner reviewed the first pass and asked for a one-directional "expand and fade" gold pulse instead of the double-beat-in-place version, plus a brighter gold. Blue ring color unchanged — owner explicitly confirmed the mid-blue already in use, not Executive Blue, since a darker blue fades into the navy background.)
 **Branch:** `main`
 **Repo:** https://github.com/Agentic-Person/alpine-peak-roofing.git
 **Local:** `D:gent-services\projects\client-siteslpine-peak-roofing` (fresh clone 2026-08-15; the old C:\projects\APR path is stale)
 **Dev Server:** `http://localhost:3000`
 
 ---
+
+## Session 15b — Chat widget ring redesigned: one-directional pulse, brighter gold (2026-08-30)
+
+Owner reviewed Session 15's fix and asked for a correction: the gold ring should "pulse
+outward" and "not come back in" — brighten, expand, fade to nothing, reset, repeat — rather
+than the double-beat-in-place animation just shipped. Also: brighter gold. Blue ring color was
+NOT changed — an earlier instruction to try Executive Blue was explicitly retracted in the same
+message ("that first circle needs to be the blue that you have... if we use executive blue,
+it's going to fade into the backgrounds").
+
+- `chat-heartbeat-ring` keyframes rewritten: `0% scale(0.92) opacity 0` → `6% scale(1) opacity 1`
+  (bright flash right at the ring's resting size) → `65%–100% scale(1.55) opacity 0` (expand out
+  while fading, then hold invisible until the loop resets). `cubic-bezier(0.2, 0.7, 0.3, 1)`,
+  3.2s cycle — replaces the old `ease-in-out` oscillating version.
+- Ring color `#E5A800` (Amber Gold) → `#FFC800` (brighter golden-yellow), per "make the yellow
+  ring super bright."
+- Same exact change mirrored on Silver Loon Roofing (separate repo) and shipped fresh on Peak
+  Growth Roofing's own new widget, for consistency across all three.
+- Verified live: caught the bright-flash frame in a screenshot on Peak Growth Roofing's widget
+  (same CSS pattern); Alpine Peak's own dev server showed the resting/fading states correctly,
+  console clean, `npx tsc --noEmit` clean.
 
 ## Session 15 — Chat widget: position, avatar, ring fixed (2026-08-30)
 

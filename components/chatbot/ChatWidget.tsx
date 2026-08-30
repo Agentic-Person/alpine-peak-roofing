@@ -283,7 +283,7 @@ function ChatWidget({
               ring (not inset-0 on top of it) so it reads as a second, larger
               ring instead of being painted over by the button. */}
           <span
-            className="absolute inset-0 rounded-full border-4 border-[#E5A800] animate-chat-heartbeat"
+            className="absolute inset-0 rounded-full border-4 border-[#FFC800] animate-chat-heartbeat"
             aria-hidden="true"
           />
 

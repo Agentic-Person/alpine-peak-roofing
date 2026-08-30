@@ -716,17 +716,17 @@ body {
   padding-bottom: 4rem;
 }
 
-/* Chat-widget "heartbeat" ring — a slow double-beat pulse (lub-dub, then a
-   pause) rather than a continuous smooth pulse, so it reads as "you can
-   connect with this" without being obnoxious. Owner spec 2026-08-30. */
+/* Chat-widget "heartbeat" ring — one-directional: brightens, expands
+   outward, fades to nothing, then resets and repeats. Not a back-and-forth
+   pulse. Owner spec 2026-08-30 (revised same day from an earlier
+   double-beat-in-place version). */
 @keyframes chat-heartbeat-ring {
-  0%, 28%, 100% { transform: scale(1); opacity: 0.85; }
-  8%  { transform: scale(1.16); opacity: 0.45; }
-  16% { transform: scale(1); opacity: 0.85; }
-  24% { transform: scale(1.1); opacity: 0.5; }
+  0% { transform: scale(0.92); opacity: 0; }
+  6% { transform: scale(1); opacity: 1; }
+  65%, 100% { transform: scale(1.55); opacity: 0; }
 }
 .animate-chat-heartbeat {
-  animation: chat-heartbeat-ring 3.6s ease-in-out infinite;
+  animation: chat-heartbeat-ring 3.2s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-chat-heartbeat {
